@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MooseWeb3 Python Notes is a guided learning hub for Python data processing, statistical testing, regression, and reproducible publishing.">
+  <meta name="theme-color" content="#111827">
+  <title>MooseWeb3 Python Learning Hub</title>
+  <style>
+    :root {
+      --ink: #10213f;
+      --muted: #5d6b80;
+      --paper: #f7f8fb;
+      --surface: rgba(255, 255, 255, 0.88);
+      --line: #dce3ec;
+      --navy: #111827;
+      --blue: #2775e9;
+      --cyan: #16b8b1;
+      --violet: #7157ed;
+      --orange: #ed8a3d;
+      --shadow: 0 24px 70px rgba(18, 34, 62, 0.12);
+      --radius: 28px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 86% 8%, rgba(113, 87, 237, 0.12), transparent 28rem),
+        radial-gradient(circle at 12% 24%, rgba(22, 184, 177, 0.10), transparent 24rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    img, svg { display: block; max-width: 100%; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 12px;
+      left: 12px;
+      padding: 10px 14px;
+      color: white;
+      background: var(--navy);
+      border-radius: 10px;
+      transform: translateY(-140%);
+      transition: transform 160ms ease;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      border-bottom: 1px solid rgba(220, 227, 236, 0.82);
+      background: rgba(247, 248, 251, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      width: min(calc(100% - 40px), var(--max));
+      min-height: 76px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      margin-right: auto;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--cyan), var(--blue) 52%, var(--violet));
+      border-radius: 13px;
+      box-shadow: 0 9px 24px rgba(39, 117, 233, 0.28);
+      font-size: 0.78rem;
+      letter-spacing: -0.04em;
+    }
+    .brand-copy { display: grid; line-height: 1.05; }
+    .brand-copy small {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 750;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: #40506a;
+      text-decoration: none;
+      font-size: 0.91rem;
+      font-weight: 720;
+      transition: color 160ms ease;
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--blue); }
+    .nav-links .repo-link {
+      padding: 10px 17px;
+      color: var(--ink);
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      color: var(--ink);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 94px 0 82px;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 460px;
+      height: 460px;
+      right: -190px;
+      top: -190px;
+      border: 1px solid rgba(39, 117, 233, 0.12);
+      border-radius: 50%;
+      box-shadow: 0 0 0 70px rgba(39, 117, 233, 0.025), 0 0 0 140px rgba(113, 87, 237, 0.022);
+    }
+    .hero-grid {
+      width: min(calc(100% - 40px), var(--max));
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
+      align-items: center;
+      gap: clamp(44px, 7vw, 92px);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #0e7f7b;
+      font-size: 0.75rem;
+      font-weight: 850;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 32px; height: 2px; background: var(--orange); }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero h1 {
+      max-width: 780px;
+      margin: 22px 0 25px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.6rem, 7vw, 6.65rem);
+      font-weight: 500;
+      letter-spacing: -0.065em;
+      line-height: 0.91;
+    }
+    .hero h1 span {
+      color: transparent;
+      background: linear-gradient(105deg, #0d7f79, var(--blue) 56%, var(--violet));
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+    .hero-lead {
+      max-width: 690px;
+      margin-bottom: 31px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 50px;
+      padding: 0 22px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary {
+      color: white;
+      background: var(--navy);
+      box-shadow: 0 15px 34px rgba(17, 24, 39, 0.2);
+    }
+    .button-secondary { background: rgba(255, 255, 255, 0.75); border: 1px solid var(--line); }
+    .arrow { font-size: 1.15em; transition: transform 160ms ease; }
+    .button:hover .arrow, .course-link:hover .arrow, .step-link:hover .arrow { transform: translateX(4px); }
+
+    .overview-card {
+      position: relative;
+      padding: 30px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .overview-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      background: linear-gradient(145deg, rgba(22, 184, 177, 0.1), transparent 42%, rgba(113, 87, 237, 0.09));
+    }
+    .overview-label {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 850;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .overview-number {
+      margin-bottom: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.4rem, 6vw, 5.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .metric {
+      min-height: 118px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .metric strong { display: block; margin-bottom: 8px; font-size: 0.95rem; }
+    .metric span { color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+
+    .section { padding: 90px 0; }
+    .section-tint { background: rgba(232, 238, 246, 0.54); border-block: 1px solid rgba(210, 220, 233, 0.8); }
+    .container { width: min(calc(100% - 40px), var(--max)); margin: auto; }
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 46px;
+    }
+    .section-kicker {
+      display: block;
+      margin-bottom: 13px;
+      color: var(--blue);
+      font-size: 0.72rem;
+      font-weight: 850;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+    }
+    .section h2 {
+      margin-bottom: 16px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.35rem, 4.5vw, 4rem);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+    .section-head p { margin-bottom: 0; color: var(--muted); font-size: 1.06rem; }
+
+    .path-grid {
+      counter-reset: path;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .path-step {
+      counter-increment: path;
+      position: relative;
+      min-height: 285px;
+      padding: 25px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+    .path-step:hover { transform: translateY(-5px); border-color: #b8c7dc; box-shadow: 0 18px 40px rgba(20, 37, 65, 0.09); }
+    .path-step::after {
+      content: counter(path, decimal-leading-zero);
+      position: absolute;
+      right: -9px;
+      bottom: -25px;
+      color: rgba(39, 117, 233, 0.065);
+      font: 700 7.8rem/1 Georgia, serif;
+    }
+    .step-number {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 42px;
+      color: white;
+      background: var(--ink);
+      border-radius: 13px;
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+    .path-step:nth-child(2) .step-number { background: var(--cyan); }
+    .path-step:nth-child(3) .step-number { background: var(--violet); }
+    .path-step:nth-child(4) .step-number { background: var(--orange); }
+    .path-step h3 { margin-bottom: 10px; font-size: 1.13rem; letter-spacing: -0.02em; }
+    .path-step p { color: var(--muted); font-size: 0.9rem; }
+    .step-link { position: relative; z-index: 1; display: inline-flex; gap: 8px; align-items: center; color: var(--blue); font-weight: 800; font-size: 0.86rem; text-decoration: none; }
+
+    .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .course-card {
+      --accent: var(--blue);
+      position: relative;
+      min-height: 400px;
+      padding: 34px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 35px rgba(21, 39, 70, 0.06);
+    }
+    .course-card:nth-child(2) { --accent: var(--cyan); }
+    .course-card:nth-child(3) { --accent: var(--violet); }
+    .course-card:nth-child(4) { --accent: var(--orange); }
+    .course-card::before {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      right: -70px;
+      top: -70px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    .course-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 45px; }
+    .pill {
+      padding: 6px 10px;
+      color: #526078;
+      background: #f3f6fa;
+      border: 1px solid #e1e7ef;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .pill-number { color: white; background: var(--accent); border-color: transparent; }
+    .course-card h3 { max-width: 520px; margin-bottom: 15px; font: 500 clamp(1.75rem, 3vw, 2.5rem)/1.08 Georgia, serif; letter-spacing: -0.035em; }
+    .course-card > p { max-width: 580px; color: var(--muted); }
+    .topic-line { margin: 25px 0 32px; color: #53627a; font-size: 0.84rem; font-weight: 700; }
+    .course-link { display: inline-flex; align-items: center; gap: 10px; color: var(--accent); font-weight: 850; text-decoration: none; }
+
+    .tracks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .track-card {
+      padding: 29px;
+      color: #e8edf7;
+      background: var(--navy);
+      border: 1px solid #2c374a;
+      border-radius: 24px;
+    }
+    .track-card:nth-child(2) { background: #132f43; }
+    .track-card:nth-child(3) { background: #252044; }
+    .track-card .track-label { color: #7ddbd5; font-size: 0.72rem; font-weight: 850; letter-spacing: 0.13em; text-transform: uppercase; }
+    .track-card h3 { margin: 17px 0 10px; color: white; font-size: 1.25rem; }
+    .track-card p { color: #b7c1d1; font-size: 0.9rem; }
+    .track-card ol { margin: 20px 0 0; padding-left: 21px; }
+    .track-card li { padding: 4px 0; color: #dbe3ef; font-size: 0.88rem; }
+
+    .about-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: clamp(34px, 6vw, 70px);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+    }
+    .about-panel h2 { margin-bottom: 18px; }
+    .about-panel p { color: var(--muted); }
+    .principles { display: grid; gap: 13px; }
+    .principle { display: grid; grid-template-columns: 44px 1fr; gap: 15px; align-items: start; padding: 15px; border: 1px solid var(--line); border-radius: 17px; }
+    .principle-icon { width: 44px; height: 44px; display: grid; place-items: center; color: white; background: linear-gradient(135deg, var(--blue), var(--violet)); border-radius: 13px; font-weight: 900; }
+    .principle strong { display: block; margin: 1px 0 4px; }
+    .principle span { color: var(--muted); font-size: 0.82rem; }
+
+    .site-footer { margin-top: 90px; padding: 38px 0; color: #acb6c6; background: var(--navy); }
+    .footer-grid { width: min(calc(100% - 40px), var(--max)); margin: auto; display: flex; align-items: center; gap: 24px; }
+    .footer-grid strong { color: white; }
+    .footer-grid p { margin: 2px auto 0 0; font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { color: #cdd5e1; font-size: 0.83rem; font-weight: 700; text-decoration: none; }
+    .footer-links a:hover { color: white; }
+
+    :focus-visible { outline: 3px solid rgba(39, 117, 233, 0.45); outline-offset: 4px; }
+
+    @media (max-width: 960px) {
+      .hero-grid, .about-panel { grid-template-columns: 1fr; }
+      .hero { padding-top: 70px; }
+      .overview-card { max-width: 620px; }
+      .path-grid { grid-template-columns: 1fr 1fr; }
+      .tracks { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .nav { min-height: 68px; }
+      .menu-button { display: grid; place-items: center; }
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 1px);
+        left: 20px;
+        right: 20px;
+        display: none;
+        align-items: stretch;
+        gap: 4px;
+        padding: 14px;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+      .nav-links.is-open { display: grid; }
+      .nav-links a { padding: 10px 12px; }
+      .nav-links .repo-link { border-radius: 10px; }
+      .hero h1 { font-size: clamp(3.15rem, 16vw, 5.4rem); }
+      .path-grid, .course-grid { grid-template-columns: 1fr; }
+      .course-card { min-height: auto; }
+      .footer-grid { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .nav, .container, .hero-grid, .footer-grid { width: min(calc(100% - 28px), var(--max)); }
+      .brand-copy small { display: none; }
+      .hero { padding: 54px 0 64px; }
+      .hero h1 { font-size: 3.25rem; }
+      .overview-card, .course-card, .about-panel { padding: 24px; border-radius: 23px; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .metric { min-height: 90px; }
+      .path-grid { grid-template-columns: 1fr; }
+      .section { padding: 68px 0; }
+      .footer-links { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to learning content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="MooseWeb3 Python Notes home">
+        <span class="brand-mark" aria-hidden="true">MW3</span>
+        <span class="brand-copy">MooseWeb3 <small>Python Notes</small></span>
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-menu" aria-label="Open navigation">☰</button>
+      <div class="nav-links" id="main-menu">
+        <a href="#learning-path">Learning path</a>
+        <a href="#course-library">Course library</a>
+        <a href="#choose-a-track">Choose a track</a>
+        <a href="#about">About</a>
+        <a class="repo-link" href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">Repository ↗</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">A practical Python learning hub</span>
+          <h1 id="hero-title">Learn Python as a <span>connected practice.</span></h1>
+          <p class="hero-lead">Move from clean, trustworthy data to statistical comparisons, reliable regression models, and reproducible technical publishing—all through detailed, beginner-friendly guides.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="python_data_processing_en.html">Start with data processing <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#course-library">Browse all courses</a>
+          </div>
+        </div>
+        <aside class="overview-card" aria-label="Curriculum at a glance">
+          <p class="overview-label">Curriculum at a glance</p>
+          <p class="overview-number">4 guided<br>courses</p>
+          <div class="overview-grid">
+            <div class="metric"><strong>Python first</strong><span>pandas, SciPy, statsmodels, and practical workflows</span></div>
+            <div class="metric"><strong>Visible code</strong><span>worked examples and reproducible patterns throughout</span></div>
+            <div class="metric"><strong>Self-paced</strong><span>follow the sequence or jump directly to a topic</span></div>
+            <div class="metric"><strong>Portable HTML</strong><span>read every guide without a notebook server</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="learning-path" aria-labelledby="path-title">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Recommended sequence</span>
+          <h2 id="path-title">A path, not a pile of pages.</h2>
+          <p>Build confidence in layers. Start with the shape and quality of your data, learn how to compare groups, move into explanatory models, then package the whole workflow as a clear and reproducible report.</p>
+        </header>
+        <div class="path-grid">
+          <article class="path-step">
+            <span class="step-number">01</span>
+            <h3>Prepare trustworthy data</h3>
+            <p>Load, inspect, clean, reshape, join, summarize, and export tabular data with pandas.</p>
+            <a class="step-link" href="python_data_processing_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="path-step">
+            <span class="step-number">02</span>
+            <h3>Compare with evidence</h3>
+            <p>Choose statistical tests from the research question, assumptions, and data structure.</p>
+            <a class="step-link" href="python_statistical_tests_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="path-step">
+            <span class="step-number">03</span>
+            <h3>Build reliable models</h3>
+            <p>Understand linear and generalized linear regression, diagnostics, interpretation, and prediction.</p>
+            <a class="step-link" href="python_regression_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="path-step">
+            <span class="step-number">04</span>
+            <h3>Publish reproducibly</h3>
+            <p>Turn analysis, narrative, tables, and code into a polished HTML document with Quarto.</p>
+            <a class="step-link" href="quarto_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="course-library" aria-labelledby="library-title">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Complete course library</span>
+          <h2 id="library-title">Four guides. One practical workflow.</h2>
+          <p>Each course is a standalone English HTML page with explanations, runnable examples, reference tables, checklists, and exercises. No sign-in or special reader is required.</p>
+        </header>
+        <div class="course-grid">
+          <article class="course-card">
+            <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Beginner</span><span class="pill">Core workflow</span></div>
+            <h3>Common Python Data Processing Methods</h3>
+            <p>Develop the daily skills used to turn messy tables into analysis-ready data while keeping transformations clear and checkable.</p>
+            <p class="topic-line">pandas · missing data · joins · reshaping · dates · validation</p>
+            <a class="course-link" href="python_data_processing_en.html">Open data processing <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="course-card">
+            <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Beginner–Intermediate</span><span class="pill">Inference</span></div>
+            <h3>Common Statistical Tests in Python</h3>
+            <p>Connect research questions to appropriate tests, verify assumptions, report effect sizes, and interpret uncertainty responsibly.</p>
+            <p class="topic-line">t tests · ANOVA · ranks · proportions · correlation · power</p>
+            <a class="course-link" href="python_statistical_tests_en.html">Open statistical tests <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="course-card">
+            <div class="course-meta"><span class="pill pill-number">03</span><span class="pill">Intermediate</span><span class="pill">Modeling</span></div>
+            <h3>Linear and Generalized Linear Regression</h3>
+            <p>Move from equations to dependable models with careful interpretation, diagnostics, robust uncertainty, and transparent reporting.</p>
+            <p class="topic-line">OLS · GLMs · interactions · diagnostics · prediction · validation</p>
+            <a class="course-link" href="python_regression_en.html">Open regression <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="course-card">
+            <div class="course-meta"><span class="pill pill-number">04</span><span class="pill">All levels</span><span class="pill">Publishing</span></div>
+            <h3>A Practical Guide to Quarto</h3>
+            <p>Combine prose, Python, R, figures, citations, and reusable styling in a reproducible publishing system that scales beyond one report.</p>
+            <p class="topic-line">projects · execution · citations · themes · HTML · automation</p>
+            <a class="course-link" href="quarto_guide_en.html">Open the Quarto guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="choose-a-track" aria-labelledby="tracks-title">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Choose a track</span>
+          <h2 id="tracks-title">Learn for the work you want to do.</h2>
+          <p>You can follow the full curriculum or choose a shorter route based on your immediate goal.</p>
+        </header>
+        <div class="tracks">
+          <article class="track-card">
+            <span class="track-label">New learner</span>
+            <h3>Understand and prepare data</h3>
+            <p>Build a strong foundation before making formal comparisons.</p>
+            <ol><li>Data processing</li><li>Statistical tests</li></ol>
+          </article>
+          <article class="track-card">
+            <span class="track-label">Data analyst</span>
+            <h3>From tables to models</h3>
+            <p>Create analysis-ready data and explain outcomes with interpretable models.</p>
+            <ol><li>Data processing</li><li>Statistical tests</li><li>Regression</li></ol>
+          </article>
+          <article class="track-card">
+            <span class="track-label">Technical author</span>
+            <h3>Publish reproducible work</h3>
+            <p>Turn code and results into a durable learning resource or report.</p>
+            <ol><li>Choose an analysis guide</li><li>Quarto publishing</li></ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about-panel">
+          <div>
+            <span class="section-kicker">About MooseWeb3 Python Notes</span>
+            <h2 id="about-title">Learn the reasoning—not just the command.</h2>
+            <p>The collection is designed for readers who want practical code and the judgment behind it. Every guide connects the question, the data, the method, the assumptions, and the final interpretation.</p>
+            <a class="button button-secondary" href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">View the repository <span class="arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="principles">
+            <div class="principle"><span class="principle-icon" aria-hidden="true">01</span><div><strong>Beginner-friendly</strong><span>Plain-language explanations build up to practical technical detail.</span></div></div>
+            <div class="principle"><span class="principle-icon" aria-hidden="true">02</span><div><strong>Reproducible by default</strong><span>Visible code, fixed seeds, validation checks, and complete examples.</span></div></div>
+            <div class="principle"><span class="principle-icon" aria-hidden="true">03</span><div><strong>Portable and open</strong><span>Every lesson is a static HTML page that works directly in the browser.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div><strong>MooseWeb3 · Python Learning Hub</strong><p>Data, statistics, modeling, and reproducible publishing.</p></div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#learning-path">Learning path</a>
+        <a href="#course-library">All courses</a>
+        <a href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const button = document.querySelector('.menu-button');
+      const menu = document.querySelector('.nav-links');
+      if (!button || !menu) return;
+
+      const closeMenu = () => {
+        menu.classList.remove('is-open');
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('aria-label', 'Open navigation');
+      };
+
+      button.addEventListener('click', () => {
+        const open = menu.classList.toggle('is-open');
+        button.setAttribute('aria-expanded', String(open));
+        button.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      });
+
+      menu.addEventListener('click', event => {
+        if (event.target.closest('a')) closeMenu();
+      });
+
+      addEventListener('resize', () => {
+        if (innerWidth > 760) closeMenu();
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>

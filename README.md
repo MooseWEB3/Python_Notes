@@ -9,6 +9,8 @@
 
 **README languages:** [English](#english) · [Français](#francais) · [Português](#portugues)
 
+**Learning hub:** [Open the MooseWeb3 Python Notes website](https://mooseweb3.github.io/Python_Notes/)
+
 ---
 
 <a id="english"></a>
@@ -86,16 +88,16 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 All published pages are static HTML and can be hosted with GitHub Pages or another static hosting service. Configure the repository root on your chosen branch as the site source. A tutorial will then be available at a URL similar to:
 
 ```text
-https://MooseWEB3.github.io/Python_Notes/python_data_processing_en.html
+https://mooseweb3.github.io/Python_Notes/
 ```
 
 ### Repository structure
 
 ```text
 Python_Notes/
+├── index.html
 ├── README.md
 ├── .gitignore
-├── build_quarto_guides.py
 ├── python_data_processing_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
@@ -182,16 +184,16 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 Les pages publiées sont des fichiers HTML statiques et peuvent être hébergées avec GitHub Pages ou un autre service d’hébergement statique. Configurez la racine du dépôt de la branche choisie comme source du site. Une page sera alors disponible à une adresse similaire à :
 
 ```text
-https://MooseWEB3.github.io/Python_Notes/python_data_processing_en.html
+https://mooseweb3.github.io/Python_Notes/
 ```
 
 ### Structure du dépôt
 
 ```text
 Python_Notes/
+├── index.html
 ├── README.md
 ├── .gitignore
-├── build_quarto_guides.py
 ├── python_data_processing_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
@@ -278,16 +280,16 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 Todas as páginas publicadas são arquivos HTML estáticos e podem ser hospedadas pelo GitHub Pages ou por outro serviço de hospedagem estática. Configure a raiz do repositório da branch escolhida como origem do site. Uma página ficará disponível em um endereço semelhante a:
 
 ```text
-https://MooseWEB3.github.io/Python_Notes/python_data_processing_en.html
+https://mooseweb3.github.io/Python_Notes/
 ```
 
 ### Estrutura do repositório
 
 ```text
 Python_Notes/
+├── index.html
 ├── README.md
 ├── .gitignore
-├── build_quarto_guides.py
 ├── python_data_processing_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
