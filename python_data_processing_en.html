@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · A practical introduction for new learners" />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>MooseWeb3 | Common Python Data Processing Methods: A Beginner’s Guide</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MooseWeb3 | Common Python Data Processing Methods: A
+Beginner’s Guide</h1>
+<p class="author">MooseWeb3 · A practical introduction for new
+learners</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#how-to-use-this-tutorial" id="toc-how-to-use-this-tutorial">How to Use This Tutorial</a>
+<ul>
+<li><a href="#learning-goals" id="toc-learning-goals">Learning
+Goals</a></li>
+</ul></li>
+<li><a href="#environment-and-core-ideas" id="toc-environment-and-core-ideas">1. Environment and Core Ideas</a>
+<ul>
+<li><a href="#install-common-packages" id="toc-install-common-packages">1.1 Install Common Packages</a></li>
+<li><a href="#series-and-dataframe" id="toc-series-and-dataframe">1.2
+Series and DataFrame</a></li>
+<li><a href="#example-data-used-throughout-the-guide" id="toc-example-data-used-throughout-the-guide">1.3 Example Data Used
+Throughout the Guide</a></li>
+</ul></li>
+<li><a href="#basic-processing-without-pandas" id="toc-basic-processing-without-pandas">2. Basic Processing Without
+pandas</a>
+<ul>
+<li><a href="#list-comprehensions" id="toc-list-comprehensions">2.1 List
+Comprehensions</a></li>
+<li><a href="#dictionaries-and-safe-lookup" id="toc-dictionaries-and-safe-lookup">2.2 Dictionaries and Safe
+Lookup</a></li>
+<li><a href="#removing-duplicates-with-sets" id="toc-removing-duplicates-with-sets">2.3 Removing Duplicates with
+Sets</a></li>
+</ul></li>
+<li><a href="#reading-and-saving-data" id="toc-reading-and-saving-data">3. Reading and Saving Data</a>
+<ul>
+<li><a href="#csv" id="toc-csv">3.1 CSV</a></li>
+<li><a href="#excel" id="toc-excel">3.2 Excel</a></li>
+<li><a href="#json" id="toc-json">3.3 JSON</a></li>
+<li><a href="#file-paths" id="toc-file-paths">3.4 File Paths</a></li>
+<li><a href="#exporting" id="toc-exporting">3.5 Exporting</a></li>
+</ul></li>
+<li><a href="#quickly-understanding-a-dataset" id="toc-quickly-understanding-a-dataset">4. Quickly Understanding a
+Dataset</a></li>
+<li><a href="#selecting-filtering-and-sorting" id="toc-selecting-filtering-and-sorting">5. Selecting, Filtering, and
+Sorting</a>
+<ul>
+<li><a href="#selecting-columns" id="toc-selecting-columns">5.1
+Selecting Columns</a></li>
+<li><a href="#label-based-selection-with-loc" id="toc-label-based-selection-with-loc">5.2 Label-Based Selection with
+<code>loc</code></a></li>
+<li><a href="#position-based-selection-with-iloc" id="toc-position-based-selection-with-iloc">5.3 Position-Based Selection
+with <code>iloc</code></a></li>
+<li><a href="#conditional-filtering" id="toc-conditional-filtering">5.4
+Conditional Filtering</a></li>
+<li><a href="#sorting" id="toc-sorting">5.5 Sorting</a></li>
+</ul></li>
+<li><a href="#cleaning-data" id="toc-cleaning-data">6. Cleaning Data</a>
+<ul>
+<li><a href="#standardize-column-names" id="toc-standardize-column-names">6.1 Standardize Column Names</a></li>
+<li><a href="#missing-values" id="toc-missing-values">6.2 Missing
+Values</a></li>
+<li><a href="#duplicate-values" id="toc-duplicate-values">6.3 Duplicate
+Values</a></li>
+<li><a href="#converting-data-types" id="toc-converting-data-types">6.4
+Converting Data Types</a></li>
+<li><a href="#cleaning-text" id="toc-cleaning-text">6.5 Cleaning
+Text</a></li>
+<li><a href="#outliers-and-valid-ranges" id="toc-outliers-and-valid-ranges">6.6 Outliers and Valid
+Ranges</a></li>
+</ul></li>
+<li><a href="#creating-and-transforming-columns" id="toc-creating-and-transforming-columns">7. Creating and Transforming
+Columns</a>
+<ul>
+<li><a href="#vectorized-calculations" id="toc-vectorized-calculations">7.1 Vectorized Calculations</a></li>
+<li><a href="#conditional-columns" id="toc-conditional-columns">7.2
+Conditional Columns</a></li>
+<li><a href="#mapping-values" id="toc-mapping-values">7.3 Mapping
+Values</a></li>
+<li><a href="#apply-use-it-when-needed" id="toc-apply-use-it-when-needed">7.4 <code>apply</code>: Use It When
+Needed</a></li>
+<li><a href="#method-chaining-and-assign" id="toc-method-chaining-and-assign">7.5 Method Chaining and
+<code>assign</code></a></li>
+</ul></li>
+<li><a href="#dates-and-times" id="toc-dates-and-times">8. Dates and
+Times</a></li>
+<li><a href="#grouping-and-aggregation" id="toc-grouping-and-aggregation">9. Grouping and Aggregation</a>
+<ul>
+<li><a href="#one-aggregation" id="toc-one-aggregation">9.1 One
+Aggregation</a></li>
+<li><a href="#multiple-aggregations" id="toc-multiple-aggregations">9.2
+Multiple Aggregations</a></li>
+<li><a href="#the-difference-between-agg-and-transform" id="toc-the-difference-between-agg-and-transform">9.3 The Difference
+Between <code>agg</code> and <code>transform</code></a></li>
+</ul></li>
+<li><a href="#joining-and-concatenating" id="toc-joining-and-concatenating">10. Joining and Concatenating</a>
+<ul>
+<li><a href="#merge-join-on-keys" id="toc-merge-join-on-keys">10.1
+<code>merge</code>: Join on Keys</a></li>
+<li><a href="#concat-stack-or-align-tables" id="toc-concat-stack-or-align-tables">10.2 <code>concat</code>: Stack or
+Align Tables</a></li>
+</ul></li>
+<li><a href="#reshaping-wide-and-long-data" id="toc-reshaping-wide-and-long-data">11. Reshaping Wide and Long
+Data</a>
+<ul>
+<li><a href="#pivot-tables" id="toc-pivot-tables">11.1 Pivot
+Tables</a></li>
+<li><a href="#long-to-wide" id="toc-long-to-wide">11.2 Long to
+Wide</a></li>
+<li><a href="#wide-to-long" id="toc-wide-to-long">11.3 Wide to
+Long</a></li>
+</ul></li>
+<li><a href="#indexes-copies-and-common-traps" id="toc-indexes-copies-and-common-traps">12. Indexes, Copies, and Common
+Traps</a>
+<ul>
+<li><a href="#an-index-is-not-a-regular-column" id="toc-an-index-is-not-a-regular-column">12.1 An Index Is Not a Regular
+Column</a></li>
+<li><a href="#avoid-chained-assignment" id="toc-avoid-chained-assignment">12.2 Avoid Chained Assignment</a></li>
+<li><a href="#do-not-accidentally-overwrite-raw-data" id="toc-do-not-accidentally-overwrite-raw-data">12.3 Do Not Accidentally
+Overwrite Raw Data</a></li>
+<li><a href="#check-row-counts-after-joins" id="toc-check-row-counts-after-joins">12.4 Check Row Counts After
+Joins</a></li>
+</ul></li>
+<li><a href="#large-data-and-performance" id="toc-large-data-and-performance">13. Large Data and
+Performance</a></li>
+<li><a href="#data-quality-checks" id="toc-data-quality-checks">14. Data
+Quality Checks</a></li>
+<li><a href="#complete-mini-project-clean-and-summarize-orders" id="toc-complete-mini-project-clean-and-summarize-orders">15. Complete
+Mini-Project: Clean and Summarize Orders</a></li>
+<li><a href="#quick-reference" id="toc-quick-reference">16. Quick
+Reference</a></li>
+<li><a href="#exercises" id="toc-exercises">17. Exercises</a></li>
+<li><a href="#what-to-learn-next" id="toc-what-to-learn-next">18. What
+to Learn Next</a></li>
+</ul>
+</nav>
+<style>
+:root {
+--mw3-bg: #f4f7fb;
+--mw3-surface: #ffffff;
+--mw3-ink: #172033;
+--mw3-muted: #667085;
+--mw3-line: #dfe7f1;
+--mw3-navy: #0a1020;
+--mw3-primary: #6d5dfc;
+--mw3-primary-dark: #5144d8;
+--mw3-cyan: #19c3d2;
+--mw3-green: #20a36a;
+--mw3-code: #0d1424;
+--mw3-radius: 18px;
+--mw3-shadow: 0 18px 55px rgba(31, 43, 71, .10);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--mw3-bg); }
+body {
+max-width: none;
+margin: 0;
+padding: 0 24px 72px;
+color: var(--mw3-ink);
+background:
+radial-gradient(circle at 85% 4%, rgba(109, 93, 252, .10), transparent 24rem),
+radial-gradient(circle at 12% 18%, rgba(25, 195, 210, .08), transparent 22rem),
+var(--mw3-bg);
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+font-size: 17px;
+line-height: 1.78;
+-webkit-font-smoothing: antialiased;
+}
+a { color: var(--mw3-primary-dark); text-underline-offset: 3px; }
+a:hover { color: var(--mw3-primary); }
+::selection { color: #fff; background: var(--mw3-primary); }
+.mw3-progress {
+position: fixed;
+z-index: 1200;
+top: 0;
+left: 0;
+width: 0;
+height: 3px;
+background: linear-gradient(90deg, var(--mw3-cyan), var(--mw3-primary));
+box-shadow: 0 0 12px rgba(25, 195, 210, .8);
+}
+.mw3-topbar {
+position: fixed;
+z-index: 1100;
+top: 0;
+left: 0;
+right: 0;
+height: 72px;
+display: flex;
+align-items: center;
+gap: 22px;
+padding: 0 max(24px, calc((100vw - 1420px) / 2));
+color: #fff;
+background: rgba(10, 16, 32, .94);
+border-bottom: 1px solid rgba(255, 255, 255, .10);
+box-shadow: 0 8px 30px rgba(10, 16, 32, .18);
+backdrop-filter: blur(16px);
+}
+.mw3-skip {
+position: fixed;
+z-index: 1300;
+top: 8px;
+left: 12px;
+padding: 8px 12px;
+color: #fff;
+background: var(--mw3-primary);
+border-radius: 8px;
+transform: translateY(-150%);
+}
+.mw3-skip:focus { transform: translateY(0); }
+.mw3-brand {
+display: inline-flex;
+flex-shrink: 0;
+align-items: center;
+gap: 11px;
+color: #fff;
+font-weight: 800;
+font-size: 19px;
+letter-spacing: -.02em;
+text-decoration: none;
+}
+.mw3-brand:hover { color: #fff; }
+.mw3-logo {
+display: grid;
+place-items: center;
+width: 38px;
+height: 38px;
+color: #fff;
+background: linear-gradient(135deg, var(--mw3-cyan), var(--mw3-primary));
+border-radius: 11px;
+box-shadow: 0 7px 20px rgba(109, 93, 252, .36);
+font-size: 12px;
+letter-spacing: .02em;
+}
+.mw3-brand-sub {
+color: #9faac0;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: .13em;
+}
+.mw3-spacer { flex: 1; }
+.mw3-langs { display: flex; flex-shrink: 0; align-items: center; gap: 5px; }
+.mw3-langs a {
+padding: 7px 11px;
+color: #b9c3d6;
+border-radius: 9px;
+font-size: 14px;
+font-weight: 700;
+text-decoration: none;
+}
+.mw3-langs a:hover, .mw3-langs a[aria-current="page"] {
+color: #fff;
+background: rgba(255, 255, 255, .11);
+}
+.mw3-menu {
+display: none;
+padding: 8px 11px;
+color: #fff;
+background: rgba(255, 255, 255, .10);
+border: 1px solid rgba(255, 255, 255, .14);
+border-radius: 9px;
+cursor: pointer;
+}
+#title-block-header {
+max-width: 940px;
+margin: 112px auto 30px;
+padding: clamp(28px, 5vw, 54px);
+color: #fff;
+text-align: left;
+background:
+linear-gradient(125deg, rgba(109, 93, 252, .96), rgba(36, 61, 118, .97)),
+var(--mw3-navy);
+border: 1px solid rgba(255, 255, 255, .15);
+border-radius: 26px;
+box-shadow: 0 24px 70px rgba(39, 47, 100, .22);
+overflow: hidden;
+}
+#title-block-header::before {
+content: "MOOSEWEB3 · PYTHON NOTES";
+display: inline-block;
+margin-bottom: 16px;
+padding: 7px 11px;
+color: #dffcff;
+background: rgba(9, 18, 45, .20);
+border: 1px solid rgba(255, 255, 255, .19);
+border-radius: 999px;
+font-size: 11px;
+font-weight: 800;
+letter-spacing: .13em;
+}
+#title-block-header .title {
+max-width: 800px;
+margin: 0 0 14px;
+color: #fff;
+font-size: clamp(32px, 5vw, 52px);
+line-height: 1.14;
+letter-spacing: -.035em;
+}
+#title-block-header .author,
+#title-block-header .date { margin: 4px 0 0; color: #dce4ff; }
+#TOC {
+position: fixed;
+z-index: 900;
+top: 96px;
+left: max(18px, calc(50vw - 607px));
+width: 245px;
+max-height: calc(100vh - 122px);
+padding: 18px 15px 20px;
+overflow-y: auto;
+overscroll-behavior: contain;
+background: rgba(255, 255, 255, .92);
+border: 1px solid var(--mw3-line);
+border-radius: 16px;
+box-shadow: 0 14px 40px rgba(31, 43, 71, .08);
+backdrop-filter: blur(12px);
+scrollbar-width: thin;
+}
+#TOC > ul { margin: 0; padding: 0; }
+#TOC ul { list-style: none; }
+#TOC ul ul { margin: 5px 0 7px 9px; padding-left: 10px; border-left: 1px solid #e4e9f2; }
+#TOC li { margin: 2px 0; }
+#TOC a {
+display: block;
+padding: 5px 7px;
+color: #59647a;
+border-radius: 7px;
+font-size: 13px;
+line-height: 1.35;
+text-decoration: none;
+}
+#TOC > ul > li > a { color: #28344e; font-weight: 750; }
+#TOC a:hover { color: var(--mw3-primary-dark); background: #f0efff; }
+#mw3-content {
+max-width: 940px;
+margin: 0 auto;
+padding: 18px clamp(24px, 4vw, 58px) 64px;
+background: var(--mw3-surface);
+border: 1px solid rgba(223, 231, 241, .9);
+border-radius: 24px;
+box-shadow: var(--mw3-shadow);
+}
+h1, h2, h3 { color: #17254a; scroll-margin-top: 92px; }
+h1 {
+margin: 3.1rem 0 1.15rem;
+padding-bottom: .65rem;
+border-bottom: 1px solid var(--mw3-line);
+font-size: clamp(27px, 3vw, 36px);
+line-height: 1.3;
+letter-spacing: -.025em;
+}
+#mw3-content > h1:first-of-type { margin-top: 1.4rem; }
+h2 { margin: 2.25rem 0 .75rem; font-size: 24px; line-height: 1.35; }
+h3 { margin: 1.8rem 0 .6rem; font-size: 20px; }
+p, li { color: #344054; }
+strong { color: #1f2b45; }
+code {
+padding: .12em .36em;
+color: #5b3fd0;
+background: #f0efff;
+border-radius: 5px;
+font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+font-size: .9em;
+}
+.mw3-code-shell {
+position: relative;
+margin: 1.15rem 0 1.5rem;
+background: var(--mw3-code);
+border: 1px solid #202b42;
+border-radius: 14px;
+box-shadow: 0 12px 28px rgba(13, 20, 36, .13);
+overflow: hidden;
+}
+.mw3-code-shell pre {
+margin: 0;
+padding: 22px 20px;
+overflow-x: auto;
+color: #dfe7f5;
+background: transparent;
+border: 0;
+font-size: 14px;
+line-height: 1.65;
+scrollbar-color: #53627e transparent;
+}
+.mw3-code-shell pre code { padding: 0; color: inherit; background: transparent; border-radius: 0; }
+.mw3-code-shell,
+div.sourceCode.mw3-code-shell { color: #dfe7f5 !important; background-color: #0d1424 !important; }
+.mw3-code-shell pre,
+.mw3-code-shell code,
+.mw3-code-shell code span { background-color: transparent !important; }
+.mw3-code-shell pre,
+.mw3-code-shell code { color: #dfe7f5 !important; }
+.mw3-code-shell code span.kw,
+.mw3-code-shell code span.cf { color: #c792ea !important; }
+.mw3-code-shell code span.im,
+.mw3-code-shell code span.bu,
+.mw3-code-shell code span.fu { color: #82aaff !important; }
+.mw3-code-shell code span.dt,
+.mw3-code-shell code span.va { color: #f07178 !important; }
+.mw3-code-shell code span.st,
+.mw3-code-shell code span.ss { color: #c3e88d !important; }
+.mw3-code-shell code span.dv,
+.mw3-code-shell code span.bn,
+.mw3-code-shell code span.fl { color: #f78c6c !important; }
+.mw3-code-shell code span.co { color: #91a0bc !important; font-style: italic; }
+.mw3-code-shell code span.op { color: #89ddff !important; }
+.mw3-code-shell code span.at { color: #ffcb6b !important; }
+.mw3-copy {
+position: absolute;
+z-index: 2;
+top: 10px;
+right: 10px;
+padding: 6px 9px;
+color: #cbd5e7;
+background: rgba(255, 255, 255, .08);
+border: 1px solid rgba(255, 255, 255, .12);
+border-radius: 7px;
+font: 700 12px/1.2 inherit;
+cursor: pointer;
+opacity: 0;
+transition: opacity .2s, background .2s;
+}
+.mw3-code-shell:hover .mw3-copy, .mw3-copy:focus { opacity: 1; }
+.mw3-copy:hover { color: #fff; background: rgba(255, 255, 255, .16); }
+table {
+display: table;
+width: 100%;
+margin: 1.25rem 0 1.7rem;
+overflow: hidden;
+border-spacing: 0;
+border-collapse: separate;
+border: 1px solid var(--mw3-line);
+border-radius: 12px;
+font-size: 15px;
+}
+thead { color: #263553; background: #f2f5fa; }
+th, td { padding: .68rem .82rem; border: 0; border-bottom: 1px solid var(--mw3-line); text-align: left; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #fafbff; }
+table code { white-space: nowrap; }
+blockquote {
+margin: 1.35rem 0;
+padding: 1rem 1.15rem;
+background: linear-gradient(90deg, #edfaff, #f7fbff);
+border: 1px solid #cbeef4;
+border-left: 5px solid var(--mw3-cyan);
+border-radius: 10px;
+}
+blockquote p { margin: 0; }
+.tip {
+margin: 1.25rem 0;
+padding: 1rem 1.15rem;
+background: #effbf5;
+border: 1px solid #ccefdc;
+border-left: 5px solid var(--mw3-green);
+border-radius: 10px;
+}
+.mw3-top {
+position: fixed;
+z-index: 950;
+right: 24px;
+bottom: 24px;
+width: 44px;
+height: 44px;
+color: #fff;
+background: var(--mw3-navy);
+border: 0;
+border-radius: 13px;
+box-shadow: 0 10px 28px rgba(10, 16, 32, .24);
+cursor: pointer;
+opacity: 0;
+transform: translateY(10px);
+pointer-events: none;
+transition: opacity .2s, transform .2s;
+}
+.mw3-top.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+button:focus-visible, a:focus-visible { outline: 3px solid rgba(25, 195, 210, .75); outline-offset: 3px; }
+@media (min-width: 1241px) {
+#title-block-header, #mw3-content {
+margin-left: max(291px, calc(50vw - 334px));
+margin-right: 0;
+}
+}
+@media (max-width: 1240px) {
+#TOC {
+top: 82px;
+left: 14px;
+width: min(310px, calc(100vw - 28px));
+max-height: calc(100vh - 96px);
+transform: translateX(-120%);
+transition: transform .24s ease;
+}
+body.mw3-toc-open #TOC { transform: translateX(0); }
+.mw3-menu { display: inline-flex; }
+}
+@media (max-width: 700px) {
+body { padding: 0 12px 48px; font-size: 16px; }
+.mw3-topbar { height: 64px; padding: 0 14px; gap: 10px; }
+.mw3-logo { width: 34px; height: 34px; }
+.mw3-brand-sub { display: none; }
+.mw3-langs a { padding: 6px 8px; font-size: 13px; }
+#title-block-header { margin: 88px 0 18px; padding: 27px 23px; border-radius: 20px; }
+#title-block-header .title { font-size: 31px; }
+#mw3-content { padding: 14px 20px 46px; border-radius: 18px; }
+h1 { font-size: 27px; }
+h2 { font-size: 22px; }
+table { display: block; overflow-x: auto; white-space: nowrap; }
+.mw3-copy { opacity: 1; }
+.mw3-top { right: 14px; bottom: 14px; }
+}
+@media print {
+body { padding: 0; background: #fff; }
+.mw3-topbar, .mw3-progress, .mw3-top, #TOC, .mw3-copy { display: none !important; }
+#title-block-header, #mw3-content { max-width: none; margin: 0; box-shadow: none; }
+#mw3-content { border: 0; }
+h1, h2, h3 { break-after: avoid; }
+pre, table, blockquote { break-inside: avoid; }
+}
+</style>
+<h1 id="how-to-use-this-tutorial">How to Use This Tutorial</h1>
+<p>This is a practical guide for people who are new to Python data
+processing. The goal is not to memorize functions. It is to build a
+dependable workflow:</p>
+<ol type="1">
+<li>Load the data;</li>
+<li>Understand the data;</li>
+<li>Clean problems;</li>
+<li>Transform and calculate;</li>
+<li>Aggregate or combine;</li>
+<li>Validate the result;</li>
+<li>Export the data.</li>
+</ol>
+<p>Most examples use <code>pandas</code>, with <code>NumPy</code> where
+it is helpful. Code blocks are displayed but are not executed while the
+HTML is generated, so the rendering computer does not need Python
+packages. Copy the examples into Jupyter Notebook, VS Code, or a Python
+script to run them.</p>
+<blockquote>
+<p>The most important beginner habit is to check row counts, column
+names, data types, missing values, and a few sample rows after every
+major step.</p>
+</blockquote>
+<h2 id="learning-goals">Learning Goals</h2>
+<p>After completing this tutorial, you should be able to:</p>
+<ul>
+<li>Process small collections with Python containers;</li>
+<li>Read CSV, Excel, and JSON files with <code>pandas</code>;</li>
+<li>Inspect, select, filter, sort, and modify tabular data;</li>
+<li>Handle missing values, duplicates, text, dates, and incorrect
+types;</li>
+<li>Use grouping, aggregation, joins, and pivot tables;</li>
+<li>Export tidy data and perform basic quality checks;</li>
+<li>Complete a small sales-data processing project independently.</li>
+</ul>
+<h1 id="environment-and-core-ideas">1. Environment and Core Ideas</h1>
+<h2 id="install-common-packages">1.1 Install Common Packages</h2>
+<p>Run this command in a terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install pandas numpy openpyxl jupyter</span></code></pre></div>
+<p>Then import the packages in Python:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.__version__)</span></code></pre></div>
+<ul>
+<li><code>pandas</code>: works with tabular data;</li>
+<li><code>numpy</code>: provides efficient numerical operations;</li>
+<li><code>openpyxl</code>: lets <code>pandas</code> read and write
+<code>.xlsx</code> files;</li>
+<li><code>jupyter</code>: provides an interactive environment for code
+and results.</li>
+</ul>
+<h2 id="series-and-dataframe">1.2 Series and DataFrame</h2>
+<p>A <code>Series</code> is similar to one labeled column. A
+<code>DataFrame</code> is a two-dimensional table made of multiple
+columns.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pd.Series([<span class="dv">88</span>, <span class="dv">92</span>, <span class="dv">79</span>], name<span class="op">=</span><span class="st">&quot;score&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>students <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;name&quot;</span>: [<span class="st">&quot;Amy&quot;</span>, <span class="st">&quot;Ben&quot;</span>, <span class="st">&quot;Chen&quot;</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;score&quot;</span>: [<span class="dv">88</span>, <span class="dv">92</span>, <span class="dv">79</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>A DataFrame has two important axes:</p>
+<ul>
+<li><code>axis=0</code>: the row direction, often used for vertical
+concatenation;</li>
+<li><code>axis=1</code>: the column direction, often used for horizontal
+concatenation.</li>
+</ul>
+<h2 id="example-data-used-throughout-the-guide">1.3 Example Data Used
+Throughout the Guide</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;order_id&quot;</span>: [<span class="dv">1001</span>, <span class="dv">1002</span>, <span class="dv">1003</span>, <span class="dv">1004</span>, <span class="dv">1005</span>, <span class="dv">1006</span>, <span class="dv">1007</span>, <span class="dv">1008</span>],</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;customer&quot;</span>: [<span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;Bob&quot;</span>, <span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;Chen&quot;</span>, <span class="st">&quot;Bob&quot;</span>, <span class="st">&quot;Diana&quot;</span>, <span class="st">&quot;Chen&quot;</span>, <span class="st">&quot;&quot;</span>],</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;city&quot;</span>: [<span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;Edmonton&quot;</span>, <span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;Toronto&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>             <span class="st">&quot;Edmonton&quot;</span>, <span class="st">&quot;Vancouver&quot;</span>, <span class="st">&quot;Toronto&quot;</span>, <span class="st">&quot;Calgary&quot;</span>],</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;order_date&quot;</span>: [<span class="st">&quot;2026-01-03&quot;</span>, <span class="st">&quot;2026-01-04&quot;</span>, <span class="st">&quot;2026-01-08&quot;</span>, <span class="st">&quot;bad-date&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;2026-02-02&quot;</span>, <span class="st">&quot;2026-02-08&quot;</span>, <span class="st">&quot;2026-02-08&quot;</span>, <span class="st">&quot;2026-02-09&quot;</span>],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;category&quot;</span>: [<span class="st">&quot;Book&quot;</span>, <span class="st">&quot;Food&quot;</span>, <span class="st">&quot;Book&quot;</span>, <span class="st">&quot;Tech&quot;</span>, <span class="st">&quot;Food&quot;</span>, <span class="st">&quot;Tech&quot;</span>, <span class="st">&quot;Book&quot;</span>, <span class="st">&quot;Food&quot;</span>],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;quantity&quot;</span>: [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="va">None</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">1</span>],</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;unit_price&quot;</span>: [<span class="fl">18.5</span>, <span class="fl">12.0</span>, <span class="fl">18.5</span>, <span class="fl">899.0</span>, <span class="fl">12.0</span>, <span class="fl">350.0</span>, <span class="fl">20.0</span>, <span class="fl">15.0</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;discount&quot;</span>: [<span class="dv">0</span>, <span class="fl">0.10</span>, <span class="dv">0</span>, <span class="va">None</span>, <span class="dv">0</span>, <span class="fl">0.20</span>, <span class="fl">0.05</span>, <span class="dv">0</span>],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;status&quot;</span>: [<span class="st">&quot; paid &quot;</span>, <span class="st">&quot;PAID&quot;</span>, <span class="st">&quot;paid&quot;</span>, <span class="st">&quot;refunded&quot;</span>, <span class="st">&quot;paid&quot;</span>, <span class="st">&quot;paid&quot;</span>, <span class="st">&quot;cancelled&quot;</span>, <span class="st">&quot;paid&quot;</span>]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<h1 id="basic-processing-without-pandas">2. Basic Processing Without
+pandas</h1>
+<p>For very small datasets, Python’s built-in lists, dictionaries, and
+sets may be enough.</p>
+<h2 id="list-comprehensions">2.1 List Comprehensions</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prices <span class="op">=</span> [<span class="fl">18.5</span>, <span class="fl">12.0</span>, <span class="fl">899.0</span>, <span class="fl">350.0</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>expensive <span class="op">=</span> [price <span class="cf">for</span> price <span class="kw">in</span> prices <span class="cf">if</span> price <span class="op">&gt;=</span> <span class="dv">100</span>]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>with_tax <span class="op">=</span> [<span class="bu">round</span>(price <span class="op">*</span> <span class="fl">1.05</span>, <span class="dv">2</span>) <span class="cf">for</span> price <span class="kw">in</span> prices]</span></code></pre></div>
+<p>The general structure is:</p>
+<pre class="text"><code>[value_to_create for temporary_variable in iterable if condition]</code></pre>
+<h2 id="dictionaries-and-safe-lookup">2.2 Dictionaries and Safe
+Lookup</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>record <span class="op">=</span> {<span class="st">&quot;name&quot;</span>: <span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;city&quot;</span>: <span class="st">&quot;Calgary&quot;</span>}</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>name <span class="op">=</span> record[<span class="st">&quot;name&quot;</span>]                 <span class="co"># raises an error if the key is absent</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> record.get(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;Unknown&quot;</span>)   <span class="co"># returns a default if the key is absent</span></span></code></pre></div>
+<h2 id="removing-duplicates-with-sets">2.3 Removing Duplicates with
+Sets</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> [<span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;Toronto&quot;</span>, <span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;Edmonton&quot;</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>unique_cities <span class="op">=</span> <span class="bu">set</span>(cities)</span></code></pre></div>
+<p>Sets are unordered. To remove duplicates while preserving the
+original order:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>unique_in_order <span class="op">=</span> <span class="bu">list</span>(<span class="bu">dict</span>.fromkeys(cities))</span></code></pre></div>
+<p>When data grows to hundreds or thousands of structured rows, or when
+you need grouping and joins, <code>pandas</code> is usually the better
+tool.</p>
+<h1 id="reading-and-saving-data">3. Reading and Saving Data</h1>
+<h2 id="csv">3.1 CSV</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">&quot;data/orders.csv&quot;</span>)</span></code></pre></div>
+<p>Useful options include:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/orders.csv&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    na_values<span class="op">=</span>[<span class="st">&quot;&quot;</span>, <span class="st">&quot;NA&quot;</span>, <span class="st">&quot;N/A&quot;</span>, <span class="st">&quot;null&quot;</span>, <span class="st">&quot;-&quot;</span>],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    usecols<span class="op">=</span>[<span class="st">&quot;order_id&quot;</span>, <span class="st">&quot;customer&quot;</span>, <span class="st">&quot;order_date&quot;</span>, <span class="st">&quot;quantity&quot;</span>, <span class="st">&quot;unit_price&quot;</span>],</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    dtype<span class="op">=</span>{<span class="st">&quot;order_id&quot;</span>: <span class="st">&quot;string&quot;</span>}</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>If non-English characters look corrupted, confirm the source file’s
+actual encoding. Older files exported on Windows may require
+<code>encoding=&quot;gbk&quot;</code>, <code>encoding=&quot;gb18030&quot;</code>, or another
+regional encoding. Do not ignore damaged characters after randomly
+trying encodings.</p>
+<h2 id="excel">3.2 Excel</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sales <span class="op">=</span> pd.read_excel(<span class="st">&quot;data/sales.xlsx&quot;</span>, sheet_name<span class="op">=</span><span class="st">&quot;Orders&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read every sheet and return {sheet_name: DataFrame}</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>all_sheets <span class="op">=</span> pd.read_excel(<span class="st">&quot;data/sales.xlsx&quot;</span>, sheet_name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div>
+<p>Common Excel problems include merged cells, headers below the first
+row, and mixed numbers and text in one column:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sales <span class="op">=</span> pd.read_excel(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/sales.xlsx&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    sheet_name<span class="op">=</span><span class="st">&quot;Orders&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    header<span class="op">=</span><span class="dv">2</span>,       <span class="co"># use the third row as column names</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    usecols<span class="op">=</span><span class="st">&quot;A:H&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h2 id="json">3.3 JSON</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_json(<span class="st">&quot;data/orders.json&quot;</span>)</span></code></pre></div>
+<p>Use <code>json_normalize</code> to flatten nested JSON:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;data/customers.json&quot;</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    raw <span class="op">=</span> json.load(<span class="bu">file</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.json_normalize(raw, sep<span class="op">=</span><span class="st">&quot;_&quot;</span>)</span></code></pre></div>
+<h2 id="file-paths">3.4 File Paths</h2>
+<p>Use <code>pathlib</code> instead of manually joining slash
+characters:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>project_dir <span class="op">=</span> Path.cwd()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>input_file <span class="op">=</span> project_dir <span class="op">/</span> <span class="st">&quot;data&quot;</span> <span class="op">/</span> <span class="st">&quot;orders.csv&quot;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>output_file <span class="op">=</span> project_dir <span class="op">/</span> <span class="st">&quot;output&quot;</span> <span class="op">/</span> <span class="st">&quot;clean_orders.csv&quot;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>output_file.parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<h2 id="exporting">3.5 Exporting</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>orders.to_csv(<span class="st">&quot;output/clean_orders.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8-sig&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>orders.to_excel(<span class="st">&quot;output/clean_orders.xlsx&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>orders.to_json(<span class="st">&quot;output/clean_orders.json&quot;</span>, orient<span class="op">=</span><span class="st">&quot;records&quot;</span>, force_ascii<span class="op">=</span><span class="va">False</span>, indent<span class="op">=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><code>index=False</code> prevents the DataFrame index from becoming
+an unwanted output column. <code>utf-8-sig</code> often improves
+compatibility between non-English CSV files and Excel.</p>
+<h1 id="quickly-understanding-a-dataset">4. Quickly Understanding a
+Dataset</h1>
+<p>Do not start calculations immediately after receiving a new dataset.
+First ask: How many rows and columns are present? What are the names and
+types? Where are values missing?</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>orders.shape          <span class="co"># (number_of_rows, number_of_columns)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>orders.columns        <span class="co"># all column names</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>orders.dtypes         <span class="co"># type of each column</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>orders.head()         <span class="co"># first 5 rows</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>orders.tail(<span class="dv">3</span>)        <span class="co"># last 3 rows</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>orders.sample(<span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)  <span class="co"># reproducible random sample</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>orders.info()         <span class="co"># types, non-null counts, and memory information</span></span></code></pre></div>
+<p>Numerical summary:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>orders.describe()</span></code></pre></div>
+<p>Summary including text columns:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>orders.describe(include<span class="op">=</span><span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+<p>Category frequencies and missing values:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;status&quot;</span>].value_counts(dropna<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>orders.isna().<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>orders.nunique(dropna<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<div class="tip">
+<p>After every import, record three things: <code>shape</code>,
+<code>dtypes</code>, and the number of missing values in each column.
+They are invaluable when a later result looks wrong.</p>
+</div>
+<h1 id="selecting-filtering-and-sorting">5. Selecting, Filtering, and
+Sorting</h1>
+<h2 id="selecting-columns">5.1 Selecting Columns</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>]                          <span class="co"># returns a Series</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>orders[[<span class="st">&quot;customer&quot;</span>, <span class="st">&quot;city&quot;</span>, <span class="st">&quot;status&quot;</span>]]    <span class="co"># returns a DataFrame</span></span></code></pre></div>
+<p>One pair of brackets selects one column. Multiple columns require a
+list of column names, which creates the second pair of brackets.</p>
+<h2 id="label-based-selection-with-loc">5.2 Label-Based Selection with
+<code>loc</code></h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>orders.loc[<span class="dv">0</span>:<span class="dv">2</span>, [<span class="st">&quot;order_id&quot;</span>, <span class="st">&quot;customer&quot;</span>]]</span></code></pre></div>
+<p>A <code>loc</code> row slice normally includes the ending label, so
+<code>0:2</code> includes index 2.</p>
+<h2 id="position-based-selection-with-iloc">5.3 Position-Based Selection
+with <code>iloc</code></h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>orders.iloc[<span class="dv">0</span>:<span class="dv">3</span>, <span class="dv">0</span>:<span class="dv">2</span>]</span></code></pre></div>
+<p><code>iloc</code> follows normal Python slicing and excludes the
+ending position. Therefore, <code>0:3</code> selects rows 0, 1, and
+2.</p>
+<h2 id="conditional-filtering">5.4 Conditional Filtering</h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>book_orders <span class="op">=</span> orders[orders[<span class="st">&quot;category&quot;</span>] <span class="op">==</span> <span class="st">&quot;Book&quot;</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>large_paid <span class="op">=</span> orders[</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    (orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">&gt;=</span> <span class="dv">2</span>) <span class="op">&amp;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    (orders[<span class="st">&quot;status&quot;</span>].<span class="bu">str</span>.strip().<span class="bu">str</span>.lower() <span class="op">==</span> <span class="st">&quot;paid&quot;</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
+<p>Use these operators for multiple conditions:</p>
+<ul>
+<li><code>&amp;</code> means AND;</li>
+<li><code>|</code> means OR;</li>
+<li><code>~</code> means NOT;</li>
+<li>Put parentheses around each condition.</li>
+</ul>
+<p>Do not use the regular Python <code>and</code> or <code>or</code>
+operators between Series conditions.</p>
+<p>Other useful filters:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>orders[orders[<span class="st">&quot;city&quot;</span>].isin([<span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;Edmonton&quot;</span>])]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>orders[orders[<span class="st">&quot;unit_price&quot;</span>].between(<span class="dv">10</span>, <span class="dv">100</span>, inclusive<span class="op">=</span><span class="st">&quot;both&quot;</span>)]</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>orders[orders[<span class="st">&quot;customer&quot;</span>].<span class="bu">str</span>.contains(<span class="st">&quot;a&quot;</span>, case<span class="op">=</span><span class="va">False</span>, na<span class="op">=</span><span class="va">False</span>)]</span></code></pre></div>
+<h2 id="sorting">5.5 Sorting</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>orders.sort_values(<span class="st">&quot;unit_price&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>orders.sort_values(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    [<span class="st">&quot;city&quot;</span>, <span class="st">&quot;unit_price&quot;</span>],</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    na_position<span class="op">=</span><span class="st">&quot;last&quot;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Most <code>pandas</code> methods return a new DataFrame. Assign the
+result if you want to keep it:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.sort_values(<span class="st">&quot;order_id&quot;</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<h1 id="cleaning-data">6. Cleaning Data</h1>
+<h2 id="standardize-column-names">6.1 Standardize Column Names</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>orders.columns <span class="op">=</span> (</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    orders.columns</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.strip()</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.lower()</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.replace(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>, regex<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>You can also rename specific columns:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.rename(columns<span class="op">=</span>{<span class="st">&quot;order_date&quot;</span>: <span class="st">&quot;date&quot;</span>})</span></code></pre></div>
+<h2 id="missing-values">6.2 Missing Values</h2>
+<p>First identify missing values:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>orders.isna().<span class="bu">sum</span>()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>orders[orders[<span class="st">&quot;quantity&quot;</span>].isna()]</span></code></pre></div>
+<p>An empty string is not automatically treated as missing. Convert it
+explicitly:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;customer&quot;</span>].replace(<span class="vs">r&quot;</span><span class="dv">^\s</span><span class="op">*</span><span class="dv">$</span><span class="vs">&quot;</span>, pd.NA, regex<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<p>Common treatments:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows missing a critical field</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>valid_orders <span class="op">=</span> orders.dropna(subset<span class="op">=</span>[<span class="st">&quot;order_id&quot;</span>])</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill missing values</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;customer&quot;</span>].fillna(<span class="st">&quot;Unknown&quot;</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;quantity&quot;</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: fill with the median from the same group</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;unit_price&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;unit_price&quot;</span>].fillna(</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    orders.groupby(<span class="st">&quot;category&quot;</span>)[<span class="st">&quot;unit_price&quot;</span>].transform(<span class="st">&quot;median&quot;</span>)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<blockquote>
+<p>Missing does not mean zero. Fill with zero only when the business
+meaning supports it. A missing discount may mean no discount; a missing
+age usually does not mean age zero.</p>
+</blockquote>
+<h2 id="duplicate-values">6.3 Duplicate Values</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>orders.duplicated().<span class="bu">sum</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>orders[orders.duplicated(keep<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.drop_duplicates()</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.drop_duplicates(subset<span class="op">=</span>[<span class="st">&quot;order_id&quot;</span>], keep<span class="op">=</span><span class="st">&quot;last&quot;</span>)</span></code></pre></div>
+<p>Before deduplicating by <code>order_id</code>, decide whether to keep
+the first record, the last record, or the record with the newest update
+timestamp.</p>
+<h2 id="converting-data-types">6.4 Converting Data Types</h2>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">=</span> pd.to_numeric(orders[<span class="st">&quot;quantity&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;unit_price&quot;</span>] <span class="op">=</span> pd.to_numeric(orders[<span class="st">&quot;unit_price&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;order_date&quot;</span>] <span class="op">=</span> pd.to_datetime(orders[<span class="st">&quot;order_date&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;quantity&quot;</span>].fillna(<span class="dv">0</span>).astype(<span class="st">&quot;int64&quot;</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;category&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;category&quot;</span>].astype(<span class="st">&quot;category&quot;</span>)</span></code></pre></div>
+<p><code>errors=&quot;coerce&quot;</code> converts invalid values to missing
+values so you can inspect them consistently:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>bad_dates <span class="op">=</span> orders[orders[<span class="st">&quot;order_date&quot;</span>].isna()]</span></code></pre></div>
+<h2 id="cleaning-text">6.5 Cleaning Text</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;status&quot;</span>] <span class="op">=</span> (</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    orders[<span class="st">&quot;status&quot;</span>]</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    .astype(<span class="st">&quot;string&quot;</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.strip()</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.lower()</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    .replace({<span class="st">&quot;cancelled&quot;</span>: <span class="st">&quot;canceled&quot;</span>})</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;city&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;city&quot;</span>].<span class="bu">str</span>.strip().<span class="bu">str</span>.title()</span></code></pre></div>
+<p>Useful string methods:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>].<span class="bu">str</span>.<span class="bu">len</span>()</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>].<span class="bu">str</span>.startswith(<span class="st">&quot;A&quot;</span>, na<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>].<span class="bu">str</span>.replace(<span class="vs">r&quot;</span><span class="dv">\s</span><span class="op">+</span><span class="vs">&quot;</span>, <span class="st">&quot; &quot;</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;customer&quot;</span>].<span class="bu">str</span>.split(<span class="st">&quot; &quot;</span>, expand<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<h2 id="outliers-and-valid-ranges">6.6 Outliers and Valid Ranges</h2>
+<p>Business-rule checks are often easier to explain than complex
+algorithms:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>invalid <span class="op">=</span> orders[</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    (orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">&lt;</span> <span class="dv">0</span>) <span class="op">|</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    (orders[<span class="st">&quot;unit_price&quot;</span>] <span class="op">&lt;</span> <span class="dv">0</span>) <span class="op">|</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    (<span class="op">~</span>orders[<span class="st">&quot;discount&quot;</span>].between(<span class="dv">0</span>, <span class="dv">1</span>, inclusive<span class="op">=</span><span class="st">&quot;both&quot;</span>))</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
+<p>Use the interquartile range (IQR) to find statistical outliers:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>q1 <span class="op">=</span> orders[<span class="st">&quot;unit_price&quot;</span>].quantile(<span class="fl">0.25</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>q3 <span class="op">=</span> orders[<span class="st">&quot;unit_price&quot;</span>].quantile(<span class="fl">0.75</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>iqr <span class="op">=</span> q3 <span class="op">-</span> q1</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>lower <span class="op">=</span> q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>upper <span class="op">=</span> q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>outliers <span class="op">=</span> orders[<span class="op">~</span>orders[<span class="st">&quot;unit_price&quot;</span>].between(lower, upper)]</span></code></pre></div>
+<p>An outlier is not automatically an error. An expensive product may be
+genuine. Flag and investigate outliers before deciding to remove
+them.</p>
+<h1 id="creating-and-transforming-columns">7. Creating and Transforming
+Columns</h1>
+<h2 id="vectorized-calculations">7.1 Vectorized Calculations</h2>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;discount&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;discount&quot;</span>].fillna(<span class="dv">0</span>).clip(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;gross&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;quantity&quot;</span>] <span class="op">*</span> orders[<span class="st">&quot;unit_price&quot;</span>]</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;gross&quot;</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> orders[<span class="st">&quot;discount&quot;</span>])</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;net_sales&quot;</span>].<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div>
+<p>These whole-column operations are called vectorized operations. They
+are usually shorter and faster than row-by-row loops.</p>
+<h2 id="conditional-columns">7.2 Conditional Columns</h2>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;size&quot;</span>] <span class="op">=</span> np.where(orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">&gt;=</span> <span class="dv">100</span>, <span class="st">&quot;large&quot;</span>, <span class="st">&quot;small&quot;</span>)</span></code></pre></div>
+<p>Use <code>np.select</code> for multiple conditions:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>conditions <span class="op">=</span> [</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">&gt;=</span> <span class="dv">500</span>,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">&gt;=</span> <span class="dv">100</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>choices <span class="op">=</span> [<span class="st">&quot;high&quot;</span>, <span class="st">&quot;medium&quot;</span>]</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;sales_band&quot;</span>] <span class="op">=</span> np.select(conditions, choices, default<span class="op">=</span><span class="st">&quot;low&quot;</span>)</span></code></pre></div>
+<h2 id="mapping-values">7.3 Mapping Values</h2>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>city_region <span class="op">=</span> {</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Calgary&quot;</span>: <span class="st">&quot;West&quot;</span>,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Edmonton&quot;</span>: <span class="st">&quot;West&quot;</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Vancouver&quot;</span>: <span class="st">&quot;West&quot;</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Toronto&quot;</span>: <span class="st">&quot;East&quot;</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;region&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;city&quot;</span>].<span class="bu">map</span>(city_region).fillna(<span class="st">&quot;Other&quot;</span>)</span></code></pre></div>
+<h2 id="apply-use-it-when-needed">7.4 <code>apply</code>: Use It When
+Needed</h2>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> shipping_fee(row):</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">&quot;city&quot;</span>] <span class="op">==</span> <span class="st">&quot;Calgary&quot;</span>:</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">&quot;net_sales&quot;</span>] <span class="op">&gt;=</span> <span class="dv">200</span>:</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">15</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;shipping_fee&quot;</span>] <span class="op">=</span> orders.<span class="bu">apply</span>(shipping_fee, axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div>
+<p><code>apply(axis=1)</code> is intuitive but can be slow on large
+datasets. Prefer whole-column operations, <code>map</code>,
+<code>where</code>, or <code>np.select</code> when possible.</p>
+<h2 id="method-chaining-and-assign">7.5 Method Chaining and
+<code>assign</code></h2>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>paid_orders <span class="op">=</span> (</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    orders</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    .assign(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>        gross<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="st">&quot;quantity&quot;</span>] <span class="op">*</span> x[<span class="st">&quot;unit_price&quot;</span>],</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>        net_sales<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="st">&quot;gross&quot;</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> x[<span class="st">&quot;discount&quot;</span>].fillna(<span class="dv">0</span>))</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    .query(<span class="st">&quot;status == &#39;paid&#39;&quot;</span>)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">&quot;net_sales&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Method chains can express a workflow clearly, but very long chains
+are difficult to debug. Beginners can split a workflow into a few
+meaningfully named intermediate variables.</p>
+<h1 id="dates-and-times">8. Dates and Times</h1>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;order_date&quot;</span>] <span class="op">=</span> pd.to_datetime(orders[<span class="st">&quot;order_date&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;year&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;order_date&quot;</span>].dt.year</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;month&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;order_date&quot;</span>].dt.to_period(<span class="st">&quot;M&quot;</span>).astype(<span class="st">&quot;string&quot;</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;weekday&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;order_date&quot;</span>].dt.day_name()</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;days_since_order&quot;</span>] <span class="op">=</span> pd.Timestamp.today().normalize() <span class="op">-</span> orders[<span class="st">&quot;order_date&quot;</span>]</span></code></pre></div>
+<p>Filter a date range:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>february <span class="op">=</span> orders[orders[<span class="st">&quot;order_date&quot;</span>].between(<span class="st">&quot;2026-02-01&quot;</span>, <span class="st">&quot;2026-02-28&quot;</span>)]</span></code></pre></div>
+<p>Monthly resampling requires a date index:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>monthly <span class="op">=</span> (</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    orders</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    .set_index(<span class="st">&quot;order_date&quot;</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    .resample(<span class="st">&quot;MS&quot;</span>)[<span class="st">&quot;net_sales&quot;</span>]</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Real projects must also consider time zones. For time-zone-aware
+data:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>events[<span class="st">&quot;timestamp&quot;</span>] <span class="op">=</span> pd.to_datetime(events[<span class="st">&quot;timestamp&quot;</span>], utc<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>events[<span class="st">&quot;local_time&quot;</span>] <span class="op">=</span> events[<span class="st">&quot;timestamp&quot;</span>].dt.tz_convert(<span class="st">&quot;America/Edmonton&quot;</span>)</span></code></pre></div>
+<h1 id="grouping-and-aggregation">9. Grouping and Aggregation</h1>
+<h2 id="one-aggregation">9.1 One Aggregation</h2>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>sales_by_city <span class="op">=</span> orders.groupby(<span class="st">&quot;city&quot;</span>)[<span class="st">&quot;net_sales&quot;</span>].<span class="bu">sum</span>()</span></code></pre></div>
+<h2 id="multiple-aggregations">9.2 Multiple Aggregations</h2>
+<div class="sourceCode" id="cb52"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> (</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    orders</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">&quot;city&quot;</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>        order_count<span class="op">=</span>(<span class="st">&quot;order_id&quot;</span>, <span class="st">&quot;nunique&quot;</span>),</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>        total_quantity<span class="op">=</span>(<span class="st">&quot;quantity&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>        total_sales<span class="op">=</span>(<span class="st">&quot;net_sales&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        average_order<span class="op">=</span>(<span class="st">&quot;net_sales&quot;</span>, <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">&quot;total_sales&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Common aggregation functions include <code>sum</code>,
+<code>mean</code>, <code>median</code>, <code>min</code>,
+<code>max</code>, <code>count</code>, <code>size</code>, and
+<code>nunique</code>.</p>
+<ul>
+<li><code>count</code>: counts non-missing values;</li>
+<li><code>size</code>: counts all rows in a group, including rows
+containing missing values;</li>
+<li><code>nunique</code>: counts distinct values.</li>
+</ul>
+<h2 id="the-difference-between-agg-and-transform">9.3 The Difference
+Between <code>agg</code> and <code>transform</code></h2>
+<p><code>agg</code> reduces the number of rows, usually to one row per
+group. <code>transform</code> returns a result with the same number of
+rows as the original data.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;city_average&quot;</span>] <span class="op">=</span> (</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    orders.groupby(<span class="st">&quot;city&quot;</span>)[<span class="st">&quot;net_sales&quot;</span>].transform(<span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>orders[<span class="st">&quot;vs_city_average&quot;</span>] <span class="op">=</span> orders[<span class="st">&quot;net_sales&quot;</span>] <span class="op">-</span> orders[<span class="st">&quot;city_average&quot;</span>]</span></code></pre></div>
+<h1 id="joining-and-concatenating">10. Joining and Concatenating</h1>
+<h2 id="merge-join-on-keys">10.1 <code>merge</code>: Join on Keys</h2>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>customers <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;customer&quot;</span>: [<span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;Bob&quot;</span>, <span class="st">&quot;Chen&quot;</span>, <span class="st">&quot;Diana&quot;</span>],</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;segment&quot;</span>: [<span class="st">&quot;Retail&quot;</span>, <span class="st">&quot;Retail&quot;</span>, <span class="st">&quot;Business&quot;</span>, <span class="st">&quot;Business&quot;</span>]</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>enriched <span class="op">=</span> orders.merge(</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    customers,</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">&quot;customer&quot;</span>,</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">&quot;left&quot;</span>,</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    validate<span class="op">=</span><span class="st">&quot;many_to_one&quot;</span>,</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>    indicator<span class="op">=</span><span class="va">True</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Join types:</p>
+<table>
+<thead>
+<tr>
+<th><code>how</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>left</code></td>
+<td>Keep every row from the left table</td>
+</tr>
+<tr>
+<td><code>right</code></td>
+<td>Keep every row from the right table</td>
+</tr>
+<tr>
+<td><code>inner</code></td>
+<td>Keep only rows matched in both tables</td>
+</tr>
+<tr>
+<td><code>outer</code></td>
+<td>Keep all rows and use missing values for unmatched fields</td>
+</tr>
+</tbody>
+</table>
+<p><code>validate=&quot;many_to_one&quot;</code> says that the left table may
+contain a customer many times, but the customer key in the right table
+must be unique. This prevents an accidental many-to-many join from
+multiplying rows.</p>
+<p>Check matching status:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>enriched[<span class="st">&quot;_merge&quot;</span>].value_counts()</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>unmatched <span class="op">=</span> enriched[enriched[<span class="st">&quot;_merge&quot;</span>] <span class="op">==</span> <span class="st">&quot;left_only&quot;</span>]</span></code></pre></div>
+<h2 id="concat-stack-or-align-tables">10.2 <code>concat</code>: Stack or
+Align Tables</h2>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>all_orders <span class="op">=</span> pd.concat([january_orders, february_orders], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>side_by_side <span class="op">=</span> pd.concat([customer_info, customer_scores], axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div>
+<p>Before vertical concatenation, check that column names and types
+agree. Horizontal concatenation aligns by index; inconsistent indexes
+can create unexpected missing values.</p>
+<h1 id="reshaping-wide-and-long-data">11. Reshaping Wide and Long
+Data</h1>
+<h2 id="pivot-tables">11.1 Pivot Tables</h2>
+<div class="sourceCode" id="cb57"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>pivot <span class="op">=</span> pd.pivot_table(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    orders,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">&quot;city&quot;</span>,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">&quot;category&quot;</span>,</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">&quot;net_sales&quot;</span>,</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span><span class="st">&quot;sum&quot;</span>,</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    fill_value<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>    margins<span class="op">=</span><span class="va">True</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h2 id="long-to-wide">11.2 Long to Wide</h2>
+<p>When each city-and-category combination is unique, use
+<code>pivot</code>:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>wide <span class="op">=</span> monthly_sales.pivot(</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">&quot;month&quot;</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">&quot;category&quot;</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">&quot;sales&quot;</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>If a combination is not unique, <code>pivot</code> raises an error.
+Use <code>pivot_table</code>, which can aggregate repeated
+combinations.</p>
+<h2 id="wide-to-long">11.3 Wide to Long</h2>
+<div class="sourceCode" id="cb59"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="bu">long</span> <span class="op">=</span> wide.reset_index().melt(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    id_vars<span class="op">=</span><span class="st">&quot;month&quot;</span>,</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    var_name<span class="op">=</span><span class="st">&quot;category&quot;</span>,</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    value_name<span class="op">=</span><span class="st">&quot;sales&quot;</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Long data is usually better for grouping, plotting, and statistical
+models. Wide data is often easier for people to read and for some report
+formats.</p>
+<h1 id="indexes-copies-and-common-traps">12. Indexes, Copies, and Common
+Traps</h1>
+<h2 id="an-index-is-not-a-regular-column">12.1 An Index Is Not a Regular
+Column</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.set_index(<span class="st">&quot;order_id&quot;</span>)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> orders.reset_index()</span></code></pre></div>
+<p>Indexes are useful for label lookup and time series. Before exporting
+or joining, decide whether an index should become a regular column.</p>
+<h2 id="avoid-chained-assignment">12.2 Avoid Chained Assignment</h2>
+<p>Not recommended:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>orders[orders[<span class="st">&quot;city&quot;</span>] <span class="op">==</span> <span class="st">&quot;Calgary&quot;</span>][<span class="st">&quot;region&quot;</span>] <span class="op">=</span> <span class="st">&quot;West&quot;</span></span></code></pre></div>
+<p>Recommended:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>orders.loc[orders[<span class="st">&quot;city&quot;</span>] <span class="op">==</span> <span class="st">&quot;Calgary&quot;</span>, <span class="st">&quot;region&quot;</span>] <span class="op">=</span> <span class="st">&quot;West&quot;</span></span></code></pre></div>
+<p>Explicitly copy a subset when you want it to be independent:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>calgary <span class="op">=</span> orders.loc[orders[<span class="st">&quot;city&quot;</span>] <span class="op">==</span> <span class="st">&quot;Calgary&quot;</span>].copy()</span></code></pre></div>
+<h2 id="do-not-accidentally-overwrite-raw-data">12.3 Do Not Accidentally
+Overwrite Raw Data</h2>
+<p>Keep the source data and clean a copy:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>raw_orders <span class="op">=</span> pd.read_csv(<span class="st">&quot;data/orders.csv&quot;</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> raw_orders.copy()</span></code></pre></div>
+<h2 id="check-row-counts-after-joins">12.4 Check Row Counts After
+Joins</h2>
+<div class="sourceCode" id="cb65"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>before_rows <span class="op">=</span> <span class="bu">len</span>(orders)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>enriched <span class="op">=</span> orders.merge(customers, on<span class="op">=</span><span class="st">&quot;customer&quot;</span>, how<span class="op">=</span><span class="st">&quot;left&quot;</span>, validate<span class="op">=</span><span class="st">&quot;many_to_one&quot;</span>)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>after_rows <span class="op">=</span> <span class="bu">len</span>(enriched)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> before_rows <span class="op">==</span> after_rows</span></code></pre></div>
+<h1 id="large-data-and-performance">13. Large Data and Performance</h1>
+<p>Write correct and understandable code first, then optimize. Common
+improvements include:</p>
+<ul>
+<li>Use <code>usecols</code> to load only required columns;</li>
+<li>Specify appropriate <code>dtype</code> values;</li>
+<li>Prefer vectorized operations;</li>
+<li>Avoid repeatedly appending rows to a DataFrame inside a loop;</li>
+<li>Consider the <code>category</code> type for text columns with many
+repeated values;</li>
+<li>Process very large CSV files in chunks.</li>
+</ul>
+<p>Chunking example:</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> []</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chunk <span class="kw">in</span> pd.read_csv(<span class="st">&quot;data/large_orders.csv&quot;</span>, chunksize<span class="op">=</span><span class="dv">100_000</span>):</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    chunk[<span class="st">&quot;sales&quot;</span>] <span class="op">=</span> chunk[<span class="st">&quot;quantity&quot;</span>] <span class="op">*</span> chunk[<span class="st">&quot;unit_price&quot;</span>]</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    totals.append(chunk.groupby(<span class="st">&quot;city&quot;</span>)[<span class="st">&quot;sales&quot;</span>].<span class="bu">sum</span>())</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>city_totals <span class="op">=</span> pd.concat(totals, axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div>
+<h1 id="data-quality-checks">14. Data Quality Checks</h1>
+<p>Perform at least these checks when processing is complete:</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> orders[<span class="st">&quot;order_id&quot;</span>].notna().<span class="bu">all</span>(), <span class="st">&quot;order_id must not be missing&quot;</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> orders[<span class="st">&quot;order_id&quot;</span>].is_unique, <span class="st">&quot;order_id must be unique&quot;</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> orders[<span class="st">&quot;quantity&quot;</span>].ge(<span class="dv">0</span>).<span class="bu">all</span>(), <span class="st">&quot;quantity must not be negative&quot;</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> orders[<span class="st">&quot;discount&quot;</span>].between(<span class="dv">0</span>, <span class="dv">1</span>).<span class="bu">all</span>(), <span class="st">&quot;discount must be between 0 and 1&quot;</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> orders[<span class="st">&quot;status&quot;</span>].isin([<span class="st">&quot;paid&quot;</span>, <span class="st">&quot;refunded&quot;</span>, <span class="st">&quot;canceled&quot;</span>]).<span class="bu">all</span>()</span></code></pre></div>
+<p>You can also record row counts before and after processing:</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>quality_report <span class="op">=</span> {</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;rows&quot;</span>: <span class="bu">len</span>(orders),</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;columns&quot;</span>: orders.shape[<span class="dv">1</span>],</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;missing_cells&quot;</span>: <span class="bu">int</span>(orders.isna().<span class="bu">sum</span>().<span class="bu">sum</span>()),</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;duplicate_order_ids&quot;</span>: <span class="bu">int</span>(orders[<span class="st">&quot;order_id&quot;</span>].duplicated().<span class="bu">sum</span>())</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(quality_report)</span></code></pre></div>
+<p>A failed assertion is useful: it stops incorrect results before they
+reach a report.</p>
+<h1 id="complete-mini-project-clean-and-summarize-orders">15. Complete
+Mini-Project: Clean and Summarize Orders</h1>
+<p>The following example combines the earlier methods into one complete
+workflow.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Copy the source to protect the original object</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>clean <span class="op">=</span> orders.copy()</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Standardize column names</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>clean.columns <span class="op">=</span> (</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>    clean.columns.<span class="bu">str</span>.strip().<span class="bu">str</span>.lower().<span class="bu">str</span>.replace(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>, regex<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Clean text and missing values</span></span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;customer&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;customer&quot;</span>].replace(<span class="vs">r&quot;</span><span class="dv">^\s</span><span class="op">*</span><span class="dv">$</span><span class="vs">&quot;</span>, pd.NA, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;customer&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;customer&quot;</span>].fillna(<span class="st">&quot;Unknown&quot;</span>)</span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;status&quot;</span>] <span class="op">=</span> (</span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>    clean[<span class="st">&quot;status&quot;</span>]</span>
+<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>    .astype(<span class="st">&quot;string&quot;</span>)</span>
+<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.strip()</span>
+<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">str</span>.lower()</span>
+<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>    .replace({<span class="st">&quot;cancelled&quot;</span>: <span class="st">&quot;canceled&quot;</span>})</span>
+<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Convert types</span></span>
+<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;quantity&quot;</span>] <span class="op">=</span> pd.to_numeric(clean[<span class="st">&quot;quantity&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>).fillna(<span class="dv">0</span>)</span>
+<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;quantity&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;quantity&quot;</span>].astype(<span class="st">&quot;int64&quot;</span>)</span>
+<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;unit_price&quot;</span>] <span class="op">=</span> pd.to_numeric(clean[<span class="st">&quot;unit_price&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;discount&quot;</span>] <span class="op">=</span> pd.to_numeric(clean[<span class="st">&quot;discount&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>).fillna(<span class="dv">0</span>)</span>
+<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;discount&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;discount&quot;</span>].clip(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb69-29"><a href="#cb69-29" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;order_date&quot;</span>] <span class="op">=</span> pd.to_datetime(clean[<span class="st">&quot;order_date&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb69-30"><a href="#cb69-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-31"><a href="#cb69-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Remove fully duplicated rows and check order keys</span></span>
+<span id="cb69-32"><a href="#cb69-32" aria-hidden="true" tabindex="-1"></a>clean <span class="op">=</span> clean.drop_duplicates()</span>
+<span id="cb69-33"><a href="#cb69-33" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> clean[<span class="st">&quot;order_id&quot;</span>].notna().<span class="bu">all</span>()</span>
+<span id="cb69-34"><a href="#cb69-34" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> clean[<span class="st">&quot;order_id&quot;</span>].is_unique</span>
+<span id="cb69-35"><a href="#cb69-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-36"><a href="#cb69-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Create calculated columns</span></span>
+<span id="cb69-37"><a href="#cb69-37" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;gross&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;quantity&quot;</span>] <span class="op">*</span> clean[<span class="st">&quot;unit_price&quot;</span>]</span>
+<span id="cb69-38"><a href="#cb69-38" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;net_sales&quot;</span>] <span class="op">=</span> (clean[<span class="st">&quot;gross&quot;</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> clean[<span class="st">&quot;discount&quot;</span>])).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb69-39"><a href="#cb69-39" aria-hidden="true" tabindex="-1"></a>clean[<span class="st">&quot;month&quot;</span>] <span class="op">=</span> clean[<span class="st">&quot;order_date&quot;</span>].dt.to_period(<span class="st">&quot;M&quot;</span>).astype(<span class="st">&quot;string&quot;</span>)</span>
+<span id="cb69-40"><a href="#cb69-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-41"><a href="#cb69-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Keep only paid orders for the revenue report</span></span>
+<span id="cb69-42"><a href="#cb69-42" aria-hidden="true" tabindex="-1"></a>paid <span class="op">=</span> clean.loc[clean[<span class="st">&quot;status&quot;</span>] <span class="op">==</span> <span class="st">&quot;paid&quot;</span>].copy()</span>
+<span id="cb69-43"><a href="#cb69-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-44"><a href="#cb69-44" aria-hidden="true" tabindex="-1"></a>monthly_summary <span class="op">=</span> (</span>
+<span id="cb69-45"><a href="#cb69-45" aria-hidden="true" tabindex="-1"></a>    paid</span>
+<span id="cb69-46"><a href="#cb69-46" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">&quot;month&quot;</span>, as_index<span class="op">=</span><span class="va">False</span>, dropna<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb69-47"><a href="#cb69-47" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb69-48"><a href="#cb69-48" aria-hidden="true" tabindex="-1"></a>        orders<span class="op">=</span>(<span class="st">&quot;order_id&quot;</span>, <span class="st">&quot;nunique&quot;</span>),</span>
+<span id="cb69-49"><a href="#cb69-49" aria-hidden="true" tabindex="-1"></a>        customers<span class="op">=</span>(<span class="st">&quot;customer&quot;</span>, <span class="st">&quot;nunique&quot;</span>),</span>
+<span id="cb69-50"><a href="#cb69-50" aria-hidden="true" tabindex="-1"></a>        revenue<span class="op">=</span>(<span class="st">&quot;net_sales&quot;</span>, <span class="st">&quot;sum&quot;</span>)</span>
+<span id="cb69-51"><a href="#cb69-51" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb69-52"><a href="#cb69-52" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">&quot;month&quot;</span>)</span>
+<span id="cb69-53"><a href="#cb69-53" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb69-54"><a href="#cb69-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-55"><a href="#cb69-55" aria-hidden="true" tabindex="-1"></a>customer_ranking <span class="op">=</span> (</span>
+<span id="cb69-56"><a href="#cb69-56" aria-hidden="true" tabindex="-1"></a>    paid</span>
+<span id="cb69-57"><a href="#cb69-57" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">&quot;customer&quot;</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb69-58"><a href="#cb69-58" aria-hidden="true" tabindex="-1"></a>    .agg(revenue<span class="op">=</span>(<span class="st">&quot;net_sales&quot;</span>, <span class="st">&quot;sum&quot;</span>))</span>
+<span id="cb69-59"><a href="#cb69-59" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">&quot;revenue&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb69-60"><a href="#cb69-60" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb69-61"><a href="#cb69-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-62"><a href="#cb69-62" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Final quality checks</span></span>
+<span id="cb69-63"><a href="#cb69-63" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> paid[<span class="st">&quot;status&quot;</span>].eq(<span class="st">&quot;paid&quot;</span>).<span class="bu">all</span>()</span>
+<span id="cb69-64"><a href="#cb69-64" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> paid[<span class="st">&quot;net_sales&quot;</span>].ge(<span class="dv">0</span>).<span class="bu">all</span>()</span>
+<span id="cb69-65"><a href="#cb69-65" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">round</span>(paid[<span class="st">&quot;net_sales&quot;</span>].<span class="bu">sum</span>(), <span class="dv">2</span>) <span class="op">==</span> <span class="fl">662.90</span></span>
+<span id="cb69-66"><a href="#cb69-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-67"><a href="#cb69-67" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. Export the outputs</span></span>
+<span id="cb69-68"><a href="#cb69-68" aria-hidden="true" tabindex="-1"></a>clean.to_csv(<span class="st">&quot;clean_orders.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8-sig&quot;</span>)</span>
+<span id="cb69-69"><a href="#cb69-69" aria-hidden="true" tabindex="-1"></a>monthly_summary.to_csv(<span class="st">&quot;monthly_summary.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8-sig&quot;</span>)</span>
+<span id="cb69-70"><a href="#cb69-70" aria-hidden="true" tabindex="-1"></a>customer_ranking.to_csv(<span class="st">&quot;customer_ranking.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8-sig&quot;</span>)</span>
+<span id="cb69-71"><a href="#cb69-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-72"><a href="#cb69-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monthly_summary)</span>
+<span id="cb69-73"><a href="#cb69-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(customer_ranking)</span></code></pre></div>
+<p>Expected monthly result:</p>
+<table>
+<thead>
+<tr>
+<th>month</th>
+<th style="text-align: right;">orders</th>
+<th style="text-align: right;">customers</th>
+<th style="text-align: right;">revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-01</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">87.90</td>
+</tr>
+<tr>
+<td>2026-02</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">575.00</td>
+</tr>
+</tbody>
+</table>
+<p>This project demonstrates an important principle: cleaning rules,
+business filters, and quality checks should live in the code rather than
+only in the operator’s memory.</p>
+<h1 id="quick-reference">16. Quick Reference</h1>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Common expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preview rows</td>
+<td><code>df.head()</code></td>
+</tr>
+<tr>
+<td>Check dimensions</td>
+<td><code>df.shape</code></td>
+</tr>
+<tr>
+<td>Inspect types</td>
+<td><code>df.dtypes</code>, <code>df.info()</code></td>
+</tr>
+<tr>
+<td>Select columns</td>
+<td><code>df[[&quot;a&quot;, &quot;b&quot;]]</code></td>
+</tr>
+<tr>
+<td>Filter rows</td>
+<td><code>df[df[&quot;a&quot;] &gt; 0]</code></td>
+</tr>
+<tr>
+<td>Select by labels</td>
+<td><code>df.loc[rows, cols]</code></td>
+</tr>
+<tr>
+<td>Select by positions</td>
+<td><code>df.iloc[rows, cols]</code></td>
+</tr>
+<tr>
+<td>Sort</td>
+<td><code>df.sort_values(&quot;a&quot;)</code></td>
+</tr>
+<tr>
+<td>Count missing values</td>
+<td><code>df.isna().sum()</code></td>
+</tr>
+<tr>
+<td>Fill missing values</td>
+<td><code>df[&quot;a&quot;].fillna(value)</code></td>
+</tr>
+<tr>
+<td>Remove duplicates</td>
+<td><code>df.drop_duplicates()</code></td>
+</tr>
+<tr>
+<td>Convert types</td>
+<td><code>pd.to_numeric()</code>, <code>pd.to_datetime()</code></td>
+</tr>
+<tr>
+<td>Clean text</td>
+<td><code>df[&quot;a&quot;].str.strip()</code></td>
+</tr>
+<tr>
+<td>Create a column</td>
+<td><code>df[&quot;c&quot;] = df[&quot;a&quot;] + df[&quot;b&quot;]</code></td>
+</tr>
+<tr>
+<td>Group and summarize</td>
+<td><code>df.groupby(...).agg(...)</code></td>
+</tr>
+<tr>
+<td>Join tables</td>
+<td><code>left.merge(right, on=..., how=...)</code></td>
+</tr>
+<tr>
+<td>Stack tables</td>
+<td><code>pd.concat([...], ignore_index=True)</code></td>
+</tr>
+<tr>
+<td>Create a pivot table</td>
+<td><code>pd.pivot_table(...)</code></td>
+</tr>
+<tr>
+<td>Convert wide to long</td>
+<td><code>df.melt(...)</code></td>
+</tr>
+<tr>
+<td>Export CSV</td>
+<td><code>df.to_csv(..., index=False)</code></td>
+</tr>
+</tbody>
+</table>
+<h1 id="exercises">17. Exercises</h1>
+<p>Complete these tasks using the example <code>orders</code> data:</p>
+<ol type="1">
+<li>Find all paid orders from Calgary;</li>
+<li>Calculate order count, quantity, and net sales for each
+category;</li>
+<li>Create a Boolean <code>is_discounted</code> column showing whether
+discount is greater than zero;</li>
+<li>Find dates that cannot be converted and explain how you would handle
+them;</li>
+<li>Create a city-by-category sales pivot table;</li>
+<li>Join the customer table to the order table and inspect unmatched
+customers;</li>
+<li>Export monthly sales as a UTF-8 CSV;</li>
+<li>Write three assertions for order IDs, quantities, and
+discounts.</li>
+</ol>
+<p>One possible starting point:</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> (</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>    clean</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>    .loc[(clean[<span class="st">&quot;city&quot;</span>] <span class="op">==</span> <span class="st">&quot;Calgary&quot;</span>) <span class="op">&amp;</span> (clean[<span class="st">&quot;status&quot;</span>] <span class="op">==</span> <span class="st">&quot;paid&quot;</span>)]</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">&quot;net_sales&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>category_summary <span class="op">=</span> (</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    clean</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">&quot;category&quot;</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>        orders<span class="op">=</span>(<span class="st">&quot;order_id&quot;</span>, <span class="st">&quot;nunique&quot;</span>),</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>        quantity<span class="op">=</span>(<span class="st">&quot;quantity&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>        sales<span class="op">=</span>(<span class="st">&quot;net_sales&quot;</span>, <span class="st">&quot;sum&quot;</span>)</span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h1 id="what-to-learn-next">18. What to Learn Next</h1>
+<p>A useful learning order is:</p>
+<ol type="1">
+<li>Run and modify every example in this tutorial in Jupyter;</li>
+<li>Repeat the complete workflow with a real CSV file;</li>
+<li>Learn basic visualization with <code>matplotlib</code> or
+<code>seaborn</code>;</li>
+<li>Learn functions, modules, exception handling, and logging;</li>
+<li>When data volume or collaboration needs grow, explore SQL, Parquet,
+Polars, or PySpark.</li>
+</ol>
+<p>Do not try to memorize every API at once. First become comfortable
+with the main sequence—load, inspect, clean, transform, summarize,
+validate, and export—then expand your toolbox gradually.</p>
+<script>
+(function () {
+  "use strict";
+
+  const doc = document;
+  const body = doc.body;
+  if (!body || doc.querySelector(".mw3-topbar")) return;
+
+  const script = doc.currentScript;
+  const toc = doc.getElementById("TOC");
+
+  const progress = doc.createElement("div");
+  progress.className = "mw3-progress";
+  progress.setAttribute("aria-hidden", "true");
+
+  const skip = doc.createElement("a");
+  skip.className = "mw3-skip";
+  skip.href = "#mw3-content";
+  skip.textContent = "Skip to content";
+
+  const topbar = doc.createElement("header");
+  topbar.className = "mw3-topbar";
+  topbar.innerHTML = `
+    <a class="mw3-brand" href="#title-block-header" aria-label="MooseWeb3">
+      <span class="mw3-logo" aria-hidden="true">MW3</span>
+      <span>MooseWeb3</span>
+      <span class="mw3-brand-sub">PYTHON NOTES</span>
+    </a>
+    <span class="mw3-spacer"></span>
+    <nav class="mw3-langs" aria-label="Language selector">
+      <a href="python_data_processing_en.html" aria-current="page">EN</a>
+    </nav>
+    <button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">Contents</button>
+  `;
+
+  body.prepend(progress, skip, topbar);
+
+  const main = doc.createElement("main");
+  main.id = "mw3-content";
+  main.tabIndex = -1;
+
+  if (toc && script) {
+    let node = toc.nextSibling;
+    while (node && node !== script) {
+      const next = node.nextSibling;
+      main.appendChild(node);
+      node = next;
+    }
+    body.insertBefore(main, script);
+  }
+
+  doc.querySelectorAll("pre").forEach(function (pre) {
+    let shell = pre.parentElement;
+    if (!shell || !shell.classList.contains("sourceCode")) {
+      shell = doc.createElement("div");
+      pre.parentNode.insertBefore(shell, pre);
+      shell.appendChild(pre);
+    }
+    shell.classList.add("mw3-code-shell");
+
+    const button = doc.createElement("button");
+    button.className = "mw3-copy";
+    button.type = "button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy code");
+    button.addEventListener("click", async function () {
+      const text = pre.innerText;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const area = doc.createElement("textarea");
+          area.value = text;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          body.appendChild(area);
+          area.select();
+          doc.execCommand("copy");
+          area.remove();
+        }
+        button.textContent = "Copied";
+        window.setTimeout(function () {
+          button.textContent = "Copy";
+        }, 1400);
+      } catch (error) {
+        button.textContent = "Copy failed";
+      }
+    });
+    shell.appendChild(button);
+  });
+
+  const topButton = doc.createElement("button");
+  topButton.className = "mw3-top";
+  topButton.type = "button";
+  topButton.textContent = "↑";
+  topButton.setAttribute("aria-label", "Back to top");
+  topButton.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  body.appendChild(topButton);
+
+  const menu = topbar.querySelector(".mw3-menu");
+  if (menu && toc) {
+    menu.addEventListener("click", function () {
+      const open = body.classList.toggle("mw3-toc-open");
+      menu.setAttribute("aria-expanded", String(open));
+    });
+    toc.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        body.classList.remove("mw3-toc-open");
+        menu.setAttribute("aria-expanded", "false");
+      }
+    });
+    doc.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        body.classList.remove("mw3-toc-open");
+        menu.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function updateScrollUI() {
+    const max = doc.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    progress.style.width = `${ratio * 100}%`;
+    topButton.classList.toggle("is-visible", window.scrollY > 560);
+  }
+
+  updateScrollUI();
+  window.addEventListener("scroll", updateScrollUI, { passive: true });
+  window.addEventListener("resize", updateScrollUI);
+})();
+</script>
+</body>
+</html>

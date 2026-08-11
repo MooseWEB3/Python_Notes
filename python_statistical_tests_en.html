@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · A practical statistics tutorial for beginners" />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>MooseWeb3 | Common Statistical Tests in Python: A Beginner’s Guide</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MooseWeb3 | Common Statistical Tests in Python: A
+Beginner’s Guide</h1>
+<p class="author">MooseWeb3 · A practical statistics tutorial for
+beginners</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#how-to-use-this-tutorial" id="toc-how-to-use-this-tutorial">How to Use This Tutorial</a>
+<ul>
+<li><a href="#learning-goals" id="toc-learning-goals">Learning
+Goals</a></li>
+</ul></li>
+<li><a href="#installation-and-imports" id="toc-installation-and-imports">1. Installation and Imports</a></li>
+<li><a href="#core-ideas-behind-statistical-tests" id="toc-core-ideas-behind-statistical-tests">2. Core Ideas Behind
+Statistical Tests</a>
+<ul>
+<li><a href="#null-and-alternative-hypotheses" id="toc-null-and-alternative-hypotheses">2.1 Null and Alternative
+Hypotheses</a></li>
+<li><a href="#the-p-value" id="toc-the-p-value">2.2 The p-Value</a></li>
+<li><a href="#type-i-and-type-ii-errors" id="toc-type-i-and-type-ii-errors">2.3 Type I and Type II
+Errors</a></li>
+<li><a href="#one-sided-or-two-sided" id="toc-one-sided-or-two-sided">2.4 One-Sided or Two-Sided?</a></li>
+<li><a href="#confidence-intervals-and-effect-sizes" id="toc-confidence-intervals-and-effect-sizes">2.5 Confidence Intervals
+and Effect Sizes</a></li>
+</ul></li>
+<li><a href="#choose-the-test-before-running-it" id="toc-choose-the-test-before-running-it">3. Choose the Test Before
+Running It</a></li>
+<li><a href="#example-data-and-general-cleaning" id="toc-example-data-and-general-cleaning">4. Example Data and General
+Cleaning</a></li>
+<li><a href="#descriptive-statistics-and-visualization" id="toc-descriptive-statistics-and-visualization">5. Descriptive
+Statistics and Visualization</a></li>
+<li><a href="#checking-assumptions" id="toc-checking-assumptions">6.
+Checking Assumptions</a>
+<ul>
+<li><a href="#independence-comes-from-the-design" id="toc-independence-comes-from-the-design">6.1 Independence Comes From
+the Design</a></li>
+<li><a href="#normality-shapirowilk" id="toc-normality-shapirowilk">6.2
+Normality: Shapiro–Wilk</a></li>
+<li><a href="#equal-variances-levenes-test" id="toc-equal-variances-levenes-test">6.3 Equal Variances: Levene’s
+Test</a></li>
+<li><a href="#outliers" id="toc-outliers">6.4 Outliers</a></li>
+</ul></li>
+<li><a href="#one-sample-tests" id="toc-one-sample-tests">7. One-Sample
+Tests</a>
+<ul>
+<li><a href="#one-sample-t-test" id="toc-one-sample-t-test">7.1
+One-Sample t-Test</a></li>
+<li><a href="#one-sample-wilcoxon-signed-rank-test" id="toc-one-sample-wilcoxon-signed-rank-test">7.2 One-Sample Wilcoxon
+Signed-Rank Test</a></li>
+</ul></li>
+<li><a href="#two-independent-groups" id="toc-two-independent-groups">8.
+Two Independent Groups</a>
+<ul>
+<li><a href="#welchs-independent-t-test" id="toc-welchs-independent-t-test">8.1 Welch’s Independent
+t-Test</a></li>
+<li><a href="#cohens-d-and-hedges-g" id="toc-cohens-d-and-hedges-g">8.2
+Cohen’s d and Hedges’ g</a></li>
+<li><a href="#mannwhitney-u" id="toc-mannwhitney-u">8.3 Mann–Whitney
+U</a></li>
+</ul></li>
+<li><a href="#paired-data" id="toc-paired-data">9. Paired Data</a>
+<ul>
+<li><a href="#paired-t-test" id="toc-paired-t-test">9.1 Paired
+t-Test</a></li>
+<li><a href="#paired-wilcoxon-signed-rank-test" id="toc-paired-wilcoxon-signed-rank-test">9.2 Paired Wilcoxon
+Signed-Rank Test</a></li>
+</ul></li>
+<li><a href="#three-or-more-independent-groups" id="toc-three-or-more-independent-groups">10. Three or More Independent
+Groups</a>
+<ul>
+<li><a href="#one-way-anova" id="toc-one-way-anova">10.1 One-Way
+ANOVA</a></li>
+<li><a href="#welch-anova" id="toc-welch-anova">10.2 Welch
+ANOVA</a></li>
+<li><a href="#formula-interface-and-eta-squared" id="toc-formula-interface-and-eta-squared">10.3 Formula Interface and
+Eta Squared</a></li>
+<li><a href="#tukey-hsd-post-hoc-comparisons" id="toc-tukey-hsd-post-hoc-comparisons">10.4 Tukey HSD Post-Hoc
+Comparisons</a></li>
+<li><a href="#kruskalwallis" id="toc-kruskalwallis">10.5
+Kruskal–Wallis</a></li>
+</ul></li>
+<li><a href="#three-or-more-repeated-measurements" id="toc-three-or-more-repeated-measurements">11. Three or More Repeated
+Measurements</a>
+<ul>
+<li><a href="#repeated-measures-anova" id="toc-repeated-measures-anova">11.1 Repeated-Measures ANOVA</a></li>
+<li><a href="#friedman-test" id="toc-friedman-test">11.2 Friedman
+Test</a></li>
+</ul></li>
+<li><a href="#categorical-variables-and-proportions" id="toc-categorical-variables-and-proportions">12. Categorical Variables
+and Proportions</a>
+<ul>
+<li><a href="#chi-square-test-of-independence" id="toc-chi-square-test-of-independence">12.1 Chi-Square Test of
+Independence</a></li>
+<li><a href="#cramérs-v" id="toc-cramérs-v">12.2 Cramér’s V</a></li>
+<li><a href="#fishers-exact-test" id="toc-fishers-exact-test">12.3
+Fisher’s Exact Test</a></li>
+<li><a href="#two-proportion-z-test" id="toc-two-proportion-z-test">12.4
+Two-Proportion z-Test</a></li>
+<li><a href="#mcnemar-test-for-paired-categories" id="toc-mcnemar-test-for-paired-categories">12.5 McNemar Test for Paired
+Categories</a></li>
+</ul></li>
+<li><a href="#correlation-tests" id="toc-correlation-tests">13.
+Correlation Tests</a>
+<ul>
+<li><a href="#pearson-correlation" id="toc-pearson-correlation">13.1
+Pearson Correlation</a></li>
+<li><a href="#spearman-and-kendall" id="toc-spearman-and-kendall">13.2
+Spearman and Kendall</a></li>
+</ul></li>
+<li><a href="#statistical-tests-in-regression" id="toc-statistical-tests-in-regression">14. Statistical Tests in
+Regression</a>
+<ul>
+<li><a href="#linear-regression" id="toc-linear-regression">14.1 Linear
+Regression</a></li>
+<li><a href="#logistic-regression" id="toc-logistic-regression">14.2
+Logistic Regression</a></li>
+</ul></li>
+<li><a href="#goodness-of-fit-and-distribution-tests" id="toc-goodness-of-fit-and-distribution-tests">15. Goodness-of-Fit and
+Distribution Tests</a>
+<ul>
+<li><a href="#chi-square-goodness-of-fit" id="toc-chi-square-goodness-of-fit">15.1 Chi-Square
+Goodness-of-Fit</a></li>
+<li><a href="#normal-fit-test-lilliefors" id="toc-normal-fit-test-lilliefors">15.2 Normal-Fit Test:
+Lilliefors</a></li>
+</ul></li>
+<li><a href="#permutation-tests-and-bootstrap" id="toc-permutation-tests-and-bootstrap">16. Permutation Tests and
+Bootstrap</a>
+<ul>
+<li><a href="#permutation-test-for-a-mean-difference" id="toc-permutation-test-for-a-mean-difference">16.1 Permutation Test
+for a Mean Difference</a></li>
+<li><a href="#bootstrap-confidence-interval" id="toc-bootstrap-confidence-interval">16.2 Bootstrap Confidence
+Interval</a></li>
+</ul></li>
+<li><a href="#multiple-testing-corrections" id="toc-multiple-testing-corrections">17. Multiple-Testing
+Corrections</a></li>
+<li><a href="#power-analysis-and-sample-size" id="toc-power-analysis-and-sample-size">18. Power Analysis and Sample
+Size</a></li>
+<li><a href="#complete-example-ab-test" id="toc-complete-example-ab-test">19. Complete Example: A/B
+Test</a></li>
+<li><a href="#reporting-templates" id="toc-reporting-templates">20.
+Reporting Templates</a>
+<ul>
+<li><a href="#two-independent-means" id="toc-two-independent-means">Two
+Independent Means</a></li>
+<li><a href="#paired-result" id="toc-paired-result">Paired
+Result</a></li>
+<li><a href="#anova" id="toc-anova">ANOVA</a></li>
+<li><a href="#categorical-variables" id="toc-categorical-variables">Categorical Variables</a></li>
+</ul></li>
+<li><a href="#quick-reference" id="toc-quick-reference">21. Quick
+Reference</a></li>
+<li><a href="#final-checklist" id="toc-final-checklist">22. Final
+Checklist</a></li>
+<li><a href="#exercises" id="toc-exercises">23. Exercises</a></li>
+<li><a href="#what-to-learn-next" id="toc-what-to-learn-next">24. What
+to Learn Next</a></li>
+</ul>
+</nav>
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--ink:#172033;--line:#dfe7f1;--navy:#0a1020;--primary:#6d5dfc;--primary-dark:#5144d8;--cyan:#19c3d2;--code:#0d1424;--shadow:0 18px 55px rgba(31,43,71,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}
+body{max-width:none;margin:0;padding:0 24px 72px;color:var(--ink);background:radial-gradient(circle at 86% 5%,rgba(109,93,252,.11),transparent 25rem),radial-gradient(circle at 10% 20%,rgba(25,195,210,.08),transparent 22rem),var(--bg);font:17px/1.78 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary-dark);text-underline-offset:3px}::selection{color:#fff;background:var(--primary)}
+.mw3-progress{position:fixed;z-index:1200;inset:0 auto auto 0;width:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--primary))}
+.mw3-topbar{position:fixed;z-index:1100;inset:0 0 auto;height:72px;display:flex;align-items:center;gap:20px;padding:0 max(24px,calc((100vw - 1420px)/2));color:#fff;background:rgba(10,16,32,.95);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 8px 30px rgba(10,16,32,.18);backdrop-filter:blur(16px)}
+.mw3-brand{display:inline-flex;flex-shrink:0;align-items:center;gap:10px;color:#fff;font-weight:850;font-size:19px;text-decoration:none}.mw3-brand:hover{color:#fff}.mw3-logo{display:grid;place-items:center;width:38px;height:38px;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--primary));border-radius:11px;font-size:12px;box-shadow:0 7px 20px rgba(109,93,252,.36)}.mw3-sub{color:#9faac0;font-size:11px;font-weight:750;letter-spacing:.13em}.mw3-spacer{flex:1}
+.mw3-langs{display:flex;flex-shrink:0;gap:5px}.mw3-langs a{padding:7px 11px;color:#b9c3d6;border-radius:9px;font-size:14px;font-weight:750;text-decoration:none}.mw3-langs a:hover,.mw3-langs a[aria-current="page"]{color:#fff;background:rgba(255,255,255,.11)}.mw3-menu{display:none;padding:8px 11px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:9px;cursor:pointer}.mw3-skip{position:fixed;z-index:1300;top:8px;left:12px;padding:8px 12px;color:#fff;background:var(--primary);border-radius:8px;transform:translateY(-160%)}.mw3-skip:focus{transform:translateY(0)}
+#title-block-header{max-width:940px;margin:112px auto 30px;padding:clamp(30px,5vw,54px);color:#fff;text-align:left;background:linear-gradient(125deg,rgba(109,93,252,.97),rgba(36,61,118,.98));border-radius:26px;border:1px solid rgba(255,255,255,.15);box-shadow:0 24px 70px rgba(39,47,100,.22)}
+#title-block-header::before{content:"MOOSEWEB3 · STATISTICS WITH PYTHON";display:inline-block;margin-bottom:16px;padding:7px 11px;color:#dffcff;background:rgba(9,18,45,.2);border:1px solid rgba(255,255,255,.2);border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.12em}#title-block-header .title{margin:0 0 14px;color:#fff;font-size:clamp(32px,5vw,50px);line-height:1.14;letter-spacing:-.035em}#title-block-header .author,#title-block-header .date{margin:4px 0 0;color:#dce4ff}
+#TOC{position:fixed;z-index:900;top:96px;left:max(18px,calc(50vw - 607px));width:245px;max-height:calc(100vh - 122px);padding:18px 15px 20px;overflow-y:auto;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(31,43,71,.08);backdrop-filter:blur(12px);scrollbar-width:thin}#TOC ul{margin:0;padding:0;list-style:none}#TOC ul ul{margin:5px 0 7px 9px;padding-left:10px;border-left:1px solid #e4e9f2}#TOC a{display:block;padding:5px 7px;color:#59647a;border-radius:7px;font-size:13px;line-height:1.35;text-decoration:none}#TOC>ul>li>a{color:#28344e;font-weight:750}#TOC a:hover{color:var(--primary-dark);background:#f0efff}
+#mw3-content{max-width:940px;margin:0 auto;padding:18px clamp(24px,4vw,58px) 64px;background:var(--surface);border:1px solid rgba(223,231,241,.9);border-radius:24px;box-shadow:var(--shadow)}
+h1,h2,h3{color:#17254a;scroll-margin-top:92px}h1{margin:3.1rem 0 1.15rem;padding-bottom:.65rem;border-bottom:1px solid var(--line);font-size:clamp(27px,3vw,36px);line-height:1.3;letter-spacing:-.025em}#mw3-content>h1:first-of-type{margin-top:1.4rem}h2{margin:2.25rem 0 .75rem;font-size:24px}h3{margin:1.8rem 0 .6rem;font-size:20px}p,li{color:#344054}
+code{padding:.12em .36em;color:#5b3fd0;background:#f0efff;border-radius:5px;font:.9em "Cascadia Code","SFMono-Regular",Consolas,monospace}.mw3-code-shell{position:relative;margin:1.15rem 0 1.5rem;background:#0d1424!important;border:1px solid #202b42;border-radius:14px;box-shadow:0 12px 28px rgba(13,20,36,.13);overflow:hidden;color:#dfe7f5!important}.mw3-code-shell pre{margin:0;padding:22px 20px;overflow-x:auto;color:#dfe7f5!important;background:transparent!important;border:0;font-size:14px;line-height:1.65}.mw3-code-shell pre code,.mw3-code-shell code,.mw3-code-shell code span{padding:0;color:#dfe7f5;background:transparent!important}.mw3-code-shell code span.kw,.mw3-code-shell code span.cf{color:#c792ea!important}.mw3-code-shell code span.im,.mw3-code-shell code span.bu,.mw3-code-shell code span.fu{color:#82aaff!important}.mw3-code-shell code span.dt,.mw3-code-shell code span.va{color:#f07178!important}.mw3-code-shell code span.st,.mw3-code-shell code span.ss{color:#c3e88d!important}.mw3-code-shell code span.dv,.mw3-code-shell code span.bn,.mw3-code-shell code span.fl{color:#f78c6c!important}.mw3-code-shell code span.co{color:#91a0bc!important;font-style:italic}.mw3-code-shell code span.op{color:#89ddff!important}.mw3-code-shell code span.at{color:#ffcb6b!important}.mw3-copy{position:absolute;z-index:2;top:10px;right:10px;padding:6px 9px;color:#cbd5e7;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;font:700 12px/1.2 inherit;cursor:pointer;opacity:0}.mw3-code-shell:hover .mw3-copy,.mw3-copy:focus{opacity:1}
+table{width:100%;margin:1.25rem 0 1.7rem;border-spacing:0;border-collapse:separate;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}thead{color:#263553;background:#f2f5fa}th,td{padding:.68rem .82rem;border:0;border-bottom:1px solid var(--line);text-align:left}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}table code{white-space:nowrap}
+blockquote,.note,.warning{margin:1.35rem 0;padding:1rem 1.15rem;border-radius:10px}blockquote,.note{background:linear-gradient(90deg,#edfaff,#f7fbff);border:1px solid #cbeef4;border-left:5px solid var(--cyan)}.warning{background:#fff8eb;border:1px solid #f4dfb1;border-left:5px solid #f2a93b}.formula{padding:.9rem 1rem;overflow-x:auto;color:#273454;background:#f7f8fc;border:1px solid var(--line);border-radius:10px;text-align:center}
+.mw3-top{position:fixed;z-index:950;right:24px;bottom:24px;width:44px;height:44px;color:#fff;background:var(--navy);border:0;border-radius:13px;box-shadow:0 10px 28px rgba(10,16,32,.24);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.mw3-top.is-visible{opacity:1;transform:translateY(0);pointer-events:auto}button:focus-visible,a:focus-visible{outline:3px solid rgba(25,195,210,.75);outline-offset:3px}
+@media(min-width:1241px){#title-block-header,#mw3-content{margin-left:max(291px,calc(50vw - 334px));margin-right:0}}
+@media(max-width:1240px){#TOC{top:82px;left:14px;width:min(310px,calc(100vw - 28px));max-height:calc(100vh - 96px);transform:translateX(-120%);transition:transform .24s ease}body.mw3-toc-open #TOC{transform:translateX(0)}.mw3-menu{display:inline-flex}}
+@media(max-width:700px){body{padding:0 12px 48px;font-size:16px}.mw3-topbar{height:64px;padding:0 14px;gap:9px}.mw3-logo{width:34px;height:34px}.mw3-sub{display:none}.mw3-langs a{padding:6px 8px;font-size:13px}#title-block-header{margin:88px 0 18px;padding:27px 23px;border-radius:20px}#title-block-header .title{font-size:30px}#mw3-content{padding:14px 20px 46px;border-radius:18px}h1{font-size:27px}h2{font-size:22px}table{display:block;overflow-x:auto;white-space:nowrap}.mw3-copy{opacity:1}}
+@media print{body{padding:0;background:#fff}.mw3-topbar,.mw3-progress,.mw3-top,#TOC,.mw3-copy{display:none!important}#title-block-header,#mw3-content{max-width:none;margin:0;box-shadow:none}#mw3-content{border:0}}
+</style>
+<h1 id="how-to-use-this-tutorial">How to Use This Tutorial</h1>
+<p>This tutorial explains how to perform common statistical tests in
+Python. It is written for readers who understand variables, means, and
+standard deviations but are new to statistical inference. Examples
+mainly use <code>SciPy</code>, <code>statsmodels</code>,
+<code>pandas</code>, and <code>NumPy</code>.</p>
+<p>Code blocks are displayed but are not executed while the HTML is
+generated. Copy them into Jupyter Notebook, VS Code, or a Python script
+to run them.</p>
+<blockquote>
+<p>A statistical test is not a button that turns data into stars. Begin
+with the research question and study design, inspect data quality and
+assumptions, and then report estimates, confidence intervals, effect
+sizes, and p-values together.</p>
+</blockquote>
+<h2 id="learning-goals">Learning Goals</h2>
+<p>After completing this tutorial, you should be able to:</p>
+<ul>
+<li>Select a test from the variable types and study design;</li>
+<li>Explain null hypotheses, p-values, significance levels, and Type
+I/II errors;</li>
+<li>Run t-tests, ANOVA, nonparametric tests, and categorical tests;</li>
+<li>Test correlations and interpret simple regression models;</li>
+<li>Calculate effect sizes and confidence intervals;</li>
+<li>Correct for multiple testing and plan sample sizes with power
+analysis;</li>
+<li>Report results accurately without overstating conclusions.</li>
+</ul>
+<div class="warning">
+<p>This guide is for education and general analysis. It does not replace
+a domain-specific statistical review. Medical, clinical,
+safety-critical, or major business decisions should have their design,
+missing-data assumptions, and models reviewed by a qualified
+statistician.</p>
+</div>
+<h1 id="installation-and-imports">1. Installation and Imports</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install numpy pandas scipy statsmodels matplotlib seaborn</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.multitest <span class="im">import</span> multipletests</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.oneway <span class="im">import</span> anova_oneway</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.power <span class="im">import</span> TTestIndPower</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.proportion <span class="im">import</span> proportions_ztest</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span></code></pre></div>
+<p>A fixed random seed makes simulations, resampling, and permutation
+results reproducible. <code>np.random.default_rng()</code> is the
+recommended modern random-number interface.</p>
+<h1 id="core-ideas-behind-statistical-tests">2. Core Ideas Behind
+Statistical Tests</h1>
+<h2 id="null-and-alternative-hypotheses">2.1 Null and Alternative
+Hypotheses</h2>
+<p>Most statistical tests begin with two competing statements:</p>
+<ul>
+<li>Null hypothesis
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math>:
+no difference, no association, or a parameter equals a specified
+value;</li>
+<li>Alternative hypothesis
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>1</mn></msub><annotation encoding="application/x-tex">H_1</annotation></semantics></math>:
+a difference or association exists, or the parameter differs from that
+value.</li>
+</ul>
+<p>For example, when comparing the mean scores of two independent
+classes:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>0</mn></msub><mo>:</mo><msub><mi>μ</mi><mi>A</mi></msub><mo>=</mo><msub><mi>μ</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">H_0: μ_A = μ_B</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>1</mn></msub><mo>:</mo><msub><mi>μ</mi><mi>A</mi></msub><mo>≠</mo><msub><mi>μ</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">H_1: μ_A ≠ μ_B</annotation></semantics></math></li>
+</ul>
+<h2 id="the-p-value">2.2 The p-Value</h2>
+<p>A p-value is the probability of observing the current result, or
+something more extreme, <strong>assuming the null hypothesis and model
+assumptions are true</strong>.</p>
+<p>A p-value is not:</p>
+<ul>
+<li>The probability that the null hypothesis is true;</li>
+<li>The probability that chance caused the result;</li>
+<li>The size or importance of the effect;</li>
+<li>The probability that the result will replicate.</li>
+</ul>
+<p>If α was set to 0.05 in advance and p &lt; 0.05, the result is
+commonly called statistically significant. Statistical significance does
+not guarantee practical importance.</p>
+<h2 id="type-i-and-type-ii-errors">2.3 Type I and Type II Errors</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math>
+is true</th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math>
+is false</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reject
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math></td>
+<td>Type I error (false positive)</td>
+<td>Correct detection</td>
+</tr>
+<tr>
+<td>Do not reject
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math></td>
+<td>Correct</td>
+<td>Type II error (false negative)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The significance level α controls the Type I error rate;</li>
+<li>Power is <code>1 - β</code>: the probability of detecting a real
+effect of the planned size.</li>
+</ul>
+<h2 id="one-sided-or-two-sided">2.4 One-Sided or Two-Sided?</h2>
+<p>Unless a directional hypothesis was justified before seeing the data,
+use a two-sided test:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(group_a, group_b, equal_var<span class="op">=</span><span class="va">False</span>, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>)</span></code></pre></div>
+<p>Do not change to a one-sided test after a two-sided result fails to
+reach significance.</p>
+<h2 id="confidence-intervals-and-effect-sizes">2.5 Confidence Intervals
+and Effect Sizes</h2>
+<p>A confidence interval communicates uncertainty. An effect size
+communicates the magnitude of a difference or association. A useful
+conclusion normally contains:</p>
+<pre class="text"><code>estimate + 95% confidence interval + effect size + test statistic + p-value + sample size</code></pre>
+<h1 id="choose-the-test-before-running-it">3. Choose the Test Before
+Running It</h1>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Research question</th>
+<th>Design</th>
+<th>Common parametric test</th>
+<th>Common robust/nonparametric option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Does one mean equal a target?</td>
+<td>One numeric sample</td>
+<td>One-sample t-test</td>
+<td>Wilcoxon/permutation test</td>
+</tr>
+<tr>
+<td>Do two groups differ?</td>
+<td>Two independent groups</td>
+<td>Welch t-test</td>
+<td>Mann–Whitney U</td>
+</tr>
+<tr>
+<td>Did the same subjects change?</td>
+<td>Two paired measurements</td>
+<td>Paired t-test</td>
+<td>Wilcoxon signed-rank</td>
+</tr>
+<tr>
+<td>Do 3+ independent groups differ?</td>
+<td>Independent groups</td>
+<td>ANOVA / Welch ANOVA</td>
+<td>Kruskal–Wallis</td>
+</tr>
+<tr>
+<td>Do 3+ repeated measurements differ?</td>
+<td>Repeated measures</td>
+<td>Repeated-measures ANOVA</td>
+<td>Friedman</td>
+</tr>
+<tr>
+<td>Are two categories associated?</td>
+<td>Contingency table</td>
+<td>Chi-square independence</td>
+<td>Fisher’s exact</td>
+</tr>
+<tr>
+<td>Do two proportions differ?</td>
+<td>Success/failure in two groups</td>
+<td>Two-proportion z-test</td>
+<td>Fisher’s exact</td>
+</tr>
+<tr>
+<td>Are two numeric variables associated?</td>
+<td>Continuous/ordinal data</td>
+<td>Pearson correlation</td>
+<td>Spearman / Kendall</td>
+</tr>
+<tr>
+<td>What explains a numeric outcome?</td>
+<td>Numeric dependent variable</td>
+<td>Linear regression</td>
+<td>Robust SE/regression</td>
+</tr>
+<tr>
+<td>What explains a binary outcome?</td>
+<td>0/1 dependent variable</td>
+<td>Logistic regression</td>
+<td>Exact/regularized models</td>
+</tr>
+</tbody>
+</table>
+<p>Answer four questions first:</p>
+<ol type="1">
+<li>Is the outcome numeric, ordinal, or categorical?</li>
+<li>How many groups or time points are present?</li>
+<li>Are observations independent, paired, or repeatedly measured?</li>
+<li>Are you comparing locations, proportions, distributions,
+associations, or model coefficients?</li>
+</ol>
+<h1 id="example-data-and-general-cleaning">4. Example Data and General
+Cleaning</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>group_a <span class="op">=</span> rng.normal(loc<span class="op">=</span><span class="dv">72</span>, scale<span class="op">=</span><span class="dv">8</span>, size<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>group_b <span class="op">=</span> rng.normal(loc<span class="op">=</span><span class="dv">77</span>, scale<span class="op">=</span><span class="dv">9</span>, size<span class="op">=</span><span class="dv">32</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>before <span class="op">=</span> rng.normal(loc<span class="op">=</span><span class="dv">68</span>, scale<span class="op">=</span><span class="dv">7</span>, size<span class="op">=</span><span class="dv">28</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>after <span class="op">=</span> before <span class="op">+</span> rng.normal(loc<span class="op">=</span><span class="dv">4</span>, scale<span class="op">=</span><span class="dv">5</span>, size<span class="op">=</span><span class="dv">28</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>three_groups <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;group&quot;</span>: np.repeat([<span class="st">&quot;control&quot;</span>, <span class="st">&quot;method_a&quot;</span>, <span class="st">&quot;method_b&quot;</span>], [<span class="dv">30</span>, <span class="dv">31</span>, <span class="dv">29</span>]),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;score&quot;</span>: np.concatenate([</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        rng.normal(<span class="dv">70</span>, <span class="dv">8</span>, <span class="dv">30</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        rng.normal(<span class="dv">75</span>, <span class="dv">8</span>, <span class="dv">31</span>),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        rng.normal(<span class="dv">79</span>, <span class="dv">10</span>, <span class="dv">29</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>Clean real data before testing:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">&quot;experiment.csv&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;score&quot;</span>] <span class="op">=</span> pd.to_numeric(df[<span class="st">&quot;score&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;group&quot;</span>] <span class="op">=</span> df[<span class="st">&quot;group&quot;</span>].astype(<span class="st">&quot;category&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">&quot;score&quot;</span>, <span class="st">&quot;group&quot;</span>]).copy()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(analysis.shape)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(analysis.groupby(<span class="st">&quot;group&quot;</span>, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">&quot;score&quot;</span>].describe())</span></code></pre></div>
+<p>Do not silently delete every incomplete row. Record missingness by
+variable, compare complete and incomplete cases, and explain whether the
+analysis uses complete cases, imputation, or another method.</p>
+<h1 id="descriptive-statistics-and-visualization">5. Descriptive
+Statistics and Visualization</h1>
+<p>Describe the data before testing it:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> (</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    three_groups</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">&quot;group&quot;</span>, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">&quot;score&quot;</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .agg([<span class="st">&quot;count&quot;</span>, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;std&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>summary[<span class="st">&quot;sem&quot;</span>] <span class="op">=</span> summary[<span class="st">&quot;std&quot;</span>] <span class="op">/</span> np.sqrt(summary[<span class="st">&quot;count&quot;</span>])</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary)</span></code></pre></div>
+<p>View raw observations with a box or violin plot:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>three_groups, x<span class="op">=</span><span class="st">&quot;group&quot;</span>, y<span class="op">=</span><span class="st">&quot;score&quot;</span>, showfliers<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>sns.stripplot(data<span class="op">=</span>three_groups, x<span class="op">=</span><span class="st">&quot;group&quot;</span>, y<span class="op">=</span><span class="st">&quot;score&quot;</span>, color<span class="op">=</span><span class="st">&quot;black&quot;</span>, alpha<span class="op">=</span><span class="fl">0.55</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<p>Means and standard deviations alone can hide skewness, outliers,
+bimodality, and unequal group sizes.</p>
+<h1 id="checking-assumptions">6. Checking Assumptions</h1>
+<h2 id="independence-comes-from-the-design">6.1 Independence Comes From
+the Design</h2>
+<p>Independence cannot be established with one simple function. If a
+participant contributes multiple rows, students share classrooms, or
+patients share hospitals, observations may be correlated. Use
+paired/repeated-measures methods, cluster-robust standard errors, or
+mixed models as appropriate.</p>
+<h2 id="normality-shapirowilk">6.2 Normality: Shapiro–Wilk</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.shapiro(group_a)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;W=</span><span class="sc">{</span>result<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>result<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<ul>
+<li>p &lt; α: evidence of incompatibility with normality;</li>
+<li>p ≥ α: insufficient evidence to reject normality, not proof of
+normality.</li>
+</ul>
+<p>For t-tests and ANOVA, group errors or model residuals matter more
+than the pooled outcome. Normality tests detect trivial deviations in
+large samples and have low power in small samples, so also inspect a Q–Q
+plot:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sm.qqplot(group_a, line<span class="op">=</span><span class="st">&quot;45&quot;</span>, fit<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<h2 id="equal-variances-levenes-test">6.3 Equal Variances: Levene’s
+Test</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>levene <span class="op">=</span> stats.levene(group_a, group_b, center<span class="op">=</span><span class="st">&quot;median&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;W=</span><span class="sc">{</span>levene<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>levene<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>The median-centered version is more robust to nonnormal data and
+outliers. Bartlett’s test is more sensitive to departures from
+normality:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stats.bartlett(group_a, group_b)</span></code></pre></div>
+<p>For two independent means, Welch’s t-test is generally safer than
+testing variances first and conditionally choosing Student’s or Welch’s
+test.</p>
+<h2 id="outliers">6.4 Outliers</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>q1, q3 <span class="op">=</span> np.quantile(group_a, [<span class="fl">0.25</span>, <span class="fl">0.75</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>iqr <span class="op">=</span> q3 <span class="op">-</span> q1</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>flagged <span class="op">=</span> group_a[(group_a <span class="op">&lt;</span> q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> iqr) <span class="op">|</span> (group_a <span class="op">&gt;</span> q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> iqr)]</span></code></pre></div>
+<p>Never remove an observation merely because it hurts significance. Use
+prespecified rules to determine whether it is an entry error,
+measurement failure, or genuine extreme value. A sensitivity analysis
+can report results with and without defensibly flagged observations.</p>
+<h1 id="one-sample-tests">7. One-Sample Tests</h1>
+<h2 id="one-sample-t-test">7.1 One-Sample t-Test</h2>
+<p>Question: Does the population mean differ from a target of 70?</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> rng.normal(<span class="dv">73</span>, <span class="dv">8</span>, <span class="dv">35</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.ttest_1samp(sample, popmean<span class="op">=</span><span class="dv">70</span>, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(sample)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> np.mean(sample)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>sem <span class="op">=</span> stats.sem(sample)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> stats.t.interval(<span class="fl">0.95</span>, df<span class="op">=</span>n <span class="op">-</span> <span class="dv">1</span>, loc<span class="op">=</span>mean, scale<span class="op">=</span>sem)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;mean=</span><span class="sc">{</span>mean<span class="sc">:.2f}</span><span class="ss">, 95% CI=</span><span class="sc">{</span>ci<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;t(</span><span class="sc">{</span>n<span class="op">-</span><span class="dv">1</span><span class="sc">}</span><span class="ss">)=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Observations should be independent and the data approximately normal.
+With larger samples, the t-test is often robust to modest
+nonnormality.</p>
+<h2 id="one-sample-wilcoxon-signed-rank-test">7.2 One-Sample Wilcoxon
+Signed-Rank Test</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.wilcoxon(sample <span class="op">-</span> <span class="dv">70</span>, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>, zero_method<span class="op">=</span><span class="st">&quot;wilcox&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(test)</span></code></pre></div>
+<p>This tests whether the difference distribution is centered on zero
+and assumes the differences are approximately symmetric. If symmetry is
+implausible, consider a sign test or a suitable resampling method.</p>
+<h1 id="two-independent-groups">8. Two Independent Groups</h1>
+<h2 id="welchs-independent-t-test">8.1 Welch’s Independent t-Test</h2>
+<p>Welch’s test does not require equal variances and is a strong default
+for comparing two independent means:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.ttest_ind(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    group_a,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    group_b,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    equal_var<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    nan_policy<span class="op">=</span><span class="st">&quot;omit&quot;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;t=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Calculate the Welch–Satterthwaite degrees of freedom and a confidence
+interval for the mean difference:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> welch_mean_difference(a, b, confidence<span class="op">=</span><span class="fl">0.95</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> np.asarray(a, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.asarray(b, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    a, b <span class="op">=</span> a[<span class="op">~</span>np.isnan(a)], b[<span class="op">~</span>np.isnan(b)]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> a.mean() <span class="op">-</span> b.mean()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    va, vb <span class="op">=</span> a.var(ddof<span class="op">=</span><span class="dv">1</span>), b.var(ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    se2 <span class="op">=</span> va <span class="op">/</span> <span class="bu">len</span>(a) <span class="op">+</span> vb <span class="op">/</span> <span class="bu">len</span>(b)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> se2<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        (va <span class="op">/</span> <span class="bu">len</span>(a))<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="bu">len</span>(a) <span class="op">-</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        (vb <span class="op">/</span> <span class="bu">len</span>(b))<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="bu">len</span>(b) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    critical <span class="op">=</span> stats.t.ppf(<span class="dv">1</span> <span class="op">-</span> (<span class="dv">1</span> <span class="op">-</span> confidence) <span class="op">/</span> <span class="dv">2</span>, df)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    ci <span class="op">=</span> (diff <span class="op">-</span> critical <span class="op">*</span> np.sqrt(se2), diff <span class="op">+</span> critical <span class="op">*</span> np.sqrt(se2))</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> diff, df, ci</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>diff, df_welch, ci <span class="op">=</span> welch_mean_difference(group_a, group_b)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(diff, df_welch, ci)</span></code></pre></div>
+<h2 id="cohens-d-and-hedges-g">8.2 Cohen’s d and Hedges’ g</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cohens_d_independent(a, b):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    a, b <span class="op">=</span> np.asarray(a), np.asarray(b)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    pooled_sd <span class="op">=</span> np.sqrt(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        ((<span class="bu">len</span>(a) <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> a.var(ddof<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> (<span class="bu">len</span>(b) <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> b.var(ddof<span class="op">=</span><span class="dv">1</span>)) <span class="op">/</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        (<span class="bu">len</span>(a) <span class="op">+</span> <span class="bu">len</span>(b) <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (a.mean() <span class="op">-</span> b.mean()) <span class="op">/</span> pooled_sd</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> cohens_d_independent(group_a, group_b)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>correction <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> <span class="dv">3</span> <span class="op">/</span> (<span class="dv">4</span> <span class="op">*</span> (<span class="bu">len</span>(group_a) <span class="op">+</span> <span class="bu">len</span>(group_b)) <span class="op">-</span> <span class="dv">9</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> d <span class="op">*</span> correction</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Cohen&#39;s d=</span><span class="sc">{</span>d<span class="sc">:.3f}</span><span class="ss">, Hedges&#39; g=</span><span class="sc">{</span>g<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Values of 0.2, 0.5, and 0.8 are sometimes called small, medium, and
+large, but domain knowledge should determine practical importance.
+Hedges’ g corrects small-sample bias.</p>
+<h2 id="mannwhitney-u">8.3 Mann–Whitney U</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.mannwhitneyu(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    group_a,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    group_b,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">&quot;auto&quot;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;U=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.1f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>It detects systematic differences in ranks/distributions. It can be
+interpreted as a median comparison only under additional shape
+assumptions. It does not automatically solve dependence, severe
+measurement problems, or every outlier issue.</p>
+<h1 id="paired-data">9. Paired Data</h1>
+<h2 id="paired-t-test">9.1 Paired t-Test</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.ttest_rel(after, before, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>, nan_policy<span class="op">=</span><span class="st">&quot;omit&quot;</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>differences <span class="op">=</span> after <span class="op">-</span> before</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(differences)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>mean_diff <span class="op">=</span> differences.mean()</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> stats.t.interval(<span class="fl">0.95</span>, df<span class="op">=</span>n <span class="op">-</span> <span class="dv">1</span>, loc<span class="op">=</span>mean_diff, scale<span class="op">=</span>stats.sem(differences))</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>dz <span class="op">=</span> mean_diff <span class="op">/</span> differences.std(ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;mean change=</span><span class="sc">{</span>mean_diff<span class="sc">:.2f}</span><span class="ss">, 95% CI=</span><span class="sc">{</span>ci<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;t(</span><span class="sc">{</span>n<span class="op">-</span><span class="dv">1</span><span class="sc">}</span><span class="ss">)=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">, dz=</span><span class="sc">{</span>dz<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>The paired test concerns the mean and normality of within-subject
+differences, not the separate normality of the before and after
+measurements.</p>
+<h2 id="paired-wilcoxon-signed-rank-test">9.2 Paired Wilcoxon
+Signed-Rank Test</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.wilcoxon(after, before, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>, zero_method<span class="op">=</span><span class="st">&quot;wilcox&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;W=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.1f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Pairs must remain correctly aligned. Do not independently delete
+missing before and after values and then assume the remaining row
+numbers still represent pairs.</p>
+<h1 id="three-or-more-independent-groups">10. Three or More Independent
+Groups</h1>
+<h2 id="one-way-anova">10.1 One-Way ANOVA</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> [</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    values[<span class="st">&quot;score&quot;</span>].to_numpy()</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _, values <span class="kw">in</span> three_groups.groupby(<span class="st">&quot;group&quot;</span>, observed<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.f_oneway(<span class="op">*</span>groups)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;F=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Classical ANOVA assumes independent observations, approximately
+normal within-group errors, and similar variances. A significant omnibus
+test says at least one group differs; it does not identify which groups
+differ.</p>
+<h2 id="welch-anova">10.2 Welch ANOVA</h2>
+<p>Use Welch ANOVA when variances or sample sizes differ
+substantially:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>welch <span class="op">=</span> anova_oneway(groups, use_var<span class="op">=</span><span class="st">&quot;unequal&quot;</span>, welch_correction<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(welch)</span></code></pre></div>
+<h2 id="formula-interface-and-eta-squared">10.3 Formula Interface and
+Eta Squared</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.anova <span class="im">import</span> anova_lm</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(<span class="st">&quot;score ~ C(group)&quot;</span>, data<span class="op">=</span>three_groups).fit()</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> anova_lm(model, typ<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>ss_group <span class="op">=</span> table.loc[<span class="st">&quot;C(group)&quot;</span>, <span class="st">&quot;sum_sq&quot;</span>]</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>ss_resid <span class="op">=</span> table.loc[<span class="st">&quot;Residual&quot;</span>, <span class="st">&quot;sum_sq&quot;</span>]</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>eta_squared <span class="op">=</span> ss_group <span class="op">/</span> (ss_group <span class="op">+</span> ss_resid)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(table)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;eta squared=</span><span class="sc">{</span>eta_squared<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<h2 id="tukey-hsd-post-hoc-comparisons">10.4 Tukey HSD Post-Hoc
+Comparisons</h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.multicomp <span class="im">import</span> pairwise_tukeyhsd</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>tukey <span class="op">=</span> pairwise_tukeyhsd(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    endog<span class="op">=</span>three_groups[<span class="st">&quot;score&quot;</span>],</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    groups<span class="op">=</span>three_groups[<span class="st">&quot;group&quot;</span>],</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tukey)</span></code></pre></div>
+<p>Tukey HSD is appropriate for all-pair comparisons after classical
+ANOVA. Games–Howell is better aligned with Welch ANOVA; the optional
+<code>pingouin</code> package provides it:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># python -m pip install pingouin</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pingouin <span class="im">as</span> pg</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>pg.pairwise_gameshowell(data<span class="op">=</span>three_groups, dv<span class="op">=</span><span class="st">&quot;score&quot;</span>, between<span class="op">=</span><span class="st">&quot;group&quot;</span>)</span></code></pre></div>
+<h2 id="kruskalwallis">10.5 Kruskal–Wallis</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.kruskal(<span class="op">*</span>groups, nan_policy<span class="op">=</span><span class="st">&quot;omit&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;H=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>A significant result still requires corrected pairwise comparisons,
+such as Dunn’s test or pairwise Mann–Whitney tests with Holm
+correction.</p>
+<h1 id="three-or-more-repeated-measurements">11. Three or More Repeated
+Measurements</h1>
+<h2 id="repeated-measures-anova">11.1 Repeated-Measures ANOVA</h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.anova <span class="im">import</span> AnovaRM</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>n_subjects <span class="op">=</span> <span class="dv">24</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>wide <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;subject&quot;</span>: np.arange(n_subjects),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;week_0&quot;</span>: rng.normal(<span class="dv">65</span>, <span class="dv">7</span>, n_subjects),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>wide[<span class="st">&quot;week_4&quot;</span>] <span class="op">=</span> wide[<span class="st">&quot;week_0&quot;</span>] <span class="op">+</span> rng.normal(<span class="dv">3</span>, <span class="dv">4</span>, n_subjects)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>wide[<span class="st">&quot;week_8&quot;</span>] <span class="op">=</span> wide[<span class="st">&quot;week_0&quot;</span>] <span class="op">+</span> rng.normal(<span class="dv">6</span>, <span class="dv">5</span>, n_subjects)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="bu">long</span> <span class="op">=</span> wide.melt(id_vars<span class="op">=</span><span class="st">&quot;subject&quot;</span>, var_name<span class="op">=</span><span class="st">&quot;time&quot;</span>, value_name<span class="op">=</span><span class="st">&quot;score&quot;</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> AnovaRM(<span class="bu">long</span>, depvar<span class="op">=</span><span class="st">&quot;score&quot;</span>, subject<span class="op">=</span><span class="st">&quot;subject&quot;</span>, within<span class="op">=</span>[<span class="st">&quot;time&quot;</span>]).fit()</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code></pre></div>
+<p>Repeated-measures ANOVA also involves sphericity.
+<code>statsmodels.AnovaRM</code> is relatively basic; mixed-effects
+models are usually preferable for complex missingness, multiple levels,
+or unbalanced data.</p>
+<h2 id="friedman-test">11.2 Friedman Test</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.friedmanchisquare(wide[<span class="st">&quot;week_0&quot;</span>], wide[<span class="st">&quot;week_4&quot;</span>], wide[<span class="st">&quot;week_8&quot;</span>])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;chi2=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>If the omnibus result is significant, perform pairwise Wilcoxon tests
+with a correction such as Holm.</p>
+<h1 id="categorical-variables-and-proportions">12. Categorical Variables
+and Proportions</h1>
+<h2 id="chi-square-test-of-independence">12.1 Chi-Square Test of
+Independence</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">42</span>, <span class="dv">18</span>], [<span class="dv">30</span>, <span class="dv">30</span>]],</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">&quot;treatment&quot;</span>, <span class="st">&quot;control&quot;</span>],</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">&quot;success&quot;</span>, <span class="st">&quot;failure&quot;</span>]</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>chi2, p, dof, expected <span class="op">=</span> stats.chi2_contingency(table, correction<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;chi2(</span><span class="sc">{</span>dof<span class="sc">}</span><span class="ss">)=</span><span class="sc">{</span>chi2<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>p<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame(expected, index<span class="op">=</span>table.index, columns<span class="op">=</span>table.columns))</span></code></pre></div>
+<p>Use counts, not percentages. When expected counts are too small, the
+chi-square approximation may be unreliable; consider Fisher’s exact test
+for a 2×2 table.</p>
+<h2 id="cramérs-v">12.2 Cramér’s V</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> table.to_numpy().<span class="bu">sum</span>()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>r, c <span class="op">=</span> table.shape</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>cramers_v <span class="op">=</span> np.sqrt(chi2 <span class="op">/</span> (n <span class="op">*</span> <span class="bu">min</span>(r <span class="op">-</span> <span class="dv">1</span>, c <span class="op">-</span> <span class="dv">1</span>)))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Cramer&#39;s V=</span><span class="sc">{</span>cramers_v<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<h2 id="fishers-exact-test">12.3 Fisher’s Exact Test</h2>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>small_table <span class="op">=</span> np.array([[<span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">1</span>, <span class="dv">5</span>]])</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>odds_ratio, p <span class="op">=</span> stats.fisher_exact(small_table, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;odds ratio=</span><span class="sc">{</span>odds_ratio<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>p<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Fisher’s exact test is common for small 2×2 tables. An odds ratio
+above 1 means the first row has higher event odds than the second, given
+the specified row and column order.</p>
+<h2 id="two-proportion-z-test">12.4 Two-Proportion z-Test</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>successes <span class="op">=</span> np.array([<span class="dv">120</span>, <span class="dv">105</span>])</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> np.array([<span class="dv">1000</span>, <span class="dv">980</span>])</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>z, p <span class="op">=</span> proportions_ztest(successes, totals, alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>rates <span class="op">=</span> successes <span class="op">/</span> totals</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;rates=</span><span class="sc">{</span>rates<span class="sc">}</span><span class="ss">, z=</span><span class="sc">{</span>z<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>p<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Also report a proportion difference, relative risk, or odds ratio
+with a confidence interval.</p>
+<h2 id="mcnemar-test-for-paired-categories">12.5 McNemar Test for Paired
+Categories</h2>
+<p>Use McNemar’s test for binary outcomes measured twice on the same
+subjects:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.contingency_tables <span class="im">import</span> mcnemar</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>paired_table <span class="op">=</span> [[<span class="dv">40</span>, <span class="dv">12</span>], [<span class="dv">5</span>, <span class="dv">43</span>]]</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> mcnemar(paired_table, exact<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.statistic, result.pvalue)</span></code></pre></div>
+<h1 id="correlation-tests">13. Correlation Tests</h1>
+<h2 id="pearson-correlation">13.1 Pearson Correlation</h2>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> rng.normal(<span class="dv">50</span>, <span class="dv">10</span>, <span class="dv">80</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">12</span> <span class="op">+</span> <span class="fl">0.7</span> <span class="op">*</span> x <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">80</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.pearsonr(x, y)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;r=</span><span class="sc">{</span>result<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>result<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Pearson measures linear association. Inspect a scatterplot, outliers,
+linearity, and heteroscedasticity. Correlation does not establish
+causation.</p>
+<h2 id="spearman-and-kendall">13.2 Spearman and Kendall</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> stats.spearmanr(x, y, nan_policy<span class="op">=</span><span class="st">&quot;omit&quot;</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>tau <span class="op">=</span> stats.kendalltau(x, y, nan_policy<span class="op">=</span><span class="st">&quot;omit&quot;</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Spearman rho=</span><span class="sc">{</span>rho<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>rho<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Kendall tau=</span><span class="sc">{</span>tau<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>tau<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<ul>
+<li>Spearman uses ranks and suits monotonic, possibly nonlinear
+relationships or ordinal data;</li>
+<li>Kendall also uses ranks and can be attractive for small samples or
+many tied ranks.</li>
+</ul>
+<p>Do not repeatedly try Pearson, Spearman, Kendall, and transformations
+and then report only the significant option.</p>
+<h1 id="statistical-tests-in-regression">14. Statistical Tests in
+Regression</h1>
+<h2 id="linear-regression">14.1 Linear Regression</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>regression_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;score&quot;</span>: y,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;hours&quot;</span>: x,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;age&quot;</span>: rng.integers(<span class="dv">18</span>, <span class="dv">55</span>, <span class="bu">len</span>(x)),</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;group&quot;</span>: rng.choice([<span class="st">&quot;control&quot;</span>, <span class="st">&quot;treatment&quot;</span>], <span class="bu">len</span>(x))</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(<span class="st">&quot;score ~ hours + age + C(group)&quot;</span>, data<span class="op">=</span>regression_df).fit()</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code></pre></div>
+<p>Each coefficient t-test asks whether that coefficient is zero after
+controlling for other model terms. Check:</p>
+<ul>
+<li>Linear functional form;</li>
+<li>Independent residuals;</li>
+<li>Approximately constant residual variance;</li>
+<li>Influential and high-leverage points;</li>
+<li>Multicollinearity;</li>
+<li>Approximately normal residuals when small-sample inference requires
+it.</li>
+</ul>
+<p>Use heteroscedasticity-robust standard errors when appropriate:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>robust <span class="op">=</span> model.get_robustcov_results(cov_type<span class="op">=</span><span class="st">&quot;HC3&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(robust.summary())</span></code></pre></div>
+<h2 id="logistic-regression">14.2 Logistic Regression</h2>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>logit_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;converted&quot;</span>: rng.binomial(<span class="dv">1</span>, <span class="fl">0.35</span>, <span class="dv">200</span>),</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;age&quot;</span>: rng.integers(<span class="dv">18</span>, <span class="dv">65</span>, <span class="dv">200</span>),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;variant&quot;</span>: rng.choice([<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>], <span class="dv">200</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.logit(<span class="st">&quot;converted ~ age + C(variant)&quot;</span>, data<span class="op">=</span>logit_df).fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>odds_ratios <span class="op">=</span> np.exp(model.params)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>odds_ci <span class="op">=</span> np.exp(model.conf_int())</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&quot;OR&quot;</span>: odds_ratios, <span class="st">&quot;CI_low&quot;</span>: odds_ci[<span class="dv">0</span>], <span class="st">&quot;CI_high&quot;</span>: odds_ci[<span class="dv">1</span>]}))</span></code></pre></div>
+<p>Exponentiated logistic coefficients are odds ratios. An odds ratio is
+not a probability ratio; the difference becomes substantial when an
+event is common.</p>
+<h1 id="goodness-of-fit-and-distribution-tests">15. Goodness-of-Fit and
+Distribution Tests</h1>
+<h2 id="chi-square-goodness-of-fit">15.1 Chi-Square Goodness-of-Fit</h2>
+<p>Test whether category counts follow expected proportions:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>observed <span class="op">=</span> np.array([<span class="dv">48</span>, <span class="dv">32</span>, <span class="dv">20</span>])</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>expected_proportions <span class="op">=</span> np.array([<span class="fl">0.50</span>, <span class="fl">0.30</span>, <span class="fl">0.20</span>])</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>expected <span class="op">=</span> observed.<span class="bu">sum</span>() <span class="op">*</span> expected_proportions</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> stats.chisquare(f_obs<span class="op">=</span>observed, f_exp<span class="op">=</span>expected)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;chi2=</span><span class="sc">{</span>test<span class="sc">.</span>statistic<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>test<span class="sc">.</span>pvalue<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<h2 id="normal-fit-test-lilliefors">15.2 Normal-Fit Test:
+Lilliefors</h2>
+<p>The ordinary Kolmogorov–Smirnov p-value is not valid when the normal
+mean and standard deviation are estimated from the same sample. Use the
+Lilliefors correction:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> lilliefors</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>statistic, p <span class="op">=</span> lilliefors(group_a, dist<span class="op">=</span><span class="st">&quot;norm&quot;</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(statistic, p)</span></code></pre></div>
+<p>Distribution tests are sample-size sensitive. Combine them with a Q–Q
+plot and an assessment of how robust the planned model is to the
+observed deviations.</p>
+<h1 id="permutation-tests-and-bootstrap">16. Permutation Tests and
+Bootstrap</h1>
+<h2 id="permutation-test-for-a-mean-difference">16.1 Permutation Test
+for a Mean Difference</h2>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean_difference(a, b):</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(a) <span class="op">-</span> np.mean(b)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.permutation_test(</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>(group_a, group_b),</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    statistic<span class="op">=</span>mean_difference,</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    permutation_type<span class="op">=</span><span class="st">&quot;independent&quot;</span>,</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    vectorized<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    n_resamples<span class="op">=</span><span class="dv">10_000</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span>,</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>rng</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.statistic, result.pvalue)</span></code></pre></div>
+<p>Permutation tests require labels to be exchangeable under the null.
+Paired, clustered, and time-series designs need design-appropriate
+permutations; do not shuffle every row indiscriminately.</p>
+<h2 id="bootstrap-confidence-interval">16.2 Bootstrap Confidence
+Interval</h2>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.bootstrap(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>(group_a,),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    statistic<span class="op">=</span>np.mean,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    confidence_level<span class="op">=</span><span class="fl">0.95</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    n_resamples<span class="op">=</span><span class="dv">10_000</span>,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">&quot;BCa&quot;</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>rng</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.confidence_interval)</span></code></pre></div>
+<p>Bootstrap estimates uncertainty by sampling with replacement. The
+sample must represent the target population, and ordinary row-level
+bootstrap is not valid for clustered or serially dependent
+observations.</p>
+<h1 id="multiple-testing-corrections">17. Multiple-Testing
+Corrections</h1>
+<p>Testing many hypotheses increases the chance of at least one false
+positive.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>raw_pvalues <span class="op">=</span> np.array([<span class="fl">0.004</span>, <span class="fl">0.018</span>, <span class="fl">0.031</span>, <span class="fl">0.070</span>, <span class="fl">0.21</span>])</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>reject, corrected, _, _ <span class="op">=</span> multipletests(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    raw_pvalues,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">&quot;holm&quot;</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;p_raw&quot;</span>: raw_pvalues,</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;p_holm&quot;</span>: corrected,</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;reject&quot;</span>: reject</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method</th>
+<th>Controls</th>
+<th>Character</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bonferroni</td>
+<td>Family-wise error rate</td>
+<td>Simple and conservative</td>
+</tr>
+<tr>
+<td>Holm</td>
+<td>Family-wise error rate</td>
+<td>Usually preferable to plain Bonferroni</td>
+</tr>
+<tr>
+<td>Benjamini–Hochberg (<code>fdr_bh</code>)</td>
+<td>False discovery rate</td>
+<td>Common in exploratory high-dimensional work</td>
+</tr>
+</tbody>
+</table>
+<p>Define the family of related tests before inspecting results. Do not
+split families merely to preserve significance.</p>
+<h1 id="power-analysis-and-sample-size">18. Power Analysis and Sample
+Size</h1>
+<p>Required sample size per group for an independent t-test:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>analysis <span class="op">=</span> TTestIndPower()</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>n_per_group <span class="op">=</span> analysis.solve_power(</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    effect_size<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    power<span class="op">=</span><span class="fl">0.80</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    ratio<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.ceil(n_per_group))</span></code></pre></div>
+<p>Sample-size planning needs an expected effect size, α, target power,
+allocation ratio, and test type. Base the expected effect on the
+smallest practically important difference and a defensible standard
+deviation, not automatically on the conventional “medium effect” of
+0.5.</p>
+<p>After a study is complete, do not use the observed effect as the main
+input to a post-hoc power calculation. Report the effect estimate and
+confidence interval instead.</p>
+<h1 id="complete-example-ab-test">19. Complete Example: A/B Test</h1>
+<p>Goal: compare conversion for a new variant B with existing variant A
+and report the absolute difference, relative risk, odds ratio, and
+p-value.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;variant&quot;</span>: [<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>],</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;conversions&quot;</span>: [<span class="dv">420</span>, <span class="dv">486</span>],</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;visitors&quot;</span>: [<span class="dv">5000</span>, <span class="dv">5100</span>]</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>ab[<span class="st">&quot;rate&quot;</span>] <span class="op">=</span> ab[<span class="st">&quot;conversions&quot;</span>] <span class="op">/</span> ab[<span class="st">&quot;visitors&quot;</span>]</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange the z-test in the B - A direction</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>z, p <span class="op">=</span> proportions_ztest(</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>    count<span class="op">=</span>ab.loc[[<span class="dv">1</span>, <span class="dv">0</span>], <span class="st">&quot;conversions&quot;</span>].to_numpy(),</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    nobs<span class="op">=</span>ab.loc[[<span class="dv">1</span>, <span class="dv">0</span>], <span class="st">&quot;visitors&quot;</span>].to_numpy(),</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    alternative<span class="op">=</span><span class="st">&quot;two-sided&quot;</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>p_a, p_b <span class="op">=</span> ab.loc[<span class="dv">0</span>, <span class="st">&quot;rate&quot;</span>], ab.loc[<span class="dv">1</span>, <span class="st">&quot;rate&quot;</span>]</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>absolute_lift <span class="op">=</span> p_b <span class="op">-</span> p_a</span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>relative_risk <span class="op">=</span> p_b <span class="op">/</span> p_a</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows are B/A; columns are conversion/non-conversion</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> np.array([</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>    [ab.loc[<span class="dv">1</span>, <span class="st">&quot;conversions&quot;</span>], ab.loc[<span class="dv">1</span>, <span class="st">&quot;visitors&quot;</span>] <span class="op">-</span> ab.loc[<span class="dv">1</span>, <span class="st">&quot;conversions&quot;</span>]],</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>    [ab.loc[<span class="dv">0</span>, <span class="st">&quot;conversions&quot;</span>], ab.loc[<span class="dv">0</span>, <span class="st">&quot;visitors&quot;</span>] <span class="op">-</span> ab.loc[<span class="dv">0</span>, <span class="st">&quot;conversions&quot;</span>]]</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>odds_ratio, fisher_p <span class="op">=</span> stats.fisher_exact(table)</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Approximate unpooled 95% CI for the proportion difference</span></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> np.sqrt(p_a <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> p_a) <span class="op">/</span> ab.loc[<span class="dv">0</span>, <span class="st">&quot;visitors&quot;</span>] <span class="op">+</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>             p_b <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> p_b) <span class="op">/</span> ab.loc[<span class="dv">1</span>, <span class="st">&quot;visitors&quot;</span>])</span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>diff_ci <span class="op">=</span> (absolute_lift <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> se, absolute_lift <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> se)</span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ab)</span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;absolute lift=</span><span class="sc">{</span>absolute_lift<span class="sc">:.4f}</span><span class="ss">, 95% CI=</span><span class="sc">{</span>diff_ci<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;relative risk=</span><span class="sc">{</span>relative_risk<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;odds ratio=</span><span class="sc">{</span>odds_ratio<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;z=</span><span class="sc">{</span>z<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>p<span class="sc">:.4f}</span><span class="ss">, Fisher p=</span><span class="sc">{</span>fisher_p<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>Reporting template:</p>
+<pre class="text"><code>Variant B converted X% of visitors and A converted Y%. The absolute
+difference was D percentage points (95% CI [L, U]), with relative risk RR.
+The two-proportion test gave z = ... and p = .... This describes both
+statistical uncertainty and the size of the business effect.</code></pre>
+<p>A launch decision should also ask whether randomization worked,
+sample allocation was anomalous, results were repeatedly peeked at,
+users re-entered the experiment, the primary metric was prespecified,
+and the lift exceeds a minimum business value.</p>
+<h1 id="reporting-templates">20. Reporting Templates</h1>
+<h2 id="two-independent-means">Two Independent Means</h2>
+<pre class="text"><code>Group A (n=..., M=..., SD=...) and Group B (n=..., M=..., SD=...)
+differed by ... units, 95% CI [...]. Welch&#39;s t-test: t(df)=..., p=...;
+Hedges&#39; g=....</code></pre>
+<h2 id="paired-result">Paired Result</h2>
+<pre class="text"><code>The mean change was ... (95% CI [...]). Paired t-test: t(df)=..., p=...;
+paired effect size dz=....</code></pre>
+<h2 id="anova">ANOVA</h2>
+<pre class="text"><code>The omnibus group effect was F(df1, df2)=..., p=..., eta squared=....
+Tukey/Games–Howell-adjusted post-hoc comparisons showed that ...</code></pre>
+<h2 id="categorical-variables">Categorical Variables</h2>
+<pre class="text"><code>There was / was not clear evidence of association: chi-square(df)=...,
+p=..., Cramer&#39;s V=.... Observed and expected cell counts are shown in ...</code></pre>
+<p>Use “we did not find sufficient evidence” rather than “we proved no
+difference.” For very small values write <code>p &lt; 0.001</code>, not
+<code>p = 0.000</code>.</p>
+<h1 id="quick-reference">21. Quick Reference</h1>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Test</th>
+<th>Python</th>
+<th>Main statistic</th>
+<th>Common effect size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One-sample t</td>
+<td><code>stats.ttest_1samp</code></td>
+<td>t</td>
+<td>Cohen’s d</td>
+</tr>
+<tr>
+<td>Independent Welch t</td>
+<td><code>stats.ttest_ind(..., equal_var=False)</code></td>
+<td>t</td>
+<td>Hedges’ g</td>
+</tr>
+<tr>
+<td>Paired t</td>
+<td><code>stats.ttest_rel</code></td>
+<td>t</td>
+<td>dz</td>
+</tr>
+<tr>
+<td>Mann–Whitney</td>
+<td><code>stats.mannwhitneyu</code></td>
+<td>U</td>
+<td>rank-biserial</td>
+</tr>
+<tr>
+<td>Wilcoxon</td>
+<td><code>stats.wilcoxon</code></td>
+<td>W</td>
+<td>rank-biserial</td>
+</tr>
+<tr>
+<td>One-way ANOVA</td>
+<td><code>stats.f_oneway</code></td>
+<td>F</td>
+<td>eta/omega squared</td>
+</tr>
+<tr>
+<td>Welch ANOVA</td>
+<td><code>anova_oneway(..., use_var=&quot;unequal&quot;)</code></td>
+<td>F</td>
+<td>omega squared, cautiously</td>
+</tr>
+<tr>
+<td>Kruskal–Wallis</td>
+<td><code>stats.kruskal</code></td>
+<td>H</td>
+<td>epsilon squared</td>
+</tr>
+<tr>
+<td>Friedman</td>
+<td><code>stats.friedmanchisquare</code></td>
+<td>chi-square</td>
+<td>Kendall’s W</td>
+</tr>
+<tr>
+<td>Chi-square independence</td>
+<td><code>stats.chi2_contingency</code></td>
+<td>chi-square</td>
+<td>Cramér’s V</td>
+</tr>
+<tr>
+<td>Fisher exact</td>
+<td><code>stats.fisher_exact</code></td>
+<td>odds ratio</td>
+<td>odds ratio</td>
+</tr>
+<tr>
+<td>Two-proportion z</td>
+<td><code>proportions_ztest</code></td>
+<td>z</td>
+<td>difference/RR/OR</td>
+</tr>
+<tr>
+<td>Pearson</td>
+<td><code>stats.pearsonr</code></td>
+<td>r</td>
+<td>r</td>
+</tr>
+<tr>
+<td>Spearman</td>
+<td><code>stats.spearmanr</code></td>
+<td>rho</td>
+<td>rho</td>
+</tr>
+<tr>
+<td>Kendall</td>
+<td><code>stats.kendalltau</code></td>
+<td>tau</td>
+<td>tau</td>
+</tr>
+</tbody>
+</table>
+<h1 id="final-checklist">22. Final Checklist</h1>
+<p>Before submitting an analysis, confirm:</p>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>The research question, primary
+outcome, and primary test were defined before inspecting
+results;</label></li>
+<li><label><input type="checkbox"></input>Independent and paired designs were
+not confused;</label></li>
+<li><label><input type="checkbox"></input>Exclusion rules and missing-data
+handling were documented;</label></li>
+<li><label><input type="checkbox"></input>Raw distributions and outliers were
+inspected;</label></li>
+<li><label><input type="checkbox"></input>Assumptions relevant to the selected
+method were checked;</label></li>
+<li><label><input type="checkbox"></input>Group sample sizes and descriptive
+statistics were reported;</label></li>
+<li><label><input type="checkbox"></input>Effect sizes and confidence
+intervals accompany p-values;</label></li>
+<li><label><input type="checkbox"></input>Multiple comparisons were corrected
+appropriately;</label></li>
+<li><label><input type="checkbox"></input>“p &gt; 0.05” was not interpreted as
+proof of no effect;</label></li>
+<li><label><input type="checkbox"></input>Correlation or observational
+regression was not interpreted as causation;</label></li>
+<li><label><input type="checkbox"></input>Code, random seeds, software
+versions, and outputs are reproducible.</label></li>
+</ul>
+<h1 id="exercises">23. Exercises</h1>
+<ol type="1">
+<li>Compare <code>group_a</code> and <code>group_b</code> with Welch’s
+t-test, including a confidence interval and Hedges’ g;</li>
+<li>Apply a paired t-test and Wilcoxon test to <code>before</code> and
+<code>after</code>, then compare the conclusions;</li>
+<li>Run Welch ANOVA and Games–Howell comparisons on
+<code>three_groups</code>;</li>
+<li>Build a 3×2 contingency table, run a chi-square test, and calculate
+Cramér’s V;</li>
+<li>Simulate data containing an outlier and compare Pearson with
+Spearman correlation;</li>
+<li>Apply Holm and Benjamini–Hochberg corrections to ten p-values;</li>
+<li>Estimate the per-group sample size for d=0.35 and 90% power;</li>
+<li>Write a complete A/B-test conclusion containing effect size,
+interval estimate, and limitations.</li>
+</ol>
+<h1 id="what-to-learn-next">24. What to Learn Next</h1>
+<p>After mastering this guide, continue with:</p>
+<ol type="1">
+<li>Generalized linear and mixed-effects models;</li>
+<li>Survival analysis and time series;</li>
+<li>Missing-data mechanisms and multiple imputation;</li>
+<li>Bayesian estimation and hierarchical models;</li>
+<li>Causal inference, randomized design, and quasi-experiments;</li>
+<li>Simulation studies for Type I error and statistical power.</li>
+</ol>
+<p>Statistical skill is not the number of functions you remember. It is
+the ability to align the question, design, assumptions, estimation,
+test, and interpretation.</p>
+<script>
+(function(){"use strict";const d=document,b=d.body;if(!b||d.querySelector(".mw3-topbar"))return;const s=d.currentScript,t=d.getElementById("TOC");const p=d.createElement("div");p.className="mw3-progress";p.setAttribute("aria-hidden","true");const skip=d.createElement("a");skip.className="mw3-skip";skip.href="#mw3-content";skip.textContent="Skip to content";const h=d.createElement("header");h.className="mw3-topbar";h.innerHTML=`<a class="mw3-brand" href="#title-block-header"><span class="mw3-logo">MW3</span><span>MooseWeb3</span><span class="mw3-sub">STATISTICS</span></a><span class="mw3-spacer"></span><nav class="mw3-langs" aria-label="Language selector"><a href="python_statistical_tests_en.html" aria-current="page">EN</a></nav><button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">Contents</button>`;b.prepend(p,skip,h);const m=d.createElement("main");m.id="mw3-content";m.tabIndex=-1;if(t&&s){let n=t.nextSibling;while(n&&n!==s){const next=n.nextSibling;m.appendChild(n);n=next;}b.insertBefore(m,s);}d.querySelectorAll("pre").forEach(pre=>{let shell=pre.parentElement;if(!shell||!shell.classList.contains("sourceCode")){shell=d.createElement("div");pre.parentNode.insertBefore(shell,pre);shell.appendChild(pre);}shell.classList.add("mw3-code-shell");const btn=d.createElement("button");btn.className="mw3-copy";btn.type="button";btn.textContent="Copy";btn.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(pre.innerText);btn.textContent="Copied";setTimeout(()=>btn.textContent="Copy",1300);}catch(e){btn.textContent="Copy failed";}});shell.appendChild(btn);});const top=d.createElement("button");top.className="mw3-top";top.type="button";top.textContent="↑";top.setAttribute("aria-label","Back to top");top.onclick=()=>scrollTo({top:0,behavior:"smooth"});b.appendChild(top);const menu=h.querySelector(".mw3-menu");if(menu&&t){menu.onclick=()=>{const open=b.classList.toggle("mw3-toc-open");menu.setAttribute("aria-expanded",String(open));};t.onclick=e=>{if(e.target.closest("a")){b.classList.remove("mw3-toc-open");menu.setAttribute("aria-expanded","false");}};}const update=()=>{const max=d.documentElement.scrollHeight-innerHeight;p.style.width=`${max>0?Math.min(scrollY/max,1)*100:0}%`;top.classList.toggle("is-visible",scrollY>560);};update();addEventListener("scroll",update,{passive:true});addEventListener("resize",update);})();
+</script>
+</body>
+</html>

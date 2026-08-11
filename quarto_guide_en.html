@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>A Practical Guide to Quarto</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Quarto Guide</div>
+    <div class="actions">
+      
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>A Practical Guide to Quarto</h1>
+    <p>A more modern, powerful, R-and-Python-capable R Markdown workflow</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">R Markdown</span><span class="badge">knitr</span><span class="badge">Jupyter</span><span class="badge">Reproducible</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#before-you-start-what-is-quarto">Before you start: what is Quarto?</a></li>
+<li class="toc-level-1"><a href="#installation-and-environment-checks">Installation and environment checks</a></li>
+<li class="toc-level-2"><a href="#install-the-components">Install the components</a></li>
+<li class="toc-level-2"><a href="#verify-from-a-terminal">Verify from a terminal</a></li>
+<li class="toc-level-1"><a href="#your-first-html-document-in-five-minutes">Your first HTML document in five minutes</a></li>
+<li class="toc-level-1"><a href="#yaml-the-document-control-panel">YAML: the document control panel</a></li>
+<li class="toc-level-1"><a href="#markdown-authoring-features">Markdown authoring features</a></li>
+<li class="toc-level-2"><a href="#headings-lists-links-and-math">Headings, lists, links, and math</a></li>
+<li class="toc-level-2"><a href="#callouts">Callouts</a></li>
+<li class="toc-level-2"><a href="#tabsets">Tabsets</a></li>
+<li class="toc-level-2"><a href="#footnotes-citations-and-cross-references">Footnotes, citations, and cross-references</a></li>
+<li class="toc-level-1"><a href="#using-r-the-knitr-workflow">Using R: the knitr workflow</a></li>
+<li class="toc-level-2"><a href="#cell-options">Cell options</a></li>
+<li class="toc-level-2"><a href="#inline-r">Inline R</a></li>
+<li class="toc-level-1"><a href="#using-python">Using Python</a></li>
+<li class="toc-level-2"><a href="#recommended-for-new-projects-jupyter">Recommended for new projects: Jupyter</a></li>
+<li class="toc-level-2"><a href="#running-python-in-an-rmd">Running Python in an .Rmd</a></li>
+<li class="toc-level-1"><a href="#mixing-r-and-python-boundaries-and-good-patterns">Mixing R and Python: boundaries and good patterns</a></li>
+<li class="toc-level-1"><a href="#reproducible-execution-caching-freezing-and-dependencies">Reproducible execution: caching, freezing, and dependencies</a></li>
+<li class="toc-level-2"><a href="#cache-and-freeze-solve-different-problems">cache and freeze solve different problems</a></li>
+<li class="toc-level-1"><a href="#parameterized-reports">Parameterized reports</a></li>
+<li class="toc-level-1"><a href="#growing-from-one-file-into-a-project">Growing from one file into a project</a></li>
+<li class="toc-level-1"><a href="#rendering-previewing-and-automation">Rendering, previewing, and automation</a></li>
+<li class="toc-level-1"><a href="#publishing-and-sharing-html">Publishing and sharing HTML</a></li>
+<li class="toc-level-1"><a href="#migrating-from-r-markdown">Migrating from R Markdown</a></li>
+<li class="toc-level-2"><a href="#a-low-risk-migration-path">A low-risk migration path</a></li>
+<li class="toc-level-2"><a href="#common-mappings">Common mappings</a></li>
+<li class="toc-level-1"><a href="#troubleshooting">Troubleshooting</a></li>
+<li class="toc-level-2"><a href="#r-or-python-is-not-found">R or Python is not found</a></li>
+<li class="toc-level-2"><a href="#yaml-fails-to-parse">YAML fails to parse</a></li>
+<li class="toc-level-2"><a href="#a-code-block-does-not-execute">A code block does not execute</a></li>
+<li class="toc-level-2"><a href="#results-are-stale">Results are stale</a></li>
+<li class="toc-level-2"><a href="#pdf-fails-while-html-works">PDF fails while HTML works</a></li>
+<li class="toc-level-1"><a href="#recommended-working-habits">Recommended working habits</a></li>
+<li class="toc-level-1"><a href="#quick-command-reference">Quick command reference</a></li>
+<li class="toc-level-1"><a href="#further-reading">Further reading</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render quarto_guide_en.Rmd</code> for fully executable output.</div><h1 id="before-you-start-what-is-quarto">Before you start: what is Quarto?</h1>
+<p>Quarto is an open-source publishing system for scientific computing and technical communication. A useful mental model is <strong>a modern, cross-language continuation of the R Markdown idea</strong>: prose is written in Pandoc Markdown, computations run through engines such as knitr or Jupyter, and the same source can produce HTML, PDF, Word, presentations, websites, and books.</p>
+<p>Quarto is more than a new extension for R Markdown. It brings output formats, cross-references, websites, books, presentations, themes, and publishing into one consistent system.</p>
+<div class="table-wrap"><table><thead><tr><th>Need</th><th>Recommended choice</th></tr></thead><tbody><tr><td>Maintain an existing R Markdown report</td><td>Keep <code>.Rmd</code> and render it with Quarto</td></tr><tr><td>Start an R-first report</td><td>Prefer <code>.qmd</code> + knitr</td></tr><tr><td>Start a Python-first report</td><td>Use <code>.qmd</code> + Jupyter</td></tr><tr><td>Mix R and Python in one document</td><td>Use knitr + <code>reticulate</code>, or split the work</td></tr><tr><td>Build a documentation site or book</td><td>Use a Quarto project</td></tr></tbody></table></div>
+<blockquote><p>This tutorial uses <code>.Rmd</code> as requested, so it is also a migration example. Quarto can render most existing <code>.Rmd</code> documents. For new work, <code>.qmd</code> is usually preferred because it clearly identifies the file as a Quarto document.</p></blockquote>
+<h1 id="installation-and-environment-checks">Installation and environment checks</h1>
+<h2 id="install-the-components">Install the components</h2>
+<p>At minimum:</p>
+<ol><li>Install the <a href="https://quarto.org/docs/get-started/" target="_blank" rel="noopener">Quarto CLI</a>.</li><li>For R, install R and the <code>rmarkdown</code> package; it brings in knitr and related dependencies.</li><li>For Python, install Python, Jupyter, and the scientific packages your analysis needs.</li><li>Use RStudio, Positron, VS Code, or any text editor.</li></ol>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">install.packages(c(&quot;rmarkdown&quot;, &quot;quarto&quot;, &quot;reticulate&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install jupyter matplotlib pandas</code></pre></div>
+<h2 id="verify-from-a-terminal">Verify from a terminal</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">quarto --version
+quarto check
+Rscript --version
+python --version</code></pre></div>
+<p><code>quarto check</code> summarizes Quarto, Pandoc, browser, LaTeX, R, and Python/Jupyter discovery. It is the best first command when a render environment is not behaving as expected.</p>
+<h1 id="your-first-html-document-in-five-minutes">Your first HTML document in five minutes</h1>
+<p>Create <code>hello.qmd</code>:</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">---
+title: &quot;My first Quarto report&quot;
+format:
+  html:
+    toc: true
+    code-fold: true
+---
+
+## Summary
+
+Ordinary Markdown, math such as $y = \alpha + \beta x$, and executable code can live together.
+
+```{r}
+#| label: fig-cars
+#| fig-cap: &quot;Speed and stopping distance&quot;
+
+plot(cars, pch = 19, col = &quot;#2c7fb8&quot;)
+```</code></pre></div>
+<p>In that directory, run:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">quarto render hello.qmd</code></pre></div>
+<p>During development, use:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">quarto preview hello.qmd</code></pre></div>
+<p><code>preview</code> starts a local server and refreshes as you edit. <code>render</code> is appropriate for final output and automated builds.</p>
+<h1 id="yaml-the-document-control-panel">YAML: the document control panel</h1>
+<p>The content between the opening <code>---</code> lines is YAML metadata. Use spaces, never tabs, and keep indentation consistent.</p>
+<div class="code-block"><div class="code-head"><span>YAML</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-yaml">---
+title: &quot;Quarterly analysis&quot;
+subtitle: &quot;Sales, margin, and risk&quot;
+author:
+  - name: &quot;Analytics team&quot;
+date: today
+lang: en
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-copy: true
+    theme: cosmo
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---</code></pre></div>
+<p>Frequently used options:</p>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Purpose</th></tr></thead><tbody><tr><td><code>toc</code> / <code>toc-depth</code></td><td>Show a table of contents and control its depth</td></tr><tr><td><code>number-sections</code></td><td>Number sections automatically</td></tr><tr><td><code>code-fold</code></td><td>Collapse source code while retaining output</td></tr><tr><td><code>code-copy</code></td><td>Add a copy button to code blocks</td></tr><tr><td><code>embed-resources</code></td><td>Put CSS, JavaScript, and images into one HTML file</td></tr><tr><td><code>theme</code></td><td>Select a Bootstrap theme or custom SCSS</td></tr><tr><td><code>execute</code></td><td>Set document-wide computation defaults</td></tr></tbody></table></div>
+<p><code>embed-resources: true</code> is useful for an HTML file that must work offline or travel by email. For a large site, separate assets are usually more efficient.</p>
+<h1 id="markdown-authoring-features">Markdown authoring features</h1>
+<h2 id="headings-lists-links-and-math">Headings, lists, links, and math</h2>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">## A second-level heading
+
+- An unordered item
+- [Quarto website](https://quarto.org/)
+
+1. First step
+2. Second step
+
+Inline math: $E = mc^2$
+
+Display math:
+
+$$
+\hat{\beta} = (X^T X)^{-1}X^T y
+$$</code></pre></div>
+<h2 id="callouts">Callouts</h2>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">::: {.callout-warning}
+## Warning
+
+Never put passwords, access tokens, or real customer data in source files or rendered HTML.
+:::</code></pre></div>
+<p>Available callout types include <code>note</code>, <code>tip</code>, <code>warning</code>, <code>caution</code>, and <code>important</code>.</p>
+<h2 id="tabsets">Tabsets</h2>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">::: {.panel-tabset}
+## R
+
+```r
+mean(c(2, 4, 8))
+```
+
+## Python
+
+```python
+sum([2, 4, 8]) / 3
+```
+:::</code></pre></div>
+<h2 id="footnotes-citations-and-cross-references">Footnotes, citations, and cross-references</h2>
+<p>Write a footnote as <code>This is a claim.^[This is the supporting note.]</code>.</p>
+<p>Give figures, tables, equations, and sections stable labels:</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">As @fig-trend shows, the series generally rises.
+
+```{r}
+#| label: fig-trend
+#| fig-cap: &quot;Monthly trend&quot;
+
+plot(1:12, cumsum(c(3, -1, 4, 2, 1, 5, -2, 3, 2, 4, 1, 3)), type = &quot;b&quot;)
+```
+
+$$
+y_i = \alpha + \beta x_i + \epsilon_i
+$$ {#eq-model}
+
+The model is defined in @eq-model.</code></pre></div>
+<p>Labels use reserved prefixes such as <code>fig-</code>, <code>tbl-</code>, <code>eq-</code>, and <code>sec-</code>. Prefer hyphens and avoid underscores.</p>
+<p>Citations usually use <code>bibliography: references.bib</code> in YAML and <code>[@key]</code> in the body. Quarto uses Pandoc citation processing and can apply a CSL style file.</p>
+<h1 id="using-r-the-knitr-workflow">Using R: the knitr workflow</h1>
+<p>Quarto uses knitr when it encounters R cells. That is why most <code>.Rmd</code> files migrate with little or no change.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">#| label: tbl-airquality
+#| tbl-cap: &quot;First six rows of the airquality data&quot;
+
+knitr::kable(head(airquality))</code></pre></div>
+<h2 id="cell-options">Cell options</h2>
+<p>Quarto recommends <code>#|</code> option comments at the top of a cell:</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">```{r}
+#| label: fig-pressure
+#| fig-cap: &quot;Temperature and pressure&quot;
+#| fig-width: 7
+#| fig-height: 4
+#| echo: true
+#| warning: false
+
+plot(pressure, type = &quot;b&quot;, pch = 19)
+```</code></pre></div>
+<p>Common execution options:</p>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Typical values</th><th>Meaning</th></tr></thead><tbody><tr><td><code>echo</code></td><td><code>true</code> / <code>false</code></td><td>Show the source code</td></tr><tr><td><code>eval</code></td><td><code>true</code> / <code>false</code></td><td>Execute the cell</td></tr><tr><td><code>output</code></td><td><code>true</code> / <code>false</code> / <code>asis</code></td><td>Include or interpret output</td></tr><tr><td><code>include</code></td><td><code>true</code> / <code>false</code></td><td>Include both source and output</td></tr><tr><td><code>warning</code> / <code>message</code></td><td><code>true</code> / <code>false</code></td><td>Show warnings and messages</td></tr><tr><td><code>error</code></td><td><code>true</code> / <code>false</code></td><td>Continue after an execution error</td></tr></tbody></table></div>
+<h2 id="inline-r">Inline R</h2>
+<p>In a knitr document, an inline expression can place a computed value in a sentence, for example <code> `r mean(c(2, 4, 8))` </code>. This is excellent for dates, sample sizes, and key metrics, but avoid expensive work inline.</p>
+<h1 id="using-python">Using Python</h1>
+<h2 id="recommended-for-new-projects-jupyter">Recommended for new projects: Jupyter</h2>
+<p>In a Python-focused <code>.qmd</code>, Quarto normally uses Jupyter:</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">---
+title: &quot;Python analysis&quot;
+jupyter: python3
+format: html
+---
+
+```{python}
+#| label: fig-python
+#| fig-cap: &quot;A trend generated with Python&quot;
+
+import matplotlib.pyplot as plt
+
+x = list(range(1, 7))
+y = [3, 5, 4, 8, 9, 12]
+plt.plot(x, y, marker=&quot;o&quot;)
+plt.show()
+```</code></pre></div>
+<h2 id="running-python-in-an-rmd">Running Python in an <code>.Rmd</code></h2>
+<p>This tutorial is on the knitr path. In a knitr document, Python chunks are normally provided by <code>reticulate</code>:</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">```{python}
+#| eval: false
+
+values = [3, 5, 4, 8, 9, 12]
+sum(values) / len(values)
+```</code></pre></div>
+<p>Select and inspect Python from R:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">library(reticulate)
+use_python(&quot;/path/to/python&quot;, required = TRUE)
+py_config()</code></pre></div>
+<p>Prefer a virtual environment, and select it before Python is initialized for the session. On Windows, <code>C:/path/to/python.exe</code> avoids backslash escaping problems.</p>
+<h1 id="mixing-r-and-python-boundaries-and-good-patterns">Mixing R and Python: boundaries and good patterns</h1>
+<p>“Quarto supports both R and Python” means that Quarto integrates computation engines such as knitr and Jupyter. It does not mean one document automatically dispatches arbitrary cells to several independent engines.</p>
+<p>For mixed-language work in one <code>.Rmd</code> / knitr document, a common pattern is:</p>
+<ol><li>R is the host session.</li><li><code>reticulate</code> starts and manages embedded Python.</li><li>Python reads R objects through <code>r.object_name</code>.</li><li>R reads Python objects through <code>py$object_name</code>.</li></ol>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">```{r}
+r_sales &lt;- data.frame(month = 1:3, amount = c(10, 14, 18))
+```
+
+```{python}
+#| eval: false
+
+py_sales = r.r_sales
+py_total = py_sales[&quot;amount&quot;].sum()
+```
+
+```{r}
+# After the Python cell has run: py$py_total
+```</code></pre></div>
+<p>Cross-language conversion can change categorical data, dates, missing values, and indexes. For large data, prefer Parquet/Arrow, a database, or an explicit intermediate file, and assert the resulting types.</p>
+<p>If the R and Python parts are independent, two source documents joined by project navigation are often more reliable than forcing them to share a session.</p>
+<h1 id="reproducible-execution-caching-freezing-and-dependencies">Reproducible execution: caching, freezing, and dependencies</h1>
+<h2 id="cache-and-freeze-solve-different-problems"><code>cache</code> and <code>freeze</code> solve different problems</h2>
+<ul><li><code>cache: true</code> caches cell results. A change to cell source or relevant options can invalidate the cache.</li><li><code>freeze: auto</code> is mainly project-oriented: it reuses previous computational output when a source document has not changed.</li></ul>
+<p>Project example:</p>
+<div class="code-block"><div class="code-head"><span>YAML</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-yaml">project:
+  type: website
+
+execute:
+  freeze: auto
+  cache: true</code></pre></div>
+<p>Caching is not dependency management. For real reproducibility:</p>
+<ul><li>use <code>renv</code> to lock R packages;</li><li>use <code>venv</code> or Conda and commit a <code>requirements.txt</code> or lock file for Python;</li><li>fix random seeds;</li><li>record data sources, retrieval dates, and cleaning rules;</li><li>avoid hard-coded absolute paths.</li></ul>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(20260811)
+sample(1:100, 5)</code></pre></div>
+<h1 id="parameterized-reports">Parameterized reports</h1>
+<p>A knitr document can declare parameters in YAML:</p>
+<div class="code-block"><div class="code-head"><span>YAML</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-yaml">params:
+  region: &quot;West&quot;
+  report_date: &quot;2026-08-11&quot;</code></pre></div>
+<p>Use them from R:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">selected_region &lt;- params$region
+as_of &lt;- as.Date(params$report_date)</code></pre></div>
+<p>The R package provides a convenient wrapper around the Quarto CLI:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">quarto::quarto_render(
+  &quot;sales_report.Rmd&quot;,
+  execute_params = list(region = &quot;North&quot;)
+)</code></pre></div>
+<p>Parameters are configuration, not secret storage. Keep credentials in environment variables or a secret manager, and ensure logs and HTML do not expose them.</p>
+<h1 id="growing-from-one-file-into-a-project">Growing from one file into a project</h1>
+<p>A typical directory:</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">sales-report/
+├─ _quarto.yml
+├─ index.qmd
+├─ analysis.Rmd
+├─ references.bib
+├─ data/
+├─ R/
+├─ notebooks/
+└─ styles.scss</code></pre></div>
+<p>Put shared settings in <code>_quarto.yml</code>:</p>
+<div class="code-block"><div class="code-head"><span>YAML</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-yaml">project:
+  type: website
+  output-dir: _site
+
+website:
+  title: &quot;Analytics hub&quot;
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: analysis.Rmd
+        text: Analysis
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+
+execute:
+  freeze: auto</code></pre></div>
+<p>Common project types:</p>
+<div class="table-wrap"><table><thead><tr><th>Type</th><th><code>project.type</code></th><th>Best for</th></tr></thead><tbody><tr><td>Default</td><td><code>default</code></td><td>Several reports with shared settings</td></tr><tr><td>Website</td><td><code>website</code></td><td>Documentation, blogs, research sites</td></tr><tr><td>Book</td><td><code>book</code></td><td>Course notes, manuals, long reports</td></tr></tbody></table></div>
+<p>A presentation is an output format rather than a project type. Use <code>format: revealjs</code> to create an HTML slide deck.</p>
+<h1 id="rendering-previewing-and-automation">Rendering, previewing, and automation</h1>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash"># One document
+quarto render report.Rmd
+
+# An explicit format
+quarto render report.Rmd --to html
+
+# The whole project
+quarto render
+
+# Live preview
+quarto preview
+
+# Remove project-generated content
+quarto clean</code></pre></div>
+<p>For continuous integration:</p>
+<ol><li>Install a fixed or controlled Quarto version.</li><li>Restore R and Python dependencies.</li><li>Run data validation and tests.</li><li>Run <code>quarto render</code>.</li><li>Deploy <code>_site/</code> or preserve the target HTML as a build artifact.</li></ol>
+<p>“It renders on my machine” is not a completion criterion. Test at least once in a clean environment.</p>
+<h1 id="publishing-and-sharing-html">Publishing and sharing HTML</h1>
+<p>A standalone HTML file can be placed on any static server. Quarto also supports commands such as:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">quarto publish quarto-pub report.qmd
+quarto publish gh-pages
+quarto publish netlify</code></pre></div>
+<p>Before publishing, check that:</p>
+<ul><li>every link and cross-reference resolves;</li><li>no local absolute path remains;</li><li>no token, username, internal server name, or sensitive raw data is present;</li><li>charts have titles, units, and alternative text;</li><li>tables and code remain usable at mobile widths;</li><li><code>embed-resources: true</code> is enabled for a standalone file, or the asset directory is deployed with it.</li></ul>
+<h1 id="migrating-from-r-markdown">Migrating from R Markdown</h1>
+<h2 id="a-low-risk-migration-path">A low-risk migration path</h2>
+<ol><li>Keep the <code>.Rmd</code> unchanged and run <code>quarto render old-report.Rmd</code>.</li><li>Fix YAML validation, extension, and custom-template issues.</li><li>Gradually replace old chunk options with <code>#|</code> syntax.</li><li>Replace custom workarounds with native Quarto cross-references, callouts, and project settings.</li><li>Use <code>.qmd</code> for new files; do not rewrite stable old files merely for the extension.</li></ol>
+<h2 id="common-mappings">Common mappings</h2>
+<div class="table-wrap"><table><thead><tr><th>R Markdown</th><th>Quarto</th></tr></thead><tbody><tr><td><code>output: html_document</code></td><td><code>format: html</code></td></tr><tr><td><code>output: pdf_document</code></td><td><code>format: pdf</code></td></tr><tr><td><code>html_document: toc: true</code></td><td><code>format: html: toc: true</code></td></tr><tr><td>bookdown cross-references</td><td>Native <code>@fig-</code> / <code>@tbl-</code> / <code>@eq-</code> references</td></tr><tr><td>flexdashboard / custom layout</td><td>Quarto dashboards or page layout</td></tr><tr><td><code>rmarkdown::render()</code></td><td><code>quarto render</code> or <code>quarto::quarto_render()</code></td></tr></tbody></table></div>
+<p>Quarto project YAML is not wholly parsed by R, so do not assume every dynamic R expression from R Markdown YAML will work unchanged. Put dynamic values in execution or parameters where possible.</p>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="r-or-python-is-not-found">R or Python is not found</h2>
+<p>Start with <code>quarto check</code>. Quarto normally discovers runtimes through PATH. If necessary, configure <code>QUARTO_R</code>; for Python, verify the Jupyter kernel or inspect <code>reticulate::py_config()</code>.</p>
+<h2 id="yaml-fails-to-parse">YAML fails to parse</h2>
+<ul><li>Check for tabs.</li><li>Check that a space follows each colon.</li><li>Quote values containing colons, <code>#</code>, or special characters.</li><li>Reduce to minimal YAML and add settings back one at a time.</li></ul>
+<h2 id="a-code-block-does-not-execute">A code block does not execute</h2>
+<ul><li>Executable cells must use <code> </code><code>{r} </code><code> or </code><code> </code><code>{python} </code>, not highlighting-only fences such as <code> </code><code>r </code>`.</li><li>Check <code>eval: false</code>, <code>include: false</code>, and project defaults.</li><li>Confirm that the intended computation engine is selected.</li></ul>
+<h2 id="results-are-stale">Results are stale</h2>
+<p>Clear or refresh the cache and check external inputs. A cache does not normally know that a database changed when your source code did not. Give external inputs explicit versions or dependency hashes.</p>
+<h2 id="pdf-fails-while-html-works">PDF fails while HTML works</h2>
+<p>PDF also needs LaTeX. TinyTeX is a practical option. Check fonts, Unicode, wide tables, and LaTeX packages. Stabilize the HTML workflow first, then troubleshoot the typesetting toolchain separately.</p>
+<h1 id="recommended-working-habits">Recommended working habits</h1>
+<ol><li>Default to <code>.qmd</code> for new work and migrate old <code>.Rmd</code> files gradually.</li><li>Treat raw data as read-only and write cleaned data elsewhere.</li><li>Put functions in <code>R/</code> or Python modules instead of turning the document into one giant script.</li><li>Give every figure, table, and important section a stable semantic label.</li><li>Hide noise in the final report, but not transformations that affect the conclusion.</li><li>Use Git, and ignore caches, temporary files, and local secret-bearing configuration.</li><li>Render the entire project regularly in CI or another clean environment.</li><li>Include accessibility, security, and data licensing in the publication checklist.</li></ol>
+<h1 id="quick-command-reference">Quick command reference</h1>
+<div class="table-wrap"><table><thead><tr><th>Goal</th><th>Command</th></tr></thead><tbody><tr><td>Check the environment</td><td><code>quarto check</code></td></tr><tr><td>Render one file</td><td><code>quarto render file.Rmd</code></td></tr><tr><td>Render as HTML</td><td><code>quarto render file.Rmd --to html</code></td></tr><tr><td>Preview one file</td><td><code>quarto preview file.Rmd</code></td></tr><tr><td>Render a whole project</td><td><code>quarto render</code></td></tr><tr><td>Clean a project</td><td><code>quarto clean</code></td></tr><tr><td>Render from R</td><td><code>quarto::quarto_render(&quot;file.Rmd&quot;)</code></td></tr></tbody></table></div>
+<h1 id="further-reading">Further reading</h1>
+<ul><li><a href="https://quarto.org/docs/" target="_blank" rel="noopener">Official Quarto documentation</a></li><li><a href="https://quarto.org/docs/computations/r.html" target="_blank" rel="noopener">Using R</a></li><li><a href="https://quarto.org/docs/computations/python.html" target="_blank" rel="noopener">Using Python</a></li><li><a href="https://quarto.org/docs/faq/rmarkdown.html" target="_blank" rel="noopener">FAQ for R Markdown users</a></li><li><a href="https://quarto.org/docs/reference/formats/html.html" target="_blank" rel="noopener">HTML format options</a></li><li><a href="https://quarto.org/docs/authoring/cross-references.html" target="_blank" rel="noopener">Cross-references</a></li><li><a href="https://quarto.org/docs/output-formats/html-publishing.html" target="_blank" rel="noopener">Publishing HTML</a></li></ul>
+<p>After this guide, the best next step is not another long option list. Choose one real report, render it unchanged with Quarto, then introduce exactly one YAML change, one cross-reference, and one project setting. That sequence builds a dependable mental model quickly.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

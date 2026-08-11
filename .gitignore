@@ -1,0 +1,8 @@
+# R Markdown source files (all directories)
+*.Rmd
+*.rmd
+
+# Chinese HTML tutorials (kept locally, not published to GitHub)
+*_zh.html
+*_zh-CN.html
+*_cn.html

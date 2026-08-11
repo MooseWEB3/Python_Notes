@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>Linear and Generalized Linear Regression in Python: From Theory to Reliable Practice</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Quarto Guide</div>
+    <div class="actions">
+      
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>Linear and Generalized Linear Regression in Python: From Theory to Reliable Practice</h1>
+    <p>Fit, diagnose, interpret, and validate OLS, Logistic, Poisson, Negative Binomial, Gamma, and Tweedie models with statsmodels and scikit-learn</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">R Markdown</span><span class="badge">knitr</span><span class="badge">Jupyter</span><span class="badge">Reproducible</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#1-learning-goals-and-roadmap">1. Learning goals and roadmap</a></li>
+<li class="toc-level-1"><a href="#2-installation-and-execution-in-r-markdown">2. Installation and execution in R Markdown</a></li>
+<li class="toc-level-1"><a href="#3-choose-a-model-from-the-data-generating-process">3. Choose a model from the data-generating process</a></li>
+<li class="toc-level-1"><a href="#4-statistical-language-estimates-intervals-and-predictions">4. Statistical language: estimates, intervals, and predictions</a></li>
+<li class="toc-level-1"><a href="#5-simple-linear-regression-start-with-the-equation">5. Simple linear regression: start with the equation</a></li>
+<li class="toc-level-1"><a href="#6-multiple-ols-formulas-categories-and-interactions">6. Multiple OLS: formulas, categories, and interactions</a></li>
+<li class="toc-level-1"><a href="#7-ols-assumptions-and-diagnostic-plots">7. OLS assumptions and diagnostic plots</a></li>
+<li class="toc-level-1"><a href="#8-heteroskedasticity-collinearity-and-robust-uncertainty">8. Heteroskedasticity, collinearity, and robust uncertainty</a></li>
+<li class="toc-level-1"><a href="#9-the-unifying-glm-framework">9. The unifying GLM framework</a></li>
+<li class="toc-level-1"><a href="#10-binomial-logistic-regression">10. Binomial Logistic regression</a></li>
+<li class="toc-level-1"><a href="#11-poisson-regression-counts-rates-and-exposure">11. Poisson regression: counts, rates, and exposure</a></li>
+<li class="toc-level-1"><a href="#12-overdispersion-and-negative-binomial-regression">12. Overdispersion and Negative Binomial regression</a></li>
+<li class="toc-level-1"><a href="#13-gamma-regression-for-positive-right-skewed-outcomes">13. Gamma regression for positive, right-skewed outcomes</a></li>
+<li class="toc-level-1"><a href="#14-other-useful-glms-and-their-boundaries">14. Other useful GLMs and their boundaries</a></li>
+<li class="toc-level-1"><a href="#15-production-pipelines-with-scikit-learn">15. Production pipelines with scikit-learn</a></li>
+<li class="toc-level-1"><a href="#16-splitting-cross-validation-and-metrics">16. Splitting, cross-validation, and metrics</a></li>
+<li class="toc-level-1"><a href="#17-glm-diagnostics-and-calibration">17. GLM diagnostics and calibration</a></li>
+<li class="toc-level-1"><a href="#18-a-general-method-for-interpreting-coefficients">18. A general method for interpreting coefficients</a></li>
+<li class="toc-level-1"><a href="#19-common-mistakes-and-repairs">19. Common mistakes and repairs</a></li>
+<li class="toc-level-1"><a href="#20-reusable-modeling-templates">20. Reusable modeling templates</a></li>
+<li class="toc-level-1"><a href="#21-final-checklist">21. Final checklist</a></li>
+<li class="toc-level-1"><a href="#22-further-reading-and-version-record">22. Further reading and version record</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render python_regression_en.Rmd</code> for fully executable output.</div><div class="code-block"><div class="code-head"><span>r setup</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-rsetup">knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 5,
+  dpi = 120
+)
+library(reticulate)
+# To select an environment, uncomment one of these lines:
+# use_virtualenv(&quot;.venv&quot;, required = TRUE)
+# use_condaenv(&quot;python-regression&quot;, required = TRUE)</code></pre></div>
+<p>The examples use a fixed random seed and can be executed in document order.</p>
+<h1 id="1-learning-goals-and-roadmap">1. Learning goals and roadmap</h1>
+<p>Regression is not merely the act of drawing a straight line. Its purpose is to describe how the conditional distribution of a response <span class="math-inline">Y</span> changes with features <span class="math-inline">X</span>. This guide supports two related goals:</p>
+<ul><li><strong>Statistical explanation</strong>: estimate effects, standard errors, confidence intervals, and hypothesis tests, primarily with <code>statsmodels</code>;</li><li><strong>Predictive modeling</strong>: build preprocessing pipelines, regularize, cross-validate, and evaluate out of sample, primarily with <code>scikit-learn</code>.</li></ul>
+<p>By the end, you should be able to choose a model from the type and data-generating process of the response, interpret coefficients under different link functions, and detect leakage, collinearity, heteroskedasticity, overdispersion, and inappropriate evaluation metrics.</p>
+<div class="table-wrap"><table><thead><tr><th>Response</th><th>Common model</th><th>Python implementation</th><th>Meaning of exponentiated coefficient</th></tr></thead><tbody><tr><td>Continuous, roughly symmetric</td><td>Gaussian / OLS</td><td><code>sm.OLS</code>, <code>LinearRegression</code></td><td>Do not exponentiate; change in response units</td></tr><tr><td>Binary or successes out of trials</td><td>Binomial Logistic</td><td><code>sm.GLM(...Binomial)</code>, <code>LogisticRegression</code></td><td>Odds ratio</td></tr><tr><td>Count</td><td>Poisson</td><td><code>sm.GLM(...Poisson)</code>, <code>PoissonRegressor</code></td><td>Rate ratio</td></tr><tr><td>Overdispersed count</td><td>Negative Binomial</td><td><code>smf.negativebinomial</code></td><td>Rate ratio</td></tr><tr><td>Positive, right-skewed continuous</td><td>Gamma</td><td><code>sm.GLM(...Gamma)</code>, <code>GammaRegressor</code></td><td>Multiplicative change in the mean</td></tr><tr><td>Exact zeros plus positive skew</td><td>Tweedie</td><td><code>TweedieRegressor</code>, <code>sm.GLM</code></td><td>Multiplicative change in the mean</td></tr></tbody></table></div>
+<blockquote><p>A sound order of operations is: define the question and unit of observation, split the data, explore the training data, establish a baseline, diagnose assumptions, and touch the test set only once for final evaluation.</p></blockquote>
+<h1 id="2-installation-and-execution-in-r-markdown">2. Installation and execution in R Markdown</h1>
+<p>R Markdown executes <code>{python}</code> chunks through <code>reticulate</code>. A dedicated virtual environment is recommended. <code>statsmodels</code> is especially useful for inference, while <code>scikit-learn</code> is designed around reusable predictive pipelines.</p>
+<div class="code-block"><div class="code-head"><span>bash install</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bashinstall">python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install numpy pandas scipy statsmodels scikit-learn matplotlib seaborn</code></pre></div>
+<p>In RStudio, run <code>rmarkdown::render(&quot;python_regression_en.Rmd&quot;)</code>. Quarto can also execute it with <code>quarto render python_regression_en.Rmd</code>. Before the first run, check that <code>reticulate::py_config()</code> points to the Python environment in which the packages were installed.</p>
+<div class="code-block"><div class="code-head"><span>python imports</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonimports">import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+from sklearn.compose import ColumnTransformer
+from sklearn.datasets import load_breast_cancer, load_diabetes
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import (
+    LinearRegression, LogisticRegression,
+    PoissonRegressor, GammaRegressor, TweedieRegressor
+)
+from sklearn.metrics import (
+    mean_absolute_error, mean_squared_error, r2_score,
+    roc_auc_score, log_loss, confusion_matrix,
+    mean_poisson_deviance, mean_gamma_deviance
+)
+from sklearn.model_selection import (
+    train_test_split, KFold, StratifiedKFold, cross_validate
+)
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+RANDOM_STATE = 42
+rng = np.random.default_rng(RANDOM_STATE)</code></pre></div>
+<h1 id="3-choose-a-model-from-the-data-generating-process">3. Choose a model from the data-generating process</h1>
+<p>Every linear model can be described with three components:</p>
+<ol><li>A <strong>random component</strong> specifying the distribution of <span class="math-inline">Y</span>;</li><li>A <strong>linear predictor</strong> <span class="math-inline">\eta = \beta_0 + \beta_1x_1 + \cdots + \beta_px_p</span>;</li><li>A <strong>link function</strong> <span class="math-inline">g(\mu)=\eta</span>, where <span class="math-inline">\mu=E(Y\mid X)</span>.</li></ol>
+<p>OLS is the special case with a Gaussian distribution and identity link. A GLM allows the mean-variance relationship to change with the distribution. Do not choose a family from a histogram alone. Consider how observations arise: binary outcomes represent success or failure, counts represent event occurrence, and <code>exposure</code> represents unequal observation time or risk volume.</p>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Quick check</th><th>Possible consequence</th></tr></thead><tbody><tr><td>Is the response bounded?</td><td>Binary, nonnegative, or strictly positive?</td><td>OLS may produce impossible predictions</td></tr><tr><td>Does variance rise with the mean?</td><td>Compare grouped means and variances</td><td>Poisson, NB, or Gamma variance may fit better</td></tr><tr><td>Are rows independent?</td><td>Repeated customer, hospital, or date?</td><td>Ordinary standard errors and random splits may fail</td></tr><tr><td>Is observation time unequal?</td><td>Policy-years, run-hours, population?</td><td>A count model needs an offset or exposure</td></tr><tr><td>Where will the model be deployed?</td><td>New time, site, or IID sample?</td><td>The split must reproduce deployment conditions</td></tr></tbody></table></div>
+<h1 id="4-statistical-language-estimates-intervals-and-predictions">4. Statistical language: estimates, intervals, and predictions</h1>
+<p>A coefficient estimates an average conditional association under the model, holding other included variables fixed. It is not automatically a causal effect. Causal interpretation additionally requires a defensible treatment assignment or design, adequate control of confounding, correct temporal ordering, and explicit identification assumptions.</p>
+<p>A standard error describes uncertainty in an estimate; a 95% confidence interval is a repeated-sampling construction. <code>p &lt; 0.05</code> means neither that an effect is large nor that predictions are useful. For prediction, prioritize out-of-sample error, probability calibration, and improvement over a simple baseline.</p>
+<div class="code-block"><div class="code-head"><span>python helper-functions</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonhelper-functions">def coefficient_table(result, exponentiate=False):
+    &quot;&quot;&quot;Collect statsmodels coefficients, intervals, and p-values.&quot;&quot;&quot;
+    ci = result.conf_int()
+    table = pd.DataFrame({
+        &quot;estimate&quot;: result.params,
+        &quot;std_error&quot;: result.bse,
+        &quot;ci_low&quot;: ci.iloc[:, 0],
+        &quot;ci_high&quot;: ci.iloc[:, 1],
+        &quot;p_value&quot;: result.pvalues,
+    })
+    if exponentiate:
+        for col in [&quot;estimate&quot;, &quot;ci_low&quot;, &quot;ci_high&quot;]:
+            table[col] = np.exp(table[col])
+    return table
+
+def regression_metrics(y_true, y_pred):
+    return pd.Series({
+        &quot;MAE&quot;: mean_absolute_error(y_true, y_pred),
+        &quot;RMSE&quot;: mean_squared_error(y_true, y_pred) ** 0.5,
+        &quot;R2&quot;: r2_score(y_true, y_pred),
+    })</code></pre></div>
+<h1 id="5-simple-linear-regression-start-with-the-equation">5. Simple linear regression: start with the equation</h1>
+<p>Simple linear regression is <span class="math-inline">Y_i=\beta_0+\beta_1X_i+\varepsilon_i</span>. The intercept is the conditional mean at <span class="math-inline">X=0</span>; the slope is the average change in <span class="math-inline">Y</span> for a one-unit increase in <span class="math-inline">X</span>. If zero lies outside the observed range, the intercept may be only a mathematical anchor. Centering <span class="math-inline">X</span> can make it meaningful.</p>
+<div class="code-block"><div class="code-head"><span>python simple-ols</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonsimple-ols">n = 180
+hours = rng.uniform(1, 12, n)
+score = 52 + 3.4 * hours + rng.normal(0, 6, n)
+simple = pd.DataFrame({&quot;hours&quot;: hours, &quot;score&quot;: score})
+
+ols_simple = smf.ols(&quot;score ~ hours&quot;, data=simple).fit()
+print(ols_simple.summary())
+print(coefficient_table(ols_simple).round(3))
+
+grid = pd.DataFrame({&quot;hours&quot;: np.linspace(1, 12, 100)})
+pred = ols_simple.get_prediction(grid).summary_frame(alpha=0.05)</code></pre></div>
+<p><code>mean_ci_lower</code> and <code>mean_ci_upper</code> bound uncertainty in the conditional <strong>mean</strong>. <code>obs_ci_lower</code> and <code>obs_ci_upper</code> form a prediction interval for one new observation and are wider. They answer different questions and should not be interchanged.</p>
+<div class="code-block"><div class="code-head"><span>python simple-ols-plot</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonsimple-ols-plot">fig, ax = plt.subplots()
+ax.scatter(simple[&quot;hours&quot;], simple[&quot;score&quot;], alpha=0.45, label=&quot;observations&quot;)
+ax.plot(grid[&quot;hours&quot;], pred[&quot;mean&quot;], color=&quot;C1&quot;, label=&quot;fitted mean&quot;)
+ax.fill_between(grid[&quot;hours&quot;], pred[&quot;obs_ci_lower&quot;], pred[&quot;obs_ci_upper&quot;],
+                color=&quot;C1&quot;, alpha=0.15, label=&quot;95% prediction interval&quot;)
+ax.set(xlabel=&quot;Study hours&quot;, ylabel=&quot;Score&quot;)
+ax.legend()
+plt.show()</code></pre></div>
+<h1 id="6-multiple-ols-formulas-categories-and-interactions">6. Multiple OLS: formulas, categories, and interactions</h1>
+<p>Each coefficient in multiple regression is a conditional association with other included variables held fixed. The formula interface creates the intercept and dummy variables automatically. <code>C(region)</code> explicitly treats <code>region</code> as categorical; <code>training * experience</code> adds both main effects and their interaction.</p>
+<div class="code-block"><div class="code-head"><span>python multiple-ols</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonmultiple-ols">n = 600
+employees = pd.DataFrame({
+    &quot;experience&quot;: rng.uniform(0, 20, n),
+    &quot;training&quot;: rng.integers(0, 2, n),
+    &quot;region&quot;: rng.choice([&quot;West&quot;, &quot;Central&quot;, &quot;East&quot;], n, p=[0.4, 0.35, 0.25]),
+})
+region_effect = employees[&quot;region&quot;].map({&quot;West&quot;: 0, &quot;Central&quot;: -1.5, &quot;East&quot;: 2.0})
+employees[&quot;salary_k&quot;] = (
+    46 + 2.1 * employees[&quot;experience&quot;] + 4.0 * employees[&quot;training&quot;]
+    + 0.35 * employees[&quot;experience&quot;] * employees[&quot;training&quot;]
+    + region_effect + rng.normal(0, 6 + 0.25 * employees[&quot;experience&quot;], n)
+)
+
+train, test = train_test_split(employees, test_size=0.25, random_state=RANDOM_STATE)
+formula = &quot;salary_k ~ experience + training + C(region) + training:experience&quot;
+ols = smf.ols(formula, data=train).fit()
+print(coefficient_table(ols).round(3))
+print(regression_metrics(test[&quot;salary_k&quot;], ols.predict(test)).round(3))</code></pre></div>
+<p>With an interaction present, the <code>training</code> coefficient is the training contrast only at <code>experience=0</code>. At experience <span class="math-inline">x</span>, the contrast is <span class="math-inline">\beta_{training}+x\beta_{interaction}</span>. Centering experience at its mean often makes the main effect more interpretable.</p>
+<h1 id="7-ols-assumptions-and-diagnostic-plots">7. OLS assumptions and diagnostic plots</h1>
+<p>The essential OLS requirements are a correctly specified conditional mean, independent errors, and—when using classical standard errors—constant conditional variance. Residual normality mainly affects small-sample inference; it is not the primary condition for unbiased coefficients. Diagnostics should be combined with domain knowledge rather than reduced to one test p-value.</p>
+<div class="code-block"><div class="code-head"><span>python ols-diagnostics</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonols-diagnostics">fitted = ols.fittedvalues
+resid = ols.resid
+influence = ols.get_influence()
+standardized = influence.resid_studentized_internal
+
+fig, axes = plt.subplots(2, 2, figsize=(11, 8))
+sns.scatterplot(x=fitted, y=resid, alpha=0.5, ax=axes[0, 0])
+axes[0, 0].axhline(0, color=&quot;black&quot;, lw=1)
+axes[0, 0].set(title=&quot;Residuals vs fitted&quot;, xlabel=&quot;Fitted&quot;, ylabel=&quot;Residual&quot;)
+
+sm.qqplot(resid, line=&quot;45&quot;, fit=True, ax=axes[0, 1])
+axes[0, 1].set_title(&quot;Normal Q-Q&quot;)
+
+sns.scatterplot(x=fitted, y=np.sqrt(np.abs(standardized)), alpha=0.5, ax=axes[1, 0])
+axes[1, 0].set(title=&quot;Scale-location&quot;, xlabel=&quot;Fitted&quot;, ylabel=&quot;sqrt(|studentized residual|)&quot;)
+
+cooks = influence.cooks_distance[0]
+axes[1, 1].stem(np.arange(len(cooks)), cooks, markerfmt=&quot;,&quot;)
+axes[1, 1].set(title=&quot;Cook&#x27;s distance&quot;, xlabel=&quot;Row&quot;, ylabel=&quot;Distance&quot;)
+plt.tight_layout()
+plt.show()</code></pre></div>
+<p>Curvature in residuals versus fitted values suggests omitted nonlinear structure; a funnel suggests heteroskedasticity; large Cook's distances identify points that strongly influence coefficients. An influential point is not necessarily an error. Verify it and report sensitivity analyses instead of deleting it automatically.</p>
+<h1 id="8-heteroskedasticity-collinearity-and-robust-uncertainty">8. Heteroskedasticity, collinearity, and robust uncertainty</h1>
+<p>Under heteroskedasticity, OLS coefficients may remain useful while classical standard errors are wrong. <code>HC3</code> is a practical robust choice in small and moderate samples. When observations are correlated within a company or customer, use cluster-robust uncertainty; time series may require HAC or an explicit correlation model.</p>
+<div class="code-block"><div class="code-head"><span>python robust-ols</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonrobust-ols">ols_hc3 = smf.ols(formula, data=train).fit(cov_type=&quot;HC3&quot;)
+print(coefficient_table(ols_hc3).round(3))
+
+# With a company_id, clustered standard errors would be:
+# clustered = smf.ols(formula, data=train).fit(
+#     cov_type=&quot;cluster&quot;, cov_kwds={&quot;groups&quot;: train[&quot;company_id&quot;]}
+# )</code></pre></div>
+<p>Collinearity inflates standard errors and makes individual coefficients unstable, although it need not damage overall predictions. Inspect the design matrix, dependence structure, and variance inflation factors (VIFs), then consider combining variables, changing the question, or using Ridge. Do not mechanically remove variables from a fixed VIF cutoff.</p>
+<div class="code-block"><div class="code-head"><span>python vif</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonvif">from patsy import dmatrix
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+X_design = dmatrix(
+    &quot;experience + training + C(region) + training:experience&quot;,
+    data=train,
+    return_type=&quot;dataframe&quot;
+)
+vif = pd.Series(
+    [variance_inflation_factor(X_design.to_numpy(), i) for i in range(X_design.shape[1])],
+    index=X_design.columns,
+    name=&quot;VIF&quot;
+)
+print(vif.round(2))</code></pre></div>
+<h1 id="9-the-unifying-glm-framework">9. The unifying GLM framework</h1>
+<p>A GLM does not directly assume <span class="math-inline">Y=X\beta+\varepsilon</span>. It assumes that a link-transformed conditional mean satisfies <span class="math-inline">g(\mu)=X\beta</span>. Logit and log links keep fitted values inside valid ranges automatically.</p>
+<div class="table-wrap"><table><thead><tr><th>Family</th><th>Typical variance relationship</th><th>Common link</th><th>Valid mean range</th></tr></thead><tbody><tr><td>Gaussian</td><td>Constant</td><td>identity</td><td>Any real number</td></tr><tr><td>Binomial</td><td><span class="math-inline">\mu(1-\mu)</span></td><td>logit</td><td>0 to 1</td></tr><tr><td>Poisson</td><td><span class="math-inline">\mu</span></td><td>log</td><td>Nonnegative</td></tr><tr><td>Negative Binomial</td><td><span class="math-inline">\mu+\alpha\mu^2</span></td><td>log</td><td>Nonnegative</td></tr><tr><td>Gamma</td><td><span class="math-inline">\mu^2</span> times dispersion</td><td>log</td><td>Strictly positive</td></tr><tr><td>Tweedie, <span class="math-inline">1&lt;p&lt;2</span></td><td><span class="math-inline">\mu^p</span></td><td>log</td><td>Exact zero and positive values</td></tr></tbody></table></div>
+<p>Maximum likelihood chooses parameters that make the observed data comparatively plausible under the model. GLM deviance measures distance from a saturated model. For the same data and likelihood, lower AIC tends to balance fit and complexity, but AIC is not a substitute for out-of-sample validation.</p>
+<h1 id="10-binomial-logistic-regression">10. Binomial Logistic regression</h1>
+<p>Logistic regression models the log-odds of event probability <span class="math-inline">p</span>: <span class="math-inline">\log[p/(1-p)]=X\beta</span>. <code>exp(beta)</code> is an odds ratio, not a probability difference or risk ratio. Because a probability change depends on the starting probability, also report predicted probabilities for representative profiles.</p>
+<div class="code-block"><div class="code-head"><span>python logistic-model</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonlogistic-model">cancer = load_breast_cancer(as_frame=True)
+X = cancer.data[[&quot;mean radius&quot;, &quot;mean texture&quot;, &quot;mean smoothness&quot;]]
+# The sklearn target codes benign as 1; define malignant as the event here.
+y = (cancer.target == 0).astype(int).rename(&quot;malignant&quot;)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, stratify=y, random_state=RANDOM_STATE
+)
+X_train_sm = sm.add_constant(X_train, has_constant=&quot;add&quot;)
+X_test_sm = sm.add_constant(X_test, has_constant=&quot;add&quot;)
+
+logit = sm.GLM(y_train, X_train_sm, family=sm.families.Binomial()).fit()
+print(coefficient_table(logit, exponentiate=True).round(3))
+
+p_test = logit.predict(X_test_sm)
+print({
+    &quot;ROC_AUC&quot;: round(roc_auc_score(y_test, p_test), 3),
+    &quot;log_loss&quot;: round(log_loss(y_test, p_test), 3),
+})</code></pre></div>
+<p>ROC AUC evaluates ranking, while log loss heavily penalizes confident wrong probabilities. For imbalanced events, also examine the precision-recall curve. A decision threshold should not default blindly to 0.5. Select it from false-positive and false-negative costs on validation data, then report the final confusion matrix on untouched test data.</p>
+<div class="code-block"><div class="code-head"><span>python logistic-threshold</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonlogistic-threshold">threshold = 0.30  # Example only; select from business costs on validation data.
+y_hat = (p_test &gt;= threshold).astype(int)
+tn, fp, fn, tp = confusion_matrix(y_test, y_hat).ravel()
+print(pd.Series({&quot;TN&quot;: tn, &quot;FP&quot;: fp, &quot;FN&quot;: fn, &quot;TP&quot;: tp}))
+
+# Probabilities and uncertainty for representative observations
+probability_intervals = logit.get_prediction(X_test_sm.iloc[:8]).summary_frame()
+print(probability_intervals.round(3))</code></pre></div>
+<p>Complete separation can make unpenalized Logistic coefficients diverge. Combine defensibly sparse levels, gather more data, or use regularization or a Firth method. A huge unstable coefficient is not evidence of a huge precisely known effect.</p>
+<h1 id="11-poisson-regression-counts-rates-and-exposure">11. Poisson regression: counts, rates, and exposure</h1>
+<p>A Poisson rate model uses <span class="math-inline">\log(\mu)=X\beta+\log(exposure)</span>. <code>log(exposure)</code> is an offset whose coefficient is fixed at one: twice the observation time implies twice the expected event count, all else equal. Do not enter exposure as an ordinary predictor with a freely estimated coefficient.</p>
+<div class="code-block"><div class="code-head"><span>python poisson-data</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonpoisson-data">n = 1400
+counts = pd.DataFrame({
+    &quot;driver_age&quot;: rng.uniform(18, 75, n),
+    &quot;vehicle_age&quot;: rng.uniform(0, 18, n),
+    &quot;region&quot;: rng.choice([&quot;urban&quot;, &quot;suburban&quot;, &quot;rural&quot;], n),
+    &quot;exposure&quot;: rng.uniform(0.15, 1.0, n),
+})
+eta = (
+    -2.4 - 0.012 * (counts[&quot;driver_age&quot;] - 45)
+    + 0.045 * counts[&quot;vehicle_age&quot;]
+    + 0.35 * (counts[&quot;region&quot;] == &quot;urban&quot;)
+    - 0.18 * (counts[&quot;region&quot;] == &quot;rural&quot;)
+)
+mu = counts[&quot;exposure&quot;] * np.exp(eta)
+counts[&quot;claims&quot;] = rng.poisson(mu)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>python poisson-model</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonpoisson-model">poisson = smf.glm(
+    &quot;claims ~ driver_age + vehicle_age + C(region)&quot;,
+    data=counts,
+    family=sm.families.Poisson(),
+    offset=np.log(counts[&quot;exposure&quot;]),
+).fit()
+
+rate_ratios = coefficient_table(poisson, exponentiate=True)
+print(rate_ratios.round(3))
+print(&quot;Pearson dispersion:&quot;, round(np.sum(poisson.resid_pearson**2) / poisson.df_resid, 3))</code></pre></div>
+<p>If the rate ratio for <code>vehicle_age</code> is 1.046, each additional vehicle-year multiplies the claim rate by 1.046, or raises it by about 4.6%, conditional on other variables and exposure. The intercept is the baseline rate when all numeric predictors equal zero and categories are at their reference levels, so centering often improves its meaning.</p>
+<h1 id="12-overdispersion-and-negative-binomial-regression">12. Overdispersion and Negative Binomial regression</h1>
+<p>Poisson assumes conditional variance equals conditional mean. Unobserved heterogeneity, event clustering, and omitted variables often produce larger variance. Pearson dispersion well above one, residual patterns, and too many extreme counts suggest overdispersion, although the full model specification must be considered.</p>
+<p>The following code simulates Negative Binomial data with variance <span class="math-inline">\mu+\alpha\mu^2</span> and compares Poisson with an NB2 model that estimates <code>alpha</code>.</p>
+<div class="code-block"><div class="code-head"><span>python negative-binomial</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonnegative-binomial">alpha_true = 0.8
+size = 1 / alpha_true
+prob = size / (size + mu)
+counts[&quot;claims_nb&quot;] = rng.negative_binomial(size, prob)
+
+poisson_misspecified = smf.glm(
+    &quot;claims_nb ~ driver_age + vehicle_age + C(region)&quot;,
+    data=counts,
+    family=sm.families.Poisson(),
+    offset=np.log(counts[&quot;exposure&quot;]),
+).fit()
+
+nb = smf.negativebinomial(
+    &quot;claims_nb ~ driver_age + vehicle_age + C(region)&quot;,
+    data=counts,
+    exposure=counts[&quot;exposure&quot;],
+).fit(disp=False)
+
+comparison = pd.DataFrame({
+    &quot;model&quot;: [&quot;Poisson&quot;, &quot;Negative Binomial&quot;],
+    &quot;AIC&quot;: [poisson_misspecified.aic, nb.aic],
+})
+print(comparison.round(2))
+print(&quot;Estimated alpha:&quot;, round(nb.params[&quot;alpha&quot;], 3))
+print(np.exp(nb.params.drop(&quot;alpha&quot;)).round(3))</code></pre></div>
+<p>Robust standard errors on a Poisson model can repair part of the inference problem, but they do not repair an incorrect predictive distribution. NB models the extra variance explicitly. If zeros are unusually frequent, first ask whether they arise from a distinct process. Hurdle and zero-inflated models need a domain mechanism; a large zero fraction alone is not enough.</p>
+<h1 id="13-gamma-regression-for-positive-right-skewed-outcomes">13. Gamma regression for positive, right-skewed outcomes</h1>
+<p>A Gamma GLM is useful for strictly positive costs and durations whose variance grows roughly with the square of the mean. A log link guarantees positive fitted values and makes <code>exp(beta)</code> a multiplier of the conditional mean.</p>
+<div class="code-block"><div class="code-head"><span>python gamma-model</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythongamma-model">n = 1000
+severity = pd.DataFrame({
+    &quot;age&quot;: rng.uniform(20, 80, n),
+    &quot;complexity&quot;: rng.uniform(0, 10, n),
+    &quot;channel&quot;: rng.choice([&quot;online&quot;, &quot;agent&quot;], n),
+})
+log_mean = (
+    6.2 + 0.012 * (severity[&quot;age&quot;] - 50)
+    + 0.09 * severity[&quot;complexity&quot;]
+    + 0.18 * (severity[&quot;channel&quot;] == &quot;agent&quot;)
+)
+mean_cost = np.exp(log_mean)
+shape = 4.0
+severity[&quot;cost&quot;] = rng.gamma(shape=shape, scale=mean_cost / shape)
+
+gamma_glm = smf.glm(
+    &quot;cost ~ age + complexity + C(channel)&quot;,
+    data=severity,
+    family=sm.families.Gamma(link=sm.families.links.Log()),
+).fit()
+print(coefficient_table(gamma_glm, exponentiate=True).round(3))</code></pre></div>
+<p>Gamma cannot accept zeros or negative values. Do not add an arbitrary tiny constant merely to make the model run. Decide what zero means. If the response contains structural zeros and positive amounts, use a two-part model—probability of being positive followed by positive severity—or consider Tweedie.</p>
+<h1 id="14-other-useful-glms-and-their-boundaries">14. Other useful GLMs and their boundaries</h1>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Use case</th><th>Important caution</th></tr></thead><tbody><tr><td>Probit Binomial</td><td>Normally distributed latent threshold</td><td>Coefficient scale differs; fitted probabilities often resemble logit</td></tr><tr><td>Quasi-Poisson</td><td>Correct mean with proportional extra variance</td><td>No ordinary likelihood AIC; statsmodels has no identical turnkey workflow</td></tr><tr><td>Inverse Gaussian</td><td>Extremely right-skewed positive duration or cost</td><td>Heavier tail than Gamma; support with diagnostics and validation</td></tr><tr><td>Tweedie, <span class="math-inline">1&lt;p&lt;2</span></td><td>Exact zeros together with positive continuous values</td><td>Common for aggregate loss; tune <code>power</code> with cross-validation</td></tr><tr><td>Multinomial Logistic</td><td>More than two unordered categories</td><td>One log-odds coefficient set per non-reference category</td></tr><tr><td>Ordinal Logistic</td><td>Ordered categories</td><td>Assess the proportional-odds assumption</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>python tweedie-example</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythontweedie-example"># aggregate_loss may contain exact zeros and positive amounts.
+# statsmodels, with an inference-oriented interface:
+tweedie_family = sm.families.Tweedie(
+    var_power=1.5,
+    link=sm.families.links.Log()
+)
+# tweedie = smf.glm(&quot;aggregate_loss ~ x1 + x2&quot;, data=df,
+#                   family=tweedie_family).fit()
+
+# scikit-learn, with a prediction-oriented interface and regularization:
+tweedie_predictor = TweedieRegressor(power=1.5, alpha=0.1, max_iter=2000)</code></pre></div>
+<p>Mixed-effects models, GEE, survival models, and time-series models are not merely interchangeable GLM families. When observations have within-group dependence, censoring, or strong temporal dependence, use a method designed for that structure instead of trusting ordinary GLM standard errors.</p>
+<h1 id="15-production-pipelines-with-scikit-learn">15. Production pipelines with scikit-learn</h1>
+<p>The <code>statsmodels</code> formula interface is convenient for interpretation. The <code>scikit-learn</code> <code>Pipeline</code> and <code>ColumnTransformer</code> ensure that imputation, scaling, and one-hot encoding are fitted only on each training fold, preventing leakage. Every data-driven preprocessing operation belongs inside the pipeline.</p>
+<div class="code-block"><div class="code-head"><span>python sklearn-pipeline</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonsklearn-pipeline">numeric = [&quot;age&quot;, &quot;income&quot;, &quot;tenure&quot;]
+categorical = [&quot;region&quot;, &quot;plan&quot;]
+
+numeric_pipe = Pipeline([
+    (&quot;impute&quot;, SimpleImputer(strategy=&quot;median&quot;)),
+    (&quot;scale&quot;, StandardScaler()),
+])
+categorical_pipe = Pipeline([
+    (&quot;impute&quot;, SimpleImputer(strategy=&quot;most_frequent&quot;)),
+    (&quot;onehot&quot;, OneHotEncoder(handle_unknown=&quot;ignore&quot;)),
+])
+preprocess = ColumnTransformer([
+    (&quot;numeric&quot;, numeric_pipe, numeric),
+    (&quot;categorical&quot;, categorical_pipe, categorical),
+])
+
+logistic_pipeline = Pipeline([
+    (&quot;preprocess&quot;, preprocess),
+    (&quot;model&quot;, LogisticRegression(C=1.0, max_iter=2000)),
+])
+# logistic_pipeline.fit(X_train, y_train)
+# probabilities = logistic_pipeline.predict_proba(X_test)[:, 1]</code></pre></div>
+<p>Regularization strength is a hyperparameter. Smaller Logistic <code>C</code> means stronger regularization; larger <code>alpha</code> in <code>PoissonRegressor</code> or <code>GammaRegressor</code> means stronger regularization. Tune it inside the training data, never by repeated inspection of the test set.</p>
+<div class="code-block"><div class="code-head"><span>python poisson-sklearn</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonpoisson-sklearn"># Model a rate and weight by exposure; this corresponds to an aggregated Poisson target.
+features = counts[[&quot;driver_age&quot;, &quot;vehicle_age&quot;, &quot;region&quot;]]
+rate = counts[&quot;claims&quot;] / counts[&quot;exposure&quot;]
+poisson_predictive = Pipeline([
+    (&quot;preprocess&quot;, ColumnTransformer([
+        (&quot;num&quot;, StandardScaler(), [&quot;driver_age&quot;, &quot;vehicle_age&quot;]),
+        (&quot;cat&quot;, OneHotEncoder(handle_unknown=&quot;ignore&quot;), [&quot;region&quot;]),
+    ])),
+    (&quot;model&quot;, PoissonRegressor(alpha=0.05, max_iter=2000)),
+])
+poisson_predictive.fit(features, rate, model__sample_weight=counts[&quot;exposure&quot;])
+predicted_count = poisson_predictive.predict(features) * counts[&quot;exposure&quot;]</code></pre></div>
+<h1 id="16-splitting-cross-validation-and-metrics">16. Splitting, cross-validation, and metrics</h1>
+<p>A random split is appropriate only for approximately independent, identically distributed observations. Validate forward in time for temporal data; use <code>GroupKFold</code> when customers contribute multiple rows; use <code>StratifiedKFold</code> to preserve an event rate. Whatever the method, it should mimic actual deployment.</p>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>Recommended metrics</th><th>Do not rely on alone</th></tr></thead><tbody><tr><td>Continuous value</td><td>MAE, RMSE, out-of-sample <span class="math-inline">R^2</span></td><td>Training <span class="math-inline">R^2</span></td></tr><tr><td>Probability</td><td>Log loss, Brier score, ROC/PR AUC, calibration</td><td>Accuracy</td></tr><tr><td>Poisson count</td><td>Mean Poisson deviance, MAE, grouped calibration</td><td>Ordinary <span class="math-inline">R^2</span></td></tr><tr><td>Gamma positive value</td><td>Mean Gamma deviance, MAE or relative error</td><td>Correlation alone</td></tr><tr><td>Explanatory model</td><td>Effect size, interval, sensitivity analysis</td><td>p-values alone</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>python cross-validation</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythoncross-validation">diabetes = load_diabetes(as_frame=True)
+X_diabetes = diabetes.data
+y_diabetes = diabetes.target
+
+linear_pipe = Pipeline([
+    (&quot;scale&quot;, StandardScaler()),
+    (&quot;model&quot;, LinearRegression()),
+])
+cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
+scores = cross_validate(
+    linear_pipe,
+    X_diabetes,
+    y_diabetes,
+    cv=cv,
+    scoring={&quot;mae&quot;: &quot;neg_mean_absolute_error&quot;, &quot;r2&quot;: &quot;r2&quot;},
+    return_train_score=False,
+)
+print(pd.DataFrame(scores).filter(regex=&quot;test_&quot;).agg([&quot;mean&quot;, &quot;std&quot;]).round(3))</code></pre></div>
+<h1 id="17-glm-diagnostics-and-calibration">17. GLM diagnostics and calibration</h1>
+<p>GLMs offer several residual definitions. Deviance residuals help reveal distributional lack of fit, while Pearson residuals are useful for dispersion. Plot both against fitted values and important features. Also inspect leverage, Cook's distance, nonlinearity, and grouped calibration.</p>
+<div class="code-block"><div class="code-head"><span>python glm-diagnostics</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonglm-diagnostics">glm_frame = pd.DataFrame({
+    &quot;fitted&quot;: poisson.fittedvalues,
+    &quot;deviance_resid&quot;: poisson.resid_deviance,
+    &quot;pearson_resid&quot;: poisson.resid_pearson,
+})
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+sns.scatterplot(data=glm_frame, x=&quot;fitted&quot;, y=&quot;deviance_resid&quot;, alpha=0.4, ax=axes[0])
+axes[0].axhline(0, color=&quot;black&quot;, lw=1)
+sns.scatterplot(data=glm_frame, x=&quot;fitted&quot;, y=&quot;pearson_resid&quot;, alpha=0.4, ax=axes[1])
+axes[1].axhline(0, color=&quot;black&quot;, lw=1)
+plt.tight_layout()
+plt.show()
+
+# Compare observed and predicted counts by predicted-risk decile.
+calibration = counts.assign(predicted=poisson.fittedvalues)
+calibration[&quot;bin&quot;] = pd.qcut(calibration[&quot;predicted&quot;], 10, duplicates=&quot;drop&quot;)
+print(calibration.groupby(&quot;bin&quot;, observed=True)[[&quot;claims&quot;, &quot;predicted&quot;]].mean())</code></pre></div>
+<p>A residual plot with no obvious structure does not prove correctness; it only means that plot did not reveal a conspicuous counterexample. Also examine omitted-variable risks, data-collection changes, and performance in important subgroups.</p>
+<h1 id="18-a-general-method-for-interpreting-coefficients">18. A general method for interpreting coefficients</h1>
+<p>An interpretation should state the unit of change, conditioning variables, outcome scale, and uncertainty. These templates are more informative than reporting a sign alone:</p>
+<ul><li>OLS: for one additional year of <code>experience</code>, mean salary changes by <span class="math-inline">\beta</span> thousand dollars, holding other variables fixed;</li><li>Logistic: <code>exp(beta)=1.25</code> multiplies the odds by 1.25; it does not add 25 percentage points to probability;</li><li>Poisson/NB: <code>exp(beta)=0.90</code> multiplies the event rate by 0.90, an average reduction of about 10%;</li><li>Gamma/Tweedie with log link: <code>exp(beta)=1.08</code> multiplies the conditional mean by 1.08, an average increase of about 8%;</li><li>Interaction: the effect of one variable depends on the other, so calculate joint effects at meaningful values.</li></ul>
+<div class="code-block"><div class="code-head"><span>python marginal-predictions</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonmarginal-predictions"># Prediction contrasts communicate nonlinear links more directly than isolated coefficients.
+profiles = pd.DataFrame({
+    &quot;driver_age&quot;: [30, 30, 55, 55],
+    &quot;vehicle_age&quot;: [2, 12, 2, 12],
+    &quot;region&quot;: [&quot;urban&quot;] * 4,
+    &quot;exposure&quot;: [1.0] * 4,
+})
+profiles[&quot;expected_claims&quot;] = poisson.predict(
+    profiles,
+    offset=np.log(profiles[&quot;exposure&quot;])
+)
+print(profiles.round(3))</code></pre></div>
+<h1 id="19-common-mistakes-and-repairs">19. Common mistakes and repairs</h1>
+<div class="table-wrap"><table><thead><tr><th>Mistake</th><th>Why it fails</th><th>Better practice</th></tr></thead><tbody><tr><td>Scale or impute all data before cross-validation</td><td>Validation information leaks into fitting</td><td>Put every preprocessing step in a <code>Pipeline</code></td></tr><tr><td>Use OLS for binary, count, or positive cost targets</td><td>Prediction range and variance are wrong</td><td>Match Binomial, Poisson/NB, or Gamma to the process</td></tr><tr><td>Read a Logistic odds ratio as probability change</td><td>Probability difference depends on the baseline</td><td>Report representative probabilities and contrasts</td></tr><tr><td>Ignore count exposure</td><td>Unequal observation time creates false differences</td><td>Use a log-exposure offset or weighted rate model</td></tr><tr><td>Choose zero-inflated because many values are zero</td><td>A low Poisson mean naturally produces many zeros</td><td>Establish a mechanism, then compare calibration and test deviance</td></tr><tr><td>Select variables, thresholds, or hyperparameters on test data</td><td>The test score is no longer independent</td><td>Select with training/validation; test once at the end</td></tr><tr><td>Delete every “outlier” automatically</td><td>Real and important operating cases may be lost</td><td>Verify provenance and report include/exclude sensitivity</td></tr><tr><td>Describe significance as causality</td><td>Regression does not remove confounding automatically</td><td>State design, timing, and identification assumptions</td></tr></tbody></table></div>
+<h1 id="20-reusable-modeling-templates">20. Reusable modeling templates</h1>
+<p>These minimal functions enforce a train/test boundary and return the model, predictions, and metrics. A production project should also validate schemas, log operations, version models, and evaluate subgroups.</p>
+<div class="code-block"><div class="code-head"><span>python reusable-template</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonreusable-template">def fit_ols_formula(train, test, formula, target):
+    model = smf.ols(formula, data=train).fit(cov_type=&quot;HC3&quot;)
+    prediction = model.predict(test)
+    return {
+        &quot;model&quot;: model,
+        &quot;coefficients&quot;: coefficient_table(model),
+        &quot;prediction&quot;: prediction,
+        &quot;metrics&quot;: regression_metrics(test[target], prediction),
+    }
+
+def fit_poisson_formula(train, test, formula, target, exposure):
+    model = smf.glm(
+        formula,
+        data=train,
+        family=sm.families.Poisson(),
+        offset=np.log(train[exposure]),
+    ).fit()
+    prediction = model.predict(test, offset=np.log(test[exposure]))
+    metrics = pd.Series({
+        &quot;Poisson_deviance&quot;: mean_poisson_deviance(test[target], prediction),
+        &quot;MAE&quot;: mean_absolute_error(test[target], prediction),
+    })
+    return {&quot;model&quot;: model, &quot;prediction&quot;: prediction, &quot;metrics&quot;: metrics}</code></pre></div>
+<h1 id="21-final-checklist">21. Final checklist</h1>
+<p>Before releasing a model, confirm that:</p>
+<ol><li>The unit of observation, target, prediction time, and deployment population are documented;</li><li>Splitting occurred before every data-driven preprocessing operation;</li><li>The family, link, and offset or exposure match the business process;</li><li>Nonlinearity, interactions, heteroskedasticity, overdispersion, and dependence were assessed;</li><li>Coefficients are interpreted on the correct scale with intervals, not p-values alone;</li><li>Metrics fit the task and beat a simple baseline out of sample;</li><li>Thresholds and hyperparameters were selected only in training and validation data;</li><li>Important subgroups, temporal drift, invalid inputs, and calibration were evaluated;</li><li>Random seeds, package versions, feature definitions, and the environment are reproducible;</li><li>The report distinguishes association, prediction, and causal claims.</li></ol>
+<h1 id="22-further-reading-and-version-record">22. Further reading and version record</h1>
+<p>Consult the official <code>statsmodels</code> User Guide sections on Regression and Linear Models, Generalized Linear Models, and Discrete Choice Models, plus the <code>scikit-learn</code> documentation on Linear Models, Model Evaluation, and Pipelines. When APIs differ, use the official documentation for the installed version.</p>
+<div class="code-block"><div class="code-head"><span>python versions</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-pythonversions">import sklearn
+import statsmodels
+import sys
+
+print(&quot;Python:&quot;, sys.version.split()[0])
+print(&quot;pandas:&quot;, pd.__version__)
+print(&quot;scikit-learn:&quot;, sklearn.__version__)
+print(&quot;statsmodels:&quot;, statsmodels.__version__)</code></pre></div>
+<p>This guide is a reliable starting point, but model quality ultimately comes from a precise question, a credible understanding of how the data arose, realistic validation, and honest reporting of failure modes.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3 · Python Notes</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
