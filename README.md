@@ -9,7 +9,7 @@
 
 **README languages:** [English](#english) · [Français](#francais) · [Português](#portugues)
 
-**Learning hub:** [Open the MooseWeb3 Python Notes website](https://mooseweb3.github.io/Python_Notes/)
+**Learning hub:** [Open the MooseWeb3 Learning website](https://mooseweb3.github.io/Learning/)
 
 The website now integrates **28 published guides from six repositories**. Guides from the related repositories are mirrored under `catalog/` so every course has one stable GitHub Pages URL while its original source repository remains linked from the hub.
 
@@ -50,7 +50,7 @@ The published tutorials are in **English**. This README is also available in Fre
 | Linear and generalized linear regression | [Open guide](python_regression_en.html) |
 | Practical Quarto guide | [Open guide](quarto_guide_en.html) |
 
-The complete website catalog also includes four statistics and machine-learning guides, nine R guides, one HTML guide, one CSS guide, and two JavaScript/web-development guides. Open the [learning hub](https://mooseweb3.github.io/Python_Notes/#course-library) to browse all 28 tutorials by source repository.
+The complete website catalog also includes four statistics and machine-learning guides, nine R guides, one HTML guide, one CSS guide, and two JavaScript/web-development guides. Open the [learning hub](https://mooseweb3.github.io/Learning/#course-library) to browse all 28 tutorials by source repository.
 
 ### What is covered
 
@@ -122,7 +122,7 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 All published pages are static HTML and can be hosted with GitHub Pages or another static hosting service. Configure the repository root on your chosen branch as the site source. A tutorial will then be available at a URL similar to:
 
 ```text
-https://mooseweb3.github.io/Python_Notes/
+https://mooseweb3.github.io/Learning/
 ```
 
 ### Repository structure
@@ -245,7 +245,7 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 Les pages publiées sont des fichiers HTML statiques et peuvent être hébergées avec GitHub Pages ou un autre service d’hébergement statique. Configurez la racine du dépôt de la branche choisie comme source du site. Une page sera alors disponible à une adresse similaire à :
 
 ```text
-https://mooseweb3.github.io/Python_Notes/
+https://mooseweb3.github.io/Learning/
 ```
 
 ### Structure du dépôt
@@ -368,7 +368,7 @@ python -m pip install numpy pandas scipy statsmodels matplotlib seaborn openpyxl
 Todas as páginas publicadas são arquivos HTML estáticos e podem ser hospedadas pelo GitHub Pages ou por outro serviço de hospedagem estática. Configure a raiz do repositório da branch escolhida como origem do site. Uma página ficará disponível em um endereço semelhante a:
 
 ```text
-https://mooseweb3.github.io/Python_Notes/
+https://mooseweb3.github.io/Learning/
 ```
 
 ### Estrutura do repositório
