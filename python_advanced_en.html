@@ -1,0 +1,2167 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>Advanced Python: Language Internals, Concurrency, and Production Design</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Advanced Python</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>Advanced Python: Language Internals, Concurrency, and Production Design</h1>
+    <p>A practical guide to protocols, generators, decorators, typing, async systems, testing, performance, and robust architecture</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">Python 3.11+</span><span class="badge">Advanced</span><span class="badge">Concurrency</span><span class="badge">Production</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#how-to-use-this-guide">How to use this guide</a></li>
+<li class="toc-level-2"><a href="#learning-goals">Learning goals</a></li>
+<li class="toc-level-2"><a href="#study-workflow">Study workflow</a></li>
+<li class="toc-level-1"><a href="#1-advanced-python-mindset-and-environment">1. Advanced Python mindset and environment</a></li>
+<li class="toc-level-2"><a href="#1-1-prefer-contracts-over-tricks">1.1 Prefer contracts over tricks</a></li>
+<li class="toc-level-2"><a href="#1-2-inspect-the-active-runtime">1.2 Inspect the active runtime</a></li>
+<li class="toc-level-2"><a href="#1-3-create-a-reproducible-development-environment">1.3 Create a reproducible development environment</a></li>
+<li class="toc-level-2"><a href="#1-4-introspection-is-a-diagnostic-tool">1.4 Introspection is a diagnostic tool</a></li>
+<li class="toc-level-1"><a href="#2-the-python-data-model-and-protocols">2. The Python data model and protocols</a></li>
+<li class="toc-level-2"><a href="#2-1-a-small-sequence-type">2.1 A small sequence type</a></li>
+<li class="toc-level-2"><a href="#2-2-reflected-operations-and-notimplemented">2.2 Reflected operations and NotImplemented</a></li>
+<li class="toc-level-2"><a href="#2-3-representation-and-formatting">2.3 Representation and formatting</a></li>
+<li class="toc-level-1"><a href="#3-identity-mutability-aliasing-and-copying">3. Identity, mutability, aliasing, and copying</a></li>
+<li class="toc-level-2"><a href="#3-1-shallow-and-deep-copies">3.1 Shallow and deep copies</a></li>
+<li class="toc-level-2"><a href="#3-2-immutable-value-objects">3.2 Immutable value objects</a></li>
+<li class="toc-level-2"><a href="#3-3-weak-references">3.3 Weak references</a></li>
+<li class="toc-level-1"><a href="#4-hashing-equality-dictionaries-and-sets">4. Hashing, equality, dictionaries, and sets</a></li>
+<li class="toc-level-2"><a href="#4-1-dictionary-tools">4.1 Dictionary tools</a></li>
+<li class="toc-level-2"><a href="#4-2-set-algebra-as-domain-logic">4.2 Set algebra as domain logic</a></li>
+<li class="toc-level-1"><a href="#5-advanced-sequence-operations-and-unpacking">5. Advanced sequence operations and unpacking</a></li>
+<li class="toc-level-2"><a href="#5-1-slices-are-objects">5.1 Slices are objects</a></li>
+<li class="toc-level-2"><a href="#5-2-extended-unpacking">5.2 Extended unpacking</a></li>
+<li class="toc-level-2"><a href="#5-3-memory-views-and-binary-data">5.3 Memory views and binary data</a></li>
+<li class="toc-level-1"><a href="#6-iterables-iterators-and-lazy-evaluation">6. Iterables, iterators, and lazy evaluation</a></li>
+<li class="toc-level-2"><a href="#6-1-a-custom-iterator">6.1 A custom iterator</a></li>
+<li class="toc-level-2"><a href="#6-2-sentinel-iteration">6.2 Sentinel iteration</a></li>
+<li class="toc-level-2"><a href="#6-3-single-pass-interfaces">6.3 Single-pass interfaces</a></li>
+<li class="toc-level-1"><a href="#7-generators-and-coroutine-like-generator-features">7. Generators and coroutine-like generator features</a></li>
+<li class="toc-level-2"><a href="#7-1-delegation-with-yield-from">7.1 Delegation with yield from</a></li>
+<li class="toc-level-2"><a href="#7-2-cleanup-and-generatorexit">7.2 Cleanup and GeneratorExit</a></li>
+<li class="toc-level-2"><a href="#7-3-sending-values">7.3 Sending values</a></li>
+<li class="toc-level-1"><a href="#8-building-pipelines-with-itertools">8. Building pipelines with itertools</a></li>
+<li class="toc-level-2"><a href="#8-1-group-consecutive-data">8.1 Group consecutive data</a></li>
+<li class="toc-level-2"><a href="#8-2-sliding-windows">8.2 Sliding windows</a></li>
+<li class="toc-level-2"><a href="#8-3-infinite-iterators-require-boundaries">8.3 Infinite iterators require boundaries</a></li>
+<li class="toc-level-1"><a href="#9-first-class-functions-closures-and-callable-objects">9. First-class functions, closures, and callable objects</a></li>
+<li class="toc-level-2"><a href="#9-1-closures-capture-bindings">9.1 Closures capture bindings</a></li>
+<li class="toc-level-2"><a href="#9-2-callable-objects">9.2 Callable objects</a></li>
+<li class="toc-level-2"><a href="#9-3-partial-application">9.3 Partial application</a></li>
+<li class="toc-level-1"><a href="#10-decorators-that-preserve-contracts">10. Decorators that preserve contracts</a></li>
+<li class="toc-level-2"><a href="#10-1-a-typed-timing-decorator">10.1 A typed timing decorator</a></li>
+<li class="toc-level-2"><a href="#10-2-a-parameterized-retry-decorator">10.2 A parameterized retry decorator</a></li>
+<li class="toc-level-2"><a href="#10-3-class-based-decorators">10.3 Class-based decorators</a></li>
+<li class="toc-level-1"><a href="#11-context-managers-and-deterministic-cleanup">11. Context managers and deterministic cleanup</a></li>
+<li class="toc-level-2"><a href="#11-1-generator-based-context-managers">11.1 Generator-based context managers</a></li>
+<li class="toc-level-2"><a href="#11-2-dynamic-resources-with-exitstack">11.2 Dynamic resources with ExitStack</a></li>
+<li class="toc-level-2"><a href="#11-3-async-context-managers">11.3 Async context managers</a></li>
+<li class="toc-level-1"><a href="#12-attribute-access-properties-and-descriptors">12. Attribute access, properties, and descriptors</a></li>
+<li class="toc-level-2"><a href="#12-1-validated-properties">12.1 Validated properties</a></li>
+<li class="toc-level-2"><a href="#12-2-reusable-descriptor-validation">12.2 Reusable descriptor validation</a></li>
+<li class="toc-level-2"><a href="#12-3-attribute-lookup-hooks">12.3 Attribute lookup hooks</a></li>
+<li class="toc-level-2"><a href="#12-4-cached-properties">12.4 Cached properties</a></li>
+<li class="toc-level-1"><a href="#13-class-design-inheritance-and-__slots__">13. Class design, inheritance, and __slots__</a></li>
+<li class="toc-level-2"><a href="#13-1-composition-and-dependency-injection">13.1 Composition and dependency injection</a></li>
+<li class="toc-level-2"><a href="#13-2-cooperative-multiple-inheritance">13.2 Cooperative multiple inheritance</a></li>
+<li class="toc-level-2"><a href="#13-3-abstract-base-classes">13.3 Abstract base classes</a></li>
+<li class="toc-level-2"><a href="#13-4-__slots__">13.4 __slots__</a></li>
+<li class="toc-level-1"><a href="#14-controlled-metaprogramming">14. Controlled metaprogramming</a></li>
+<li class="toc-level-2"><a href="#14-1-registries-with-__init_subclass__">14.1 Registries with __init_subclass__</a></li>
+<li class="toc-level-2"><a href="#14-2-class-decorators">14.2 Class decorators</a></li>
+<li class="toc-level-2"><a href="#14-3-a-minimal-metaclass">14.3 A minimal metaclass</a></li>
+<li class="toc-level-1"><a href="#15-advanced-static-typing">15. Advanced static typing</a></li>
+<li class="toc-level-2"><a href="#15-1-type-variables-and-generics">15.1 Type variables and generics</a></li>
+<li class="toc-level-2"><a href="#15-2-covariance-and-immutability">15.2 Covariance and immutability</a></li>
+<li class="toc-level-2"><a href="#15-3-structural-typing-with-protocols">15.3 Structural typing with protocols</a></li>
+<li class="toc-level-2"><a href="#15-4-overloads">15.4 Overloads</a></li>
+<li class="toc-level-2"><a href="#15-5-paramspec-and-higher-order-functions">15.5 ParamSpec and higher-order functions</a></li>
+<li class="toc-level-2"><a href="#15-6-typeddict-for-mapping-shaped-records">15.6 TypedDict for mapping-shaped records</a></li>
+<li class="toc-level-1"><a href="#16-structural-pattern-matching">16. Structural pattern matching</a></li>
+<li class="toc-level-2"><a href="#16-1-class-patterns">16.1 Class patterns</a></li>
+<li class="toc-level-2"><a href="#16-2-guards-and-capture-pitfalls">16.2 Guards and capture pitfalls</a></li>
+<li class="toc-level-1"><a href="#17-exception-design-and-exception-groups">17. Exception design and exception groups</a></li>
+<li class="toc-level-2"><a href="#17-1-exception-notes">17.1 Exception notes</a></li>
+<li class="toc-level-2"><a href="#17-2-exceptiongroup-and-except">17.2 ExceptionGroup and except</a></li>
+<li class="toc-level-2"><a href="#17-3-cleanup-versus-recovery">17.3 Cleanup versus recovery</a></li>
+<li class="toc-level-1"><a href="#18-choosing-a-concurrency-model">18. Choosing a concurrency model</a></li>
+<li class="toc-level-2"><a href="#18-1-shared-state-race">18.1 Shared-state race</a></li>
+<li class="toc-level-1"><a href="#19-threads-and-futures">19. Threads and futures</a></li>
+<li class="toc-level-2"><a href="#19-1-ordering-and-map">19.1 Ordering and map</a></li>
+<li class="toc-level-2"><a href="#19-2-producer-consumer-queues">19.2 Producer-consumer queues</a></li>
+<li class="toc-level-2"><a href="#19-3-avoid-deadlocks">19.3 Avoid deadlocks</a></li>
+<li class="toc-level-1"><a href="#20-processes-and-cpu-parallelism">20. Processes and CPU parallelism</a></li>
+<li class="toc-level-2"><a href="#20-1-chunking-and-overhead">20.1 Chunking and overhead</a></li>
+<li class="toc-level-2"><a href="#20-2-process-safety">20.2 Process safety</a></li>
+<li class="toc-level-1"><a href="#21-asyncio-structured-concurrency-and-cancellation">21. asyncio, structured concurrency, and cancellation</a></li>
+<li class="toc-level-2"><a href="#21-1-structured-concurrency-with-taskgroup">21.1 Structured concurrency with TaskGroup</a></li>
+<li class="toc-level-2"><a href="#21-2-timeouts-and-cancellation">21.2 Timeouts and cancellation</a></li>
+<li class="toc-level-2"><a href="#21-3-bounded-async-producer-consumer-pipeline">21.3 Bounded async producer-consumer pipeline</a></li>
+<li class="toc-level-2"><a href="#21-4-async-iterators">21.4 Async iterators</a></li>
+<li class="toc-level-2"><a href="#21-5-bridge-blocking-work-deliberately">21.5 Bridge blocking work deliberately</a></li>
+<li class="toc-level-1"><a href="#22-storage-serialization-and-transaction-boundaries">22. Storage, serialization, and transaction boundaries</a></li>
+<li class="toc-level-2"><a href="#22-1-json-validation-at-the-boundary">22.1 JSON validation at the boundary</a></li>
+<li class="toc-level-2"><a href="#22-2-avoid-unsafe-deserialization">22.2 Avoid unsafe deserialization</a></li>
+<li class="toc-level-2"><a href="#22-3-sqlite-transactions">22.3 SQLite transactions</a></li>
+<li class="toc-level-2"><a href="#22-4-atomic-file-replacement">22.4 Atomic file replacement</a></li>
+<li class="toc-level-1"><a href="#23-package-architecture-configuration-and-plugins">23. Package architecture, configuration, and plugins</a></li>
+<li class="toc-level-2"><a href="#23-1-explicit-configuration">23.1 Explicit configuration</a></li>
+<li class="toc-level-2"><a href="#23-2-pyproject-toml">23.2 pyproject.toml</a></li>
+<li class="toc-level-2"><a href="#23-3-plugin-discovery-with-entry-points">23.3 Plugin discovery with entry points</a></li>
+<li class="toc-level-2"><a href="#23-4-public-apis">23.4 Public APIs</a></li>
+<li class="toc-level-1"><a href="#24-advanced-testing-strategy">24. Advanced testing strategy</a></li>
+<li class="toc-level-2"><a href="#24-1-test-layers">24.1 Test layers</a></li>
+<li class="toc-level-2"><a href="#24-2-parametrization">24.2 Parametrization</a></li>
+<li class="toc-level-2"><a href="#24-3-fixtures-and-temporary-paths">24.3 Fixtures and temporary paths</a></li>
+<li class="toc-level-2"><a href="#24-4-fakes-over-deep-mocks">24.4 Fakes over deep mocks</a></li>
+<li class="toc-level-2"><a href="#24-5-property-based-testing">24.5 Property-based testing</a></li>
+<li class="toc-level-2"><a href="#24-6-testing-async-behavior">24.6 Testing async behavior</a></li>
+<li class="toc-level-1"><a href="#25-debugging-logging-and-observability">25. Debugging, logging, and observability</a></li>
+<li class="toc-level-2"><a href="#25-1-preserve-tracebacks">25.1 Preserve tracebacks</a></li>
+<li class="toc-level-2"><a href="#25-2-structured-logging-context">25.2 Structured logging context</a></li>
+<li class="toc-level-2"><a href="#25-3-metrics-logs-and-traces">25.3 Metrics, logs, and traces</a></li>
+<li class="toc-level-2"><a href="#25-4-post-mortem-debugging">25.4 Post-mortem debugging</a></li>
+<li class="toc-level-1"><a href="#26-profiling-memory-and-performance">26. Profiling, memory, and performance</a></li>
+<li class="toc-level-2"><a href="#26-1-measure-with-timeit">26.1 Measure with timeit</a></li>
+<li class="toc-level-2"><a href="#26-2-profile-call-time">26.2 Profile call time</a></li>
+<li class="toc-level-2"><a href="#26-3-inspect-allocations">26.3 Inspect allocations</a></li>
+<li class="toc-level-2"><a href="#26-4-caching">26.4 Caching</a></li>
+<li class="toc-level-2"><a href="#26-5-complexity-first">26.5 Complexity first</a></li>
+<li class="toc-level-1"><a href="#27-security-and-robustness">27. Security and robustness</a></li>
+<li class="toc-level-2"><a href="#27-1-treat-every-boundary-as-untrusted">27.1 Treat every boundary as untrusted</a></li>
+<li class="toc-level-2"><a href="#27-2-subprocesses-without-shell-injection">27.2 Subprocesses without shell injection</a></li>
+<li class="toc-level-2"><a href="#27-3-secrets">27.3 Secrets</a></li>
+<li class="toc-level-2"><a href="#27-4-resource-limits-and-backpressure">27.4 Resource limits and backpressure</a></li>
+<li class="toc-level-2"><a href="#27-5-safe-defaults-checklist">27.5 Safe defaults checklist</a></li>
+<li class="toc-level-1"><a href="#28-capstone-concurrent-extensible-log-analyzer">28. Capstone: concurrent extensible log analyzer</a></li>
+<li class="toc-level-2"><a href="#28-1-requirements">28.1 Requirements</a></li>
+<li class="toc-level-2"><a href="#28-2-domain-model-and-parser">28.2 Domain model and parser</a></li>
+<li class="toc-level-2"><a href="#28-3-streaming-a-file">28.3 Streaming a file</a></li>
+<li class="toc-level-2"><a href="#28-4-aggregation-with-bounded-samples">28.4 Aggregation with bounded samples</a></li>
+<li class="toc-level-2"><a href="#28-5-concurrent-file-processing">28.5 Concurrent file processing</a></li>
+<li class="toc-level-2"><a href="#28-6-plugin-boundary">28.6 Plugin boundary</a></li>
+<li class="toc-level-2"><a href="#28-7-cli-composition-root">28.7 CLI composition root</a></li>
+<li class="toc-level-2"><a href="#28-8-tests">28.8 Tests</a></li>
+<li class="toc-level-2"><a href="#28-9-production-extensions">28.9 Production extensions</a></li>
+<li class="toc-level-1"><a href="#29-review-checklist-exercises-and-next-steps">29. Review checklist, exercises, and next steps</a></li>
+<li class="toc-level-2"><a href="#advanced-design-checklist">Advanced design checklist</a></li>
+<li class="toc-level-2"><a href="#exercises">Exercises</a></li>
+<li class="toc-level-2"><a href="#quick-reference">Quick reference</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render python_advanced_en.Rmd</code> for fully executable output.</div><h1 id="how-to-use-this-guide">How to use this guide</h1>
+<p>Advanced Python is less about obscure syntax and more about understanding the contracts behind ordinary syntax. A <code>for</code> loop uses the iterator protocol, <code>with</code> uses the context-manager protocol, attribute access invokes descriptors, and <code>await</code> coordinates cooperative tasks. Once these mechanisms are clear, library code becomes easier to read and application design becomes more deliberate.</p>
+<p>This guide assumes that you can already write functions, classes, comprehensions, exceptions, files, tests, and virtual environments. Examples target Python 3.11 or newer; a few notes describe newer improvements. Type annotations are written with modern built-in generic syntax.</p>
+<h2 id="learning-goals">Learning goals</h2>
+<p>By the end, you will be able to:</p>
+<ul><li>reason about identity, mutability, hashing, copying, and Python's data model;</li><li>build lazy pipelines with iterators, generators, and <code>itertools</code>;</li><li>design decorators, context managers, descriptors, and callable objects;</li><li>express reusable interfaces with generics, protocols, <code>ParamSpec</code>, and overloads;</li><li>choose appropriately among threads, processes, and <code>asyncio</code>;</li><li>structure packages around explicit dependencies and stable boundaries;</li><li>write layered tests, diagnose failures, profile bottlenecks, and reduce risk;</li><li>build a concurrent, extensible log-analysis application.</li></ul>
+<h2 id="study-workflow">Study workflow</h2>
+<div class="table-wrap"><table><thead><tr><th>Pass</th><th>Activity</th><th>Evidence of understanding</th></tr></thead><tbody><tr><td>1. Trace</td><td>predict object states and control flow</td><td>explain which protocol method runs next</td></tr><tr><td>2. Execute</td><td>run the smallest example</td><td>identify output, exception, and side effects</td></tr><tr><td>3. Vary</td><td>change types, sizes, and failure timing</td><td>explain why behavior changed</td></tr><tr><td>4. Test</td><td>encode normal, boundary, and cancellation cases</td><td>reproduce a failure automatically</td></tr><tr><td>5. Apply</td><td>use the idea in a small package</td><td>keep the public interface simpler than the implementation</td></tr></tbody></table></div>
+<h1 id="1-advanced-python-mindset-and-environment">1. Advanced Python mindset and environment</h1>
+<h2 id="1-1-prefer-contracts-over-tricks">1.1 Prefer contracts over tricks</h2>
+<p>A powerful feature is useful only when it makes a contract clearer. A generator can expose a lazy stream, a protocol can decouple a service from storage, and a decorator can apply one cross-cutting policy. The same tools become harmful when they hide control flow or create implicit global state.</p>
+<p>Use four questions before adopting an advanced technique:</p>
+<ol><li>What behavior does the caller observe?</li><li>Which failures are part of the interface?</li><li>Who owns resources and mutable state?</li><li>Is a simpler function or object sufficient?</li></ol>
+<h2 id="1-2-inspect-the-active-runtime">1.2 Inspect the active runtime</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import platform
+import sys
+
+print(sys.version)
+print(sys.executable)
+print(platform.python_implementation())
+print(sys.flags.optimize)</code></pre></div>
+<p>Behavior can depend on the Python implementation and version. CPython details such as reference counting are useful for diagnosis but should not become public application assumptions unless documented.</p>
+<h2 id="1-3-create-a-reproducible-development-environment">1.3 Create a reproducible development environment</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m venv .venv
+python -m pip install --upgrade pip
+python -m pip install pytest pytest-cov mypy ruff
+python -m pip freeze</code></pre></div>
+<p>Locking strategy depends on the project. Libraries normally declare compatible dependency ranges; deployable applications normally resolve and record exact versions. Always test the oldest and newest Python versions you claim to support.</p>
+<h2 id="1-4-introspection-is-a-diagnostic-tool">1.4 Introspection is a diagnostic tool</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import inspect
+
+
+def transform(value: int, *, scale: float = 1.0) -&gt; float:
+    &quot;&quot;&quot;Scale an integer value.&quot;&quot;&quot;
+    return value * scale
+
+
+print(inspect.signature(transform))
+print(inspect.getdoc(transform))
+print(transform.__annotations__)</code></pre></div>
+<p>Introspection powers frameworks and developer tools, but business logic should normally depend on explicit interfaces rather than repeatedly inspecting arbitrary objects.</p>
+<h1 id="2-the-python-data-model-and-protocols">2. The Python data model and protocols</h1>
+<p>Python syntax delegates to special methods. <code>len(x)</code> calls <code>x.__len__()</code>, <code>x + y</code> tries numeric protocol methods, and membership may call <code>__contains__()</code> or fall back to iteration.</p>
+<div class="table-wrap"><table><thead><tr><th>Syntax</th><th>Protocol method or operation</th></tr></thead><tbody><tr><td><code>len(obj)</code></td><td><code>obj.__len__()</code></td></tr><tr><td><code>obj[key]</code></td><td><code>obj.__getitem__(key)</code></td></tr><tr><td><code>item in obj</code></td><td><code>obj.__contains__(item)</code> or iteration</td></tr><tr><td><code>for x in obj</code></td><td><code>iter(obj)</code>, then <code>next(...)</code></td></tr><tr><td><code>with obj</code></td><td><code>__enter__()</code> and <code>__exit__()</code></td></tr><tr><td><code>obj()</code></td><td><code>obj.__call__()</code></td></tr><tr><td><code>str(obj)</code></td><td><code>obj.__str__()</code></td></tr></tbody></table></div>
+<h2 id="2-1-a-small-sequence-type">2.1 A small sequence type</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator, Sequence
+from typing import overload
+
+
+class TemperatureSeries(Sequence[float]):
+    def __init__(self, values: list[float]) -&gt; None:
+        self._values = tuple(float(value) for value in values)
+
+    def __len__(self) -&gt; int:
+        return len(self._values)
+
+    @overload
+    def __getitem__(self, index: int) -&gt; float: ...
+
+    @overload
+    def __getitem__(self, index: slice) -&gt; &quot;TemperatureSeries&quot;: ...
+
+    def __getitem__(self, index: int | slice) -&gt; float | &quot;TemperatureSeries&quot;:
+        result = self._values[index]
+        if isinstance(index, slice):
+            return TemperatureSeries(list(result))
+        return result
+
+    def __iter__(self) -&gt; Iterator[float]:
+        return iter(self._values)
+
+
+series = TemperatureSeries([18, 21.5, 19])
+print(len(series), series[1], list(series[:2]))</code></pre></div>
+<p>Inheriting <code>Sequence</code> documents the intended contract and supplies mixin methods such as <code>index()</code> and <code>count()</code>. Implement only protocols your type can honor consistently.</p>
+<h2 id="2-2-reflected-operations-and-notimplemented">2.2 Reflected operations and <code>NotImplemented</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Vector:
+    x: float
+    y: float
+
+    def __add__(self, other: object) -&gt; &quot;Vector&quot;:
+        if not isinstance(other, Vector):
+            return NotImplemented
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __mul__(self, scalar: object) -&gt; &quot;Vector&quot;:
+        if not isinstance(scalar, int | float):
+            return NotImplemented
+        return Vector(self.x * scalar, self.y * scalar)
+
+    def __rmul__(self, scalar: object) -&gt; &quot;Vector&quot;:
+        return self * scalar
+
+
+print(Vector(1, 2) + Vector(3, 4))
+print(3 * Vector(2, 5))</code></pre></div>
+<p>Return <code>NotImplemented</code> for an unsupported operand so Python can try the reflected method or raise the correct <code>TypeError</code>. Do not raise <code>NotImplemented</code>; it is a singleton value, not an exception.</p>
+<h2 id="2-3-representation-and-formatting">2.3 Representation and formatting</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class ByteSize:
+    def __init__(self, count: int) -&gt; None:
+        if count &lt; 0:
+            raise ValueError(&quot;count cannot be negative&quot;)
+        self.count = count
+
+    def __repr__(self) -&gt; str:
+        return f&quot;ByteSize({self.count!r})&quot;
+
+    def __str__(self) -&gt; str:
+        return f&quot;{self.count:,} bytes&quot;
+
+    def __format__(self, spec: str) -&gt; str:
+        if spec == &quot;kb&quot;:
+            return f&quot;{self.count / 1024:.2f} KiB&quot;
+        return format(str(self), spec)
+
+
+size = ByteSize(2_560)
+print(repr(size))
+print(str(size))
+print(f&quot;{size:kb}&quot;)</code></pre></div>
+<p><code>repr()</code> should favor unambiguous developer information; <code>str()</code> should favor a readable user representation.</p>
+<h1 id="3-identity-mutability-aliasing-and-copying">3. Identity, mutability, aliasing, and copying</h1>
+<p>Assignment binds a name to an object; it does not copy the object. Mutating a shared object is visible through every alias.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">configuration = {&quot;features&quot;: [&quot;search&quot;]}
+alias = configuration
+alias[&quot;features&quot;].append(&quot;export&quot;)
+
+print(configuration)
+print(alias is configuration)</code></pre></div>
+<h2 id="3-1-shallow-and-deep-copies">3.1 Shallow and deep copies</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from copy import copy, deepcopy
+
+original = {&quot;name&quot;: &quot;job&quot;, &quot;steps&quot;: [{&quot;action&quot;: &quot;load&quot;}]}
+shallow = copy(original)
+deep = deepcopy(original)
+
+shallow[&quot;steps&quot;][0][&quot;action&quot;] = &quot;validate&quot;
+deep[&quot;steps&quot;].append({&quot;action&quot;: &quot;save&quot;})
+
+print(original)
+print(deep)</code></pre></div>
+<p>A shallow copy duplicates the outer container and shares nested objects. A deep copy recursively duplicates an object graph, but it can be expensive or semantically wrong for files, locks, database connections, and shared domain entities. Explicit reconstruction is often safer.</p>
+<h2 id="3-2-immutable-value-objects">3.2 Immutable value objects</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass, replace
+from decimal import Decimal
+
+
+@dataclass(frozen=True, slots=True)
+class Money:
+    amount: Decimal
+    currency: str
+
+    def __post_init__(self) -&gt; None:
+        if len(self.currency) != 3:
+            raise ValueError(&quot;currency must be a three-letter code&quot;)
+        object.__setattr__(self, &quot;currency&quot;, self.currency.upper())
+
+
+price = Money(Decimal(&quot;19.99&quot;), &quot;cad&quot;)
+discounted = replace(price, amount=Decimal(&quot;17.99&quot;))
+print(price, discounted)</code></pre></div>
+<p>Immutability makes sharing safer and simplifies hashing, caching, concurrency, and reasoning. It does not guarantee that referenced fields are deeply immutable.</p>
+<h2 id="3-3-weak-references">3.3 Weak references</h2>
+<p>Weak references observe an object without keeping it alive, which is useful for caches and registries that must not control lifetime.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import weakref
+
+
+class Session:
+    pass
+
+
+session = Session()
+reference = weakref.ref(session)
+print(reference() is session)
+
+del session
+print(reference())</code></pre></div>
+<p>Do not use weak references as a substitute for clear ownership. They introduce timing-sensitive absence that callers must handle.</p>
+<h1 id="4-hashing-equality-dictionaries-and-sets">4. Hashing, equality, dictionaries, and sets</h1>
+<p>Hashable objects need a stable hash value and compatible equality: if <code>a == b</code>, then <code>hash(a) == hash(b)</code>. Objects used as dictionary keys or set members must not change the fields involved in hashing.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Coordinate:
+    latitude: float
+    longitude: float
+
+
+locations = {
+    Coordinate(53.5461, -113.4938): &quot;Edmonton&quot;,
+    Coordinate(51.0447, -114.0719): &quot;Calgary&quot;,
+}
+print(locations[Coordinate(53.5461, -113.4938)])</code></pre></div>
+<h2 id="4-1-dictionary-tools">4.1 Dictionary tools</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections import defaultdict
+
+events = [
+    (&quot;api&quot;, 120),
+    (&quot;worker&quot;, 80),
+    (&quot;api&quot;, 150),
+]
+
+latencies: defaultdict[str, list[int]] = defaultdict(list)
+for service, latency in events:
+    latencies[service].append(latency)
+
+averages = {
+    service: sum(values) / len(values)
+    for service, values in latencies.items()
+}
+print(averages)</code></pre></div>
+<p>Use <code>defaultdict</code> when creating a missing default is always valid. Use ordinary dictionaries when absence must remain distinguishable from an empty value.</p>
+<h2 id="4-2-set-algebra-as-domain-logic">4.2 Set algebra as domain logic</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">required = {&quot;read&quot;, &quot;export&quot;}
+granted = {&quot;read&quot;, &quot;write&quot;, &quot;export&quot;}
+revoked = {&quot;write&quot;}
+
+effective = granted - revoked
+print(required &lt;= effective)
+print(effective &amp; required)
+print(effective - required)</code></pre></div>
+<p>Set operations often express authorization, feature flags, tags, and graph frontiers more directly than nested loops.</p>
+<h1 id="5-advanced-sequence-operations-and-unpacking">5. Advanced sequence operations and unpacking</h1>
+<h2 id="5-1-slices-are-objects">5.1 Slices are objects</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">values = list(range(20))
+window = slice(3, 15, 2)
+
+print(values[window])
+print(window.indices(len(values)))</code></pre></div>
+<p>Custom sequence types receive the actual <code>slice</code> object and should decide whether slicing returns the same domain type or a built-in collection.</p>
+<h2 id="5-2-extended-unpacking">5.2 Extended unpacking</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">header, *rows, footer = [&quot;BEGIN&quot;, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;END&quot;]
+first, second = (10, 20)
+merged = [0, *range(1, 4), 4]
+options = {&quot;timeout&quot;: 5, **{&quot;retries&quot;: 3}}
+
+print(header, rows, footer)
+print(first, second, merged, options)</code></pre></div>
+<p>Unpacking is useful at clear structural boundaries. Avoid deeply nested unpacking when validation or error reporting would be clearer with named fields.</p>
+<h2 id="5-3-memory-views-and-binary-data">5.3 Memory views and binary data</h2>
+<p><code>memoryview</code> can expose slices of binary buffers without copying the underlying bytes.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">payload = bytearray(b&quot;HEADER:data&quot;)
+view = memoryview(payload)
+body = view[7:]
+body[:4] = b&quot;INFO&quot;
+
+print(payload)
+body.release()
+view.release()</code></pre></div>
+<p>This matters for large buffers and high-throughput I/O, but ordinary <code>bytes</code> operations are simpler unless profiling shows copies are significant.</p>
+<h1 id="6-iterables-iterators-and-lazy-evaluation">6. Iterables, iterators, and lazy evaluation</h1>
+<p>An iterable can produce an iterator. An iterator remembers traversal state and returns one value per <code>next()</code> call until it raises <code>StopIteration</code>.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">values = [10, 20, 30]
+iterator = iter(values)
+
+print(next(iterator))
+print(next(iterator))
+print(list(iterator))
+print(list(iterator))  # exhausted iterators stay exhausted</code></pre></div>
+<h2 id="6-1-a-custom-iterator">6.1 A custom iterator</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator
+
+
+class Countdown(Iterator[int]):
+    def __init__(self, start: int) -&gt; None:
+        self.current = start
+
+    def __iter__(self) -&gt; &quot;Countdown&quot;:
+        return self
+
+    def __next__(self) -&gt; int:
+        if self.current &lt;= 0:
+            raise StopIteration
+        value = self.current
+        self.current -= 1
+        return value
+
+
+print(list(Countdown(3)))</code></pre></div>
+<p>Most custom iteration is shorter and clearer as a generator, but implementing the protocol once makes lazy behavior explicit.</p>
+<h2 id="6-2-sentinel-iteration">6.2 Sentinel iteration</h2>
+<p>The two-argument form <code>iter(callable, sentinel)</code> repeatedly calls a zero-argument callable until the sentinel is returned.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from io import StringIO
+
+stream = StringIO(&quot;alpha\nbeta\n&quot;)
+lines = iter(stream.readline, &quot;&quot;)
+
+for line in lines:
+    print(line.rstrip())</code></pre></div>
+<h2 id="6-3-single-pass-interfaces">6.3 Single-pass interfaces</h2>
+<p>If a function may accept an iterator, do not traverse it twice unless you explicitly materialize it.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterable
+
+
+def summarize(values: Iterable[float]) -&gt; tuple[int, float]:
+    count = 0
+    total = 0.0
+    for value in values:
+        count += 1
+        total += value
+    return count, total
+
+
+print(summarize(number / 10 for number in range(5)))</code></pre></div>
+<h1 id="7-generators-and-coroutine-like-generator-features">7. Generators and coroutine-like generator features</h1>
+<p>A function containing <code>yield</code> returns a generator object. Its local state is suspended between values.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator
+
+
+def read_batches(items: list[str], size: int) -&gt; Iterator[list[str]]:
+    if size &lt;= 0:
+        raise ValueError(&quot;size must be positive&quot;)
+    for start in range(0, len(items), size):
+        yield items[start : start + size]
+
+
+for batch in read_batches([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;], 2):
+    print(batch)</code></pre></div>
+<h2 id="7-1-delegation-with-yield-from">7.1 Delegation with <code>yield from</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterable, Iterator
+
+
+def flatten(groups: Iterable[Iterable[int]]) -&gt; Iterator[int]:
+    for group in groups:
+        yield from group
+
+
+print(list(flatten([[1, 2], [], [3, 4]])))</code></pre></div>
+<p><code>yield from</code> delegates iteration and also forwards advanced generator operations. For ordinary flattening, its most important benefit is expressing delegation clearly.</p>
+<h2 id="7-2-cleanup-and-generatorexit">7.2 Cleanup and <code>GeneratorExit</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator
+
+
+def managed_stream() -&gt; Iterator[int]:
+    print(&quot;open&quot;)
+    try:
+        yield 1
+        yield 2
+    finally:
+        print(&quot;close&quot;)
+
+
+stream = managed_stream()
+print(next(stream))
+stream.close()</code></pre></div>
+<p>Consumers should close generators that own resources, or the generator should acquire the resource inside a context managed by the caller.</p>
+<h2 id="7-3-sending-values">7.3 Sending values</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Generator
+
+
+def running_average() -&gt; Generator[float, float, None]:
+    total = 0.0
+    count = 0
+    value = yield 0.0
+    while True:
+        total += value
+        count += 1
+        value = yield total / count
+
+
+averager = running_average()
+next(averager)
+print(averager.send(10))
+print(averager.send(20))
+averager.close()</code></pre></div>
+<p>Generator <code>send()</code> is educational but is rarely the clearest application architecture today. Use ordinary objects for stateful APIs and <code>async</code> coroutines for asynchronous workflows.</p>
+<h1 id="8-building-pipelines-with-itertools">8. Building pipelines with <code>itertools</code></h1>
+<p><code>itertools</code> provides composable, lazy building blocks implemented efficiently.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from itertools import chain, islice
+
+pages = [[&quot;a&quot;, &quot;b&quot;], [&quot;c&quot;], [&quot;d&quot;, &quot;e&quot;]]
+first_four = list(islice(chain.from_iterable(pages), 4))
+print(first_four)</code></pre></div>
+<h2 id="8-1-group-consecutive-data">8.1 Group consecutive data</h2>
+<p><code>groupby()</code> groups adjacent items, so sort first when you intend global grouping.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from itertools import groupby
+from operator import itemgetter
+
+records = [
+    {&quot;team&quot;: &quot;blue&quot;, &quot;score&quot;: 8},
+    {&quot;team&quot;: &quot;red&quot;, &quot;score&quot;: 9},
+    {&quot;team&quot;: &quot;blue&quot;, &quot;score&quot;: 7},
+]
+
+records.sort(key=itemgetter(&quot;team&quot;))
+for team, group in groupby(records, key=itemgetter(&quot;team&quot;)):
+    print(team, sum(item[&quot;score&quot;] for item in group))</code></pre></div>
+<h2 id="8-2-sliding-windows">8.2 Sliding windows</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections import deque
+from collections.abc import Iterable, Iterator
+from itertools import islice
+from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+
+def sliding_window(values: Iterable[T], size: int) -&gt; Iterator[tuple[T, ...]]:
+    if size &lt;= 0:
+        raise ValueError(&quot;size must be positive&quot;)
+    iterator = iter(values)
+    window = deque(islice(iterator, size), maxlen=size)
+    if len(window) == size:
+        yield tuple(window)
+    for value in iterator:
+        window.append(value)
+        yield tuple(window)
+
+
+print(list(sliding_window([1, 2, 3, 4], 3)))</code></pre></div>
+<h2 id="8-3-infinite-iterators-require-boundaries">8.3 Infinite iterators require boundaries</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from itertools import count, islice
+
+even_numbers = (number for number in count() if number % 2 == 0)
+print(list(islice(even_numbers, 5)))</code></pre></div>
+<p>Pair infinite sources such as <code>count()</code>, <code>cycle()</code>, and <code>repeat()</code> with <code>islice()</code>, a stopping predicate, or an external cancellation policy.</p>
+<h1 id="9-first-class-functions-closures-and-callable-objects">9. First-class functions, closures, and callable objects</h1>
+<p>Functions are objects: they can be stored, passed, returned, annotated, and inspected.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+
+
+def apply_twice(function: Callable[[int], int], value: int) -&gt; int:
+    return function(function(value))
+
+
+def increment(value: int) -&gt; int:
+    return value + 1
+
+
+print(apply_twice(increment, 10))</code></pre></div>
+<h2 id="9-1-closures-capture-bindings">9.1 Closures capture bindings</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+
+
+def make_multiplier(factor: float) -&gt; Callable[[float], float]:
+    def multiply(value: float) -&gt; float:
+        return value * factor
+
+    return multiply
+
+
+double = make_multiplier(2)
+print(double(7.5))
+print(double.__closure__[0].cell_contents)</code></pre></div>
+<p>Late binding is a common closure surprise. Capture the current value with a default parameter or create a helper scope.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">functions = [lambda value, factor=factor: value * factor for factor in range(3)]
+print([function(10) for function in functions])</code></pre></div>
+<h2 id="9-2-callable-objects">9.2 Callable objects</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass
+class Threshold:
+    minimum: float
+
+    def __call__(self, value: float) -&gt; bool:
+        return value &gt;= self.minimum
+
+
+is_passing = Threshold(60)
+print(list(filter(is_passing, [55, 72, 60, 48])))</code></pre></div>
+<p>A callable object is useful when behavior needs explicit configuration, state, representation, or multiple supporting methods.</p>
+<h2 id="9-3-partial-application">9.3 Partial application</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from functools import partial
+
+
+def convert(value: float, *, rate: float, fee: float = 0.0) -&gt; float:
+    return value * rate - fee
+
+
+usd_to_cad = partial(convert, rate=1.36)
+print(usd_to_cad(100))</code></pre></div>
+<h1 id="10-decorators-that-preserve-contracts">10. Decorators that preserve contracts</h1>
+<p>A decorator receives a callable and returns a replacement callable. It is appropriate for one policy shared across many functions, such as tracing, caching, authorization, retry, or registration.</p>
+<h2 id="10-1-a-typed-timing-decorator">10.1 A typed timing decorator</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+from functools import wraps
+from time import perf_counter
+from typing import ParamSpec, TypeVar
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;)
+
+
+def timed(function: Callable[P, R]) -&gt; Callable[P, R]:
+    @wraps(function)
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+        started = perf_counter()
+        try:
+            return function(*args, **kwargs)
+        finally:
+            elapsed = perf_counter() - started
+            print(f&quot;{function.__name__} took {elapsed:.6f}s&quot;)
+
+    return wrapper
+
+
+@timed
+def total(values: list[int]) -&gt; int:
+    return sum(values)
+
+
+print(total([1, 2, 3]))</code></pre></div>
+<p><code>functools.wraps</code> preserves metadata and the <code>__wrapped__</code> chain, helping documentation, inspection, testing, and other decorators.</p>
+<h2 id="10-2-a-parameterized-retry-decorator">10.2 A parameterized retry decorator</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+from functools import wraps
+from time import sleep
+from typing import ParamSpec, TypeVar
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;)
+
+
+def retry(
+    *,
+    attempts: int,
+    delay: float = 0.0,
+    retry_on: tuple[type[Exception], ...] = (OSError,),
+) -&gt; Callable[[Callable[P, R]], Callable[P, R]]:
+    if attempts &lt; 1:
+        raise ValueError(&quot;attempts must be at least one&quot;)
+
+    def decorate(function: Callable[P, R]) -&gt; Callable[P, R]:
+        @wraps(function)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+            last_error: Exception | None = None
+            for attempt in range(1, attempts + 1):
+                try:
+                    return function(*args, **kwargs)
+                except retry_on as error:
+                    last_error = error
+                    if attempt &lt; attempts:
+                        sleep(delay)
+            assert last_error is not None
+            raise last_error
+
+        return wrapper
+
+    return decorate</code></pre></div>
+<p>Retry only operations known to be safe to repeat. Use bounded attempts, classify transient failures precisely, add jitter in distributed systems, and preserve an overall time budget.</p>
+<h2 id="10-3-class-based-decorators">10.3 Class-based decorators</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import Any
+
+
+@dataclass
+class CountCalls:
+    function: Callable[..., Any]
+    calls: int = field(default=0, init=False)
+
+    def __call__(self, *args: object, **kwargs: object) -&gt; Any:
+        self.calls += 1
+        return self.function(*args, **kwargs)
+
+
+@CountCalls
+def greet(name: str) -&gt; str:
+    return f&quot;Hello, {name}&quot;
+
+
+print(greet(&quot;Ada&quot;))
+print(greet.calls)</code></pre></div>
+<p>Class decorators store state naturally, but descriptor binding must be considered if they decorate instance methods. A function-based wrapper is usually simpler.</p>
+<h1 id="11-context-managers-and-deterministic-cleanup">11. Context managers and deterministic cleanup</h1>
+<p>Context managers define setup and teardown around a block. Cleanup runs whether the block succeeds, returns, or raises.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class Transaction:
+    def __enter__(self) -&gt; &quot;Transaction&quot;:
+        print(&quot;BEGIN&quot;)
+        return self
+
+    def commit(self) -&gt; None:
+        print(&quot;COMMIT&quot;)
+
+    def rollback(self) -&gt; None:
+        print(&quot;ROLLBACK&quot;)
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: object,
+    ) -&gt; bool:
+        if exc_type is None:
+            self.commit()
+        else:
+            self.rollback()
+        return False
+
+
+with Transaction():
+    print(&quot;update records&quot;)</code></pre></div>
+<p>Returning <code>True</code> from <code>__exit__</code> suppresses the exception. Suppress only failures the context manager can fully handle; unexpected errors should propagate.</p>
+<h2 id="11-1-generator-based-context-managers">11.1 Generator-based context managers</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+
+@contextmanager
+def temporary_workspace() -&gt; Iterator[Path]:
+    with TemporaryDirectory() as directory:
+        path = Path(directory)
+        print(f&quot;created {path}&quot;)
+        yield path
+        print(f&quot;removing {path}&quot;)
+
+
+with temporary_workspace() as workspace:
+    (workspace / &quot;result.txt&quot;).write_text(&quot;done&quot;, encoding=&quot;utf-8&quot;)</code></pre></div>
+<p>Exactly one <code>yield</code> separates setup from teardown. Put teardown in <code>finally</code> if additional code before or after <code>yield</code> can fail.</p>
+<h2 id="11-2-dynamic-resources-with-exitstack">11.2 Dynamic resources with <code>ExitStack</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from contextlib import ExitStack
+from pathlib import Path
+from typing import TextIO
+
+
+def open_all(paths: list[Path]) -&gt; tuple[ExitStack, list[TextIO]]:
+    stack = ExitStack()
+    try:
+        handles = [
+            stack.enter_context(path.open(&quot;r&quot;, encoding=&quot;utf-8&quot;))
+            for path in paths
+        ]
+    except BaseException:
+        stack.close()
+        raise
+    return stack, handles</code></pre></div>
+<p>Often it is better for the caller to own the <code>ExitStack</code> directly. The example emphasizes that ownership must be explicit when a function returns live resources.</p>
+<h2 id="11-3-async-context-managers">11.3 Async context managers</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
+
+
+@asynccontextmanager
+async def connected(client: &quot;AsyncClient&quot;) -&gt; AsyncIterator[&quot;AsyncClient&quot;]:
+    await client.connect()
+    try:
+        yield client
+    finally:
+        await client.close()</code></pre></div>
+<p>Async cleanup can itself await network or storage operations. Cancellation policies must still guarantee release, usually through <code>try/finally</code>.</p>
+<h1 id="12-attribute-access-properties-and-descriptors">12. Attribute access, properties, and descriptors</h1>
+<p>Functions stored on a class are descriptors: accessing one through an instance creates a bound method. <code>property</code>, <code>classmethod</code>, and <code>staticmethod</code> also use the descriptor protocol.</p>
+<h2 id="12-1-validated-properties">12.1 Validated properties</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class Percentage:
+    def __init__(self, value: float) -&gt; None:
+        self.value = value
+
+    @property
+    def value(self) -&gt; float:
+        return self._value
+
+    @value.setter
+    def value(self, new_value: float) -&gt; None:
+        if not 0 &lt;= new_value &lt;= 100:
+            raise ValueError(&quot;percentage must be between 0 and 100&quot;)
+        self._value = float(new_value)
+
+
+progress = Percentage(75)
+progress.value = 82.5
+print(progress.value)</code></pre></div>
+<p>A property can preserve a simple attribute interface while adding validation or computation. Avoid surprising I/O or expensive work behind ordinary attribute access.</p>
+<h2 id="12-2-reusable-descriptor-validation">12.2 Reusable descriptor validation</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Any
+
+
+class PositiveNumber:
+    def __set_name__(self, owner: type, name: str) -&gt; None:
+        self.storage_name = f&quot;_{name}&quot;
+
+    def __get__(self, instance: object, owner: type | None = None) -&gt; float | &quot;PositiveNumber&quot;:
+        if instance is None:
+            return self
+        return getattr(instance, self.storage_name)
+
+    def __set__(self, instance: object, value: float) -&gt; None:
+        if value &lt;= 0:
+            raise ValueError(f&quot;{self.storage_name[1:]} must be positive&quot;)
+        setattr(instance, self.storage_name, float(value))
+
+
+class Rectangle:
+    width = PositiveNumber()
+    height = PositiveNumber()
+
+    def __init__(self, width: float, height: float) -&gt; None:
+        self.width = width
+        self.height = height
+
+    @property
+    def area(self) -&gt; float:
+        return self.width * self.height
+
+
+print(Rectangle(3, 4).area)</code></pre></div>
+<p>Descriptors are valuable in frameworks or domain models with repeated attribute behavior. For one field on one class, a property is easier to understand.</p>
+<h2 id="12-3-attribute-lookup-hooks">12.3 Attribute lookup hooks</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class Settings:
+    def __init__(self, values: dict[str, str]) -&gt; None:
+        self._values = values
+
+    def __getattr__(self, name: str) -&gt; str:
+        try:
+            return self._values[name]
+        except KeyError as error:
+            raise AttributeError(name) from error
+
+
+settings = Settings({&quot;region&quot;: &quot;ca-west&quot;})
+print(settings.region)</code></pre></div>
+<p><code>__getattr__</code> runs only after normal lookup fails. <code>__getattribute__</code> intercepts every lookup and is easy to make recursively incorrect; reserve it for specialized infrastructure.</p>
+<h2 id="12-4-cached-properties">12.4 Cached properties</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from functools import cached_property
+
+
+class Dataset:
+    def __init__(self, values: list[float]) -&gt; None:
+        self.values = values
+
+    @cached_property
+    def mean(self) -&gt; float:
+        print(&quot;computing&quot;)
+        return sum(self.values) / len(self.values)
+
+
+dataset = Dataset([1, 2, 6])
+print(dataset.mean)
+print(dataset.mean)</code></pre></div>
+<p>Cached values become stale if their inputs mutate. Use cached properties with immutable inputs, explicit invalidation, or objects whose lifecycle makes staleness impossible.</p>
+<h1 id="13-class-design-inheritance-and-__slots__">13. Class design, inheritance, and <code>__slots__</code></h1>
+<h2 id="13-1-composition-and-dependency-injection">13.1 Composition and dependency injection</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from typing import Protocol
+
+
+class MessageSender(Protocol):
+    def send(self, recipient: str, text: str) -&gt; None: ...
+
+
+@dataclass
+class AlertService:
+    sender: MessageSender
+
+    def high_temperature(self, recipient: str, value: float) -&gt; None:
+        if value &gt;= 40:
+            self.sender.send(recipient, f&quot;High temperature: {value}&quot;)</code></pre></div>
+<p>The service receives its dependency instead of constructing a particular sender. This keeps domain logic testable and makes infrastructure replaceable.</p>
+<h2 id="13-2-cooperative-multiple-inheritance">13.2 Cooperative multiple inheritance</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class TimestampMixin:
+    def describe(self) -&gt; str:
+        return f&quot;timestamped -&gt; {super().describe()}&quot;
+
+
+class JsonMixin:
+    def describe(self) -&gt; str:
+        return f&quot;json -&gt; {super().describe()}&quot;
+
+
+class BaseRecord:
+    def describe(self) -&gt; str:
+        return &quot;record&quot;
+
+
+class Event(TimestampMixin, JsonMixin, BaseRecord):
+    pass
+
+
+print(Event().describe())
+print([cls.__name__ for cls in Event.mro()])</code></pre></div>
+<p>Cooperative mixins accept compatible signatures and call <code>super()</code>. Complex multiple inheritance is a maintenance cost; composition is usually safer for business capabilities.</p>
+<h2 id="13-3-abstract-base-classes">13.3 Abstract base classes</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from abc import ABC, abstractmethod
+
+
+class Serializer(ABC):
+    @abstractmethod
+    def dumps(self, value: object) -&gt; str:
+        raise NotImplementedError
+
+    def dump_lines(self, values: list[object]) -&gt; str:
+        return &quot;\n&quot;.join(self.dumps(value) for value in values)</code></pre></div>
+<p>Use an ABC when runtime inheritance and shared implementation are important. Use a <code>Protocol</code> when structural compatibility and static typing are sufficient.</p>
+<h2 id="13-4-__slots__">13.4 <code>__slots__</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class Point:
+    __slots__ = (&quot;x&quot;, &quot;y&quot;)
+
+    def __init__(self, x: float, y: float) -&gt; None:
+        self.x = x
+        self.y = y
+
+
+point = Point(2, 3)
+print(point.x, point.y)</code></pre></div>
+<p>Slots can reduce memory for very many instances and prevent accidental attributes. They are not a security mechanism and can complicate inheritance, weak references, and some serialization. Measure before adopting them manually; <code>@dataclass(slots=True)</code> is convenient.</p>
+<h1 id="14-controlled-metaprogramming">14. Controlled metaprogramming</h1>
+<p>Metaprogramming changes classes or functions during definition. Prefer the least powerful tool that solves the problem: ordinary functions, class decorators, <code>__init_subclass__</code>, and only then metaclasses.</p>
+<h2 id="14-1-registries-with-__init_subclass__">14.1 Registries with <code>__init_subclass__</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import ClassVar
+
+
+class Parser:
+    registry: ClassVar[dict[str, type[&quot;Parser&quot;]]] = {}
+    format_name: ClassVar[str]
+
+    def __init_subclass__(cls, *, format_name: str, **kwargs: object) -&gt; None:
+        super().__init_subclass__(**kwargs)
+        if format_name in cls.registry:
+            raise ValueError(f&quot;duplicate parser: {format_name}&quot;)
+        cls.format_name = format_name
+        cls.registry[format_name] = cls
+
+    def parse(self, text: str) -&gt; object:
+        raise NotImplementedError
+
+
+class TextParser(Parser, format_name=&quot;text&quot;):
+    def parse(self, text: str) -&gt; object:
+        return text.strip()
+
+
+print(Parser.registry)</code></pre></div>
+<p>Automatic registration reduces wiring but creates import-order requirements: a plugin must be imported before it appears in the registry. Document that lifecycle explicitly.</p>
+<h2 id="14-2-class-decorators">14.2 Class decorators</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;, bound=type)
+
+
+def add_version(version: str):
+    def decorate(cls: T) -&gt; T:
+        cls.version = version
+        return cls
+
+    return decorate
+
+
+@add_version(&quot;2.0&quot;)
+@dataclass
+class Report:
+    title: str
+
+
+print(Report.version)</code></pre></div>
+<p>Decorator order is bottom-up. Mutating a class can surprise type checkers; when possible, define the attribute in a base class or protocol.</p>
+<h2 id="14-3-a-minimal-metaclass">14.3 A minimal metaclass</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class NamedMeta(type):
+    def __new__(
+        metaclass,
+        name: str,
+        bases: tuple[type, ...],
+        namespace: dict[str, object],
+    ) -&gt; &quot;NamedMeta&quot;:
+        namespace.setdefault(&quot;label&quot;, name.casefold())
+        return super().__new__(metaclass, name, bases, namespace)
+
+
+class Command(metaclass=NamedMeta):
+    pass
+
+
+print(Command.label)</code></pre></div>
+<p>Metaclasses are justified for framework-wide class construction rules. They compose poorly when unrelated bases use incompatible metaclasses, so application code should rarely need one.</p>
+<h1 id="15-advanced-static-typing">15. Advanced static typing</h1>
+<p>Type hints are executable metadata consumed by tools. They improve interface clarity but do not validate external data at runtime.</p>
+<h2 id="15-1-type-variables-and-generics">15.1 Type variables and generics</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from typing import Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+
+@dataclass
+class Page(Generic[T]):
+    items: list[T]
+    total: int
+    next_cursor: str | None = None
+
+
+users: Page[str] = Page([&quot;Ada&quot;, &quot;Lin&quot;], total=10, next_cursor=&quot;abc&quot;)
+print(users.items)</code></pre></div>
+<p>Python 3.12 adds type-parameter syntax such as <code>class Page[T]:</code>, but <code>TypeVar</code> remains necessary when supporting earlier versions.</p>
+<h2 id="15-2-covariance-and-immutability">15.2 Covariance and immutability</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Generic, TypeVar
+
+T_co = TypeVar(&quot;T_co&quot;, covariant=True)
+
+
+class ReadOnlyBox(Generic[T_co]):
+    def __init__(self, value: T_co) -&gt; None:
+        self._value = value
+
+    def get(self) -&gt; T_co:
+        return self._value</code></pre></div>
+<p>Covariance is safe because values only flow out. Mutable containers are normally invariant because accepting a broader type could let callers insert an incompatible value.</p>
+<h2 id="15-3-structural-typing-with-protocols">15.3 Structural typing with protocols</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterable
+from typing import Protocol, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+
+class Repository(Protocol[T]):
+    def get(self, identifier: str) -&gt; T | None: ...
+    def save(self, item: T) -&gt; None: ...
+    def all(self) -&gt; Iterable[T]: ...</code></pre></div>
+<p>Protocol consumers depend on behavior, not a concrete inheritance tree. Keep protocols small and consumer-owned.</p>
+<h2 id="15-4-overloads">15.4 Overloads</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Literal, overload
+
+
+@overload
+def decode(data: bytes, *, as_text: Literal[True]) -&gt; str: ...
+
+
+@overload
+def decode(data: bytes, *, as_text: Literal[False] = False) -&gt; bytes: ...
+
+
+def decode(data: bytes, *, as_text: bool = False) -&gt; str | bytes:
+    return data.decode(&quot;utf-8&quot;) if as_text else data
+
+
+text = decode(b&quot;hello&quot;, as_text=True)
+raw = decode(b&quot;hello&quot;)</code></pre></div>
+<p>Overloads describe related call signatures to a type checker; one runtime implementation still handles all cases.</p>
+<h2 id="15-5-paramspec-and-higher-order-functions">15.5 <code>ParamSpec</code> and higher-order functions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+from typing import ParamSpec, TypeVar
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;)
+
+
+def synchronized(
+    lock: &quot;Lock&quot;,
+) -&gt; Callable[[Callable[P, R]], Callable[P, R]]:
+    def decorate(function: Callable[P, R]) -&gt; Callable[P, R]:
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+            with lock:
+                return function(*args, **kwargs)
+
+        return wrapper
+
+    return decorate</code></pre></div>
+<p><code>ParamSpec</code> preserves a callable's entire parameter specification, unlike a simple <code>TypeVar</code> for the return type.</p>
+<h2 id="15-6-typeddict-for-mapping-shaped-records">15.6 <code>TypedDict</code> for mapping-shaped records</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import NotRequired, TypedDict
+
+
+class UserPayload(TypedDict):
+    identifier: str
+    name: str
+    email: NotRequired[str]
+
+
+def display_name(payload: UserPayload) -&gt; str:
+    return payload[&quot;name&quot;].strip()</code></pre></div>
+<p><code>TypedDict</code> is static documentation for dictionary shape. Validate untrusted JSON at runtime before treating it as a <code>TypedDict</code>.</p>
+<h1 id="16-structural-pattern-matching">16. Structural pattern matching</h1>
+<p>Pattern matching can validate and destructure algebraic shapes, not just compare constants.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def handle_event(event: object) -&gt; str:
+    match event:
+        case {&quot;type&quot;: &quot;click&quot;, &quot;x&quot;: int(x), &quot;y&quot;: int(y)}:
+            return f&quot;click at {x},{y}&quot;
+        case {&quot;type&quot;: &quot;key&quot;, &quot;key&quot;: str(key)} if len(key) == 1:
+            return f&quot;character {key}&quot;
+        case [&quot;move&quot;, str(direction), int(steps)]:
+            return f&quot;move {direction} by {steps}&quot;
+        case _:
+            raise ValueError(f&quot;unsupported event: {event!r}&quot;)</code></pre></div>
+<h2 id="16-1-class-patterns">16.1 Class patterns</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Success:
+    value: object
+
+
+@dataclass(frozen=True)
+class Failure:
+    message: str
+    retryable: bool = False
+
+
+def render(result: Success | Failure) -&gt; str:
+    match result:
+        case Success(value):
+            return f&quot;ok: {value}&quot;
+        case Failure(message, retryable=True):
+            return f&quot;temporary failure: {message}&quot;
+        case Failure(message):
+            return f&quot;failure: {message}&quot;</code></pre></div>
+<p>Patterns should reflect stable domain variants. For a few boolean checks, ordinary <code>if</code> remains clearer.</p>
+<h2 id="16-2-guards-and-capture-pitfalls">16.2 Guards and capture pitfalls</h2>
+<p>An unqualified name in a pattern captures a value; it does not compare against an existing variable. Constants should be qualified enum members or literals.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from enum import Enum, auto
+
+
+class Status(Enum):
+    READY = auto()
+    BUSY = auto()
+
+
+def label(status: Status) -&gt; str:
+    match status:
+        case Status.READY:
+            return &quot;ready&quot;
+        case Status.BUSY:
+            return &quot;busy&quot;</code></pre></div>
+<h1 id="17-exception-design-and-exception-groups">17. Exception design and exception groups</h1>
+<p>Use exceptions for failures a caller may handle, and choose a hierarchy that communicates recovery policy.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class ApplicationError(Exception):
+    &quot;&quot;&quot;Base class for expected application failures.&quot;&quot;&quot;
+
+
+class ValidationError(ApplicationError):
+    pass
+
+
+class TemporaryServiceError(ApplicationError):
+    pass
+
+
+class RecordNotFoundError(ApplicationError):
+    def __init__(self, identifier: str) -&gt; None:
+        super().__init__(f&quot;record not found: {identifier}&quot;)
+        self.identifier = identifier</code></pre></div>
+<p>Do not expose low-level database or HTTP exceptions across a domain boundary. Translate them with chaining so the cause remains available.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def load_record(identifier: str) -&gt; dict[str, object]:
+    try:
+        return database.fetch(identifier)
+    except DatabaseTimeout as error:
+        raise TemporaryServiceError(&quot;record store timed out&quot;) from error</code></pre></div>
+<h2 id="17-1-exception-notes">17.1 Exception notes</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def parse_rows(rows: list[str]) -&gt; list[int]:
+    output: list[int] = []
+    for line_number, row in enumerate(rows, start=1):
+        try:
+            output.append(int(row))
+        except ValueError as error:
+            error.add_note(f&quot;while parsing line {line_number}: {row!r}&quot;)
+            raise
+    return output</code></pre></div>
+<p>Notes add diagnostic context without changing the exception type or losing its traceback.</p>
+<h2 id="17-2-exceptiongroup-and-except">17.2 <code>ExceptionGroup</code> and <code>except*</code></h2>
+<p>Concurrent operations can fail independently. Python 3.11 exception groups preserve multiple errors.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def validate_all(values: list[str]) -&gt; list[int]:
+    converted: list[int] = []
+    errors: list[Exception] = []
+    for index, value in enumerate(values):
+        try:
+            converted.append(int(value))
+        except ValueError as error:
+            error.add_note(f&quot;index={index}&quot;)
+            errors.append(error)
+    if errors:
+        raise ExceptionGroup(&quot;invalid values&quot;, errors)
+    return converted
+
+
+try:
+    validate_all([&quot;1&quot;, &quot;x&quot;, &quot;3&quot;, &quot;bad&quot;])
+except* ValueError as group:
+    print(f&quot;validation failures: {len(group.exceptions)}&quot;)</code></pre></div>
+<h2 id="17-3-cleanup-versus-recovery">17.3 Cleanup versus recovery</h2>
+<p><code>finally</code> guarantees cleanup; <code>except</code> handles or translates a failure; a context manager expresses resource ownership. Keep these responsibilities distinct.</p>
+<h1 id="18-choosing-a-concurrency-model">18. Choosing a concurrency model</h1>
+<p>Concurrency improves throughput when tasks spend time waiting; parallelism uses multiple CPU cores for computation. The workload and failure model determine the tool.</p>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>Best fit</th><th>Memory model</th><th>Main concerns</th></tr></thead><tbody><tr><td>threads</td><td>blocking I/O, legacy synchronous libraries</td><td>shared objects</td><td>races, locks, deadlocks</td></tr><tr><td>processes</td><td>CPU-heavy independent work</td><td>separate processes</td><td>serialization, startup, IPC</td></tr><tr><td><code>asyncio</code></td><td>many cooperative I/O tasks</td><td>one event-loop thread by default</td><td>cancellation, blocking the loop</td></tr><tr><td>sequential</td><td>small or simple workloads</td><td>simplest</td><td>may underuse wait time</td></tr></tbody></table></div>
+<p>In standard CPython builds, the global interpreter lock limits simultaneous execution of Python bytecode in threads. Threads still overlap I/O, and C extensions may release the lock. Do not choose a model from the GIL alone—measure the real workload.</p>
+<h2 id="18-1-shared-state-race">18.1 Shared-state race</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from threading import Lock
+
+
+class Counter:
+    def __init__(self) -&gt; None:
+        self._value = 0
+        self._lock = Lock()
+
+    def increment(self) -&gt; None:
+        with self._lock:
+            self._value += 1
+
+    @property
+    def value(self) -&gt; int:
+        with self._lock:
+            return self._value</code></pre></div>
+<p>The GIL does not turn multi-step application invariants into atomic operations. Prefer isolated or immutable data; use locks around the smallest complete invariant.</p>
+<h1 id="19-threads-and-futures">19. Threads and futures</h1>
+<p><code>concurrent.futures</code> provides a high-level interface for submitting work and collecting results.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.request import urlopen
+
+
+def fetch_size(url: str) -&gt; tuple[str, int]:
+    with urlopen(url, timeout=5) as response:
+        return url, len(response.read())
+
+
+urls = [&quot;https://example.com&quot;, &quot;https://www.python.org&quot;]
+with ThreadPoolExecutor(max_workers=4) as executor:
+    futures = [executor.submit(fetch_size, url) for url in urls]
+    for future in as_completed(futures):
+        try:
+            print(future.result())
+        except OSError as error:
+            print(f&quot;request failed: {error}&quot;)</code></pre></div>
+<p>Always set network timeouts. Bound worker counts and submitted work; otherwise a fast producer can consume memory or overload a dependency.</p>
+<h2 id="19-1-ordering-and-map">19.1 Ordering and <code>map</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+
+def normalize(value: str) -&gt; str:
+    return value.strip().casefold()
+
+
+with ThreadPoolExecutor(max_workers=3) as executor:
+    results = list(executor.map(normalize, [&quot; A &quot;, &quot;B &quot;, &quot; c&quot;]))
+
+print(results)</code></pre></div>
+<p><code>executor.map()</code> yields results in input order; <code>as_completed()</code> yields futures in completion order and makes per-task handling explicit.</p>
+<h2 id="19-2-producer-consumer-queues">19.2 Producer-consumer queues</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from queue import Queue
+from threading import Thread
+
+
+def worker(queue: Queue[str | None]) -&gt; None:
+    while True:
+        item = queue.get()
+        try:
+            if item is None:
+                return
+            print(item.upper())
+        finally:
+            queue.task_done()
+
+
+queue: Queue[str | None] = Queue(maxsize=100)
+thread = Thread(target=worker, args=(queue,), daemon=False)
+thread.start()
+for value in [&quot;alpha&quot;, &quot;beta&quot;]:
+    queue.put(value)
+queue.put(None)
+queue.join()
+thread.join()</code></pre></div>
+<p>A bounded queue creates backpressure. A sentinel can request shutdown, but larger systems also need error propagation and coordinated cancellation.</p>
+<h2 id="19-3-avoid-deadlocks">19.3 Avoid deadlocks</h2>
+<p>Acquire multiple locks in one consistent global order, do not call unknown code while holding a lock, and prefer timeout-aware acquisition when recovery is possible.</p>
+<h1 id="20-processes-and-cpu-parallelism">20. Processes and CPU parallelism</h1>
+<p>Processes have separate memory spaces. Arguments and results normally need to be serializable.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
+
+
+def count_primes(limit: int) -&gt; int:
+    def is_prime(value: int) -&gt; bool:
+        if value &lt; 2:
+            return False
+        divisor = 2
+        while divisor * divisor &lt;= value:
+            if value % divisor == 0:
+                return False
+            divisor += 1
+        return True
+
+    return sum(is_prime(value) for value in range(limit))
+
+
+def main() -&gt; None:
+    limits = [20_000, 22_000, 24_000]
+    with ProcessPoolExecutor() as executor:
+        print(list(executor.map(count_primes, limits)))
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></div>
+<p>The <code>__main__</code> guard is essential on platforms that spawn fresh interpreters. Worker callables should be importable top-level functions, not local functions or lambdas.</p>
+<h2 id="20-1-chunking-and-overhead">20.1 Chunking and overhead</h2>
+<p>Tiny tasks may spend more time serializing and scheduling than computing. Group small units into chunks and benchmark the end-to-end path.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterable
+
+
+def chunks(values: list[int], size: int) -&gt; Iterable[list[int]]:
+    if size &lt;= 0:
+        raise ValueError(&quot;size must be positive&quot;)
+    for start in range(0, len(values), size):
+        yield values[start : start + size]</code></pre></div>
+<h2 id="20-2-process-safety">20.2 Process safety</h2>
+<p>Do not pass live sockets, database sessions, locks from another context, or open transactional state unless the library explicitly supports it. Initialize process-local resources inside each worker and close them there.</p>
+<h1 id="21-asyncio-structured-concurrency-and-cancellation">21. <code>asyncio</code>, structured concurrency, and cancellation</h1>
+<p>An async function returns a coroutine object. It runs when awaited or scheduled in an event loop. Awaiting a cooperative I/O operation lets another task run; CPU-heavy or blocking synchronous work still blocks the loop.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+
+async def fetch_record(identifier: str) -&gt; dict[str, str]:
+    await asyncio.sleep(0.05)  # stand-in for async I/O
+    return {&quot;id&quot;: identifier}
+
+
+async def main() -&gt; None:
+    result = await fetch_record(&quot;a-1&quot;)
+    print(result)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre></div>
+<h2 id="21-1-structured-concurrency-with-taskgroup">21.1 Structured concurrency with <code>TaskGroup</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+
+async def load(identifier: str) -&gt; tuple[str, int]:
+    await asyncio.sleep(0.01)
+    return identifier, len(identifier)
+
+
+async def load_all(identifiers: list[str]) -&gt; list[tuple[str, int]]:
+    tasks: list[asyncio.Task[tuple[str, int]]] = []
+    async with asyncio.TaskGroup() as group:
+        for identifier in identifiers:
+            tasks.append(group.create_task(load(identifier)))
+    return [task.result() for task in tasks]</code></pre></div>
+<p>If one child fails, <code>TaskGroup</code> cancels the remaining children, waits for cleanup, and raises an exception group. Every spawned task remains owned by a lexical scope.</p>
+<h2 id="21-2-timeouts-and-cancellation">21.2 Timeouts and cancellation</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+
+async def bounded_operation() -&gt; str:
+    try:
+        async with asyncio.timeout(2.0):
+            await asyncio.sleep(10)
+            return &quot;complete&quot;
+    except TimeoutError:
+        return &quot;timed out&quot;</code></pre></div>
+<p>Cancellation is delivered as <code>asyncio.CancelledError</code> at an await point. Use <code>finally</code> for cleanup and normally re-raise cancellation.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+
+async def consume(stream: &quot;AsyncStream&quot;) -&gt; None:
+    try:
+        async for item in stream:
+            await process(item)
+    except asyncio.CancelledError:
+        await stream.abort()
+        raise
+    finally:
+        await stream.close()</code></pre></div>
+<h2 id="21-3-bounded-async-producer-consumer-pipeline">21.3 Bounded async producer-consumer pipeline</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+
+async def producer(queue: asyncio.Queue[int | None]) -&gt; None:
+    for value in range(10):
+        await queue.put(value)
+    await queue.put(None)
+
+
+async def consumer(queue: asyncio.Queue[int | None]) -&gt; None:
+    while True:
+        value = await queue.get()
+        try:
+            if value is None:
+                return
+            await asyncio.sleep(0)
+            print(value * value)
+        finally:
+            queue.task_done()
+
+
+async def run_pipeline() -&gt; None:
+    queue: asyncio.Queue[int | None] = asyncio.Queue(maxsize=3)
+    async with asyncio.TaskGroup() as group:
+        group.create_task(producer(queue))
+        group.create_task(consumer(queue))</code></pre></div>
+<h2 id="21-4-async-iterators">21.4 Async iterators</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+from collections.abc import AsyncIterator
+
+
+async def ticker(count: int, delay: float) -&gt; AsyncIterator[int]:
+    for value in range(count):
+        await asyncio.sleep(delay)
+        yield value
+
+
+async def display_ticks() -&gt; None:
+    async for value in ticker(3, 0.1):
+        print(value)</code></pre></div>
+<h2 id="21-5-bridge-blocking-work-deliberately">21.5 Bridge blocking work deliberately</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+from pathlib import Path
+
+
+async def read_text(path: Path) -&gt; str:
+    return await asyncio.to_thread(path.read_text, encoding=&quot;utf-8&quot;)</code></pre></div>
+<p><code>to_thread()</code> protects the event loop from blocking I/O, but does not make unsafe code thread-safe or accelerate ordinary CPU-bound Python.</p>
+<h1 id="22-storage-serialization-and-transaction-boundaries">22. Storage, serialization, and transaction boundaries</h1>
+<h2 id="22-1-json-validation-at-the-boundary">22.1 JSON validation at the boundary</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import json
+from typing import TypedDict
+
+
+class EventPayload(TypedDict):
+    timestamp: str
+    level: str
+    message: str
+
+
+def parse_event(text: str) -&gt; EventPayload:
+    value = json.loads(text)
+    if not isinstance(value, dict):
+        raise ValueError(&quot;event must be an object&quot;)
+    required = (&quot;timestamp&quot;, &quot;level&quot;, &quot;message&quot;)
+    if any(not isinstance(value.get(key), str) for key in required):
+        raise ValueError(&quot;event fields must be strings&quot;)
+    return {
+        &quot;timestamp&quot;: value[&quot;timestamp&quot;],
+        &quot;level&quot;: value[&quot;level&quot;],
+        &quot;message&quot;: value[&quot;message&quot;],
+    }</code></pre></div>
+<p>Static types begin after runtime validation. Limits on document size, nesting, list length, and string length prevent accidental or hostile resource exhaustion.</p>
+<h2 id="22-2-avoid-unsafe-deserialization">22.2 Avoid unsafe deserialization</h2>
+<p><code>pickle</code> can execute code while loading and must never process untrusted data. Prefer JSON, CSV, a database, or a schema-based format for data crossing trust boundaries.</p>
+<h2 id="22-3-sqlite-transactions">22.3 SQLite transactions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import sqlite3
+from pathlib import Path
+
+
+def initialize(path: Path) -&gt; None:
+    with sqlite3.connect(path) as connection:
+        connection.execute(
+            &quot;&quot;&quot;
+            CREATE TABLE IF NOT EXISTS events (
+                id INTEGER PRIMARY KEY,
+                level TEXT NOT NULL,
+                message TEXT NOT NULL
+            )
+            &quot;&quot;&quot;
+        )
+
+
+def add_event(path: Path, level: str, message: str) -&gt; int:
+    with sqlite3.connect(path) as connection:
+        cursor = connection.execute(
+            &quot;INSERT INTO events(level, message) VALUES (?, ?)&quot;,
+            (level, message),
+        )
+        return int(cursor.lastrowid)</code></pre></div>
+<p>Parameter substitution prevents SQL injection and handles quoting correctly. Never build SQL values with f-strings. Connection contexts commit on success and roll back on exceptions.</p>
+<h2 id="22-4-atomic-file-replacement">22.4 Atomic file replacement</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+
+def atomic_write(path: Path, content: str) -&gt; None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(
+        &quot;w&quot;,
+        encoding=&quot;utf-8&quot;,
+        dir=path.parent,
+        delete=False,
+    ) as handle:
+        handle.write(content)
+        temporary = Path(handle.name)
+    temporary.replace(path)</code></pre></div>
+<p>An atomic replace protects readers from partial output on the same filesystem. Production code must remove leftover temporary files on failures and consider durability requirements.</p>
+<h1 id="23-package-architecture-configuration-and-plugins">23. Package architecture, configuration, and plugins</h1>
+<p>A maintainable package keeps domain rules independent of CLI, web, databases, and network clients.</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">log_analyzer/
+├── pyproject.toml
+├── README.md
+├── src/
+│   └── log_analyzer/
+│       ├── __init__.py
+│       ├── domain.py
+│       ├── ports.py
+│       ├── service.py
+│       ├── adapters/
+│       │   ├── files.py
+│       │   └── sqlite.py
+│       └── cli.py
+└── tests/
+    ├── unit/
+    └── integration/</code></pre></div>
+<p>Dependencies should point inward: infrastructure implements interfaces owned near the application or domain layer.</p>
+<h2 id="23-1-explicit-configuration">23.1 Explicit configuration</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from os import environ
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class Settings:
+    data_directory: Path
+    workers: int
+    log_level: str
+
+    @classmethod
+    def from_environment(cls) -&gt; &quot;Settings&quot;:
+        workers = int(environ.get(&quot;APP_WORKERS&quot;, &quot;4&quot;))
+        if workers &lt; 1:
+            raise ValueError(&quot;APP_WORKERS must be positive&quot;)
+        return cls(
+            data_directory=Path(environ.get(&quot;APP_DATA&quot;, &quot;data&quot;)),
+            workers=workers,
+            log_level=environ.get(&quot;APP_LOG_LEVEL&quot;, &quot;INFO&quot;).upper(),
+        )</code></pre></div>
+<p>Parse configuration once at the composition root. Pass typed settings into components instead of reading environment variables throughout the codebase.</p>
+<h2 id="23-2-pyproject-toml">23.2 <code>pyproject.toml</code></h2>
+<div class="code-block"><div class="code-head"><span>toml</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;log-analyzer&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[project.scripts]
+log-analyzer = &quot;log_analyzer.cli:main&quot;
+
+[project.optional-dependencies]
+dev = [&quot;pytest&gt;=8&quot;, &quot;pytest-cov&gt;=5&quot;, &quot;mypy&gt;=1.11&quot;, &quot;ruff&gt;=0.6&quot;]</code></pre></div>
+<h2 id="23-3-plugin-discovery-with-entry-points">23.3 Plugin discovery with entry points</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from importlib.metadata import entry_points
+from typing import Protocol
+
+
+class AnalyzerPlugin(Protocol):
+    name: str
+    def analyze(self, messages: list[str]) -&gt; dict[str, int]: ...
+
+
+def load_plugins() -&gt; list[AnalyzerPlugin]:
+    plugins: list[AnalyzerPlugin] = []
+    for entry_point in entry_points(group=&quot;log_analyzer.plugins&quot;):
+        plugin = entry_point.load()
+        plugins.append(plugin())
+    return plugins</code></pre></div>
+<p>Loading a plugin executes third-party code. Treat the installed environment as trusted, validate the plugin interface, isolate failures, and document version compatibility.</p>
+<h2 id="23-4-public-apis">23.4 Public APIs</h2>
+<p>Keep internal modules private by convention and re-export a small stable surface from <code>__init__.py</code>. Semantic versioning is useful only when breaking behavior is defined and tested.</p>
+<h1 id="24-advanced-testing-strategy">24. Advanced testing strategy</h1>
+<h2 id="24-1-test-layers">24.1 Test layers</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Scope</th><th>Dependencies</th><th>Main purpose</th></tr></thead><tbody><tr><td>unit</td><td>one function or object</td><td>in-memory fakes</td><td>fast rule verification</td></tr><tr><td>integration</td><td>adapter plus real dependency</td><td>temp DB/files/service</td><td>boundary correctness</td></tr><tr><td>contract</td><td>interface implementations</td><td>shared suite</td><td>substitutability</td></tr><tr><td>end-to-end</td><td>deployed user path</td><td>full stack</td><td>critical workflow confidence</td></tr></tbody></table></div>
+<p>Most tests should be fast and deterministic. A smaller set should prove real integrations and essential end-to-end paths.</p>
+<h2 id="24-2-parametrization">24.2 Parametrization</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import pytest
+
+
+def normalize_level(value: str) -&gt; str:
+    normalized = value.strip().upper()
+    if normalized not in {&quot;DEBUG&quot;, &quot;INFO&quot;, &quot;WARNING&quot;, &quot;ERROR&quot;}:
+        raise ValueError(&quot;unknown level&quot;)
+    return normalized
+
+
+@pytest.mark.parametrize(
+    (&quot;raw&quot;, &quot;expected&quot;),
+    [(&quot;info&quot;, &quot;INFO&quot;), (&quot; ERROR &quot;, &quot;ERROR&quot;), (&quot;warning&quot;, &quot;WARNING&quot;)],
+)
+def test_normalize_level(raw: str, expected: str) -&gt; None:
+    assert normalize_level(raw) == expected</code></pre></div>
+<h2 id="24-3-fixtures-and-temporary-paths">24.3 Fixtures and temporary paths</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+import pytest
+
+
+@pytest.fixture
+def log_file(tmp_path: Path) -&gt; Path:
+    path = tmp_path / &quot;events.log&quot;
+    path.write_text(&quot;INFO started\nERROR failed\n&quot;, encoding=&quot;utf-8&quot;)
+    return path
+
+
+def test_reads_lines(log_file: Path) -&gt; None:
+    assert len(log_file.read_text(encoding=&quot;utf-8&quot;).splitlines()) == 2</code></pre></div>
+<p>Fixtures should expose capabilities or data, not hide an entire test scenario behind many side effects.</p>
+<h2 id="24-4-fakes-over-deep-mocks">24.4 Fakes over deep mocks</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass, field
+
+
+@dataclass
+class FakeSender:
+    sent: list[tuple[str, str]] = field(default_factory=list)
+
+    def send(self, recipient: str, text: str) -&gt; None:
+        self.sent.append((recipient, text))
+
+
+def test_alert_service_sends_high_temperature() -&gt; None:
+    sender = FakeSender()
+    service = AlertService(sender)
+    service.high_temperature(&quot;ops@example.com&quot;, 42)
+    assert sender.sent == [(&quot;ops@example.com&quot;, &quot;High temperature: 42&quot;)]</code></pre></div>
+<p>Fakes implement a meaningful interface and survive refactoring better than mocks of internal call chains. Mock the boundary you own, not third-party internals.</p>
+<h2 id="24-5-property-based-testing">24.5 Property-based testing</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from hypothesis import given, strategies as st
+
+
+def encode_parts(parts: list[str]) -&gt; str:
+    return &quot;|&quot;.join(part.replace(&quot;|&quot;, &quot;||&quot;) for part in parts)
+
+
+@given(st.lists(st.text(alphabet=st.characters(exclude_characters=&quot;\n&quot;))))
+def test_encoding_never_contains_newline(parts: list[str]) -&gt; None:
+    assert &quot;\n&quot; not in encode_parts(parts)</code></pre></div>
+<p>Property-based tests generate many cases and shrink failures. The property must express a real invariant; otherwise the test only repeats the implementation.</p>
+<h2 id="24-6-testing-async-behavior">24.6 Testing async behavior</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import asyncio
+
+import pytest
+
+
+@pytest.mark.asyncio
+async def test_load_all_preserves_input_order() -&gt; None:
+    result = await load_all([&quot;bbb&quot;, &quot;a&quot;])
+    assert result == [(&quot;bbb&quot;, 3), (&quot;a&quot;, 1)]
+
+
+@pytest.mark.asyncio
+async def test_timeout_cancels_work() -&gt; None:
+    with pytest.raises(TimeoutError):
+        async with asyncio.timeout(0.01):
+            await asyncio.sleep(1)</code></pre></div>
+<p>Concurrency tests should use synchronization primitives and explicit time budgets rather than arbitrary long sleeps.</p>
+<h1 id="25-debugging-logging-and-observability">25. Debugging, logging, and observability</h1>
+<h2 id="25-1-preserve-tracebacks">25.1 Preserve tracebacks</h2>
+<p>Use bare <code>raise</code> inside an exception handler to re-raise the current exception. <code>raise error</code> can change traceback presentation. Add context with chaining or notes.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def parse_configuration(text: str) -&gt; dict[str, object]:
+    import json
+
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError as error:
+        error.add_note(&quot;while reading application configuration&quot;)
+        raise
+    if not isinstance(value, dict):
+        raise ValueError(&quot;configuration must be an object&quot;)
+    return value</code></pre></div>
+<h2 id="25-2-structured-logging-context">25.2 Structured logging context</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import logging
+from contextvars import ContextVar
+
+request_id: ContextVar[str] = ContextVar(&quot;request_id&quot;, default=&quot;-&quot;)
+
+
+class ContextFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -&gt; bool:
+        record.request_id = request_id.get()
+        return True
+
+
+handler = logging.StreamHandler()
+handler.addFilter(ContextFilter())
+handler.setFormatter(
+    logging.Formatter(&quot;%(levelname)s request=%(request_id)s %(message)s&quot;)
+)
+logger = logging.getLogger(&quot;application&quot;)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)</code></pre></div>
+<p><code>ContextVar</code> follows async task context better than thread-local storage. Avoid duplicate handlers when configuring reusable libraries; libraries should usually add no handlers beyond <code>NullHandler</code>.</p>
+<h2 id="25-3-metrics-logs-and-traces">25.3 Metrics, logs, and traces</h2>
+<div class="table-wrap"><table><thead><tr><th>Signal</th><th>Answers</th><th>Example</th></tr></thead><tbody><tr><td>logs</td><td>what happened in one event?</td><td>validation failure with record ID</td></tr><tr><td>metrics</td><td>how often and how much?</td><td>request rate, latency histogram</td></tr><tr><td>traces</td><td>where was time spent across services?</td><td>request span through API and DB</td></tr></tbody></table></div>
+<p>Never log passwords, tokens, full session cookies, or unnecessary personal data. Redaction must happen before values reach formatting or transport.</p>
+<h2 id="25-4-post-mortem-debugging">25.4 Post-mortem debugging</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def ratio(total: float, count: int) -&gt; float:
+    return total / count
+
+
+try:
+    ratio(10, 0)
+except ZeroDivisionError:
+    import pdb
+
+    pdb.post_mortem()</code></pre></div>
+<p>In automated environments, capture tracebacks and relevant sanitized context instead of launching an interactive debugger.</p>
+<h1 id="26-profiling-memory-and-performance">26. Profiling, memory, and performance</h1>
+<p>Optimize measured bottlenecks after confirming correctness. Complexity and I/O design usually matter more than micro-optimizations.</p>
+<h2 id="26-1-measure-with-timeit">26.1 Measure with <code>timeit</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from timeit import timeit
+
+setup = &quot;values = list(range(1000))&quot;
+list_time = timeit(&quot;sum([x*x for x in values])&quot;, setup=setup, number=1000)
+generator_time = timeit(&quot;sum(x*x for x in values)&quot;, setup=setup, number=1000)
+
+print(list_time, generator_time)</code></pre></div>
+<p>Benchmark realistic data, warmup effects, variance, and complete workflows. A generator saves allocation but is not automatically faster.</p>
+<h2 id="26-2-profile-call-time">26.2 Profile call time</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import cProfile
+import pstats
+
+
+def workload() -&gt; int:
+    return sum(number * number for number in range(100_000))
+
+
+profiler = cProfile.Profile()
+profiler.enable()
+workload()
+profiler.disable()
+pstats.Stats(profiler).sort_stats(&quot;cumulative&quot;).print_stats(10)</code></pre></div>
+<h2 id="26-3-inspect-allocations">26.3 Inspect allocations</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import tracemalloc
+
+tracemalloc.start()
+before = tracemalloc.take_snapshot()
+values = [str(number) for number in range(10_000)]
+after = tracemalloc.take_snapshot()
+
+for statistic in after.compare_to(before, &quot;lineno&quot;)[:5]:
+    print(statistic)
+
+tracemalloc.stop()</code></pre></div>
+<h2 id="26-4-caching">26.4 Caching</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from functools import lru_cache
+
+
+@lru_cache(maxsize=512)
+def fibonacci(value: int) -&gt; int:
+    if value &lt; 2:
+        return value
+    return fibonacci(value - 1) + fibonacci(value - 2)
+
+
+print(fibonacci(30))
+print(fibonacci.cache_info())</code></pre></div>
+<p>Cache only deterministic results with hashable keys. Set a size policy, understand memory retention, define invalidation, and never let one user's private result leak into another user's response.</p>
+<h2 id="26-5-complexity-first">26.5 Complexity first</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def find_duplicates(values: list[str]) -&gt; set[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for value in values:
+        if value in seen:
+            duplicates.add(value)
+        else:
+            seen.add(value)
+    return duplicates</code></pre></div>
+<p>The set-based pass is typically linear on average, unlike comparing every pair. State complexity assumptions in reviews when input can grow substantially.</p>
+<h1 id="27-security-and-robustness">27. Security and robustness</h1>
+<h2 id="27-1-treat-every-boundary-as-untrusted">27.1 Treat every boundary as untrusted</h2>
+<p>Validate type, length, range, encoding, and allowed values for CLI input, files, environment variables, network responses, database rows, and plugin data.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+
+def safe_child(root: Path, user_name: str) -&gt; Path:
+    root = root.resolve()
+    candidate = (root / user_name).resolve()
+    if root not in candidate.parents:
+        raise ValueError(&quot;path escapes allowed directory&quot;)
+    return candidate</code></pre></div>
+<p>Path checks require a clearly defined symlink policy and protection against time-of-check/time-of-use races in hostile multi-user environments.</p>
+<h2 id="27-2-subprocesses-without-shell-injection">27.2 Subprocesses without shell injection</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import subprocess
+from pathlib import Path
+
+
+def inspect_archive(path: Path) -&gt; str:
+    result = subprocess.run(
+        [&quot;tar&quot;, &quot;-tf&quot;, str(path)],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    return result.stdout</code></pre></div>
+<p>Pass an argument list and keep <code>shell=False</code>. Add timeouts, output limits, least privileges, and executable-path controls according to risk.</p>
+<h2 id="27-3-secrets">27.3 Secrets</h2>
+<p>Read secrets from an approved secret store or injected environment, never source code. Prevent accidental logging, rotate exposed credentials, and remember that deleting a secret from the latest Git commit does not remove it from history.</p>
+<h2 id="27-4-resource-limits-and-backpressure">27.4 Resource limits and backpressure</h2>
+<p>Bound request bodies, recursion depth, queue sizes, concurrency, retries, file counts, and decompressed output. Timeouts should form an overall deadline, not multiply into an unexpectedly long operation.</p>
+<h2 id="27-5-safe-defaults-checklist">27.5 Safe defaults checklist</h2>
+<div class="table-wrap"><table><thead><tr><th>Risk</th><th>Safer default</th></tr></thead><tbody><tr><td>SQL injection</td><td>parameterized queries</td></tr><tr><td>shell injection</td><td>argument list with <code>shell=False</code></td></tr><tr><td>unsafe object loading</td><td>JSON/schema validation, not untrusted pickle</td></tr><tr><td>path traversal</td><td>resolve beneath an explicit root</td></tr><tr><td>endless network wait</td><td>connect/read/overall timeouts</td></tr><tr><td>retry storm</td><td>bounded exponential backoff with jitter</td></tr><tr><td>sensitive logs</td><td>allowlisted structured fields and redaction</td></tr><tr><td>dependency compromise</td><td>lock, scan, minimize, and update dependencies</td></tr></tbody></table></div>
+<h1 id="28-capstone-concurrent-extensible-log-analyzer">28. Capstone: concurrent extensible log analyzer</h1>
+<p>The capstone combines immutable domain records, streaming parsing, plugins, structured concurrency, bounded queues, tests, profiling, and a clean package boundary.</p>
+<h2 id="28-1-requirements">28.1 Requirements</h2>
+<ul><li>stream newline-delimited JSON without loading the whole file;</li><li>validate timestamps, levels, services, and messages;</li><li>process several files concurrently with a bounded worker count;</li><li>aggregate counts and keep a limited sample of errors;</li><li>allow trusted analysis plugins;</li><li>expose a CLI and deterministic tests;</li><li>preserve useful context when individual lines are invalid.</li></ul>
+<h2 id="28-2-domain-model-and-parser">28.2 Domain model and parser</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from datetime import datetime
+import json
+
+
+@dataclass(frozen=True, slots=True)
+class LogEvent:
+    timestamp: datetime
+    level: str
+    service: str
+    message: str
+
+
+class LogParseError(ValueError):
+    pass
+
+
+def parse_log_line(line: str) -&gt; LogEvent:
+    try:
+        payload = json.loads(line)
+        if not isinstance(payload, dict):
+            raise TypeError(&quot;record must be an object&quot;)
+        timestamp = datetime.fromisoformat(str(payload[&quot;timestamp&quot;]))
+        level = str(payload[&quot;level&quot;]).upper()
+        service = str(payload[&quot;service&quot;]).strip()
+        message = str(payload[&quot;message&quot;]).strip()
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        raise LogParseError(&quot;invalid log record&quot;) from error
+
+    if level not in {&quot;DEBUG&quot;, &quot;INFO&quot;, &quot;WARNING&quot;, &quot;ERROR&quot;, &quot;CRITICAL&quot;}:
+        raise LogParseError(f&quot;unsupported level: {level}&quot;)
+    if not service or not message:
+        raise LogParseError(&quot;service and message are required&quot;)
+    return LogEvent(timestamp, level, service, message)</code></pre></div>
+<h2 id="28-3-streaming-a-file">28.3 Streaming a file</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Iterator
+from pathlib import Path
+
+
+def iter_events(path: Path) -&gt; Iterator[LogEvent]:
+    with path.open(&quot;r&quot;, encoding=&quot;utf-8&quot;) as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            try:
+                yield parse_log_line(line)
+            except LogParseError as error:
+                error.add_note(f&quot;file={path} line={line_number}&quot;)
+                raise</code></pre></div>
+<p>Depending on requirements, a production stream can yield a result type containing either an event or an error instead of stopping at the first invalid line.</p>
+<h2 id="28-4-aggregation-with-bounded-samples">28.4 Aggregation with bounded samples</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections import Counter, deque
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Summary:
+    by_level: Counter[str] = field(default_factory=Counter)
+    by_service: Counter[str] = field(default_factory=Counter)
+    error_samples: deque[str] = field(
+        default_factory=lambda: deque(maxlen=20)
+    )
+
+    def add(self, event: LogEvent) -&gt; None:
+        self.by_level[event.level] += 1
+        self.by_service[event.service] += 1
+        if event.level in {&quot;ERROR&quot;, &quot;CRITICAL&quot;}:
+            self.error_samples.append(event.message)
+
+    def merge(self, other: &quot;Summary&quot;) -&gt; None:
+        self.by_level.update(other.by_level)
+        self.by_service.update(other.by_service)
+        self.error_samples.extend(other.error_samples)
+
+
+def summarize_file(path: Path) -&gt; Summary:
+    summary = Summary()
+    for event in iter_events(path):
+        summary.add(event)
+    return summary</code></pre></div>
+<h2 id="28-5-concurrent-file-processing">28.5 Concurrent file processing</h2>
+<p>File parsing is mostly I/O with moderate CPU work, so a bounded thread pool is a reasonable first implementation. Measure before switching to processes.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+
+
+def analyze_files(paths: list[Path], workers: int = 4) -&gt; Summary:
+    if workers &lt; 1:
+        raise ValueError(&quot;workers must be positive&quot;)
+    combined = Summary()
+    failures: list[Exception] = []
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        future_to_path = {
+            executor.submit(summarize_file, path): path for path in paths
+        }
+        for future in as_completed(future_to_path):
+            path = future_to_path[future]
+            try:
+                combined.merge(future.result())
+            except Exception as error:
+                error.add_note(f&quot;while analyzing {path}&quot;)
+                failures.append(error)
+
+    if failures:
+        raise ExceptionGroup(&quot;one or more log files failed&quot;, failures)
+    return combined</code></pre></div>
+<p>Only the coordinator mutates <code>combined</code>, so no lock is required. Workers build independent summaries.</p>
+<h2 id="28-6-plugin-boundary">28.6 Plugin boundary</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Protocol
+
+
+class AnalysisPlugin(Protocol):
+    name: str
+    def analyze(self, event: LogEvent) -&gt; None: ...
+    def report(self) -&gt; dict[str, object]: ...
+
+
+def run_plugins(
+    events: list[LogEvent],
+    plugins: list[AnalysisPlugin],
+) -&gt; dict[str, dict[str, object]]:
+    for event in events:
+        for plugin in plugins:
+            plugin.analyze(event)
+    return {plugin.name: plugin.report() for plugin in plugins}</code></pre></div>
+<p>For very large streams, invoke plugins during streaming rather than materializing events. Decide whether one plugin failure stops the run or becomes an isolated report.</p>
+<h2 id="28-7-cli-composition-root">28.7 CLI composition root</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">import argparse
+from pathlib import Path
+
+
+def build_parser() -&gt; argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=&quot;Analyze NDJSON log files&quot;)
+    parser.add_argument(&quot;paths&quot;, nargs=&quot;+&quot;, type=Path)
+    parser.add_argument(&quot;--workers&quot;, type=int, default=4)
+    return parser
+
+
+def main(argv: list[str] | None = None) -&gt; int:
+    arguments = build_parser().parse_args(argv)
+    try:
+        summary = analyze_files(arguments.paths, arguments.workers)
+    except* LogParseError as group:
+        for error in group.exceptions:
+            print(f&quot;invalid input: {error}&quot;)
+        return 2
+    print(&quot;By level:&quot;, dict(summary.by_level))
+    print(&quot;By service:&quot;, dict(summary.by_service))
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())</code></pre></div>
+<p>Note: control-flow statements such as <code>return</code> cannot appear directly inside an <code>except*</code> block in currently supported Python. A production CLI should catch the exception group in a helper function or set a status outside the block. The following version is valid:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def run_cli(paths: list[Path], workers: int) -&gt; tuple[int, Summary | None]:
+    status = 0
+    result: Summary | None = None
+    try:
+        result = analyze_files(paths, workers)
+    except* LogParseError as group:
+        status = 2
+        for error in group.exceptions:
+            print(f&quot;invalid input: {error}&quot;)
+    return status, result</code></pre></div>
+<h2 id="28-8-tests">28.8 Tests</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+import pytest
+
+
+def test_parse_log_line() -&gt; None:
+    event = parse_log_line(
+        &#x27;{&quot;timestamp&quot;:&quot;2026-08-12T09:30:00+00:00&quot;,&#x27;
+        &#x27;&quot;level&quot;:&quot;error&quot;,&quot;service&quot;:&quot;api&quot;,&quot;message&quot;:&quot;failed&quot;}&#x27;
+    )
+    assert event.level == &quot;ERROR&quot;
+    assert event.service == &quot;api&quot;
+
+
+def test_invalid_level() -&gt; None:
+    with pytest.raises(LogParseError, match=&quot;unsupported level&quot;):
+        parse_log_line(
+            &#x27;{&quot;timestamp&quot;:&quot;2026-08-12T09:30:00+00:00&quot;,&#x27;
+            &#x27;&quot;level&quot;:&quot;TRACE&quot;,&quot;service&quot;:&quot;api&quot;,&quot;message&quot;:&quot;x&quot;}&#x27;
+        )
+
+
+def test_analyze_files(tmp_path: Path) -&gt; None:
+    path = tmp_path / &quot;events.ndjson&quot;
+    path.write_text(
+        &#x27;{&quot;timestamp&quot;:&quot;2026-08-12T09:30:00+00:00&quot;,&#x27;
+        &#x27;&quot;level&quot;:&quot;INFO&quot;,&quot;service&quot;:&quot;api&quot;,&quot;message&quot;:&quot;ready&quot;}\n&#x27;,
+        encoding=&quot;utf-8&quot;,
+    )
+    summary = analyze_files([path], workers=1)
+    assert summary.by_level == {&quot;INFO&quot;: 1}</code></pre></div>
+<h2 id="28-9-production-extensions">28.9 Production extensions</h2>
+<p>Add property-based parser tests, cancellation, per-file partial results, compressed input with decompression limits, JSON output, SQLite storage, plugin version checks, benchmark datasets, and metrics for lines processed, failures, and duration.</p>
+<h1 id="29-review-checklist-exercises-and-next-steps">29. Review checklist, exercises, and next steps</h1>
+<h2 id="advanced-design-checklist">Advanced design checklist</h2>
+<div class="table-wrap"><table><thead><tr><th>Question</th><th>Healthy signal</th></tr></thead><tbody><tr><td>Is ownership clear?</td><td>one component closes each resource and task</td></tr><tr><td>Is mutation controlled?</td><td>immutable values or narrow mutation points</td></tr><tr><td>Are interfaces small?</td><td>consumer-focused protocols and stable functions</td></tr><tr><td>Is concurrency bounded?</td><td>queue, worker, timeout, and cancellation limits</td></tr><tr><td>Are failures meaningful?</td><td>domain hierarchy, chaining, preserved traceback</td></tr><tr><td>Is input validated?</td><td>runtime checks at every trust boundary</td></tr><tr><td>Are tests layered?</td><td>many unit tests plus real boundary tests</td></tr><tr><td>Was performance measured?</td><td>reproducible profiles before optimization</td></tr></tbody></table></div>
+<h2 id="exercises">Exercises</h2>
+<ol><li>Implement a slice-aware immutable <code>Matrix</code> sequence with useful <code>repr</code> and equality.</li><li>Build a lazy CSV pipeline that filters, maps, batches, and writes without loading all rows.</li><li>Write a descriptor that validates non-empty normalized strings and test class-level access.</li><li>Create a retry decorator that accepts an overall deadline and exponential backoff function.</li><li>Define a generic repository protocol and provide in-memory and SQLite implementations that pass the same contract suite.</li><li>Compare sequential, thread-pool, and process-pool implementations on an I/O workload and a CPU workload.</li><li>Build an async bounded crawler against a local test server with cancellation and per-request timeouts.</li><li>Use <code>ExceptionGroup</code> to report multiple independent validation failures while preserving field context.</li><li>Add a trusted entry-point plugin to the log analyzer and isolate plugin exceptions.</li><li>Profile the analyzer on a large generated file and document the largest time and memory costs.</li><li>Add a property-based test that generates valid and invalid log records.</li><li>Threat-model the CLI: paths, decompression, JSON size, terminal output, plugins, and subprocesses.</li></ol>
+<h2 id="quick-reference">Quick reference</h2>
+<div class="table-wrap"><table><thead><tr><th>Need</th><th>Preferred tool</th></tr></thead><tbody><tr><td>lazy single-pass transformation</td><td>generator / iterator pipeline</td></tr><tr><td>deterministic resource cleanup</td><td>context manager / <code>ExitStack</code></td></tr><tr><td>repeated attribute policy</td><td>descriptor; property for one field</td></tr><tr><td>structural interface</td><td><code>Protocol</code></td></tr><tr><td>preserve decorator signature</td><td><code>ParamSpec</code> + <code>wraps</code></td></tr><tr><td>blocking I/O concurrency</td><td>bounded thread pool</td></tr><tr><td>CPU parallelism</td><td>process pool after measurement</td></tr><tr><td>many cooperative I/O operations</td><td><code>asyncio</code> + <code>TaskGroup</code></td></tr><tr><td>multiple concurrent failures</td><td><code>ExceptionGroup</code> / <code>except*</code></td></tr><tr><td>runtime input trust</td><td>explicit schema and limit validation</td></tr><tr><td>performance question</td><td>benchmark, profile, then optimize</td></tr></tbody></table></div>
+<p>Advanced Python should make difficult behavior explicit, not merely make code clever. Favor small contracts, clear ownership, bounded concurrency, meaningful failures, and measurements. These principles scale from a single script to a production service.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
