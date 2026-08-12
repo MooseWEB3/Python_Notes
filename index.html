@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MooseWeb3 Python Notes is a guided learning hub for Python data processing, statistical testing, regression, and reproducible publishing.">
+  <meta name="description" content="MooseWeb3 Python Notes is a guided learning hub for Python and R data workflows, date-time handling, statistical testing, regression, and reproducible publishing.">
   <meta name="theme-color" content="#111827">
   <title>MooseWeb3 Python Learning Hub</title>
   <style>
@@ -18,6 +18,7 @@
       --cyan: #16b8b1;
       --violet: #7157ed;
       --orange: #ed8a3d;
+      --rose: #d84d8a;
       --shadow: 0 24px 70px rgba(18, 34, 62, 0.12);
       --radius: 28px;
       --max: 1180px;
@@ -292,7 +293,7 @@
     .path-grid {
       counter-reset: path;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 14px;
     }
     .path-step {
@@ -330,6 +331,7 @@
     .path-step:nth-child(2) .step-number { background: var(--cyan); }
     .path-step:nth-child(3) .step-number { background: var(--violet); }
     .path-step:nth-child(4) .step-number { background: var(--orange); }
+    .path-step:nth-child(5) .step-number { background: var(--rose); }
     .path-step h3 { margin-bottom: 10px; font-size: 1.13rem; letter-spacing: -0.02em; }
     .path-step p { color: var(--muted); font-size: 0.9rem; }
     .step-link { position: relative; z-index: 1; display: inline-flex; gap: 8px; align-items: center; color: var(--blue); font-weight: 800; font-size: 0.86rem; text-decoration: none; }
@@ -349,6 +351,7 @@
     .course-card:nth-child(2) { --accent: var(--cyan); }
     .course-card:nth-child(3) { --accent: var(--violet); }
     .course-card:nth-child(4) { --accent: var(--orange); }
+    .course-card:nth-child(5) { --accent: var(--rose); }
     .course-card::before {
       content: "";
       position: absolute;
@@ -501,7 +504,7 @@
         <div>
           <span class="eyebrow">A practical Python learning hub</span>
           <h1 id="hero-title">Learn Python as a <span>connected practice.</span></h1>
-          <p class="hero-lead">Move from clean, trustworthy data to statistical comparisons, reliable regression models, and reproducible technical publishing—all through detailed, beginner-friendly guides.</p>
+          <p class="hero-lead">Move from clean, trustworthy data and reliable date-time workflows to statistical comparisons, regression models, and reproducible technical publishing—all through detailed, beginner-friendly guides.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="python_data_processing_en.html">Start with data processing <span class="arrow" aria-hidden="true">→</span></a>
             <a class="button button-secondary" href="#course-library">Browse all courses</a>
@@ -509,9 +512,9 @@
         </div>
         <aside class="overview-card" aria-label="Curriculum at a glance">
           <p class="overview-label">Curriculum at a glance</p>
-          <p class="overview-number">4 guided<br>courses</p>
+          <p class="overview-number">5 guided<br>courses</p>
           <div class="overview-grid">
-            <div class="metric"><strong>Python first</strong><span>pandas, SciPy, statsmodels, and practical workflows</span></div>
+            <div class="metric"><strong>Python + R</strong><span>pandas, lubridate, SciPy, statsmodels, and practical workflows</span></div>
             <div class="metric"><strong>Visible code</strong><span>worked examples and reproducible patterns throughout</span></div>
             <div class="metric"><strong>Self-paced</strong><span>follow the sequence or jump directly to a topic</span></div>
             <div class="metric"><strong>Portable HTML</strong><span>read every guide without a notebook server</span></div>
@@ -525,7 +528,7 @@
         <header class="section-head">
           <span class="section-kicker">Recommended sequence</span>
           <h2 id="path-title">A path, not a pile of pages.</h2>
-          <p>Build confidence in layers. Start with the shape and quality of your data, learn how to compare groups, move into explanatory models, then package the whole workflow as a clear and reproducible report.</p>
+          <p>Build confidence in layers. Start with data quality, master calendar and time-zone logic, learn how to compare groups, move into explanatory models, then package the workflow as a reproducible report.</p>
         </header>
         <div class="path-grid">
           <article class="path-step">
@@ -536,18 +539,24 @@
           </article>
           <article class="path-step">
             <span class="step-number">02</span>
+            <h3>Handle time reliably</h3>
+            <p>Parse, transform, compare, and validate dates, time zones, DST boundaries, and intervals with lubridate and pandas.</p>
+            <a class="step-link" href="lubridate_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="path-step">
+            <span class="step-number">03</span>
             <h3>Compare with evidence</h3>
             <p>Choose statistical tests from the research question, assumptions, and data structure.</p>
             <a class="step-link" href="python_statistical_tests_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
-            <span class="step-number">03</span>
+            <span class="step-number">04</span>
             <h3>Build reliable models</h3>
             <p>Understand linear and generalized linear regression, diagnostics, interpretation, and prediction.</p>
             <a class="step-link" href="python_regression_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
-            <span class="step-number">04</span>
+            <span class="step-number">05</span>
             <h3>Publish reproducibly</h3>
             <p>Turn analysis, narrative, tables, and code into a polished HTML document with Quarto.</p>
             <a class="step-link" href="quarto_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
@@ -560,7 +569,7 @@
       <div class="container">
         <header class="section-head">
           <span class="section-kicker">Complete course library</span>
-          <h2 id="library-title">Four guides. One practical workflow.</h2>
+          <h2 id="library-title">Five guides. One practical workflow.</h2>
           <p>Each course is a standalone English HTML page with explanations, runnable examples, reference tables, checklists, and exercises. No sign-in or special reader is required.</p>
         </header>
         <div class="course-grid">
@@ -572,21 +581,28 @@
             <a class="course-link" href="python_data_processing_en.html">Open data processing <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="course-card">
-            <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Beginner–Intermediate</span><span class="pill">Inference</span></div>
+            <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Beginner–Intermediate</span><span class="pill">Date-time</span></div>
+            <h3>Date-Time Handling with lubridate</h3>
+            <p>Work safely with parsing, calendar arithmetic, time zones, daylight saving time, and intervals in R, with direct pandas comparisons.</p>
+            <p class="topic-line">lubridate · pandas · time zones · DST · durations · intervals</p>
+            <a class="course-link" href="lubridate_guide_en.html">Open the lubridate guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="course-card">
+            <div class="course-meta"><span class="pill pill-number">03</span><span class="pill">Beginner–Intermediate</span><span class="pill">Inference</span></div>
             <h3>Common Statistical Tests in Python</h3>
             <p>Connect research questions to appropriate tests, verify assumptions, report effect sizes, and interpret uncertainty responsibly.</p>
             <p class="topic-line">t tests · ANOVA · ranks · proportions · correlation · power</p>
             <a class="course-link" href="python_statistical_tests_en.html">Open statistical tests <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="course-card">
-            <div class="course-meta"><span class="pill pill-number">03</span><span class="pill">Intermediate</span><span class="pill">Modeling</span></div>
+            <div class="course-meta"><span class="pill pill-number">04</span><span class="pill">Intermediate</span><span class="pill">Modeling</span></div>
             <h3>Linear and Generalized Linear Regression</h3>
             <p>Move from equations to dependable models with careful interpretation, diagnostics, robust uncertainty, and transparent reporting.</p>
             <p class="topic-line">OLS · GLMs · interactions · diagnostics · prediction · validation</p>
             <a class="course-link" href="python_regression_en.html">Open regression <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="course-card">
-            <div class="course-meta"><span class="pill pill-number">04</span><span class="pill">All levels</span><span class="pill">Publishing</span></div>
+            <div class="course-meta"><span class="pill pill-number">05</span><span class="pill">All levels</span><span class="pill">Publishing</span></div>
             <h3>A Practical Guide to Quarto</h3>
             <p>Combine prose, Python, R, figures, citations, and reusable styling in a reproducible publishing system that scales beyond one report.</p>
             <p class="topic-line">projects · execution · citations · themes · HTML · automation</p>
@@ -608,13 +624,13 @@
             <span class="track-label">New learner</span>
             <h3>Understand and prepare data</h3>
             <p>Build a strong foundation before making formal comparisons.</p>
-            <ol><li>Data processing</li><li>Statistical tests</li></ol>
+            <ol><li>Data processing</li><li>Date-time handling</li><li>Statistical tests</li></ol>
           </article>
           <article class="track-card">
             <span class="track-label">Data analyst</span>
             <h3>From tables to models</h3>
             <p>Create analysis-ready data and explain outcomes with interpretable models.</p>
-            <ol><li>Data processing</li><li>Statistical tests</li><li>Regression</li></ol>
+            <ol><li>Data processing</li><li>Date-time handling</li><li>Statistical tests</li><li>Regression</li></ol>
           </article>
           <article class="track-card">
             <span class="track-label">Technical author</span>
@@ -647,7 +663,7 @@
 
   <footer class="site-footer">
     <div class="footer-grid">
-      <div><strong>MooseWeb3 · Python Learning Hub</strong><p>Data, statistics, modeling, and reproducible publishing.</p></div>
+      <div><strong>MooseWeb3 · Python Learning Hub</strong><p>Data, date-time workflows, statistics, modeling, and reproducible publishing.</p></div>
       <nav class="footer-links" aria-label="Footer navigation">
         <a href="#learning-path">Learning path</a>
         <a href="#course-library">All courses</a>

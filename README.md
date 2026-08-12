@@ -19,7 +19,7 @@
 
 ### About the project
 
-**MooseWeb3 Python Notes** is a collection of practical tutorials for people learning Python, data analysis, statistics, regression, and reproducible publishing. Each guide is available as a standalone HTML file that can be opened directly in a browser—no web server or installation is required for reading.
+**MooseWeb3 Python Notes** is a collection of practical tutorials for people learning Python, R data tools, data analysis, statistics, regression, and reproducible publishing. Each guide is available as a standalone HTML file that can be opened directly in a browser—no web server or installation is required for reading.
 
 The published tutorials are in **English**. This README is also available in French and Portuguese to make the repository easier to discover and understand.
 
@@ -28,6 +28,7 @@ The published tutorials are in **English**. This README is also available in Fre
 | Topic | Guide |
 |---|---|
 | Python data processing | [Open guide](python_data_processing_en.html) |
+| Date-time handling with lubridate and pandas | [Open guide](lubridate_guide_en.html) |
 | Statistical tests with Python | [Open guide](python_statistical_tests_en.html) |
 | Linear and generalized linear regression | [Open guide](python_regression_en.html) |
 | Practical Quarto guide | [Open guide](quarto_guide_en.html) |
@@ -36,6 +37,7 @@ The published tutorials are in **English**. This README is also available in Fre
 
 - Loading, inspecting, cleaning, transforming, joining, reshaping, and exporting data with Python;
 - Missing values, duplicates, text, dates, grouped summaries, pivot tables, and quality checks;
+- Date-time parsing, components, calendar arithmetic, time zones, DST, durations, periods, and intervals with lubridate and pandas;
 - t-tests, ANOVA, nonparametric tests, chi-square and Fisher tests, correlation, resampling, effect sizes, multiple-testing corrections, and power analysis;
 - Linear regression, generalized linear models, diagnostics, interpretation, and reliable reporting;
 - Quarto fundamentals, project structure, code execution, citations, themes, reproducible reports, and publishing concepts;
@@ -64,6 +66,7 @@ Open any `.html` file in a browser. For example:
 
 ```text
 python_data_processing_en.html
+lubridate_guide_en.html
 python_statistical_tests_en.html
 python_regression_en.html
 quarto_guide_en.html
@@ -99,6 +102,7 @@ Python_Notes/
 ├── README.md
 ├── .gitignore
 ├── python_data_processing_en.html
+├── lubridate_guide_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
@@ -122,7 +126,7 @@ These materials are educational. Statistical examples do not replace domain-spec
 
 ### À propos du projet
 
-**MooseWeb3 Python Notes** est une collection de tutoriels pratiques destinée aux personnes qui apprennent Python, l’analyse de données, les statistiques, la régression et la publication reproductible. Chaque guide est fourni sous la forme d’un fichier HTML autonome qui peut être ouvert directement dans un navigateur, sans serveur web ni installation pour la lecture.
+**MooseWeb3 Python Notes** est une collection de tutoriels pratiques destinée aux personnes qui apprennent Python, les outils de données R, l’analyse de données, les statistiques, la régression et la publication reproductible. Chaque guide est fourni sous la forme d’un fichier HTML autonome qui peut être ouvert directement dans un navigateur, sans serveur web ni installation pour la lecture.
 
 Les tutoriels publiés sont en **anglais**. Ce README comporte également une version française et une version portugaise afin de rendre le dépôt plus facile à découvrir et à comprendre.
 
@@ -131,6 +135,7 @@ Les tutoriels publiés sont en **anglais**. Ce README comporte également une ve
 | Sujet | Guide |
 |---|---|
 | Traitement des données avec Python | [Ouvrir le guide](python_data_processing_en.html) |
+| Dates et heures avec lubridate et pandas | [Ouvrir le guide](lubridate_guide_en.html) |
 | Tests statistiques avec Python | [Ouvrir le guide](python_statistical_tests_en.html) |
 | Régression linéaire et linéaire généralisée | [Ouvrir le guide](python_regression_en.html) |
 | Guide pratique de Quarto | [Ouvrir le guide](quarto_guide_en.html) |
@@ -139,6 +144,7 @@ Les tutoriels publiés sont en **anglais**. Ce README comporte également une ve
 
 - Importation, exploration, nettoyage, transformation, jointure, restructuration et exportation des données avec Python ;
 - Valeurs manquantes, doublons, texte, dates, agrégations, tableaux croisés dynamiques et contrôles de qualité ;
+- Analyse des dates et heures, calcul calendaire, fuseaux horaires, heure d’été, durées, périodes et intervalles avec lubridate et pandas ;
 - Tests t, ANOVA, tests non paramétriques, tests du khi-deux et de Fisher, corrélation, rééchantillonnage, tailles d’effet, corrections pour tests multiples et analyse de puissance ;
 - Régression linéaire, modèles linéaires généralisés, diagnostics, interprétation et communication fiable des résultats ;
 - Principes de Quarto, structure de projet, exécution du code, citations, thèmes et rapports reproductibles ;
@@ -195,6 +201,7 @@ Python_Notes/
 ├── README.md
 ├── .gitignore
 ├── python_data_processing_en.html
+├── lubridate_guide_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
@@ -218,7 +225,7 @@ Ces ressources sont éducatives. Les exemples statistiques ne remplacent pas une
 
 ### Sobre o projeto
 
-**MooseWeb3 Python Notes** é uma coleção de tutoriais práticos para quem está aprendendo Python, análise de dados, estatística, regressão e publicação reprodutível. Cada guia é fornecido como um arquivo HTML independente, que pode ser aberto diretamente no navegador sem servidor web ou instalação para leitura.
+**MooseWeb3 Python Notes** é uma coleção de tutoriais práticos para quem está aprendendo Python, ferramentas de dados em R, análise de dados, estatística, regressão e publicação reprodutível. Cada guia é fornecido como um arquivo HTML independente, que pode ser aberto diretamente no navegador sem servidor web ou instalação para leitura.
 
 Os tutoriais publicados estão disponíveis em **inglês**. Este README também oferece versões em francês e português para facilitar a descoberta e a compreensão do repositório.
 
@@ -227,6 +234,7 @@ Os tutoriais publicados estão disponíveis em **inglês**. Este README também 
 | Tema | Guia |
 |---|---|
 | Processamento de dados com Python | [Abrir o guia](python_data_processing_en.html) |
+| Datas e horários com lubridate e pandas | [Abrir o guia](lubridate_guide_en.html) |
 | Testes estatísticos com Python | [Abrir o guia](python_statistical_tests_en.html) |
 | Regressão linear e linear generalizada | [Abrir o guia](python_regression_en.html) |
 | Guia prático do Quarto | [Abrir o guia](quarto_guide_en.html) |
@@ -235,6 +243,7 @@ Os tutoriais publicados estão disponíveis em **inglês**. Este README também 
 
 - Leitura, inspeção, limpeza, transformação, junção, reformatação e exportação de dados com Python;
 - Valores ausentes, duplicatas, texto, datas, resumos agrupados, tabelas dinâmicas e verificações de qualidade;
+- Análise de datas e horários, aritmética de calendário, fusos horários, horário de verão, durações, períodos e intervalos com lubridate e pandas;
 - Testes t, ANOVA, testes não paramétricos, qui-quadrado e Fisher, correlação, reamostragem, tamanhos de efeito, correções para testes múltiplos e análise de poder;
 - Regressão linear, modelos lineares generalizados, diagnósticos, interpretação e comunicação confiável;
 - Fundamentos do Quarto, estrutura de projetos, execução de código, citações, temas e relatórios reprodutíveis;
@@ -291,6 +300,7 @@ Python_Notes/
 ├── README.md
 ├── .gitignore
 ├── python_data_processing_en.html
+├── lubridate_guide_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
