@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>Python Fundamentals: A Practical Beginner&#x27;s Guide</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Python Fundamentals</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>Python Fundamentals: A Practical Beginner&#x27;s Guide</h1>
+    <p>Learn core syntax, problem solving, data structures, files, testing, and a complete mini project</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">Python 3</span><span class="badge">Beginner</span><span class="badge">Examples</span><span class="badge">Testing</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#how-to-use-this-guide">How to use this guide</a></li>
+<li class="toc-level-2"><a href="#learning-goals">Learning goals</a></li>
+<li class="toc-level-1"><a href="#1-install-python-and-verify-the-environment">1. Install Python and verify the environment</a></li>
+<li class="toc-level-2"><a href="#1-1-check-the-installed-version">1.1 Check the installed version</a></li>
+<li class="toc-level-2"><a href="#1-2-locate-the-interpreter">1.2 Locate the interpreter</a></li>
+<li class="toc-level-2"><a href="#1-3-your-first-program">1.3 Your first program</a></li>
+<li class="toc-level-1"><a href="#2-interactive-shell-scripts-and-notebooks">2. Interactive shell, scripts, and notebooks</a></li>
+<li class="toc-level-2"><a href="#2-1-the-interactive-shell">2.1 The interactive shell</a></li>
+<li class="toc-level-2"><a href="#2-2-scripts">2.2 Scripts</a></li>
+<li class="toc-level-2"><a href="#2-3-notebooks">2.3 Notebooks</a></li>
+<li class="toc-level-1"><a href="#3-syntax-indentation-and-comments">3. Syntax, indentation, and comments</a></li>
+<li class="toc-level-2"><a href="#3-1-indentation-creates-blocks">3.1 Indentation creates blocks</a></li>
+<li class="toc-level-2"><a href="#3-2-comments-explain-why">3.2 Comments explain why</a></li>
+<li class="toc-level-2"><a href="#3-3-statements-can-span-lines">3.3 Statements can span lines</a></li>
+<li class="toc-level-1"><a href="#4-values-types-variables-and-identity">4. Values, types, variables, and identity</a></li>
+<li class="toc-level-2"><a href="#4-1-common-built-in-types">4.1 Common built-in types</a></li>
+<li class="toc-level-2"><a href="#4-2-assignment-binds-a-name">4.2 Assignment binds a name</a></li>
+<li class="toc-level-2"><a href="#4-3-equality-versus-identity">4.3 Equality versus identity</a></li>
+<li class="toc-level-2"><a href="#4-4-naming-conventions">4.4 Naming conventions</a></li>
+<li class="toc-level-1"><a href="#5-numbers-and-arithmetic">5. Numbers and arithmetic</a></li>
+<li class="toc-level-2"><a href="#5-1-numeric-operators">5.1 Numeric operators</a></li>
+<li class="toc-level-2"><a href="#5-2-conversions-and-rounding">5.2 Conversions and rounding</a></li>
+<li class="toc-level-2"><a href="#5-3-helpful-numeric-functions">5.3 Helpful numeric functions</a></li>
+<li class="toc-level-1"><a href="#6-strings-and-text-processing">6. Strings and text processing</a></li>
+<li class="toc-level-2"><a href="#6-1-create-and-combine-strings">6.1 Create and combine strings</a></li>
+<li class="toc-level-2"><a href="#6-2-indexing-and-slicing">6.2 Indexing and slicing</a></li>
+<li class="toc-level-2"><a href="#6-3-useful-methods">6.3 Useful methods</a></li>
+<li class="toc-level-2"><a href="#6-4-escapes-and-multi-line-strings">6.4 Escapes and multi-line strings</a></li>
+<li class="toc-level-1"><a href="#7-input-output-and-formatting">7. Input, output, and formatting</a></li>
+<li class="toc-level-2"><a href="#7-1-read-text-from-the-user">7.1 Read text from the user</a></li>
+<li class="toc-level-2"><a href="#7-2-print-options">7.2 print() options</a></li>
+<li class="toc-level-1"><a href="#8-booleans-comparisons-and-truthiness">8. Booleans, comparisons, and truthiness</a></li>
+<li class="toc-level-2"><a href="#8-1-comparison-operators">8.1 Comparison operators</a></li>
+<li class="toc-level-2"><a href="#8-2-truthy-and-falsy-values">8.2 Truthy and falsy values</a></li>
+<li class="toc-level-2"><a href="#8-3-short-circuit-evaluation">8.3 Short-circuit evaluation</a></li>
+<li class="toc-level-1"><a href="#9-conditional-logic">9. Conditional logic</a></li>
+<li class="toc-level-2"><a href="#9-1-if-elif-and-else">9.1 if, elif, and else</a></li>
+<li class="toc-level-2"><a href="#9-2-conditional-expressions">9.2 Conditional expressions</a></li>
+<li class="toc-level-2"><a href="#9-3-structural-pattern-matching">9.3 Structural pattern matching</a></li>
+<li class="toc-level-1"><a href="#10-lists-and-tuples">10. Lists and tuples</a></li>
+<li class="toc-level-2"><a href="#10-1-lists-are-ordered-and-mutable">10.1 Lists are ordered and mutable</a></li>
+<li class="toc-level-2"><a href="#10-2-copy-lists-intentionally">10.2 Copy lists intentionally</a></li>
+<li class="toc-level-2"><a href="#10-3-tuples-are-ordered-and-immutable">10.3 Tuples are ordered and immutable</a></li>
+<li class="toc-level-1"><a href="#11-dictionaries-and-sets">11. Dictionaries and sets</a></li>
+<li class="toc-level-2"><a href="#11-1-dictionaries-map-unique-keys-to-values">11.1 Dictionaries map unique keys to values</a></li>
+<li class="toc-level-2"><a href="#11-2-dictionary-patterns">11.2 Dictionary patterns</a></li>
+<li class="toc-level-2"><a href="#11-3-sets-store-unique-hashable-values">11.3 Sets store unique hashable values</a></li>
+<li class="toc-level-1"><a href="#12-loops-and-iteration">12. Loops and iteration</a></li>
+<li class="toc-level-2"><a href="#12-1-for-loops">12.1 for loops</a></li>
+<li class="toc-level-2"><a href="#12-2-while-loops">12.2 while loops</a></li>
+<li class="toc-level-2"><a href="#12-3-break-continue-and-loop-else">12.3 break, continue, and loop else</a></li>
+<li class="toc-level-1"><a href="#13-comprehensions-and-generators">13. Comprehensions and generators</a></li>
+<li class="toc-level-2"><a href="#13-1-list-comprehensions">13.1 List comprehensions</a></li>
+<li class="toc-level-2"><a href="#13-2-dictionary-and-set-comprehensions">13.2 Dictionary and set comprehensions</a></li>
+<li class="toc-level-2"><a href="#13-3-generator-expressions">13.3 Generator expressions</a></li>
+<li class="toc-level-1"><a href="#14-functions">14. Functions</a></li>
+<li class="toc-level-2"><a href="#14-1-define-and-call-a-function">14.1 Define and call a function</a></li>
+<li class="toc-level-2"><a href="#14-2-default-and-keyword-arguments">14.2 Default and keyword arguments</a></li>
+<li class="toc-level-2"><a href="#14-3-variable-arguments">14.3 Variable arguments</a></li>
+<li class="toc-level-2"><a href="#14-4-scope">14.4 Scope</a></li>
+<li class="toc-level-2"><a href="#14-5-functions-as-values">14.5 Functions as values</a></li>
+<li class="toc-level-1"><a href="#15-errors-and-exceptions">15. Errors and exceptions</a></li>
+<li class="toc-level-2"><a href="#15-1-read-tracebacks-from-the-bottom">15.1 Read tracebacks from the bottom</a></li>
+<li class="toc-level-2"><a href="#15-2-catch-expected-failures-narrowly">15.2 Catch expected failures narrowly</a></li>
+<li class="toc-level-2"><a href="#15-3-else-and-finally">15.3 else and finally</a></li>
+<li class="toc-level-2"><a href="#15-4-custom-exceptions">15.4 Custom exceptions</a></li>
+<li class="toc-level-1"><a href="#16-modules-packages-and-imports">16. Modules, packages, and imports</a></li>
+<li class="toc-level-2"><a href="#16-1-import-standard-library-modules">16.1 Import standard-library modules</a></li>
+<li class="toc-level-2"><a href="#16-2-create-a-module">16.2 Create a module</a></li>
+<li class="toc-level-2"><a href="#16-3-package-structure">16.3 Package structure</a></li>
+<li class="toc-level-1"><a href="#17-virtual-environments-and-packages">17. Virtual environments and packages</a></li>
+<li class="toc-level-2"><a href="#17-1-create-an-isolated-environment">17.1 Create an isolated environment</a></li>
+<li class="toc-level-2"><a href="#17-2-install-and-inspect-packages">17.2 Install and inspect packages</a></li>
+<li class="toc-level-2"><a href="#17-3-declare-dependencies">17.3 Declare dependencies</a></li>
+<li class="toc-level-1"><a href="#18-files-and-paths">18. Files and paths</a></li>
+<li class="toc-level-2"><a href="#18-1-use-pathlib">18.1 Use pathlib</a></li>
+<li class="toc-level-2"><a href="#18-2-context-managers">18.2 Context managers</a></li>
+<li class="toc-level-2"><a href="#18-3-file-modes">18.3 File modes</a></li>
+<li class="toc-level-1"><a href="#19-json-and-csv-data">19. JSON and CSV data</a></li>
+<li class="toc-level-2"><a href="#19-1-json">19.1 JSON</a></li>
+<li class="toc-level-2"><a href="#19-2-csv">19.2 CSV</a></li>
+<li class="toc-level-1"><a href="#20-dates-and-times">20. Dates and times</a></li>
+<li class="toc-level-2"><a href="#20-1-date-time-and-datetime">20.1 date, time, and datetime</a></li>
+<li class="toc-level-2"><a href="#20-2-parse-text">20.2 Parse text</a></li>
+<li class="toc-level-1"><a href="#21-classes-and-dataclasses">21. Classes and dataclasses</a></li>
+<li class="toc-level-2"><a href="#21-1-a-simple-class">21.1 A simple class</a></li>
+<li class="toc-level-2"><a href="#21-2-dataclasses-for-records">21.2 Dataclasses for records</a></li>
+<li class="toc-level-2"><a href="#21-3-properties-protect-rules">21.3 Properties protect rules</a></li>
+<li class="toc-level-1"><a href="#22-type-hints-and-readable-interfaces">22. Type hints and readable interfaces</a></li>
+<li class="toc-level-2"><a href="#22-1-annotate-function-contracts">22.1 Annotate function contracts</a></li>
+<li class="toc-level-2"><a href="#22-2-optional-values-and-aliases">22.2 Optional values and aliases</a></li>
+<li class="toc-level-2"><a href="#22-3-duck-typing">22.3 Duck typing</a></li>
+<li class="toc-level-1"><a href="#23-testing-debugging-and-logging">23. Testing, debugging, and logging</a></li>
+<li class="toc-level-2"><a href="#23-1-start-with-simple-assertions">23.1 Start with simple assertions</a></li>
+<li class="toc-level-2"><a href="#23-2-debug-systematically">23.2 Debug systematically</a></li>
+<li class="toc-level-2"><a href="#23-3-logging">23.3 Logging</a></li>
+<li class="toc-level-1"><a href="#24-capstone-command-line-expense-tracker">24. Capstone: command-line expense tracker</a></li>
+<li class="toc-level-2"><a href="#24-1-project-structure">24.1 Project structure</a></li>
+<li class="toc-level-2"><a href="#24-2-data-model-and-conversion">24.2 Data model and conversion</a></li>
+<li class="toc-level-2"><a href="#24-3-persistence">24.3 Persistence</a></li>
+<li class="toc-level-2"><a href="#24-4-summaries">24.4 Summaries</a></li>
+<li class="toc-level-2"><a href="#24-5-input-helpers">24.5 Input helpers</a></li>
+<li class="toc-level-2"><a href="#24-6-command-loop">24.6 Command loop</a></li>
+<li class="toc-level-2"><a href="#24-7-tests">24.7 Tests</a></li>
+<li class="toc-level-1"><a href="#25-common-beginner-mistakes">25. Common beginner mistakes</a></li>
+<li class="toc-level-1"><a href="#26-style-quality-and-project-habits">26. Style, quality, and project habits</a></li>
+<li class="toc-level-2"><a href="#26-1-keep-code-readable">26.1 Keep code readable</a></li>
+<li class="toc-level-2"><a href="#26-2-automate-checks">26.2 Automate checks</a></li>
+<li class="toc-level-2"><a href="#26-3-ask-useful-questions-when-stuck">26.3 Ask useful questions when stuck</a></li>
+<li class="toc-level-1"><a href="#27-practice-plan-and-exercises">27. Practice plan and exercises</a></li>
+<li class="toc-level-2"><a href="#week-1-values-and-control-flow">Week 1: values and control flow</a></li>
+<li class="toc-level-2"><a href="#week-2-functions-and-files">Week 2: functions and files</a></li>
+<li class="toc-level-2"><a href="#week-3-modules-classes-and-tests">Week 3: modules, classes, and tests</a></li>
+<li class="toc-level-2"><a href="#week-4-complete-project">Week 4: complete project</a></li>
+<li class="toc-level-2"><a href="#exercises">Exercises</a></li>
+<li class="toc-level-1"><a href="#28-quick-reference-and-next-steps">28. Quick reference and next steps</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render python_fundamentals_en.Rmd</code> for fully executable output.</div><h1 id="how-to-use-this-guide">How to use this guide</h1>
+<p>Python is a general-purpose programming language used for automation, data analysis, web applications, scientific computing, artificial intelligence, testing, and command-line tools. Its syntax is approachable, but learning Python well still requires practice with problem decomposition, data modeling, debugging, and readable code.</p>
+<p>This guide assumes no prior Python experience. Read it in order the first time, type the examples yourself, predict each result before running it, and then change one value or rule. Passive reading creates familiarity; editing and debugging create skill.</p>
+<h2 id="learning-goals">Learning goals</h2>
+<p>By the end, you will be able to:</p>
+<ul><li>install and run Python in the interactive shell and from scripts;</li><li>work with numbers, strings, booleans, and <code>None</code>;</li><li>store data in lists, tuples, sets, and dictionaries;</li><li>control program flow with conditions, loops, and comprehensions;</li><li>write reusable functions with clear inputs, outputs, and documentation;</li><li>handle expected failures with exceptions;</li><li>read and write text, JSON, and CSV files safely;</li><li>organize code into modules and isolated environments;</li><li>create simple classes and dataclasses;</li><li>use type hints, tests, logging, and debugging techniques;</li><li>build a complete command-line expense tracker.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>Main question</th><th>Example</th></tr></thead><tbody><tr><td>Value</td><td>What data do I have?</td><td><code>42</code>, <code>&quot;Ada&quot;</code>, <code>True</code></td></tr><tr><td>Variable</td><td>What name refers to that value?</td><td><code>total = 42</code></td></tr><tr><td>Expression</td><td>How is a value calculated?</td><td><code>price * quantity</code></td></tr><tr><td>Statement</td><td>What action should Python perform?</td><td><code>if total &gt; 0:</code></td></tr><tr><td>Function</td><td>What behavior should be reusable?</td><td><code>def calculate_total(...):</code></td></tr><tr><td>Object</td><td>What data and behavior belong together?</td><td><code>Expense(...)</code></td></tr></tbody></table></div>
+<blockquote><p>Recommended version: Python 3.11 or newer. Most examples also work in slightly older versions, but modern type hints and standard-library features are easier to use in current Python.</p></blockquote>
+<h1 id="1-install-python-and-verify-the-environment">1. Install Python and verify the environment</h1>
+<h2 id="1-1-check-the-installed-version">1.1 Check the installed version</h2>
+<p>Open PowerShell, Terminal, or another command shell and run:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python --version</code></pre></div>
+<p>Some macOS and Linux installations use <code>python3</code>:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python3 --version</code></pre></div>
+<p>A version such as <code>Python 3.12.5</code> contains major, minor, and patch numbers. Avoid Python 2 tutorials; Python 2 has been unsupported for years and differs substantially from Python 3.</p>
+<h2 id="1-2-locate-the-interpreter">1.2 Locate the interpreter</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash"># Windows
+where python
+
+# macOS or Linux
+which python3</code></pre></div>
+<p>The result identifies the executable your shell will use. This matters when several Python installations or virtual environments exist.</p>
+<h2 id="1-3-your-first-program">1.3 Your first program</h2>
+<p>Create <code>hello.py</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">name = &quot;Ada&quot;
+print(f&quot;Hello, {name}!&quot;)</code></pre></div>
+<p>Run it from the directory containing the file:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python hello.py</code></pre></div>
+<p>The <code>.py</code> file is a script. Python reads it from top to bottom, compiles it to bytecode, and executes the instructions.</p>
+<div class="table-wrap"><table><thead><tr><th>File or command</th><th>Purpose</th><th>Usually committed to Git?</th></tr></thead><tbody><tr><td><code>python</code></td><td>start the interactive interpreter</td><td>not applicable</td></tr><tr><td><code>program.py</code></td><td>reusable Python source code</td><td>yes</td></tr><tr><td><code>notebook.ipynb</code></td><td>executable notebook document</td><td>often</td></tr><tr><td><code>.venv/</code></td><td>local isolated interpreter and packages</td><td>no</td></tr></tbody></table></div>
+<h1 id="2-interactive-shell-scripts-and-notebooks">2. Interactive shell, scripts, and notebooks</h1>
+<h2 id="2-1-the-interactive-shell">2.1 The interactive shell</h2>
+<p>Run <code>python</code> without a filename. The <code>&gt;&gt;&gt;</code> prompt accepts one statement at a time.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">2 + 3
+&quot;python&quot;.upper()
+len([10, 20, 30])</code></pre></div>
+<p>The shell is useful for experiments and checking documentation examples. Exit with <code>exit()</code> or the platform keyboard shortcut.</p>
+<h2 id="2-2-scripts">2.2 Scripts</h2>
+<p>Scripts preserve a sequence of operations and can be rerun. A common entry-point pattern is:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def main() -&gt; None:
+    print(&quot;Program started&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></div>
+<p>When the file runs directly, <code>__name__</code> equals <code>&quot;__main__&quot;</code>. When another file imports it, the <code>main()</code> call does not run automatically.</p>
+<h2 id="2-3-notebooks">2.3 Notebooks</h2>
+<p>Jupyter notebooks mix executable cells, prose, equations, and figures. They are excellent for exploration and teaching, but cell execution order can hide state. Restart and run all cells before sharing a notebook.</p>
+<div class="table-wrap"><table><thead><tr><th>Tool</th><th>Best use</th><th>Main caution</th></tr></thead><tbody><tr><td>Interactive shell</td><td>tiny experiments</td><td>work is not organized</td></tr><tr><td>Script</td><td>reusable program or automation</td><td>requires explicit output</td></tr><tr><td>Notebook</td><td>exploration and explanation</td><td>hidden state and execution order</td></tr><tr><td>IDE/editor</td><td>larger projects</td><td>setup can distract beginners</td></tr></tbody></table></div>
+<h1 id="3-syntax-indentation-and-comments">3. Syntax, indentation, and comments</h1>
+<h2 id="3-1-indentation-creates-blocks">3.1 Indentation creates blocks</h2>
+<p>Python uses indentation instead of braces to group statements.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">temperature = 18
+
+if temperature &lt; 20:
+    message = &quot;Bring a jacket&quot;
+    print(message)
+
+print(&quot;Forecast checked&quot;)</code></pre></div>
+<p>The two indented lines belong to the <code>if</code> block. Use four spaces per indentation level and configure the editor to insert spaces consistently.</p>
+<h2 id="3-2-comments-explain-why">3.2 Comments explain why</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python"># The API reports cents, so convert once at the boundary.
+price_cad = price_cents / 100</code></pre></div>
+<p>Comments should explain intent, constraints, or a non-obvious decision. Avoid comments that merely repeat the code.</p>
+<h2 id="3-3-statements-can-span-lines">3.3 Statements can span lines</h2>
+<p>Prefer parentheses for readable multi-line expressions.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">total = (
+    item_price
+    * quantity
+    * (1 - discount_rate)
+)</code></pre></div>
+<p>Python is case-sensitive: <code>user_name</code>, <code>User_Name</code>, and <code>USER_NAME</code> are different identifiers.</p>
+<h1 id="4-values-types-variables-and-identity">4. Values, types, variables, and identity</h1>
+<h2 id="4-1-common-built-in-types">4.1 Common built-in types</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">age = 28                  # int
+price = 19.95             # float
+name = &quot;Mina&quot;             # str
+is_active = True          # bool
+missing_value = None      # NoneType
+
+print(type(age))
+print(type(price))
+print(type(name))</code></pre></div>
+<p>Python is dynamically typed: variables do not have fixed types, but every value does. A name can later refer to a different type, although frequent type changes make programs harder to understand.</p>
+<h2 id="4-2-assignment-binds-a-name">4.2 Assignment binds a name</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">first = [1, 2]
+second = first
+second.append(3)
+
+print(first)          # [1, 2, 3]
+print(first is second)  # True</code></pre></div>
+<p>Assignment does not automatically copy an object. Both names above refer to the same mutable list.</p>
+<h2 id="4-3-equality-versus-identity">4.3 Equality versus identity</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">a = [1, 2]
+b = [1, 2]
+
+print(a == b)   # True: equal contents
+print(a is b)   # False: different objects
+print(a is None)</code></pre></div>
+<p>Use <code>==</code> to compare values. Use <code>is</code> mainly for singleton objects such as <code>None</code>.</p>
+<h2 id="4-4-naming-conventions">4.4 Naming conventions</h2>
+<div class="table-wrap"><table><thead><tr><th>Kind</th><th>Convention</th><th>Example</th></tr></thead><tbody><tr><td>Variable/function</td><td><code>snake_case</code></td><td><code>order_total</code></td></tr><tr><td>Class</td><td><code>PascalCase</code></td><td><code>BankAccount</code></td></tr><tr><td>Constant</td><td><code>UPPER_SNAKE_CASE</code></td><td><code>MAX_RETRIES</code></td></tr><tr><td>Internal detail</td><td>leading underscore</td><td><code>_cache</code></td></tr></tbody></table></div>
+<p>Names may contain letters, digits, and underscores but cannot start with a digit or use a reserved keyword.</p>
+<h1 id="5-numbers-and-arithmetic">5. Numbers and arithmetic</h1>
+<h2 id="5-1-numeric-operators">5.1 Numeric operators</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">a = 17
+b = 5
+
+print(a + b)   # 22
+print(a - b)   # 12
+print(a * b)   # 85
+print(a / b)   # 3.4 true division
+print(a // b)  # 3 floor division
+print(a % b)   # 2 remainder
+print(a ** 2)  # 289 exponentiation</code></pre></div>
+<p>Parentheses make precedence explicit:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">subtotal = 80
+tax_rate = 0.05
+shipping = 10
+total = subtotal * (1 + tax_rate) + shipping</code></pre></div>
+<h2 id="5-2-conversions-and-rounding">5.2 Conversions and rounding</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">count = int(&quot;42&quot;)
+rate = float(&quot;0.15&quot;)
+label = str(2026)
+
+print(round(3.14159, 2))</code></pre></div>
+<p>Binary floating-point cannot represent every decimal exactly:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">print(0.1 + 0.2)  # commonly 0.30000000000000004</code></pre></div>
+<p>For money requiring exact decimal rules, use <code>Decimal</code>.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from decimal import Decimal, ROUND_HALF_UP
+
+price = Decimal(&quot;19.95&quot;)
+quantity = 3
+total = (price * quantity).quantize(Decimal(&quot;0.01&quot;), rounding=ROUND_HALF_UP)
+print(total)</code></pre></div>
+<h2 id="5-3-helpful-numeric-functions">5.3 Helpful numeric functions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">values = [8, 3, 11, 5]
+
+print(min(values))
+print(max(values))
+print(sum(values))
+print(abs(-12))
+print(divmod(17, 5))  # quotient and remainder</code></pre></div>
+<h1 id="6-strings-and-text-processing">6. Strings and text processing</h1>
+<h2 id="6-1-create-and-combine-strings">6.1 Create and combine strings</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">first_name = &quot;Ada&quot;
+last_name = &#x27;Lovelace&#x27;
+full_name = first_name + &quot; &quot; + last_name
+message = f&quot;Welcome, {full_name}!&quot;
+print(message)</code></pre></div>
+<p>F-strings are the clearest way to embed expressions.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">price = 19.5
+quantity = 3
+print(f&quot;Total: ${price * quantity:.2f}&quot;)</code></pre></div>
+<h2 id="6-2-indexing-and-slicing">6.2 Indexing and slicing</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">language = &quot;Python&quot;
+
+print(language[0])    # P
+print(language[-1])   # n
+print(language[1:4])  # yth
+print(language[:3])   # Pyt
+print(language[::2])  # Pto</code></pre></div>
+<p>Indexes start at zero, and the slice stop is excluded. Strings are immutable: operations create new strings rather than changing the original.</p>
+<h2 id="6-3-useful-methods">6.3 Useful methods</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">raw = &quot;  Ada Lovelace  &quot;
+clean = raw.strip()
+
+print(clean.lower())
+print(clean.upper())
+print(clean.replace(&quot;Ada&quot;, &quot;Augusta&quot;))
+print(clean.startswith(&quot;Ada&quot;))
+print(clean.split())</code></pre></div>
+<p>Join many pieces with <code>join()</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">words = [&quot;learn&quot;, &quot;python&quot;, &quot;daily&quot;]
+slug = &quot;-&quot;.join(words)
+print(slug)</code></pre></div>
+<h2 id="6-4-escapes-and-multi-line-strings">6.4 Escapes and multi-line strings</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">path = r&quot;C:\Users\Ada\notes.txt&quot;
+line = &quot;first\nsecond&quot;
+paragraph = &quot;&quot;&quot;This text
+continues across
+multiple lines.&quot;&quot;&quot;</code></pre></div>
+<p>Raw strings reduce backslash escaping, especially in Windows paths and regular expressions.</p>
+<h1 id="7-input-output-and-formatting">7. Input, output, and formatting</h1>
+<h2 id="7-1-read-text-from-the-user">7.1 Read text from the user</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">name = input(&quot;What is your name? &quot;).strip()
+print(f&quot;Hello, {name or &#x27;guest&#x27;}!&quot;)</code></pre></div>
+<p><code>input()</code> always returns a string. Convert and validate numeric input.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">raw_age = input(&quot;Age: &quot;)
+age = int(raw_age)
+print(f&quot;Next year you will be {age + 1}.&quot;)</code></pre></div>
+<p>Invalid text raises <code>ValueError</code>; a later chapter handles this gracefully.</p>
+<h2 id="7-2-print-options">7.2 <code>print()</code> options</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">print(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, sep=&quot; | &quot;)
+print(&quot;loading&quot;, end=&quot;...&quot;)
+print(&quot;done&quot;)</code></pre></div>
+<p>Use format specifications for aligned reports.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">items = [(&quot;Notebook&quot;, 4.5), (&quot;Keyboard&quot;, 79.99)]
+
+for name, price in items:
+    print(f&quot;{name:&lt;12} ${price:&gt;8.2f}&quot;)</code></pre></div>
+<h1 id="8-booleans-comparisons-and-truthiness">8. Booleans, comparisons, and truthiness</h1>
+<h2 id="8-1-comparison-operators">8.1 Comparison operators</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">score = 82
+
+print(score == 82)
+print(score != 0)
+print(score &gt;= 60)
+print(0 &lt; score &lt;= 100)</code></pre></div>
+<p>Python supports chained comparisons. Combine conditions with <code>and</code>, <code>or</code>, and <code>not</code>.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">age = 20
+has_ticket = True
+can_enter = age &gt;= 18 and has_ticket
+print(can_enter)</code></pre></div>
+<h2 id="8-2-truthy-and-falsy-values">8.2 Truthy and falsy values</h2>
+<p><code>False</code>, <code>None</code>, numeric zero, and empty containers are falsy. Most other values are truthy.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">names = []
+
+if not names:
+    print(&quot;No names were provided&quot;)</code></pre></div>
+<p>Truthiness is concise, but explicit comparisons can clarify domain meaning:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">balance = 0.0
+
+if balance == 0:
+    print(&quot;The account is exactly empty&quot;)</code></pre></div>
+<h2 id="8-3-short-circuit-evaluation">8.3 Short-circuit evaluation</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">user = {&quot;name&quot;: &quot;Ada&quot;}
+
+if user and user.get(&quot;name&quot;):
+    print(user[&quot;name&quot;])</code></pre></div>
+<p>For <code>and</code>, Python stops after the first falsy operand. For <code>or</code>, it stops after the first truthy operand.</p>
+<h1 id="9-conditional-logic">9. Conditional logic</h1>
+<h2 id="9-1-if-elif-and-else">9.1 <code>if</code>, <code>elif</code>, and <code>else</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">score = 76
+
+if score &gt;= 90:
+    grade = &quot;A&quot;
+elif score &gt;= 80:
+    grade = &quot;B&quot;
+elif score &gt;= 70:
+    grade = &quot;C&quot;
+else:
+    grade = &quot;Needs improvement&quot;
+
+print(grade)</code></pre></div>
+<p>Order matters: Python executes the first true branch and skips the rest.</p>
+<h2 id="9-2-conditional-expressions">9.2 Conditional expressions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">temperature = 7
+label = &quot;cold&quot; if temperature &lt; 10 else &quot;mild&quot;</code></pre></div>
+<p>Use this form only for short, readable choices.</p>
+<h2 id="9-3-structural-pattern-matching">9.3 Structural pattern matching</h2>
+<p>Python 3.10+ supports <code>match</code> for structured alternatives.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">command = &quot;list&quot;
+
+match command:
+    case &quot;add&quot;:
+        action = &quot;Create an item&quot;
+    case &quot;list&quot; | &quot;show&quot;:
+        action = &quot;Display items&quot;
+    case &quot;quit&quot;:
+        action = &quot;Exit&quot;
+    case _:
+        action = &quot;Unknown command&quot;</code></pre></div>
+<p>For a few boolean conditions, <code>if</code> remains simpler.</p>
+<h1 id="10-lists-and-tuples">10. Lists and tuples</h1>
+<h2 id="10-1-lists-are-ordered-and-mutable">10.1 Lists are ordered and mutable</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">tasks = [&quot;plan&quot;, &quot;code&quot;, &quot;test&quot;]
+tasks.append(&quot;review&quot;)
+tasks.insert(1, &quot;design&quot;)
+completed = tasks.pop(0)
+
+print(tasks)
+print(completed)</code></pre></div>
+<p>Useful operations include:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">numbers = [5, 2, 9, 2]
+
+print(len(numbers))
+print(numbers.count(2))
+print(9 in numbers)
+print(sorted(numbers))      # new list
+numbers.sort(reverse=True)  # changes the list</code></pre></div>
+<h2 id="10-2-copy-lists-intentionally">10.2 Copy lists intentionally</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">original = [[1, 2], [3, 4]]
+shallow = original.copy()
+shallow[0].append(99)
+
+print(original)  # nested list was shared</code></pre></div>
+<p>Use <code>copy.deepcopy()</code> only when independent nested copies are truly required.</p>
+<h2 id="10-3-tuples-are-ordered-and-immutable">10.3 Tuples are ordered and immutable</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">location = (53.5461, -113.4938)
+latitude, longitude = location
+
+rgb = (30, 120, 200)
+single = (42,)  # comma creates a one-item tuple</code></pre></div>
+<p>Tuples communicate a fixed record or grouping. Unpacking works with many iterables.</p>
+<div class="table-wrap"><table><thead><tr><th>Feature</th><th><code>list</code></th><th><code>tuple</code></th></tr></thead><tbody><tr><td>Ordered</td><td>yes</td><td>yes</td></tr><tr><td>Mutable</td><td>yes</td><td>no</td></tr><tr><td>Typical role</td><td>changing collection</td><td>fixed record or return values</td></tr><tr><td>Literal</td><td><code>[1, 2]</code></td><td><code>(1, 2)</code></td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">first, *middle, last = [10, 20, 30, 40]
+print(first, middle, last)</code></pre></div>
+<h1 id="11-dictionaries-and-sets">11. Dictionaries and sets</h1>
+<h2 id="11-1-dictionaries-map-unique-keys-to-values">11.1 Dictionaries map unique keys to values</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">user = {
+    &quot;name&quot;: &quot;Ada&quot;,
+    &quot;role&quot;: &quot;analyst&quot;,
+    &quot;active&quot;: True,
+}
+
+print(user[&quot;name&quot;])
+print(user.get(&quot;email&quot;, &quot;not provided&quot;))
+
+user[&quot;email&quot;] = &quot;ada@example.com&quot;
+user[&quot;role&quot;] = &quot;engineer&quot;</code></pre></div>
+<p>Direct indexing raises <code>KeyError</code> for a missing key. <code>get()</code> supplies a default.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">for key, value in user.items():
+    print(f&quot;{key}: {value}&quot;)</code></pre></div>
+<h2 id="11-2-dictionary-patterns">11.2 Dictionary patterns</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">word_counts: dict[str, int] = {}
+
+for word in &quot;to be or not to be&quot;.split():
+    word_counts[word] = word_counts.get(word, 0) + 1
+
+print(word_counts)</code></pre></div>
+<p>Merge dictionaries with <code>|</code> in modern Python:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">defaults = {&quot;theme&quot;: &quot;light&quot;, &quot;page_size&quot;: 25}
+user_settings = {&quot;theme&quot;: &quot;dark&quot;}
+settings = defaults | user_settings</code></pre></div>
+<h2 id="11-3-sets-store-unique-hashable-values">11.3 Sets store unique hashable values</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">tags = {&quot;python&quot;, &quot;data&quot;, &quot;python&quot;}
+tags.add(&quot;testing&quot;)
+
+required = {&quot;python&quot;, &quot;git&quot;}
+known = {&quot;python&quot;, &quot;sql&quot;}
+
+print(required &amp; known)  # intersection
+print(required | known)  # union
+print(required - known)  # difference</code></pre></div>
+<p>Sets are ideal for membership checks, deduplication, and set algebra. They are not indexed sequences.</p>
+<h1 id="12-loops-and-iteration">12. Loops and iteration</h1>
+<h2 id="12-1-for-loops">12.1 <code>for</code> loops</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">names = [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;]
+
+for name in names:
+    print(name.upper())</code></pre></div>
+<p>Use <code>enumerate()</code> when the position is needed.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">for position, name in enumerate(names, start=1):
+    print(f&quot;{position}. {name}&quot;)</code></pre></div>
+<p>Iterate over two sequences with <code>zip()</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">products = [&quot;Tea&quot;, &quot;Coffee&quot;, &quot;Cocoa&quot;]
+prices = [4.5, 5.0, 4.75]
+
+for product, price in zip(products, prices, strict=True):
+    print(f&quot;{product}: ${price:.2f}&quot;)</code></pre></div>
+<p><code>strict=True</code> catches unequal lengths.</p>
+<h2 id="12-2-while-loops">12.2 <code>while</code> loops</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">attempts = 3
+
+while attempts &gt; 0:
+    print(f&quot;Attempts remaining: {attempts}&quot;)
+    attempts -= 1</code></pre></div>
+<p>Ensure the condition can become false; otherwise the loop is infinite.</p>
+<h2 id="12-3-break-continue-and-loop-else">12.3 <code>break</code>, <code>continue</code>, and loop <code>else</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">values = [3, 7, 12, 18]
+
+for value in values:
+    if value % 2 != 0:
+        continue
+    if value &gt; 10:
+        print(f&quot;Found: {value}&quot;)
+        break
+else:
+    print(&quot;No matching value&quot;)</code></pre></div>
+<p>The loop <code>else</code> runs only if the loop finishes without <code>break</code>.</p>
+<h1 id="13-comprehensions-and-generators">13. Comprehensions and generators</h1>
+<h2 id="13-1-list-comprehensions">13.1 List comprehensions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">squares = [number ** 2 for number in range(1, 6)]
+even_squares = [number ** 2 for number in range(1, 11) if number % 2 == 0]</code></pre></div>
+<p>Comprehensions are concise transformations. Use a normal loop when logic becomes difficult to read.</p>
+<h2 id="13-2-dictionary-and-set-comprehensions">13.2 Dictionary and set comprehensions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">names = [&quot;ada&quot;, &quot;grace&quot;, &quot;linus&quot;]
+lengths = {name: len(name) for name in names}
+initials = {name[0].upper() for name in names}</code></pre></div>
+<h2 id="13-3-generator-expressions">13.3 Generator expressions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">values = range(1, 1_000_001)
+sum_of_squares = sum(value * value for value in values)</code></pre></div>
+<p>A generator produces values lazily instead of building the entire collection in memory.</p>
+<h1 id="14-functions">14. Functions</h1>
+<h2 id="14-1-define-and-call-a-function">14.1 Define and call a function</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def calculate_total(price: float, quantity: int) -&gt; float:
+    &quot;&quot;&quot;Return price multiplied by a non-negative quantity.&quot;&quot;&quot;
+    if quantity &lt; 0:
+        raise ValueError(&quot;quantity cannot be negative&quot;)
+    return price * quantity
+
+
+total = calculate_total(19.95, 3)</code></pre></div>
+<p>Parameters receive input; <code>return</code> sends a result to the caller. Without <code>return</code>, a function returns <code>None</code>.</p>
+<h2 id="14-2-default-and-keyword-arguments">14.2 Default and keyword arguments</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def greet(name: str, greeting: str = &quot;Hello&quot;) -&gt; str:
+    return f&quot;{greeting}, {name}!&quot;
+
+
+print(greet(&quot;Mina&quot;))
+print(greet(&quot;Mina&quot;, greeting=&quot;Welcome&quot;))</code></pre></div>
+<p>Never use a mutable object as a default value.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def add_tag(tag: str, tags: list[str] | None = None) -&gt; list[str]:
+    result = [] if tags is None else tags.copy()
+    result.append(tag)
+    return result</code></pre></div>
+<h2 id="14-3-variable-arguments">14.3 Variable arguments</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def average(*values: float) -&gt; float:
+    if not values:
+        raise ValueError(&quot;at least one value is required&quot;)
+    return sum(values) / len(values)
+
+
+def build_profile(name: str, **details: str) -&gt; dict[str, str]:
+    return {&quot;name&quot;: name, **details}</code></pre></div>
+<p><code>*args</code> collects positional arguments into a tuple; <code>**kwargs</code> collects keyword arguments into a dictionary.</p>
+<h2 id="14-4-scope">14.4 Scope</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">tax_rate = 0.05  # module scope
+
+def add_tax(amount: float) -&gt; float:
+    result = amount * (1 + tax_rate)  # local result, reads global tax_rate
+    return result</code></pre></div>
+<p>Prefer passing changing values as parameters instead of modifying global state.</p>
+<h2 id="14-5-functions-as-values">14.5 Functions as values</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def double(value: int) -&gt; int:
+    return value * 2
+
+
+numbers = [1, 2, 3]
+doubled = list(map(double, numbers))</code></pre></div>
+<p>Functions can be stored, passed, and returned. Comprehensions are often clearer than <code>map()</code> for simple transformations.</p>
+<h1 id="15-errors-and-exceptions">15. Errors and exceptions</h1>
+<h2 id="15-1-read-tracebacks-from-the-bottom">15.1 Read tracebacks from the bottom</h2>
+<p>A traceback identifies the exception type and message at the bottom, then shows the call path. Find the first frame belonging to your code and inspect the relevant values.</p>
+<h2 id="15-2-catch-expected-failures-narrowly">15.2 Catch expected failures narrowly</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def parse_age(raw: str) -&gt; int:
+    try:
+        age = int(raw)
+    except ValueError as exc:
+        raise ValueError(&quot;age must be a whole number&quot;) from exc
+
+    if not 0 &lt;= age &lt;= 130:
+        raise ValueError(&quot;age must be between 0 and 130&quot;)
+    return age</code></pre></div>
+<p>Catch only exceptions you can handle or translate. Avoid <code>except Exception: pass</code>, which hides defects.</p>
+<h2 id="15-3-else-and-finally">15.3 <code>else</code> and <code>finally</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">try:
+    value = int(&quot;42&quot;)
+except ValueError:
+    print(&quot;Invalid integer&quot;)
+else:
+    print(f&quot;Parsed: {value}&quot;)
+finally:
+    print(&quot;Parsing attempt finished&quot;)</code></pre></div>
+<p><code>else</code> runs after a successful <code>try</code>; <code>finally</code> runs whether the operation succeeds or fails.</p>
+<h2 id="15-4-custom-exceptions">15.4 Custom exceptions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class InsufficientFundsError(ValueError):
+    &quot;&quot;&quot;Raised when a withdrawal exceeds the available balance.&quot;&quot;&quot;
+
+
+def withdraw(balance: float, amount: float) -&gt; float:
+    if amount &gt; balance:
+        raise InsufficientFundsError(&quot;amount exceeds balance&quot;)
+    return balance - amount</code></pre></div>
+<p>Custom exceptions make domain failures distinguishable from unrelated errors.</p>
+<h1 id="16-modules-packages-and-imports">16. Modules, packages, and imports</h1>
+<h2 id="16-1-import-standard-library-modules">16.1 Import standard-library modules</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import math
+from statistics import mean
+
+radius = 3
+area = math.pi * radius ** 2
+average_value = mean([10, 20, 30])</code></pre></div>
+<p>Avoid wildcard imports because they hide where names came from.</p>
+<h2 id="16-2-create-a-module">16.2 Create a module</h2>
+<p><code>conversions.py</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def celsius_to_fahrenheit(celsius: float) -&gt; float:
+    return celsius * 9 / 5 + 32</code></pre></div>
+<p><code>main.py</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from conversions import celsius_to_fahrenheit
+
+print(celsius_to_fahrenheit(20))</code></pre></div>
+<h2 id="16-3-package-structure">16.3 Package structure</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">weather_app/
+├── pyproject.toml
+├── src/
+│   └── weather_app/
+│       ├── __init__.py
+│       ├── conversions.py
+│       └── cli.py
+└── tests/
+    └── test_conversions.py</code></pre></div>
+<p>A package is a directory of related modules. Larger projects benefit from a <code>src</code> layout that prevents accidental imports from the project root.</p>
+<h1 id="17-virtual-environments-and-packages">17. Virtual environments and packages</h1>
+<h2 id="17-1-create-an-isolated-environment">17.1 Create an isolated environment</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m venv .venv
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS or Linux
+source .venv/bin/activate</code></pre></div>
+<p>After activation, <code>python</code> and <code>pip</code> refer to the project environment.</p>
+<h2 id="17-2-install-and-inspect-packages">17.2 Install and inspect packages</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install requests
+python -m pip show requests
+python -m pip list</code></pre></div>
+<p>Using <code>python -m pip</code> helps ensure <code>pip</code> belongs to the selected interpreter.</p>
+<h2 id="17-3-declare-dependencies">17.3 Declare dependencies</h2>
+<p>Modern projects commonly use <code>pyproject.toml</code>.</p>
+<div class="code-block"><div class="code-head"><span>toml</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-toml">[project]
+name = &quot;weather-app&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;requests&gt;=2.32,&lt;3&quot;]
+
+[project.optional-dependencies]
+dev = [&quot;pytest&gt;=8,&lt;9&quot;, &quot;ruff&gt;=0.6,&lt;1&quot;]</code></pre></div>
+<p>Do not commit <code>.venv</code>. Commit dependency declarations and an appropriate lock file when reproducible application builds require one.</p>
+<h1 id="18-files-and-paths">18. Files and paths</h1>
+<h2 id="18-1-use-pathlib">18.1 Use <code>pathlib</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+data_dir = Path(&quot;data&quot;)
+report_path = data_dir / &quot;report.txt&quot;
+
+data_dir.mkdir(parents=True, exist_ok=True)
+report_path.write_text(&quot;Python report\n&quot;, encoding=&quot;utf-8&quot;)
+content = report_path.read_text(encoding=&quot;utf-8&quot;)</code></pre></div>
+<p><code>Path</code> handles separators across operating systems and provides readable file operations.</p>
+<h2 id="18-2-context-managers">18.2 Context managers</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+path = Path(&quot;notes.txt&quot;)
+
+with path.open(&quot;a&quot;, encoding=&quot;utf-8&quot;) as file:
+    file.write(&quot;A new note\n&quot;)</code></pre></div>
+<p>The <code>with</code> block closes the file even if an exception occurs.</p>
+<h2 id="18-3-file-modes">18.3 File modes</h2>
+<div class="table-wrap"><table><thead><tr><th>Mode</th><th>Meaning</th><th>Risk</th></tr></thead><tbody><tr><td><code>&quot;r&quot;</code></td><td>read</td><td>file must exist</td></tr><tr><td><code>&quot;w&quot;</code></td><td>write</td><td>replaces existing content</td></tr><tr><td><code>&quot;a&quot;</code></td><td>append</td><td>adds to the end</td></tr><tr><td><code>&quot;x&quot;</code></td><td>create</td><td>fails if file exists</td></tr><tr><td><code>&quot;b&quot;</code></td><td>binary modifier</td><td>returns bytes</td></tr></tbody></table></div>
+<p>Use explicit UTF-8 encoding for portable text.</p>
+<h1 id="19-json-and-csv-data">19. JSON and CSV data</h1>
+<h2 id="19-1-json">19.1 JSON</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import json
+from pathlib import Path
+
+settings = {&quot;theme&quot;: &quot;dark&quot;, &quot;page_size&quot;: 25, &quot;alerts&quot;: True}
+path = Path(&quot;settings.json&quot;)
+
+path.write_text(json.dumps(settings, indent=2), encoding=&quot;utf-8&quot;)
+loaded = json.loads(path.read_text(encoding=&quot;utf-8&quot;))
+print(loaded[&quot;theme&quot;])</code></pre></div>
+<p>JSON supports objects, arrays, strings, numbers, booleans, and null. It does not directly store <code>datetime</code>, <code>Decimal</code>, sets, or arbitrary classes without conversion.</p>
+<h2 id="19-2-csv">19.2 CSV</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import csv
+from pathlib import Path
+
+rows = [
+    {&quot;name&quot;: &quot;Tea&quot;, &quot;price&quot;: 4.5},
+    {&quot;name&quot;: &quot;Coffee&quot;, &quot;price&quot;: 5.0},
+]
+
+path = Path(&quot;products.csv&quot;)
+with path.open(&quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as file:
+    writer = csv.DictWriter(file, fieldnames=[&quot;name&quot;, &quot;price&quot;])
+    writer.writeheader()
+    writer.writerows(rows)</code></pre></div>
+<p>Read it safely:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import csv
+from pathlib import Path
+
+with Path(&quot;products.csv&quot;).open(newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as file:
+    products = [
+        {&quot;name&quot;: row[&quot;name&quot;], &quot;price&quot;: float(row[&quot;price&quot;])}
+        for row in csv.DictReader(file)
+    ]</code></pre></div>
+<p>CSV has no universal schema. Convert types and validate required columns explicitly.</p>
+<h1 id="20-dates-and-times">20. Dates and times</h1>
+<h2 id="20-1-date-time-and-datetime">20.1 <code>date</code>, <code>time</code>, and <code>datetime</code></h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from datetime import date, datetime, timedelta
+
+today = date.today()
+deadline = today + timedelta(days=14)
+now = datetime.now()
+
+print(today.isoformat())
+print(deadline)
+print(now.strftime(&quot;%Y-%m-%d %H:%M&quot;))</code></pre></div>
+<h2 id="20-2-parse-text">20.2 Parse text</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from datetime import datetime
+
+timestamp = datetime.fromisoformat(&quot;2026-08-12T14:30:00+00:00&quot;)
+custom = datetime.strptime(&quot;12/08/2026&quot;, &quot;%d/%m/%Y&quot;)</code></pre></div>
+<p>Use ISO 8601 for machine-readable timestamps when possible. For global systems, store timezone-aware instants and convert for display.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from datetime import datetime, timezone
+
+created_at = datetime.now(timezone.utc)
+print(created_at.isoformat())</code></pre></div>
+<h1 id="21-classes-and-dataclasses">21. Classes and dataclasses</h1>
+<h2 id="21-1-a-simple-class">21.1 A simple class</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class BankAccount:
+    def __init__(self, owner: str, balance: float = 0.0) -&gt; None:
+        self.owner = owner
+        self.balance = float(balance)
+
+    def deposit(self, amount: float) -&gt; float:
+        if amount &lt;= 0:
+            raise ValueError(&quot;amount must be positive&quot;)
+        self.balance += amount
+        return self.balance
+
+
+account = BankAccount(&quot;Mina&quot;, 100)
+account.deposit(25)</code></pre></div>
+<p>An object combines state and behavior. Use classes when a concept has identity, rules, and a lifecycle; do not force every problem into a class.</p>
+<h2 id="21-2-dataclasses-for-records">21.2 Dataclasses for records</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+from datetime import date
+
+@dataclass(frozen=True)
+class Expense:
+    amount: float
+    category: str
+    occurred_on: date
+    note: str = &quot;&quot;
+
+
+expense = Expense(12.5, &quot;food&quot;, date.today(), &quot;Lunch&quot;)</code></pre></div>
+<p>Dataclasses generate initialization, representation, and equality behavior. <code>frozen=True</code> prevents normal attribute reassignment.</p>
+<h2 id="21-3-properties-protect-rules">21.3 Properties protect rules</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class Temperature:
+    def __init__(self, celsius: float) -&gt; None:
+        self.celsius = celsius
+
+    @property
+    def celsius(self) -&gt; float:
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value: float) -&gt; None:
+        if value &lt; -273.15:
+            raise ValueError(&quot;temperature is below absolute zero&quot;)
+        self._celsius = float(value)</code></pre></div>
+<h1 id="22-type-hints-and-readable-interfaces">22. Type hints and readable interfaces</h1>
+<h2 id="22-1-annotate-function-contracts">22.1 Annotate function contracts</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def summarize(values: list[float]) -&gt; dict[str, float]:
+    if not values:
+        raise ValueError(&quot;values cannot be empty&quot;)
+    return {
+        &quot;minimum&quot;: min(values),
+        &quot;maximum&quot;: max(values),
+        &quot;average&quot;: sum(values) / len(values),
+    }</code></pre></div>
+<p>Python does not enforce annotations automatically. Editors, linters, and type checkers use them to catch mistakes and explain interfaces.</p>
+<h2 id="22-2-optional-values-and-aliases">22.2 Optional values and aliases</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import TypeAlias
+
+UserId: TypeAlias = int
+
+def find_name(user_id: UserId) -&gt; str | None:
+    users = {1: &quot;Ada&quot;, 2: &quot;Grace&quot;}
+    return users.get(user_id)</code></pre></div>
+<p><code>str | None</code> makes absence explicit. Check for <code>None</code> before using string methods.</p>
+<h2 id="22-3-duck-typing">22.3 Duck typing</h2>
+<p>Python often cares about supported behavior rather than exact class identity. If an object provides the expected methods, it can participate. Type protocols can document this without inheritance.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Protocol
+
+class Writer(Protocol):
+    def write(self, text: str) -&gt; object: ...
+
+def save_message(destination: Writer, message: str) -&gt; None:
+    destination.write(message)</code></pre></div>
+<h1 id="23-testing-debugging-and-logging">23. Testing, debugging, and logging</h1>
+<h2 id="23-1-start-with-simple-assertions">23.1 Start with simple assertions</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def celsius_to_fahrenheit(celsius: float) -&gt; float:
+    return celsius * 9 / 5 + 32
+
+
+assert celsius_to_fahrenheit(0) == 32
+assert celsius_to_fahrenheit(100) == 212</code></pre></div>
+<p>For a project, use a test framework such as <code>pytest</code>.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import pytest
+
+def test_calculate_total_rejects_negative_quantity() -&gt; None:
+    with pytest.raises(ValueError, match=&quot;quantity cannot be negative&quot;):
+        calculate_total(10, -1)</code></pre></div>
+<h2 id="23-2-debug-systematically">23.2 Debug systematically</h2>
+<ol><li>Reproduce the problem with the smallest input.</li><li>State expected and actual behavior.</li><li>Find where they first diverge.</li><li>Form one hypothesis.</li><li>Inspect values with a debugger, test, or temporary output.</li><li>Fix the cause and add a regression test.</li></ol>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def percentage(part: float, whole: float) -&gt; float:
+    breakpoint()  # debugger pauses here when this function runs
+    if whole == 0:
+        raise ValueError(&quot;whole cannot be zero&quot;)
+    return part / whole * 100</code></pre></div>
+<p>Remove accidental breakpoints before committing.</p>
+<h2 id="23-3-logging">23.3 Logging</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+records_processed = 42
+logger.info(&quot;processing complete: records=%s&quot;, records_processed)</code></pre></div>
+<p>Logs describe runtime events. Do not log passwords, tokens, unnecessary personal data, or complete sensitive payloads.</p>
+<h1 id="24-capstone-command-line-expense-tracker">24. Capstone: command-line expense tracker</h1>
+<p>This mini project stores expenses in JSON, validates input, summarizes categories, and separates data behavior from the command-line interface.</p>
+<h2 id="24-1-project-structure">24.1 Project structure</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">expense_tracker/
+├── expenses.py
+├── main.py
+├── expenses.json
+└── test_expenses.py</code></pre></div>
+<h2 id="24-2-data-model-and-conversion">24.2 Data model and conversion</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import asdict, dataclass
+from datetime import date
+
+@dataclass(frozen=True)
+class Expense:
+    amount: float
+    category: str
+    occurred_on: date
+    note: str = &quot;&quot;
+
+    def __post_init__(self) -&gt; None:
+        if self.amount &lt;= 0:
+            raise ValueError(&quot;amount must be positive&quot;)
+        if not self.category.strip():
+            raise ValueError(&quot;category cannot be empty&quot;)
+
+    def to_dict(self) -&gt; dict[str, object]:
+        data = asdict(self)
+        data[&quot;occurred_on&quot;] = self.occurred_on.isoformat()
+        return data
+
+    @classmethod
+    def from_dict(cls, data: dict[str, object]) -&gt; &quot;Expense&quot;:
+        return cls(
+            amount=float(data[&quot;amount&quot;]),
+            category=str(data[&quot;category&quot;]),
+            occurred_on=date.fromisoformat(str(data[&quot;occurred_on&quot;])),
+            note=str(data.get(&quot;note&quot;, &quot;&quot;)),
+        )</code></pre></div>
+<h2 id="24-3-persistence">24.3 Persistence</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import json
+from pathlib import Path
+
+def load_expenses(path: Path) -&gt; list[Expense]:
+    if not path.exists():
+        return []
+    raw = json.loads(path.read_text(encoding=&quot;utf-8&quot;))
+    if not isinstance(raw, list):
+        raise ValueError(&quot;expense file must contain a list&quot;)
+    return [Expense.from_dict(item) for item in raw]
+
+
+def save_expenses(path: Path, expenses: list[Expense]) -&gt; None:
+    payload = [expense.to_dict() for expense in expenses]
+    path.write_text(json.dumps(payload, indent=2), encoding=&quot;utf-8&quot;)</code></pre></div>
+<h2 id="24-4-summaries">24.4 Summaries</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def totals_by_category(expenses: list[Expense]) -&gt; dict[str, float]:
+    totals: dict[str, float] = {}
+    for expense in expenses:
+        category = expense.category.strip().casefold()
+        totals[category] = totals.get(category, 0.0) + expense.amount
+    return totals
+
+
+def overall_total(expenses: list[Expense]) -&gt; float:
+    return sum(expense.amount for expense in expenses)</code></pre></div>
+<h2 id="24-5-input-helpers">24.5 Input helpers</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from datetime import date
+
+def prompt_expense() -&gt; Expense:
+    amount = float(input(&quot;Amount: &quot;).strip())
+    category = input(&quot;Category: &quot;).strip()
+    raw_date = input(&quot;Date [YYYY-MM-DD, blank=today]: &quot;).strip()
+    occurred_on = date.fromisoformat(raw_date) if raw_date else date.today()
+    note = input(&quot;Note: &quot;).strip()
+    return Expense(amount, category, occurred_on, note)</code></pre></div>
+<h2 id="24-6-command-loop">24.6 Command loop</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from pathlib import Path
+
+DATA_PATH = Path(&quot;expenses.json&quot;)
+
+def main() -&gt; None:
+    expenses = load_expenses(DATA_PATH)
+
+    while True:
+        command = input(&quot;[add/list/summary/quit] &gt; &quot;).strip().casefold()
+
+        if command == &quot;add&quot;:
+            try:
+                expenses.append(prompt_expense())
+                save_expenses(DATA_PATH, expenses)
+            except ValueError as exc:
+                print(f&quot;Invalid expense: {exc}&quot;)
+        elif command == &quot;list&quot;:
+            for expense in expenses:
+                print(
+                    f&quot;{expense.occurred_on} | {expense.category:&lt;12} | &quot;
+                    f&quot;${expense.amount:&gt;8.2f} | {expense.note}&quot;
+                )
+        elif command == &quot;summary&quot;:
+            for category, total in sorted(totals_by_category(expenses).items()):
+                print(f&quot;{category:&lt;12} ${total:&gt;8.2f}&quot;)
+            print(f&quot;{&#x27;overall&#x27;:&lt;12} ${overall_total(expenses):&gt;8.2f}&quot;)
+        elif command == &quot;quit&quot;:
+            break
+        else:
+            print(&quot;Unknown command&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></div>
+<h2 id="24-7-tests">24.7 Tests</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from datetime import date
+
+def test_totals_by_category_combines_case() -&gt; None:
+    expenses = [
+        Expense(10, &quot;Food&quot;, date(2026, 8, 1)),
+        Expense(5, &quot; food &quot;, date(2026, 8, 2)),
+        Expense(20, &quot;transport&quot;, date(2026, 8, 3)),
+    ]
+
+    assert totals_by_category(expenses) == {
+        &quot;food&quot;: 15,
+        &quot;transport&quot;: 20,
+    }</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import json
+from datetime import date
+
+def test_save_and_load_round_trip(tmp_path) -&gt; None:
+    path = tmp_path / &quot;expenses.json&quot;
+    expected = [Expense(12.5, &quot;food&quot;, date(2026, 8, 12), &quot;Lunch&quot;)]
+
+    save_expenses(path, expected)
+    actual = load_expenses(path)
+
+    assert actual == expected
+    assert isinstance(json.loads(path.read_text(encoding=&quot;utf-8&quot;)), list)</code></pre></div>
+<h1 id="25-common-beginner-mistakes">25. Common beginner mistakes</h1>
+<div class="table-wrap"><table><thead><tr><th>Mistake</th><th>Symptom</th><th>Better habit</th></tr></thead><tbody><tr><td>Wrong indentation</td><td><code>IndentationError</code> or wrong branch</td><td>four spaces and editor guides</td></tr><tr><td>Confuse <code>=</code> with <code>==</code></td><td>assignment where comparison intended</td><td>read <code>=</code> as “bind”</td></tr><tr><td>Forget input is text</td><td>arithmetic or conversion error</td><td>validate and convert at boundary</td></tr><tr><td>Modify a list while iterating</td><td>skipped or surprising items</td><td>build a new list</td></tr><tr><td>Mutable default argument</td><td>state leaks across calls</td><td>use <code>None</code>, create inside</td></tr><tr><td>Catch every exception</td><td>bugs disappear silently</td><td>catch expected types narrowly</td></tr><tr><td>Use <code>is</code> for value comparison</td><td>unpredictable comparison</td><td>use <code>==</code>; reserve <code>is</code> for <code>None</code></td></tr><tr><td>Shadow a built-in</td><td><code>list(...)</code> stops working</td><td>avoid names like <code>list</code>, <code>str</code>, <code>sum</code></td></tr><tr><td>Hard-code file separators</td><td>path fails on another OS</td><td>use <code>pathlib.Path</code></td></tr><tr><td>Install packages globally</td><td>dependency conflicts</td><td>use one virtual environment per project</td></tr></tbody></table></div>
+<h1 id="26-style-quality-and-project-habits">26. Style, quality, and project habits</h1>
+<h2 id="26-1-keep-code-readable">26.1 Keep code readable</h2>
+<ul><li>Choose descriptive names from the problem domain.</li><li>Write short functions with one focused responsibility.</li><li>Separate input/output from calculation.</li><li>Prefer explicit code over clever compression.</li><li>Use docstrings for public functions and classes.</li><li>Remove dead code instead of commenting out large blocks.</li></ul>
+<h2 id="26-2-automate-checks">26.2 Automate checks</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install ruff pytest
+ruff check .
+ruff format --check .
+python -m pytest</code></pre></div>
+<p>Version-control workflow:</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">git status
+git add src tests README.md
+git diff --cached
+git commit -m &quot;Add expense category summary&quot;</code></pre></div>
+<p>Inspect the staged diff before committing. Never commit passwords, API keys, <code>.venv</code>, or personal data.</p>
+<h2 id="26-3-ask-useful-questions-when-stuck">26.3 Ask useful questions when stuck</h2>
+<p>Include the smallest reproducible example, full error message, Python version, expected result, actual result, and what you already tried. Replace secrets and sensitive data before sharing.</p>
+<h1 id="27-practice-plan-and-exercises">27. Practice plan and exercises</h1>
+<h2 id="week-1-values-and-control-flow">Week 1: values and control flow</h2>
+<p>Practice numbers, strings, input, conditions, lists, dictionaries, and loops. Build a temperature converter, grade calculator, and word counter.</p>
+<h2 id="week-2-functions-and-files">Week 2: functions and files</h2>
+<p>Turn repeated logic into functions. Read and write text, JSON, and CSV. Build a contact list that validates names and email addresses.</p>
+<h2 id="week-3-modules-classes-and-tests">Week 3: modules, classes, and tests</h2>
+<p>Split a project into modules, create a virtual environment, model one domain object with a dataclass, and test normal and invalid cases.</p>
+<h2 id="week-4-complete-project">Week 4: complete project</h2>
+<p>Extend the expense tracker with editing, deletion, date filters, monthly summaries, CSV export, tests, README instructions, and Git commits.</p>
+<h2 id="exercises">Exercises</h2>
+<ol><li>Ask for length and width, validate positive numbers, and calculate rectangle area and perimeter.</li><li>Normalize a sentence and count each word with a dictionary.</li><li>Remove duplicate values while preserving first-seen order.</li><li>Write <code>safe_divide(a, b)</code> with a useful error for zero.</li><li>Read a CSV file and report total, average, minimum, and maximum for one numeric column.</li><li>Create a <code>Book</code> dataclass and a function that filters available books.</li><li>Write tests for empty input, one item, duplicates, and invalid values.</li><li>Add <code>delete</code> and <code>export</code> commands to the expense tracker.</li><li>Replace floating-point expense amounts with <code>Decimal</code> and document the rounding policy.</li><li>Package one project with <code>pyproject.toml</code> and run all checks in a fresh virtual environment.</li></ol>
+<h1 id="28-quick-reference-and-next-steps">28. Quick reference and next steps</h1>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>Python pattern</th></tr></thead><tbody><tr><td>Display a value</td><td><code>print(value)</code></td></tr><tr><td>Read user text</td><td><code>input(&quot;Prompt: &quot;)</code></td></tr><tr><td>Convert types</td><td><code>int(text)</code>, <code>float(text)</code>, <code>str(value)</code></td></tr><tr><td>Branch</td><td><code>if</code> / <code>elif</code> / <code>else</code></td></tr><tr><td>Iterate</td><td><code>for item in items:</code></td></tr><tr><td>Repeat by condition</td><td><code>while condition:</code></td></tr><tr><td>Reusable behavior</td><td><code>def function(...):</code></td></tr><tr><td>Handle expected failure</td><td><code>try</code> / <code>except</code></td></tr><tr><td>Read text</td><td><code>Path(...).read_text(encoding=&quot;utf-8&quot;)</code></td></tr><tr><td>Work with JSON</td><td><code>json.loads()</code> / <code>json.dumps()</code></td></tr><tr><td>Define a record</td><td><code>@dataclass</code></td></tr><tr><td>Test behavior</td><td><code>assert actual == expected</code></td></tr></tbody></table></div>
+<p>The best next step is to build small programs repeatedly. Begin with a clear input and output, write the simplest correct version, test boundaries, improve names and structure, save the work in Git, and explain what you learned. Python syntax becomes natural through use; problem-solving skill grows through feedback.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
