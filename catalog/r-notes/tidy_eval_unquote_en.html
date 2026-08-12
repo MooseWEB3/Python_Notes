@@ -1,0 +1,1664 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 tidy evaluation guide">
+  <meta name="description" content="A detailed English guide to !!
+unquote with runnable examples, mental models, common pitfalls, and a
+decision table.">
+  <title>Mastering tidy evaluation: a practical guide to !!
+unquote</title>
+  <style>
+  :root {
+    --bg: #f7f9fc; --surface: #fff; --surface-2: #edf4fb;
+    --text: #172033; --muted: #61708a; --line: #d9e3ef;
+    --accent: #1769aa; --accent-2: #087e76; --code: #0b1220;
+    --code-text: #e6edf7; --warn: #a65b00; --shadow: 0 12px 34px rgba(25,45,75,.09);
+  }
+  html[data-theme="dark"] {
+    --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+    --text: #e7eef8; --muted: #a4b2c7; --line: #2a3952;
+    --accent: #69b6f2; --accent-2: #58d1c1; --code: #070c15;
+    --code-text: #dce8f5; --warn: #ffbd66; --shadow: 0 12px 34px rgba(0,0,0,.28);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; color: var(--text); background: var(--bg);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.72;
+  }
+  html[lang^="zh"] body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Inter, sans-serif;
+    line-height: 1.82;
+  }
+  a { color: var(--accent); text-underline-offset: .16em; }
+  .progress {
+    position: fixed; inset: 0 0 auto 0; z-index: 30; width: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 20; min-height: 58px; padding: 0 4vw;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 91%, transparent);
+    backdrop-filter: blur(16px);
+  }
+  .brand { font-weight: 760; letter-spacing: -.02em; }
+  .actions { display: flex; gap: .55rem; align-items: center; }
+  .button {
+    display: inline-flex; padding: .38rem .76rem; border: 1px solid var(--line);
+    border-radius: 999px; color: var(--text); background: var(--surface);
+    font: inherit; font-size: .85rem; text-decoration: none; cursor: pointer;
+  }
+  .button:hover { border-color: var(--accent); }
+  .hero {
+    padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: #fff;
+    background:
+      radial-gradient(circle at 84% 14%, rgba(94,234,212,.25), transparent 29%),
+      linear-gradient(125deg, #0b3e72, #1769aa 53%, #087e76);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: .8rem; opacity: .84;
+    font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .hero h1 {
+    max-width: 960px; margin: 0; font-size: clamp(2.35rem, 5.3vw, 4.7rem);
+    line-height: 1.06; letter-spacing: -.045em;
+  }
+  html[lang^="zh"] .hero h1 { line-height: 1.14; letter-spacing: -.025em; }
+  .hero p { max-width: 830px; margin: 1.2rem 0 0; opacity: .92; font-size: clamp(1rem,2vw,1.28rem); }
+  .hero .personal-note {
+    width: fit-content; max-width: 100%; margin-top: .9rem; padding: .4rem .72rem;
+    border: 1px solid rgba(255,255,255,.38); border-radius: 8px;
+    background: rgba(255,255,255,.12); font-size: .9rem; font-weight: 650; opacity: 1;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+  .badge {
+    padding: .3rem .7rem; border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px; background: rgba(255,255,255,.1); font-size: .82rem;
+  }
+  .shell {
+    display: grid; grid-template-columns: 265px minmax(0, 840px);
+    gap: clamp(2rem,5vw,5rem); max-width: 1260px; margin: 0 auto; padding: 3rem 2rem 6rem;
+  }
+  .toc {
+    position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px);
+    overflow: auto; padding-right: 1rem; scrollbar-width: thin;
+  }
+  .toc > h2 {
+    margin: 0 0 .8rem; color: var(--muted); font-size: .78rem;
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc ul ul { padding-left: .85rem; font-size: .88rem; }
+  .toc li { margin: .22rem 0; }
+  .toc a {
+    display: block; padding: .23rem .5rem; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+  .content { min-width: 0; }
+  .notice {
+    margin: 0 0 2rem; padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    color: var(--muted); background: var(--surface-2); font-size: .92rem;
+  }
+  .content h1, .content h2, .content h3 {
+    scroll-margin-top: 78px; line-height: 1.27; letter-spacing: -.025em;
+  }
+  .content h1 {
+    margin: 3.5rem 0 1rem; padding-top: .45rem; border-top: 1px solid var(--line);
+    font-size: clamp(1.9rem,4vw,2.55rem);
+  }
+  .content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+  .content h2 { margin: 2.35rem 0 .75rem; font-size: 1.52rem; }
+  .content h3 { margin: 1.75rem 0 .55rem; font-size: 1.18rem; }
+  .content ul, .content ol { padding-left: 1.45rem; }
+  .content li { margin: .3rem 0; }
+  blockquote {
+    margin: 1.45rem 0; padding: .35rem 1.15rem;
+    border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0;
+    background: var(--surface-2);
+  }
+  blockquote p { color: var(--muted); }
+  table {
+    display: block; width: 100%; max-width: 100%; margin: 1.4rem 0; overflow-x: auto;
+    border: 1px solid var(--line); border-radius: 12px; border-collapse: separate;
+    border-spacing: 0; background: var(--surface); box-shadow: var(--shadow); font-size: .93rem;
+  }
+  th, td { min-width: 120px; padding: .72rem .85rem; border: 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    padding: .12em .34em; border-radius: 5px; color: var(--accent);
+    background: var(--surface-2); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  div.sourceCode, pre {
+    margin: 1.3rem 0; overflow: auto; border: 1px solid #263247;
+    border-radius: 12px; background: var(--code); box-shadow: var(--shadow);
+  }
+  pre { padding: 1rem 1.1rem; tab-size: 2; }
+  div.sourceCode pre { margin: 0; border: 0; box-shadow: none; }
+  pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+  .footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+    .toc { position: static; max-height: 340px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+    .hero { padding: 4rem 1.2rem 3rem; }
+    .topbar { padding: 0 1rem; }
+  }
+  @media (max-width: 520px) {
+    .brand { max-width: 47vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .button { padding: .32rem .58rem; font-size: .78rem; }
+  }
+  @media print {
+    .topbar, .toc, .progress { display: none !important; }
+    .hero { padding: 2rem; color: #000; background: #fff; }
+    .shell { display: block; max-width: none; padding: 1rem; }
+    table, div.sourceCode, pre { box-shadow: none; break-inside: avoid; }
+  }
+  </style>
+  <style>
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · R Programming Notes</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Light /
+dark</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · dplyr · rlang · tidy evaluation</span>
+    <h1>Mastering tidy evaluation: a practical guide to !! unquote</h1>
+    <p>Understand data masks, indirection, capture and injection,
+dynamic names, !!!, and when to prefer {{ }}, .data, or all_of()</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">tidy evaluation</span>
+      <span class="badge">!! unquote</span>
+      <span class="badge">dplyr · rlang</span>
+      <span class="badge">R Markdown</span>
+      <span class="badge">Bilingual</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#the-one-sentence-mental-model"
+      id="toc-the-one-sentence-mental-model">The one-sentence mental
+      model</a></li>
+      <li><a href="#why-dplyr-programming-needs-indirection"
+      id="toc-why-dplyr-programming-needs-indirection">1. Why dplyr
+      programming needs indirection</a>
+      <ul>
+      <li><a href="#data-variables-and-env-variables"
+      id="toc-data-variables-and-env-variables">1.1 Data-variables and
+      env-variables</a></li>
+      <li><a href="#why-a-naive-wrapper-fails"
+      id="toc-why-a-naive-wrapper-fails">1.2 Why a naive wrapper
+      fails</a></li>
+      </ul></li>
+      <li><a href="#the-classic-pattern-enquo"
+      id="toc-the-classic-pattern-enquo">2. The classic pattern: enquo()
+      + !!</a>
+      <ul>
+      <li><a href="#the-two-separate-operations"
+      id="toc-the-two-separate-operations">2.1 The two separate
+      operations</a></li>
+      <li><a href="#expressions-symbols-calls-and-quosures"
+      id="toc-expressions-symbols-calls-and-quosures">2.2 Expressions,
+      symbols, calls, and quosures</a></li>
+      <li><a href="#inspecting-the-result-of-injection"
+      id="toc-inspecting-the-result-of-injection">2.3 Inspecting the
+      result of injection</a></li>
+      </ul></li>
+      <li><a href="#using-with-common-dplyr-verbs"
+      id="toc-using-with-common-dplyr-verbs">3. Using !! with common
+      dplyr verbs</a>
+      <ul>
+      <li><a href="#summarise-choose-a-variable-dynamically"
+      id="toc-summarise-choose-a-variable-dynamically">3.1 summarise():
+      choose a variable dynamically</a></li>
+      <li><a href="#group_by-choose-grouping-dynamically"
+      id="toc-group_by-choose-grouping-dynamically">3.2 group_by():
+      choose grouping dynamically</a></li>
+      <li><a href="#arrange-dynamic-sorting"
+      id="toc-arrange-dynamic-sorting">3.3 arrange(): dynamic
+      sorting</a></li>
+      <li><a href="#mutate-use-an-expression-in-a-calculation"
+      id="toc-mutate-use-an-expression-in-a-calculation">3.4 mutate():
+      use an expression in a calculation</a></li>
+      <li><a href="#reusing-one-captured-expression"
+      id="toc-reusing-one-captured-expression">3.5 Reusing one captured
+      expression</a></li>
+      </ul></li>
+      <li><a
+      href="#character-column-names-do-not-automatically-reach-for-sym"
+      id="toc-character-column-names-do-not-automatically-reach-for-sym">4.
+      Character column names: do not automatically reach for !!sym()</a>
+      <ul>
+      <li><a href="#use-.dataname-in-data-masked-calculations"
+      id="toc-use-.dataname-in-data-masked-calculations">4.1 Use
+      .data[[name]] in data-masked calculations</a></li>
+      <li><a href="#use-all_of-in-tidy-selection"
+      id="toc-use-all_of-in-tidy-selection">4.2 Use all_of() in tidy
+      selection</a></li>
+      <li><a href="#what-sym-still-means"
+      id="toc-what-sym-still-means">4.3 What !!sym() still
+      means</a></li>
+      </ul></li>
+      <li><a href="#injecting-a-complete-expression"
+      id="toc-injecting-a-complete-expression">5. Injecting a complete
+      expression</a>
+      <ul>
+      <li><a href="#save-and-inject-a-rule"
+      id="toc-save-and-inject-a-rule">5.1 Save and inject a
+      rule</a></li>
+      <li><a href="#build-a-rule-from-a-string-and-a-value"
+      id="toc-build-a-rule-from-a-string-and-a-value">5.2 Build a rule
+      from a string and a value</a></li>
+      <li><a href="#a-quosure-preserves-the-users-environment"
+      id="toc-a-quosure-preserves-the-users-environment">5.3 A quosure
+      preserves the user’s environment</a></li>
+      </ul></li>
+      <li><a href="#injecting-ordinary-values-and-resolving-ambiguity"
+      id="toc-injecting-ordinary-values-and-resolving-ambiguity">6.
+      Injecting ordinary values and resolving ambiguity</a></li>
+      <li><a href="#dynamic-output-names-name"
+      id="toc-dynamic-output-names-name">7. Dynamic output names: !!name
+      :=</a>
+      <ul>
+      <li><a href="#a-dynamic-input-expression-and-output-name"
+      id="toc-a-dynamic-input-expression-and-output-name">7.1 A dynamic
+      input expression and output name</a></li>
+      <li><a href="#modern-name-interpolation"
+      id="toc-modern-name-interpolation">7.2 Modern name
+      interpolation</a></li>
+      </ul></li>
+      <li><a href="#versus-inject-one-splice-many"
+      id="toc-versus-inject-one-splice-many">8. !! versus !!!: inject
+      one, splice many</a>
+      <ul>
+      <li><a href="#multiple-filtering-conditions"
+      id="toc-multiple-filtering-conditions">8.1 Multiple filtering
+      conditions</a></li>
+      <li><a href="#generate-multiple-summaries"
+      id="toc-generate-multiple-summaries">8.2 Generate multiple
+      summaries</a></li>
+      <li><a href="#splicing-into-an-ordinary-function-call"
+      id="toc-splicing-into-an-ordinary-function-call">8.3 Splicing into
+      an ordinary function call</a></li>
+      </ul></li>
+      <li><a href="#the-modern-default-when-to-use"
+      id="toc-the-modern-default-when-to-use">9. The modern default:
+      when to use {{ }}</a>
+      <ul>
+      <li><a href="#when-explicit-enquo-still-helps"
+      id="toc-when-explicit-enquo-still-helps">9.1 When explicit enquo()
+      + !! still helps</a></li>
+      <li><a href="#modern-versions-of-common-wrappers"
+      id="toc-modern-versions-of-common-wrappers">9.2 Modern versions of
+      common wrappers</a></li>
+      </ul></li>
+      <li><a href="#where-works" id="toc-where-works">10. Where !!
+      works</a></li>
+      <li><a href="#common-misconceptions-and-corrections"
+      id="toc-common-misconceptions-and-corrections">11. Common
+      misconceptions and corrections</a>
+      <ul>
+      <li><a href="#misconception-1-is-only-for-inserting-column-names"
+      id="toc-misconception-1-is-only-for-inserting-column-names">Misconception
+      1: !! is only for inserting column names</a></li>
+      <li><a
+      href="#misconception-2-every-character-column-name-should-become-symname"
+      id="toc-misconception-2-every-character-column-name-should-become-symname">Misconception
+      2: every character column name should become !!sym(name)</a></li>
+      <li><a href="#misconception-3-every-function-argument-needs-enquo"
+      id="toc-misconception-3-every-function-argument-needs-enquo">Misconception
+      3: every function argument needs enquo() + !!</a></li>
+      <li><a
+      href="#misconception-4-immediately-calculates-its-right-side-in-the-data"
+      id="toc-misconception-4-immediately-calculates-its-right-side-in-the-data">Misconception
+      4: !! immediately calculates its right side in the data</a></li>
+      <li><a href="#misconception-5-is-merely-more-bang-bang"
+      id="toc-misconception-5-is-merely-more-bang-bang">Misconception 5:
+      !!! is merely “more bang-bang”</a></li>
+      <li><a href="#misconception-6-names-in-a-data-mask-cannot-collide"
+      id="toc-misconception-6-names-in-a-data-mask-cannot-collide">Misconception
+      6: names in a data mask cannot collide</a></li>
+      </ul></li>
+      <li><a href="#practical-decision-table"
+      id="toc-practical-decision-table">12. Practical decision
+      table</a></li>
+      <li><a href="#modern-alternatives-and-related-call-tools"
+      id="toc-modern-alternatives-and-related-call-tools">13. Modern
+      alternatives and related call tools</a>
+      <ul>
+      <li><a href="#the-modern-default-for-forwarding"
+      id="toc-the-modern-default-for-forwarding">13.1 {{ }}: the modern
+      default for forwarding</a></li>
+      <li><a href="#data-character-column-names-in-calculations"
+      id="toc-data-character-column-names-in-calculations">13.2 .data[[
+      ]]: character column names in calculations</a></li>
+      <li><a href="#all_of-character-names-in-select"
+      id="toc-all_of-character-names-in-select">13.3 all_of(): character
+      names in select()</a></li>
+      <li><a href="#any_of-allow-columns-to-be-absent"
+      id="toc-any_of-allow-columns-to-be-absent">13.4 any_of(): allow
+      columns to be absent</a></li>
+      <li><a href="#inject-explicitly-create-an-injection-context"
+      id="toc-inject-explicitly-create-an-injection-context">13.5
+      inject(): explicitly create an injection context</a></li>
+      <li><a href="#exec-when-the-function-itself-is-dynamic"
+      id="toc-exec-when-the-function-itself-is-dynamic">13.6 exec():
+      when the function itself is dynamic</a></li>
+      <li><a href="#base-r-do.call-no-tidy-evaluation-required"
+      id="toc-base-r-do.call-no-tidy-evaluation-required">13.7 Base R
+      do.call(): no tidy evaluation required</a></li>
+      <li><a href="#classify-the-input-first"
+      id="toc-classify-the-input-first">13.8 Classify the input
+      first</a></li>
+      </ul></li>
+      <li><a href="#worked-example-a-reusable-grouped-summary"
+      id="toc-worked-example-a-reusable-grouped-summary">14. Worked
+      example: a reusable grouped summary</a></li>
+      <li><a href="#exercises-and-solutions"
+      id="toc-exercises-and-solutions">15. Exercises and solutions</a>
+      <ul>
+      <li><a href="#exercises" id="toc-exercises">Exercises</a></li>
+      <li><a href="#suggested-solutions"
+      id="toc-suggested-solutions">Suggested solutions</a></li>
+      </ul></li>
+      <li><a href="#further-reading" id="toc-further-reading">16.
+      Further reading</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">The short version: in a context that supports
+tidy-eval injection, !! embeds a value or a captured expression into
+code that is about to run. Prefer {{ }} for ordinary argument
+forwarding, and .data[[name]] or all_of(name) for character column
+names.</div>
+      <section id="the-one-sentence-mental-model" class="level1">
+      <h1>The one-sentence mental model</h1>
+      <p><code>!!</code> is read “bang-bang” and has traditionally been
+      called unquote. The useful idea is not the name but when it
+      changes the code:</p>
+      <blockquote>
+      <p>In a context that supports tidy-eval injection, evaluate the
+      object on the right of <code>!!</code>, embed its value or
+      expression into the surrounding expression, and only then evaluate
+      the modified outer expression.</p>
+      </blockquote>
+      <p>For example, save a piece of code and inject it into
+      <code>filter()</code>:</p>
+      <div class="sourceCode" id="cb1"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>rule <span class="ot">&lt;-</span> <span class="fu">expr</span>(age <span class="sc">&gt;</span> <span class="dv">25</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!</span>rule)</span></code></pre></div>
+      <p>The conceptual sequence is:</p>
+      <pre class="text"><code>rule                     # an env-variable containing the expression age &gt; 25
+  ↓  !!rule
+age &gt; 25                 # code injected into filter()
+  ↓
+filter(df, age &gt; 25)     # the modified call is evaluated</code></pre>
+      <p><code>!!</code> is not a column-name operator, and it does not
+      itself extract a value from a data frame. It injects an R object.
+      That object can be a symbol, call, quosure, constant, or
+      dynamically generated name.</p>
+      </section>
+      <section id="why-dplyr-programming-needs-indirection"
+      class="level1">
+      <h1>1. Why dplyr programming needs indirection</h1>
+      <section id="data-variables-and-env-variables" class="level2">
+      <h2>1.1 Data-variables and env-variables</h2>
+      <p>Functions such as <code>filter()</code>, <code>mutate()</code>,
+      <code>summarise()</code>, and <code>group_by()</code> use data
+      masking. Data masking lets you refer to columns directly:</p>
+      <div class="sourceCode" id="cb3"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name  =</span> <span class="fu">c</span>(<span class="st">&quot;Tom&quot;</span>, <span class="st">&quot;Jack&quot;</span>, <span class="st">&quot;Amy&quot;</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age   =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">35</span>, <span class="dv">28</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">95</span>, <span class="dv">88</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">&gt;</span> <span class="dv">25</span>)</span></code></pre></div>
+      <p>Two kinds of “variable” are visible:</p>
+      <table>
+      <colgroup>
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Kind</th>
+      <th>Where it lives</th>
+      <th>Examples</th>
+      <th>Explicit form</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>data-variable</td>
+      <td>A data-frame column</td>
+      <td><code>age</code>, <code>score</code></td>
+      <td><code>.data$age</code></td>
+      </tr>
+      <tr>
+      <td>env-variable</td>
+      <td>The current R environment</td>
+      <td><code>cutoff &lt;- 25</code></td>
+      <td><code>.env$cutoff</code></td>
+      </tr>
+      </tbody>
+      </table>
+      <p>Direct column names are convenient during interactive analysis.
+      A wrapper function introduces indirection: the desired column is
+      now supplied through a function argument.</p>
+      </section>
+      <section id="why-a-naive-wrapper-fails" class="level2">
+      <h2>1.2 Why a naive wrapper fails</h2>
+      <p>The argument named <code>variable</code> is not an automatic
+      placeholder for a column:</p>
+      <div class="sourceCode" id="cb4"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bad_filter <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(variable <span class="sc">&gt;</span> <span class="dv">25</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># bad_filter(df, age)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Typically errors because object age is not found.</span></span></code></pre></div>
+      <p><code>filter()</code> first looks for a column literally named
+      <code>variable</code>. If none exists, it looks in the function
+      environment and finds the argument promise. Forcing that promise
+      tries to evaluate <code>age</code> as an ordinary object in the
+      caller, where it usually does not exist.</p>
+      <p>What we need is: “Capture what the caller wrote without
+      immediately evaluating it as an ordinary argument, then arrange
+      for that expression to be evaluated inside <code>filter()</code>’s
+      data mask.” This is the defuse-and-inject pattern.</p>
+      </section>
+      </section>
+      <section id="the-classic-pattern-enquo" class="level1">
+      <h1>2. The classic pattern: enquo() + !!</h1>
+      <section id="the-two-separate-operations" class="level2">
+      <h2>2.1 The two separate operations</h2>
+      <div class="sourceCode" id="cb5"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>my_filter <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable, <span class="at">cutoff =</span> <span class="dv">25</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)          <span class="co"># 1. Capture expression and environment.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!!</span>variable <span class="sc">&gt;</span> .env<span class="sc">$</span>cutoff)   <span class="co"># 2. Inject the expression.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">my_filter</span>(df, age)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">my_filter</span>(df, score, <span class="at">cutoff =</span> <span class="dv">85</span>)</span></code></pre></div>
+      <p>When <code>my_filter(df, age)</code> runs:</p>
+      <ol type="1">
+      <li><code>enquo(variable)</code> captures the caller’s expression
+      <code>age</code> as a quosure.</li>
+      <li>A quosure stores both an expression and an associated
+      environment.</li>
+      <li><code>!!variable</code> injects the captured object into
+      <code>filter()</code>.</li>
+      <li>The modified condition has the shape <code>age &gt;
+      .env$cutoff</code> and is evaluated in the data mask.</li>
+      </ol>
+      <p>Writing <code>.env$cutoff</code> is deliberate. If the input
+      data also contains a column named <code>cutoff</code>, the
+      function still uses its parameter.</p>
+      </section>
+      <section id="expressions-symbols-calls-and-quosures"
+      class="level2">
+      <h2>2.2 Expressions, symbols, calls, and quosures</h2>
+      <p>Several object types matter:</p>
+      <table>
+      <colgroup>
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Object</th>
+      <th>How to create it</th>
+      <th>What it stores</th>
+      <th>Carries an environment?</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>symbol</td>
+      <td><code>sym(“age”)</code></td>
+      <td>The name <code>age</code></td>
+      <td>No</td>
+      </tr>
+      <tr>
+      <td>call/expression</td>
+      <td><code>expr(age &gt; 25)</code></td>
+      <td>A syntax tree</td>
+      <td>No</td>
+      </tr>
+      <tr>
+      <td>quosure</td>
+      <td><code>quo(age &gt; x)</code> or <code>enquo(arg)</code></td>
+      <td>An expression</td>
+      <td>Yes</td>
+      </tr>
+      <tr>
+      <td>ordinary value</td>
+      <td><code>25</code>, a string, a vector</td>
+      <td>Data</td>
+      <td>Not applicable</td>
+      </tr>
+      </tbody>
+      </table>
+      <p><code>!!</code> can inject all of these, but the resulting
+      evaluation semantics depend on the object and its context. A
+      quosure is normally the right capture type for a user argument
+      because the expression may refer to values in the caller’s
+      environment.</p>
+      </section>
+      <section id="inspecting-the-result-of-injection" class="level2">
+      <h2>2.3 Inspecting the result of injection</h2>
+      <p><code>rlang::qq_show()</code> is useful when learning or
+      debugging quasiquotation:</p>
+      <div class="sourceCode" id="cb6"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="fu">quo</span>(age)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qq_show</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(df, <span class="sc">!!</span>variable <span class="sc">&gt;</span> <span class="sc">!!</span>cutoff)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>It shows the shape of the expression after injection. You do
+      not need it in production code, but it helps answer the question,
+      “Am I holding data, a symbol, or code?”</p>
+      </section>
+      </section>
+      <section id="using-with-common-dplyr-verbs" class="level1">
+      <h1>3. Using !! with common dplyr verbs</h1>
+      <p>The following examples intentionally use the classic
+      <code>enquo() + !!</code> pattern to expose the mechanism. Section
+      9 rewrites ordinary single-argument forwarding with <code>{{
+      }}</code>.</p>
+      <section id="summarise-choose-a-variable-dynamically"
+      class="level2">
+      <h2>3.1 summarise(): choose a variable dynamically</h2>
+      <div class="sourceCode" id="cb7"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>get_mean_old <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>(<span class="sc">!!</span>variable, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mean_old</span>(df, score)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mean_old</span>(df, age)</span></code></pre></div>
+      <p>The first call places <code>mean(score, na.rm = TRUE)</code>
+      into <code>summarise()</code>.</p>
+      </section>
+      <section id="group_by-choose-grouping-dynamically" class="level2">
+      <h2>3.2 group_by(): choose grouping dynamically</h2>
+      <div class="sourceCode" id="cb8"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>patients <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospital =</span> <span class="fu">c</span>(<span class="st">&quot;FMC&quot;</span>, <span class="st">&quot;FMC&quot;</span>, <span class="st">&quot;RGH&quot;</span>, <span class="st">&quot;RGH&quot;</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex      =</span> <span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age      =</span> <span class="fu">c</span>(<span class="dv">65</span>, <span class="dv">72</span>, <span class="dv">58</span>, <span class="dv">81</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>summary_by_old <span class="ot">&lt;-</span> <span class="cf">function</span>(data, group_var) {</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  group_var <span class="ot">&lt;-</span> <span class="fu">enquo</span>(group_var)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="sc">!!</span>group_var) <span class="sc">|&gt;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_age =</span> <span class="fu">mean</span>(age),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_by_old</span>(patients, hospital)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_by_old</span>(patients, sex)</span></code></pre></div>
+      </section>
+      <section id="arrange-dynamic-sorting" class="level2">
+      <h2>3.3 arrange(): dynamic sorting</h2>
+      <div class="sourceCode" id="cb9"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sort_desc_old <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="sc">!!</span>variable))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sort_desc_old</span>(df, score)</span></code></pre></div>
+      <p>Injection occurs inside <code>desc()</code>, so the resulting
+      code has the shape <code>arrange(desc(score))</code>.</p>
+      </section>
+      <section id="mutate-use-an-expression-in-a-calculation"
+      class="level2">
+      <h2>3.4 mutate(): use an expression in a calculation</h2>
+      <div class="sourceCode" id="cb10"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>add_double_old <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">double =</span> <span class="sc">!!</span>variable <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">add_double_old</span>(df, score)</span></code></pre></div>
+      <p>Read <code>!!variable * 2</code> as “put the captured
+      expression on the left side of this multiplication call,” not as a
+      special form of column extraction.</p>
+      </section>
+      <section id="reusing-one-captured-expression" class="level2">
+      <h2>3.5 Reusing one captured expression</h2>
+      <p>Explicit capture still matters in advanced functions because a
+      quosure can be stored, inspected, transformed, or injected
+      multiple times:</p>
+      <div class="sourceCode" id="cb11"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>standardise <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">centered =</span> <span class="sc">!!</span>variable <span class="sc">-</span> <span class="fu">mean</span>(<span class="sc">!!</span>variable, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">scaled =</span> centered <span class="sc">/</span> <span class="fu">sd</span>(<span class="sc">!!</span>variable, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">standardise</span>(df, score)</span></code></pre></div>
+      </section>
+      </section>
+      <section
+      id="character-column-names-do-not-automatically-reach-for-sym"
+      class="level1">
+      <h1>4. Character column names: do not automatically reach for
+      !!sym()</h1>
+      <section id="use-.dataname-in-data-masked-calculations"
+      class="level2">
+      <h2>4.1 Use .data[[name]] in data-masked calculations</h2>
+      <p>If a column name is already a string, the clearest interface is
+      usually:</p>
+      <div class="sourceCode" id="cb12"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mean_from_string <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>(.data[[variable]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mean_from_string</span>(df, <span class="st">&quot;score&quot;</span>)</span></code></pre></div>
+      <p><code>.data[[variable]]</code> states that
+      <code>variable</code> is an env-variable containing a string with
+      which to index the data. The name inside <code>[[ ]]</code> is
+      never confused with a data column.</p>
+      <p>Filtering and sorting use the same pattern:</p>
+      <div class="sourceCode" id="cb13"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>filter_from_string <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable, cutoff) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(.data[[variable]] <span class="sc">&gt;</span> .env<span class="sc">$</span>cutoff)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>arrange_from_string <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(.data[[variable]])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="use-all_of-in-tidy-selection" class="level2">
+      <h2>4.2 Use all_of() in tidy selection</h2>
+      <p><code>select()</code>, <code>rename()</code>,
+      <code>relocate()</code>, and the selection part of
+      <code>across()</code> use tidy-selection semantics. Prefer
+      <code>all_of()</code> for strings or character vectors:</p>
+      <div class="sourceCode" id="cb14"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>keep_columns <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variables) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(variables))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">keep_columns</span>(df, <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;score&quot;</span>))</span></code></pre></div>
+      <p>Use <code>any_of()</code> only when the interface is
+      intentionally allowed to ignore missing columns. Its error policy
+      differs from <code>all_of()</code>.</p>
+      </section>
+      <section id="what-sym-still-means" class="level2">
+      <h2>4.3 What !!sym() still means</h2>
+      <p>Older code often uses:</p>
+      <div class="sourceCode" id="cb15"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="st">&quot;age&quot;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!</span><span class="fu">sym</span>(variable) <span class="sc">&gt;</span> <span class="dv">25</span>)</span></code></pre></div>
+      <p>The operations are:</p>
+      <pre class="text"><code>&quot;age&quot; → sym(&quot;age&quot;) → symbol age → !! injection → filter(age &gt; 25)</code></pre>
+      <p>This symbolise-and-inject pattern is still valid, especially
+      when genuinely constructing expressions. For simply reading one
+      column by a string, <code>.data[[variable]]</code> is more direct.
+      In a tidy-selection argument, <code>all_of(variable)</code>
+      communicates the intent better.</p>
+      </section>
+      </section>
+      <section id="injecting-a-complete-expression" class="level1">
+      <h1>5. Injecting a complete expression</h1>
+      <section id="save-and-inject-a-rule" class="level2">
+      <h2>5.1 Save and inject a rule</h2>
+      <div class="sourceCode" id="cb17"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>rule <span class="ot">&lt;-</span> <span class="fu">expr</span>(age <span class="sc">&gt;</span> <span class="dv">25</span> <span class="sc">&amp;</span> score <span class="sc">&gt;</span> <span class="dv">85</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!</span>rule)</span></code></pre></div>
+      <p>This is the representative use of <code>!!</code>: it is an
+      expression-injection tool, not merely column-name interpolation.
+      Rules can be created, stored, logged, combined, and eventually
+      evaluated by a data-masking verb.</p>
+      </section>
+      <section id="build-a-rule-from-a-string-and-a-value"
+      class="level2">
+      <h2>5.2 Build a rule from a string and a value</h2>
+      <div class="sourceCode" id="cb18"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>make_threshold_rule <span class="ot">&lt;-</span> <span class="cf">function</span>(column, cutoff) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  column <span class="ot">&lt;-</span> <span class="fu">sym</span>(column)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expr</span>(<span class="sc">!!</span>column <span class="sc">&gt;=</span> <span class="sc">!!</span>cutoff)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>rule <span class="ot">&lt;-</span> <span class="fu">make_threshold_rule</span>(<span class="st">&quot;score&quot;</span>, <span class="dv">88</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>rule</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!</span>rule)</span></code></pre></div>
+      <p>Inside <code>expr()</code>:</p>
+      <ul>
+      <li>The first <code>!!</code> injects the symbol
+      <code>score</code>.</li>
+      <li>The second injects the constant <code>88</code>.</li>
+      <li>The returned object is the expression <code>score &gt;=
+      88</code>; it has not yet been evaluated against any data.</li>
+      </ul>
+      </section>
+      <section id="a-quosure-preserves-the-users-environment"
+      class="level2">
+      <h2>5.3 A quosure preserves the user’s environment</h2>
+      <div class="sourceCode" id="cb19"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>make_filter <span class="ot">&lt;-</span> <span class="cf">function</span>(data, condition) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  condition <span class="ot">&lt;-</span> <span class="fu">enquo</span>(condition)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!!</span>condition)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>limit <span class="ot">&lt;-</span> <span class="dv">85</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">make_filter</span>(df, score <span class="sc">&gt;</span> limit)</span></code></pre></div>
+      <p>The user’s expression refers both to the data column
+      <code>score</code> and to <code>limit</code> in the caller’s
+      environment. The quosure captured by <code>enquo()</code> retains
+      that environment so <code>limit</code> can be resolved correctly
+      after injection.</p>
+      </section>
+      </section>
+      <section id="injecting-ordinary-values-and-resolving-ambiguity"
+      class="level1">
+      <h1>6. Injecting ordinary values and resolving ambiguity</h1>
+      <p>A data column masks an env-variable with the same name:</p>
+      <div class="sourceCode" id="cb20"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>example <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">90</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cutoff =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">85</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>example <span class="sc">|&gt;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(score <span class="sc">&gt;</span> cutoff)       <span class="co"># cutoff refers to the data column.</span></span></code></pre></div>
+      <p>In production code, <code>.env</code> is usually the clearest
+      disambiguation:</p>
+      <div class="sourceCode" id="cb21"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>example <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(score <span class="sc">&gt;</span> .env<span class="sc">$</span>cutoff)</span></code></pre></div>
+      <p>You can also inject the already determined value:</p>
+      <div class="sourceCode" id="cb22"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>example <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(score <span class="sc">&gt;</span> <span class="sc">!!</span>cutoff)</span></code></pre></div>
+      <p>Both avoid masking by the data column. Prefer
+      <code>.env$cutoff</code> for a straightforward environment value;
+      value injection is natural when constructing code that will be
+      stored or transformed further.</p>
+      </section>
+      <section id="dynamic-output-names-name" class="level1">
+      <h1>7. Dynamic output names: !!name :=</h1>
+      <p>A regular equals sign cannot substitute an env-variable on its
+      left side. Dynamic names use <code>:=</code>:</p>
+      <div class="sourceCode" id="cb23"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>new_name <span class="ot">&lt;-</span> <span class="st">&quot;mean_age&quot;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>patients <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!!</span><span class="at">new_name :=</span> <span class="fu">mean</span>(age)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+      <p>The resulting column is named <code>mean_age</code>, not
+      <code>new_name</code>.</p>
+      <section id="a-dynamic-input-expression-and-output-name"
+      class="level2">
+      <h2>7.1 A dynamic input expression and output name</h2>
+      <div class="sourceCode" id="cb24"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>summary_function <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable, output_name) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!</span><span class="at">output_name :=</span> <span class="fu">mean</span>(<span class="sc">!!</span>variable, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_function</span>(</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  patients,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  age,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;average_patient_age&quot;</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The left side injects a name string; the right side injects the
+      captured column expression. Both use <code>!!</code>, but they
+      occupy different syntactic roles.</p>
+      </section>
+      <section id="modern-name-interpolation" class="level2">
+      <h2>7.2 Modern name interpolation</h2>
+      <p>Dynamic dots also support glue-style names:</p>
+      <div class="sourceCode" id="cb25"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>summary_function_modern <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable, output_name) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;{output_name}&quot;</span> <span class="sc">:=</span> <span class="fu">mean</span>({{ variable }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>This is especially readable when composing a name, such as
+      <code>“mean_{suffix}” := …</code>. Explicit <code>!!name :=</code>
+      remains useful when a symbol or call is part of more involved code
+      generation.</p>
+      </section>
+      </section>
+      <section id="versus-inject-one-splice-many" class="level1">
+      <h1>8. !! versus !!!: inject one, splice many</h1>
+      <p><code>!!</code> injects one object. <code>!!!</code> splices
+      the elements of a list into a call as multiple arguments.</p>
+      <section id="multiple-filtering-conditions" class="level2">
+      <h2>8.1 Multiple filtering conditions</h2>
+      <div class="sourceCode" id="cb26"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  age <span class="sc">&gt;</span> <span class="dv">25</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  score <span class="sc">&gt;</span> <span class="dv">85</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!!</span>rules)</span></code></pre></div>
+      <p>The expanded call conceptually becomes:</p>
+      <div class="sourceCode" id="cb27"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    age <span class="sc">&gt;</span> <span class="dv">25</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    score <span class="sc">&gt;</span> <span class="dv">85</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+      <p><code>filter()</code> combines its conditions with AND. That
+      behavior belongs to <code>filter()</code>, not to
+      <code>!!!</code>; splicing only creates multiple arguments.</p>
+      </section>
+      <section id="generate-multiple-summaries" class="level2">
+      <h2>8.2 Generate multiple summaries</h2>
+      <div class="sourceCode" id="cb28"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>summaries <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_score =</span> <span class="fu">expr</span>(<span class="fu">mean</span>(score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_score  =</span> <span class="fu">expr</span>(<span class="fu">max</span>(score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="sc">!!!</span>summaries)</span></code></pre></div>
+      <p>The list names become output names and the expressions become
+      the corresponding summary arguments.</p>
+      </section>
+      <section id="splicing-into-an-ordinary-function-call"
+      class="level2">
+      <h2>8.3 Splicing into an ordinary function call</h2>
+      <p>Use <code>inject()</code> when an ordinary call does not itself
+      provide injection support:</p>
+      <div class="sourceCode" id="cb29"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">trim =</span> <span class="fl">0.1</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">inject</span>(<span class="fu">mean</span>(x, <span class="sc">!!!</span>args))</span></code></pre></div>
+      <p>Injection operators are not a base-R syntax extension that
+      works everywhere. <code>inject()</code> explicitly creates a
+      context that understands them.</p>
+      </section>
+      </section>
+      <section id="the-modern-default-when-to-use" class="level1">
+      <h1>9. The modern default: when to use {{ }}</h1>
+      <p>For the common task “the user supplies one unquoted expression
+      and I simply forward it to a data-masking or tidy-selection
+      argument,” prefer <code>{{ }}</code>.</p>
+      <div class="sourceCode" id="cb30"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>get_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>({{ variable }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">get_mean</span>(df, score)</span></code></pre></div>
+      <p>In this direct-forwarding case, you can conceptually
+      simplify:</p>
+      <div class="sourceCode" id="cb31"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="fu">enquo</span>(variable)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(data, <span class="at">avg =</span> <span class="fu">mean</span>(<span class="sc">!!</span>variable, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+      <p>to:</p>
+      <div class="sourceCode" id="cb32"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(data, <span class="at">avg =</span> <span class="fu">mean</span>({{ variable }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+      <p><code>{{ variable }}</code> is called embracing. It combines
+      capture and injection, but it does not make explicit
+      <code>!!</code> obsolete.</p>
+      <section id="when-explicit-enquo-still-helps" class="level2">
+      <h2>9.1 When explicit enquo() + !! still helps</h2>
+      <p>Explicit capture is appropriate when you need to:</p>
+      <ul>
+      <li>store a quosure for later evaluation or pass it
+      elsewhere;</li>
+      <li>inspect, label, validate, or transform a user expression;</li>
+      <li>inject the same expression into several dynamically generated
+      calls;</li>
+      <li>build larger syntax trees with <code>expr()</code>,
+      <code>call2()</code>, or related tools;</li>
+      <li>implement a low-level tidy-eval API rather than merely forward
+      one argument.</li>
+      </ul>
+      </section>
+      <section id="modern-versions-of-common-wrappers" class="level2">
+      <h2>9.2 Modern versions of common wrappers</h2>
+      <div class="sourceCode" id="cb33"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>summary_by <span class="ot">&lt;-</span> <span class="cf">function</span>(data, group_var) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>({{ group_var }}) <span class="sc">|&gt;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean_age =</span> <span class="fu">mean</span>(age), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>sort_desc <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>({{ variable }}))</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>add_double <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">double =</span> {{ variable }} <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>select_columns <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variables) {</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>({{ variables }})</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The last wrapper accepts a tidy-select expression such as
+      <code>starts_with(“lab_”)</code> or <code>c(age, score)</code>. If
+      its interface accepts a character vector instead, use
+      <code>all_of(variables)</code>.</p>
+      </section>
+      </section>
+      <section id="where-works" class="level1">
+      <h1>10. Where !! works</h1>
+      <p><code>!!</code> works only in special contexts that understand
+      injection. Typical examples include:</p>
+      <ul>
+      <li>tidyverse data-masking arguments powered by tidy
+      evaluation;</li>
+      <li>dynamic dots;</li>
+      <li>injection-aware quoting functions such as
+      <code>rlang::expr()</code> and <code>quo()</code>;</li>
+      <li>a context created explicitly by
+      <code>rlang::inject()</code>.</li>
+      </ul>
+      <p>In an ordinary base-R expression, the parser sees two logical
+      negations:</p>
+      <div class="sourceCode" id="cb34"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!!</span><span class="dv">10</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Same as !(!10), producing TRUE.</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="sc">!!</span><span class="dv">0</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Produces FALSE.</span></span></code></pre></div>
+      <p>The following is therefore not a universal form of unquote:</p>
+      <div class="sourceCode" id="cb35"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> <span class="sc">!!</span><span class="dv">2</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># In ordinary R this is x + TRUE, not metaprogramming injection.</span></span></code></pre></div>
+      <p>The dangerous part is that misuse may silently produce a
+      logical value instead of throwing an error. Whenever you see
+      <code>!!</code>, ask: “Does the outer function explicitly support
+      tidy-eval injection?”</p>
+      </section>
+      <section id="common-misconceptions-and-corrections"
+      class="level1">
+      <h1>11. Common misconceptions and corrections</h1>
+      <section id="misconception-1-is-only-for-inserting-column-names"
+      class="level2">
+      <h2>Misconception 1: !! is only for inserting column names</h2>
+      <p>Correction: it injects objects and expressions. A column-name
+      symbol is just one possible object.</p>
+      </section>
+      <section
+      id="misconception-2-every-character-column-name-should-become-symname"
+      class="level2">
+      <h2>Misconception 2: every character column name should become
+      !!sym(name)</h2>
+      <p>Correction: prefer <code>.data[[name]]</code> for data-masked
+      computations and <code>all_of(name)</code> for tidy selection. Use
+      symbolise-and-inject when you genuinely need to construct
+      code.</p>
+      </section>
+      <section id="misconception-3-every-function-argument-needs-enquo"
+      class="level2">
+      <h2>Misconception 3: every function argument needs enquo() +
+      !!</h2>
+      <p>Correction: ordinary values follow ordinary R evaluation.
+      Simple forwarding of a data-masked expression normally uses
+      <code>{{ }}</code>. Character-name interfaces use
+      <code>.data</code> or <code>all_of()</code>.</p>
+      </section>
+      <section
+      id="misconception-4-immediately-calculates-its-right-side-in-the-data"
+      class="level2">
+      <h2>Misconception 4: !! immediately calculates its right side in
+      the data</h2>
+      <p>Correction: it first modifies the outer code. Evaluation
+      against the data occurs when the modified call runs.</p>
+      </section>
+      <section id="misconception-5-is-merely-more-bang-bang"
+      class="level2">
+      <h2>Misconception 5: !!! is merely “more bang-bang”</h2>
+      <p>Correction: <code>!!</code> puts one object into one syntactic
+      position. <code>!!!</code> splices multiple objects into multiple
+      argument positions. The outer context controls whether splicing is
+      allowed and how names are handled.</p>
+      </section>
+      <section id="misconception-6-names-in-a-data-mask-cannot-collide"
+      class="level2">
+      <h2>Misconception 6: names in a data mask cannot collide</h2>
+      <p>Correction: a data column normally takes precedence over an
+      env-variable. Use <code>.data$column</code>,
+      <code>.data[[name]]</code>, and <code>.env$value</code> to state
+      the source explicitly in production code.</p>
+      </section>
+      </section>
+      <section id="practical-decision-table" class="level1">
+      <h1>12. Practical decision table</h1>
+      <table>
+      <colgroup>
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Input you have</th>
+      <th>Calling form</th>
+      <th>Preferred tool</th>
+      <th>Typical code</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>User-supplied bare column/expression</td>
+      <td><code>f(data, age)</code></td>
+      <td><code>{{ arg }}</code></td>
+      <td><code>mean({{ arg }})</code></td>
+      </tr>
+      <tr>
+      <td>String column name for calculation</td>
+      <td><code>name &lt;- “age”</code></td>
+      <td><code>.data[[name]]</code></td>
+      <td><code>mean(.data[[name]])</code></td>
+      </tr>
+      <tr>
+      <td>Character vector for selection</td>
+      <td><code>vars &lt;- c(“age”,“score”)</code></td>
+      <td><code>all_of(vars)</code></td>
+      <td><code>select(all_of(vars))</code></td>
+      </tr>
+      <tr>
+      <td>Character vector for permissive selection</td>
+      <td>Some columns may be absent</td>
+      <td><code>any_of(vars)</code></td>
+      <td><code>select(any_of(vars))</code></td>
+      </tr>
+      <tr>
+      <td>Captured quosure</td>
+      <td><code>q &lt;- enquo(arg)</code></td>
+      <td><code>!!q</code></td>
+      <td><code>filter(!!q)</code></td>
+      </tr>
+      <tr>
+      <td>Constructed expression</td>
+      <td><code>rule &lt;- expr(…)</code></td>
+      <td><code>!!rule</code></td>
+      <td><code>filter(!!rule)</code></td>
+      </tr>
+      <tr>
+      <td>Several expressions/arguments</td>
+      <td><code>rules &lt;- exprs(…)</code></td>
+      <td><code>!!!rules</code></td>
+      <td><code>filter(!!!rules)</code></td>
+      </tr>
+      <tr>
+      <td>Explicit injection context required</td>
+      <td>The ordinary call does not support injection</td>
+      <td><code>inject()</code></td>
+      <td><code>inject(f(!!x))</code></td>
+      </tr>
+      <tr>
+      <td>The function itself is dynamic</td>
+      <td>A variable contains a function or its name</td>
+      <td><code>exec()</code></td>
+      <td><code>exec(fun, !!!args)</code></td>
+      </tr>
+      <tr>
+      <td>Base R call from an argument list</td>
+      <td>Arguments are stored in an ordinary list</td>
+      <td><code>do.call()</code></td>
+      <td><code>do.call(fun, args)</code></td>
+      </tr>
+      <tr>
+      <td>Ordinary environment value</td>
+      <td><code>cutoff &lt;- 25</code></td>
+      <td><code>.env$cutoff</code></td>
+      <td><code>filter(age &gt; .env$cutoff)</code></td>
+      </tr>
+      <tr>
+      <td>Dynamic output name</td>
+      <td><code>name &lt;- “avg”</code></td>
+      <td><code>:=</code> plus injection/interpolation</td>
+      <td><code>!!name := value</code></td>
+      </tr>
+      </tbody>
+      </table>
+      <p>A reliable decision process is:</p>
+      <ol type="1">
+      <li>Inspect the target parameter’s documentation: is it ordinary,
+      <code>&lt;data-masking&gt;</code>,
+      <code>&lt;tidy-select&gt;</code>, or dynamic dots?</li>
+      <li>Decide whether the caller provides a bare expression, string,
+      ordinary value, captured expression, or list of expressions.</li>
+      <li>Choose the most direct tool that makes the interface contract
+      visible. Do not use <code>!!</code> merely because it is
+      available.</li>
+      </ol>
+      </section>
+      <section id="modern-alternatives-and-related-call-tools"
+      class="level1">
+      <h1>13. Modern alternatives and related call tools</h1>
+      <p><code>!!</code> is only one form of injection in tidy
+      evaluation. Everyday dplyr programming more often uses <code>{{
+      }}</code>, <code>.data[[ ]]</code>, and <code>all_of()</code>.
+      Explicit <code>!!</code>, <code>!!!</code>, <code>inject()</code>,
+      and <code>exec()</code> become central when you dynamically
+      generate expressions, rules, or entire function calls.</p>
+      <section id="the-modern-default-for-forwarding" class="level2">
+      <h2>13.1 {{ }}: the modern default for forwarding</h2>
+      <p>The classic form captures and then injects:</p>
+      <div class="sourceCode" id="cb36"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>my_mean_old <span class="ot">&lt;-</span> <span class="cf">function</span>(data, var) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  var <span class="ot">&lt;-</span> <span class="fu">enquo</span>(var)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>(<span class="sc">!!</span>var, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The modern form embraces the function argument directly:</p>
+      <div class="sourceCode" id="cb37"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>my_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data, var) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">avg =</span> <span class="fu">mean</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>my_filter <span class="ot">&lt;-</span> <span class="cf">function</span>(data, var) {</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>({{ var }} <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="fu">my_mean</span>(df, score)</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="fu">my_filter</span>(df, age)</span></code></pre></div>
+      <p>For this capture-once-and-forward pattern:</p>
+      <pre class="text"><code>enquo(var) + !!var  →  {{ var }}</code></pre>
+      <p>This should be the first pattern you learn for ordinary dplyr
+      wrappers. Return to explicit <code>enquo() + !!</code> when you
+      must store, inspect, transform, or delay the quosure.</p>
+      </section>
+      <section id="data-character-column-names-in-calculations"
+      class="level2">
+      <h2>13.2 .data[[ ]]: character column names in calculations</h2>
+      <p>If the caller supplies <code>“age”</code> rather than the bare
+      name <code>age</code>, design an ordinary string interface:</p>
+      <div class="sourceCode" id="cb39"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>my_filter_string <span class="ot">&lt;-</span> <span class="cf">function</span>(data, var) {</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(.data[[var]] <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">my_filter_string</span>(df, <span class="st">&quot;age&quot;</span>)</span></code></pre></div>
+      <p>This is normally more direct than symbolising and
+      injecting:</p>
+      <div class="sourceCode" id="cb40"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="st">&quot;age&quot;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Valid, but indirect when all you need is a column named by a string.</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!!</span><span class="fu">sym</span>(var) <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Preferred.</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.data[[var]] <span class="sc">&gt;</span> <span class="dv">10</span>)</span></code></pre></div>
+      <p>A useful shorthand is:</p>
+      <pre class="text"><code>String used in a data-masked calculation:
+!!sym(var)  →  .data[[var]]</code></pre>
+      </section>
+      <section id="all_of-character-names-in-select" class="level2">
+      <h2>13.3 all_of(): character names in select()</h2>
+      <p>When a character vector enters a tidy-selection argument, use
+      <code>all_of()</code>:</p>
+      <div class="sourceCode" id="cb42"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;score&quot;</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(vars))</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="st">&quot;age&quot;</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(var))</span></code></pre></div>
+      <p>Compare it with the older symbolise-and-splice pattern:</p>
+      <div class="sourceCode" id="cb43"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No need to turn each string into a symbol and splice the result.</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!!!</span><span class="fu">syms</span>(vars))</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clearly states that vars is an external character vector.</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(vars))</span></code></pre></div>
+      <p><code>all_of()</code> also preserves the order in the character
+      vector and throws an error when any requested name is absent,
+      making it appropriate for workflows with a required schema.</p>
+      </section>
+      <section id="any_of-allow-columns-to-be-absent" class="level2">
+      <h2>13.4 any_of(): allow columns to be absent</h2>
+      <p><code>any_of()</code> takes the same input as
+      <code>all_of()</code> but uses a permissive missing-column
+      policy:</p>
+      <div class="sourceCode" id="cb44"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;score&quot;</span>, <span class="st">&quot;hospital&quot;</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># all_of() errors if hospital is absent.</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># df |&gt;</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(all_of(vars))</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co"># any_of() selects only columns that actually exist.</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">any_of</span>(vars))</span></code></pre></div>
+      <p>This is particularly useful with healthcare data from different
+      years, institutions, or sources, where optional fields often
+      differ. Make the contract explicit:</p>
+      <ul>
+      <li>Require every column: <code>all_of()</code>.</li>
+      <li>Select whichever columns exist: <code>any_of()</code>.</li>
+      <li>Remove columns idempotently:
+      <code>select(-any_of(vars))</code>.</li>
+      </ul>
+      </section>
+      <section id="inject-explicitly-create-an-injection-context"
+      class="level2">
+      <h2>13.5 inject(): explicitly create an injection context</h2>
+      <p><code>inject()</code> immediately evaluates an expression with
+      support for <code>!!</code> and <code>!!!</code>:</p>
+      <div class="sourceCode" id="cb45"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">&quot;age&quot;</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">inject</span>(</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(df, <span class="sc">!!</span>var <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Because <code>filter()</code> already supports tidy-eval
+      injection, the outer <code>inject()</code> only makes the process
+      explicit; it is not required. A base call that does not itself
+      understand injection is a more representative example:</p>
+      <div class="sourceCode" id="cb46"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">&quot;age&quot;</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">inject</span>(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(df, <span class="sc">!!</span>var <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>It can also splice an argument list into an ordinary function
+      call:</p>
+      <div class="sourceCode" id="cb47"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">trim =</span> <span class="fl">0.1</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="fu">inject</span>(</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(x, <span class="sc">!!!</span>args)</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Think of <code>inject()</code> as: “Interpret injection
+      operators here, then run the modified call.” Routine dplyr
+      analysis rarely needs the extra wrapper.</p>
+      </section>
+      <section id="exec-when-the-function-itself-is-dynamic"
+      class="level2">
+      <h2>13.6 exec(): when the function itself is dynamic</h2>
+      <p><code>exec()</code> constructs and evaluates a call to
+      <code>.fn</code>. The function can be a function object or a
+      string:</p>
+      <div class="sourceCode" id="cb48"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>),</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">exec</span>(mean, <span class="sc">!!!</span>args)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="st">&quot;mean&quot;</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="fu">exec</span>(</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  fun,</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  x,</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The distinction is important: <code>exec()</code> does not
+      automatically unpack a list. When arguments are stored in a list,
+      continue to write <code>!!!args</code>:</p>
+      <div class="sourceCode" id="cb49"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correct: splice list elements into separate arguments of mean().</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exec</span>(mean, <span class="sc">!!!</span>args)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Usually not intended: pass the whole list as one argument to mean().</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">exec</span>(mean, args)</span></code></pre></div>
+      <p>Its benefit is “dynamic function plus dynamic dots,” not the
+      elimination of <code>!!!</code>. It also combines naturally with
+      <code>lapply()</code> or <code>purrr::map()</code> when calling a
+      collection of functions.</p>
+      </section>
+      <section id="base-r-do.call-no-tidy-evaluation-required"
+      class="level2">
+      <h2>13.7 Base R do.call(): no tidy evaluation required</h2>
+      <p>Base R’s <code>do.call()</code> accepts a function and an
+      ordinary argument list:</p>
+      <div class="sourceCode" id="cb50"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>),</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(mean, args)</span></code></pre></div>
+      <p>Conceptually, this is equivalent to:</p>
+      <div class="sourceCode" id="cb51"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>),</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>For “expand an argument list into a call,” <code>exec(fun,
+      !!!args)</code> and <code>do.call(fun, args)</code> have similar
+      goals, but their evaluation details are not identical—especially
+      when the list contains expression objects. Either is clear for
+      ordinary value arguments; <code>do.call()</code> is the natural
+      Base R solution when tidy evaluation is not otherwise needed.</p>
+      </section>
+      <section id="classify-the-input-first" class="level2">
+      <h2>13.8 Classify the input first</h2>
+      <pre class="text"><code>User supplies a bare column name: age
+  → {{ var }}
+
+User supplies a string for calculation: &quot;age&quot;
+  → .data[[var]]
+
+Character vector used in select()
+  → all_of(vars) / any_of(vars)
+
+One captured or constructed expression
+  → !!expression
+
+Several expressions or dynamic-dot arguments
+  → !!!expressions
+
+An explicit injection context is required
+  → inject(...)
+
+The function itself is dynamic
+  → exec(fun, !!!args)
+
+Base R call from an argument list
+  → do.call(fun, args)</code></pre>
+      <p>Do not reach for <code>!!</code> whenever you see a dynamic
+      variable. The most common tools in modern dplyr wrappers are
+      <code>{{ var }}</code>, <code>.data[[var]]</code>, and
+      <code>all_of(vars)</code>. Explicit <code>!!</code> and
+      <code>!!!</code> matter most for generated expressions, complex
+      rules, and metaprogramming.</p>
+      </section>
+      </section>
+      <section id="worked-example-a-reusable-grouped-summary"
+      class="level1">
+      <h1>14. Worked example: a reusable grouped summary</h1>
+      <p>This function combines modern forwarding, character-vector
+      selection, and dynamic names:</p>
+      <div class="sourceCode" id="cb53"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>grouped_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(data, group, value_names, <span class="at">prefix =</span> <span class="st">&quot;mean&quot;</span>) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>({{ group }}) <span class="sc">|&gt;</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">across</span>(</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">all_of</span>(value_names),</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">.names =</span> <span class="fu">paste0</span>(prefix, <span class="st">&quot;_{.col}&quot;</span>)</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>clinical <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">site =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;B&quot;</span>),</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">72</span>, <span class="dv">58</span>, <span class="dv">81</span>),</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">systolic =</span> <span class="fu">c</span>(<span class="dv">130</span>, <span class="dv">142</span>, <span class="dv">125</span>, <span class="dv">150</span>)</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a><span class="fu">grouped_summary</span>(</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>  clinical,</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>  site,</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;systolic&quot;</span>),</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">prefix =</span> <span class="st">&quot;avg&quot;</span></span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The example contains no explicit <code>!!</code>. That is the
+      point: mastery of tidy evaluation means choosing correctly among
+      <code>{{ }}</code>, <code>all_of()</code>, <code>.data</code>,
+      <code>.env</code>, <code>!!</code>, and <code>!!!</code>, not
+      adding bang-bang everywhere.</p>
+      <p>Bring <code>!!</code> back when the rule itself is constructed
+      at runtime:</p>
+      <div class="sourceCode" id="cb54"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>filter_with_rule <span class="ot">&lt;-</span> <span class="cf">function</span>(data, rule) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!!</span>rule)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>rule <span class="ot">&lt;-</span> <span class="fu">expr</span>(age <span class="sc">&gt;=</span> <span class="dv">65</span> <span class="sc">|</span> systolic <span class="sc">&gt;=</span> <span class="dv">140</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="fu">filter_with_rule</span>(clinical, rule)</span></code></pre></div>
+      </section>
+      <section id="exercises-and-solutions" class="level1">
+      <h1>15. Exercises and solutions</h1>
+      <section id="exercises" class="level2">
+      <h2>Exercises</h2>
+      <ol type="1">
+      <li>Write a function that accepts a bare column name and returns
+      its median.</li>
+      <li>Write a function that accepts a character column name and a
+      cutoff, then filters rows above the cutoff.</li>
+      <li>Construct two expression rules and pass both to
+      <code>filter()</code> with <code>!!!</code>.</li>
+      <li>Explain why <code>!!1</code> produces a logical value in
+      ordinary R rather than performing tidy-eval injection.</li>
+      </ol>
+      </section>
+      <section id="suggested-solutions" class="level2">
+      <h2>Suggested solutions</h2>
+      <div class="sourceCode" id="cb55"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>median_of <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable) {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">value =</span> <span class="fu">median</span>({{ variable }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>filter_named <span class="ot">&lt;-</span> <span class="cf">function</span>(data, variable, cutoff) {</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(.data[[variable]] <span class="sc">&gt;</span> .env<span class="sc">$</span>cutoff)</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">exprs</span>(age <span class="sc">&gt;=</span> <span class="dv">65</span>, systolic <span class="sc">&gt;=</span> <span class="dv">140</span>)</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>clinical <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!!!</span>rules)</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co"># In an ordinary expression, base R parses !!1 as !(!1).</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Only an injection-aware outer context gives !! injection semantics.</span></span></code></pre></div>
+      </section>
+      </section>
+      <section id="further-reading" class="level1">
+      <h1>16. Further reading</h1>
+      <ul>
+      <li><a
+      href="https://rlang.r-lib.org/reference/injection-operator.html">rlang:
+      Injection operator !!</a></li>
+      <li><a
+      href="https://dplyr.tidyverse.org/articles/programming.html">dplyr:
+      Programming with dplyr</a></li>
+      <li><a
+      href="https://rlang.r-lib.org/reference/topic-data-mask-programming.html">rlang:
+      Data mask programming patterns</a></li>
+      <li><a
+      href="https://rlang.r-lib.org/reference/topic-data-mask.html">rlang:
+      What is data masking and why do I need {{?</a></li>
+      <li><a
+      href="https://rlang.r-lib.org/reference/topic-inject-out-of-context.html">rlang:
+      Injection operators outside their intended context</a></li>
+      <li><a
+      href="https://tidyselect.r-lib.org/reference/all_of.html">tidyselect:
+      all_of() and any_of()</a></li>
+      <li><a href="https://rlang.r-lib.org/reference/inject.html">rlang:
+      inject()</a></li>
+      <li><a href="https://rlang.r-lib.org/reference/exec.html">rlang:
+      exec()</a></li>
+      <li><a
+      href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/do.call.html">Base
+      R: do.call()</a></li>
+      </ul>
+      <p>Together, these official references emphasize that
+      <code>!!</code> is an advanced injection tool. For everyday
+      wrappers, embracing and explicit
+      <code>.data</code>/<code>.env</code> references usually provide
+      simpler and safer interfaces.</p>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">English !! unquote study guide · R Markdown
+source · MooseWeb3 · 2026-08-11</footer>
+  <script>
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('tidyeval-guide-theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('tidyeval-guide-theme', root.dataset.theme);
+  });
+  const progress = document.querySelector('.progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, { passive: true });
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sections = tocLinks
+    .map(link => {
+      const href = link.getAttribute('href');
+      return href && href.startsWith('#')
+        ? document.getElementById(decodeURIComponent(href.slice(1)))
+        : null;
+    })
+    .filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    tocLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + visible.target.id));
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  sections.forEach(section => observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

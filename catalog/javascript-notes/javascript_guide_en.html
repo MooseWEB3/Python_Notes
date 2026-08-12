@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · JavaScript Notes" />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>MooseWeb3 | A Practical Guide to JavaScript</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MooseWeb3 | A Practical Guide to JavaScript</h1>
+<p class="subtitle">From your first line of code to the DOM, async
+programming, and a complete todo app</p>
+<p class="author">MooseWeb3 · JavaScript Notes</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#what-is-javascript" id="toc-what-is-javascript">1. What is
+JavaScript?</a>
+<ul>
+<li><a href="#how-javascript-runs" id="toc-how-javascript-runs">1.1 How
+JavaScript runs</a></li>
+</ul></li>
+<li><a href="#set-up-and-run-your-first-program" id="toc-set-up-and-run-your-first-program">2. Set up and run your first
+program</a>
+<ul>
+<li><a href="#the-browser-console-the-fastest-experiment" id="toc-the-browser-console-the-fastest-experiment">2.1 The browser
+console: the fastest experiment</a></li>
+<li><a href="#include-javascript-in-html" id="toc-include-javascript-in-html">2.2 Include JavaScript in
+HTML</a></li>
+<li><a href="#run-javascript-with-node.js" id="toc-run-javascript-with-node.js">2.3 Run JavaScript with
+Node.js</a></li>
+</ul></li>
+<li><a href="#variables-values-and-operators" id="toc-variables-values-and-operators">3. Variables, values, and
+operators</a>
+<ul>
+<li><a href="#const-let-and-var" id="toc-const-let-and-var">3.1
+<code>const</code>, <code>let</code>, and <code>var</code></a></li>
+<li><a href="#core-data-types" id="toc-core-data-types">3.2 Core data
+types</a></li>
+<li><a href="#operators-and-strict-equality" id="toc-operators-and-strict-equality">3.3 Operators and strict
+equality</a></li>
+<li><a href="#strings-and-template-literals" id="toc-strings-and-template-literals">3.4 Strings and template
+literals</a></li>
+</ul></li>
+<li><a href="#control-flow" id="toc-control-flow">4. Control flow</a>
+<ul>
+<li><a href="#conditions" id="toc-conditions">4.1 Conditions</a></li>
+<li><a href="#loops" id="toc-loops">4.2 Loops</a></li>
+</ul></li>
+<li><a href="#functions-scope-and-closures" id="toc-functions-scope-and-closures">5. Functions, scope, and
+closures</a>
+<ul>
+<li><a href="#scope" id="toc-scope">5.1 Scope</a></li>
+<li><a href="#closures" id="toc-closures">5.2 Closures</a></li>
+</ul></li>
+<li><a href="#arrays-and-objects-organizing-data" id="toc-arrays-and-objects-organizing-data">6. Arrays and objects:
+organizing data</a>
+<ul>
+<li><a href="#essential-array-methods" id="toc-essential-array-methods">6.1 Essential array methods</a></li>
+<li><a href="#objects-destructuring-and-spread" id="toc-objects-destructuring-and-spread">6.2 Objects, destructuring,
+and spread</a></li>
+</ul></li>
+<li><a href="#the-dom-controlling-a-web-page" id="toc-the-dom-controlling-a-web-page">7. The DOM: controlling a web
+page</a>
+<ul>
+<li><a href="#find-and-update-elements" id="toc-find-and-update-elements">7.1 Find and update elements</a></li>
+<li><a href="#create-elements-safely" id="toc-create-elements-safely">7.2 Create elements safely</a></li>
+<li><a href="#classes-and-styles" id="toc-classes-and-styles">7.3
+Classes and styles</a></li>
+</ul></li>
+<li><a href="#events-responding-to-users" id="toc-events-responding-to-users">8. Events: responding to users</a>
+<ul>
+<li><a href="#form-submission" id="toc-form-submission">8.1 Form
+submission</a></li>
+<li><a href="#event-delegation" id="toc-event-delegation">8.2 Event
+delegation</a></li>
+<li><a href="#interactive-demo-counter" id="toc-interactive-demo-counter">8.3 Interactive demo: counter</a></li>
+</ul></li>
+<li><a href="#asynchronous-javascript-promises-and-requests" id="toc-asynchronous-javascript-promises-and-requests">9. Asynchronous
+JavaScript, Promises, and requests</a>
+<ul>
+<li><a href="#promises" id="toc-promises">9.1 Promises</a></li>
+<li><a href="#async-await" id="toc-async-await">9.2 <code>async</code> /
+<code>await</code></a></li>
+<li><a href="#cancel-a-request" id="toc-cancel-a-request">9.3 Cancel a
+request</a></li>
+<li><a href="#interactive-demo-simulated-loading" id="toc-interactive-demo-simulated-loading">9.4 Interactive demo:
+simulated loading</a></li>
+</ul></li>
+<li><a href="#error-handling-and-debugging" id="toc-error-handling-and-debugging">10. Error handling and
+debugging</a></li>
+<li><a href="#modules-classes-and-organization" id="toc-modules-classes-and-organization">11. Modules, classes, and
+organization</a>
+<ul>
+<li><a href="#es-modules" id="toc-es-modules">11.1 ES modules</a></li>
+<li><a href="#classes" id="toc-classes">11.2 Classes</a></li>
+<li><a href="#a-simple-project-structure" id="toc-a-simple-project-structure">11.3 A simple project
+structure</a></li>
+</ul></li>
+<li><a href="#browser-storage-and-json" id="toc-browser-storage-and-json">12. Browser storage and JSON</a></li>
+<li><a href="#complete-example-todo-list" id="toc-complete-example-todo-list">13. Complete example: todo
+list</a></li>
+<li><a href="#code-quality-performance-and-security" id="toc-code-quality-performance-and-security">14. Code quality,
+performance, and security</a>
+<ul>
+<li><a href="#reliability-checklist" id="toc-reliability-checklist">14.1
+Reliability checklist</a></li>
+<li><a href="#performance-principles" id="toc-performance-principles">14.2 Performance principles</a></li>
+<li><a href="#security-baseline" id="toc-security-baseline">14.3
+Security baseline</a></li>
+</ul></li>
+<li><a href="#built-in-javascript-playground" id="toc-built-in-javascript-playground">15. Built-in JavaScript
+playground</a></li>
+<li><a href="#learning-path-and-checklist" id="toc-learning-path-and-checklist">16. Learning path and
+checklist</a></li>
+<li><a href="#quick-reference" id="toc-quick-reference">17. Quick
+reference</a></li>
+</ul>
+</nav>
+<style>
+:root {
+--bg: #f5f7fb;
+--surface: #ffffff;
+--surface-2: #eef2ff;
+--text: #172033;
+--muted: #5f6b85;
+--primary: #5b50d6;
+--primary-2: #4338ca;
+--accent: #f0b429;
+--success: #138a64;
+--danger: #c2415d;
+--border: #dfe4f0;
+--code-bg: #111827;
+--code-text: #e5edff;
+--shadow: 0 16px 44px rgba(37, 48, 89, .10);
+}
+body.dark {
+--bg: #0f1422;
+--surface: #171e30;
+--surface-2: #202944;
+--text: #edf1ff;
+--muted: #aeb8d4;
+--primary: #9188ff;
+--primary-2: #b2acff;
+--accent: #ffd166;
+--success: #55d6aa;
+--danger: #ff7b96;
+--border: #303a56;
+--code-bg: #090d16;
+--code-text: #edf2ff;
+--shadow: 0 18px 50px rgba(0, 0, 0, .28);
+}
+html { scroll-behavior: smooth; }
+#title-block-header, #header { display: none; }
+body {
+margin: 0 auto;
+max-width: 1120px;
+padding: 34px clamp(18px, 4vw, 56px) 72px;
+color: var(--text);
+background: radial-gradient(circle at 85% 0%, rgba(91,80,214,.14), transparent 30%), var(--bg);
+font-family: Inter, "Segoe UI", system-ui, sans-serif;
+font-size: 17px;
+line-height: 1.75;
+transition: color .2s, background .2s;
+}
+h1, h2, h3 { line-height: 1.25; letter-spacing: -.02em; }
+h1 { font-size: clamp(2.2rem, 5vw, 4rem); margin-bottom: .35rem; }
+h2 { margin-top: 3.4rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }
+h3 { margin-top: 2.2rem; }
+a { color: var(--primary); text-underline-offset: 3px; }
+p, li { max-width: 78ch; }
+blockquote {
+margin: 1.3rem 0;
+padding: .8rem 1.2rem;
+color: var(--muted);
+background: var(--surface-2);
+border-left: 4px solid var(--primary);
+border-radius: 0 10px 10px 0;
+}
+pre {
+overflow-x: auto;
+padding: 1.15rem 1.25rem;
+color: var(--code-text);
+background: var(--code-bg);
+border-radius: 14px;
+box-shadow: inset 0 1px rgba(255,255,255,.06);
+line-height: 1.55;
+}
+code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; font-size: .92em; }
+:not(pre) > code { padding: .15em .4em; color: var(--primary-2); background: var(--surface-2); border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; background: var(--surface); }
+th, td { padding: .75rem .85rem; text-align: left; border: 1px solid var(--border); }
+th { background: var(--surface-2); }
+#TOC { margin: 1.4rem 0 2.5rem; padding: 1rem 1.3rem; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 5px 20px rgba(37,48,89,.05); }
+#TOC::before { content: "On this page"; display: block; margin-bottom: .65rem; color: var(--text); font-size: 1.25rem; font-weight: 800; }
+#TOC > ul { columns: 2; column-gap: 2.2rem; }
+#TOC li { break-inside: avoid; }
+#TOC ul { padding-left: 1.25rem; }
+#TOC ul ul { columns: 1; }
+.hero {
+position: relative;
+overflow: hidden;
+margin: 1rem 0 2rem;
+padding: clamp(1.5rem, 5vw, 3.7rem);
+color: white;
+background: linear-gradient(135deg, #30268f, #6256dd 55%, #8e72ef);
+border-radius: 24px;
+box-shadow: var(--shadow);
+}
+.hero::after { content: "JS"; position: absolute; right: 4%; bottom: -22%; color: rgba(255,255,255,.09); font: 800 11rem/1 monospace; }
+.hero p { font-size: 1.12rem; color: #eceaff; }
+.eyebrow { text-transform: uppercase; letter-spacing: .16em; font-weight: 750; font-size: .78rem; color: #d9d5ff; }
+.badge { display: inline-block; margin: .2rem .35rem .2rem 0; padding: .22rem .65rem; border: 1px solid rgba(255,255,255,.32); border-radius: 999px; font-size: .78rem; }
+.toolbar { display: flex; gap: .65rem; flex-wrap: wrap; margin: 1rem 0 1.8rem; }
+button, .button {
+padding: .62rem .9rem;
+color: white;
+background: var(--primary);
+border: 0;
+border-radius: 9px;
+font: inherit;
+font-weight: 700;
+cursor: pointer;
+}
+button:hover, .button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.secondary { color: var(--text); background: var(--surface-2); border: 1px solid var(--border); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+.card, .demo, .checkpoint {
+padding: 1.1rem 1.2rem;
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 14px;
+box-shadow: 0 5px 20px rgba(37,48,89,.05);
+}
+.card h3, .card h4 { margin-top: .2rem; }
+.callout { padding: 1rem 1.15rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; }
+.callout strong { color: var(--primary-2); }
+.warning { background: color-mix(in srgb, var(--danger) 10%, var(--surface)); border-left: 4px solid var(--danger); }
+.success { background: color-mix(in srgb, var(--success) 10%, var(--surface)); border-left: 4px solid var(--success); }
+.output { min-height: 1.5rem; margin-top: .8rem; padding: .75rem; color: var(--text); background: var(--surface-2); border-radius: 8px; white-space: pre-wrap; }
+textarea, input[type="text"] { box-sizing: border-box; width: 100%; padding: .75rem; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font: inherit; }
+textarea { min-height: 150px; font-family: "Cascadia Code", Consolas, monospace; }
+.progress-wrap { position: sticky; top: 8px; z-index: 20; height: 7px; background: var(--border); border-radius: 10px; }
+.progress-bar { width: 0; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: inherit; }
+.checklist label { display: block; padding: .35rem 0; cursor: pointer; }
+.todo-row { display: flex; gap: .55rem; }
+.todo-row input { flex: 1; }
+.todo-list { padding: 0; list-style: none; }
+.todo-list li { display: flex; align-items: center; gap: .65rem; padding: .55rem 0; border-bottom: 1px solid var(--border); }
+.todo-list li.done span { color: var(--muted); text-decoration: line-through; }
+.todo-list .delete { margin-left: auto; padding: .25rem .55rem; color: var(--danger); background: transparent; border: 1px solid var(--border); }
+details { margin: .7rem 0; padding: .7rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+summary { cursor: pointer; font-weight: 750; }
+@media (max-width: 700px) { body { font-size: 16px; } .hero::after { display: none; } .todo-row { flex-direction: column; } #TOC > ul { columns: 1; } }
+@media print { .toolbar, .progress-wrap, button { display: none !important; } body { max-width: none; background: white; color: #111; } .hero { box-shadow: none; } }
+</style>
+<style>
+
+:root{--bg:#f4f7fb;--surface:#fff;--surface-2:#f0f3f9;--text:#172033;--ink:#172033;--muted:#647087;--border:#dce5f0;--line:#dce5f0;--navy:#0b1222;--primary:#6657ee;--primary-2:#5144d8;--cyan:#13b8c5;--success:#168a5b;--danger:#c2415d;--accent:#d97706;--code-bg:#0d1424;--code-text:#e6edf7;--shadow:0 18px 55px rgba(31,43,71,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}body{max-width:none;margin:0;padding:0 24px 76px;color:var(--ink);background:radial-gradient(circle at 86% 4%,rgba(102,87,238,.11),transparent 24rem),radial-gradient(circle at 10% 18%,rgba(19,184,197,.08),transparent 22rem),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:17px;line-height:1.82;-webkit-font-smoothing:antialiased}
+body.dark{--bg:#0e1525;--surface:#151e31;--surface-2:#1c2740;--text:#edf2ff;--ink:#edf2ff;--muted:#aab5cd;--border:#33415d;--line:#33415d;--primary:#9188ff;--primary-2:#aaa3ff;--code-bg:#080d18;background:radial-gradient(circle at 86% 4%,rgba(102,87,238,.18),transparent 24rem),radial-gradient(circle at 10% 18%,rgba(19,184,197,.1),transparent 22rem),var(--bg)}
+a{color:#5144d8;text-underline-offset:3px}body.dark a{color:#aaa3ff}::selection{color:#fff;background:var(--primary)}
+#title-block-header,#header{display:none}.progress-wrap{position:fixed;z-index:1200;top:0;left:0;right:0;width:auto;height:3px;background:transparent;border-radius:0}.progress-bar{width:0;height:100%;background:linear-gradient(90deg,var(--cyan),var(--primary));border-radius:0;box-shadow:0 0 12px rgba(19,184,197,.8)}
+.mw3-skip{position:fixed;z-index:1300;top:8px;left:12px;padding:8px 12px;color:#fff;background:var(--primary);border-radius:8px;transform:translateY(-150%)}.mw3-skip:focus{transform:translateY(0)}
+.mw3-topbar{position:fixed;z-index:1100;top:0;left:0;right:0;height:72px;display:flex;align-items:center;gap:20px;padding:0 max(24px,calc((100vw - 1420px)/2));color:#fff;background:rgba(11,18,34,.95);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 8px 30px rgba(10,16,32,.18);backdrop-filter:blur(16px)}
+.mw3-brand{display:inline-flex;align-items:center;gap:10px;color:#fff!important;font-size:19px;font-weight:850;letter-spacing:-.02em;text-decoration:none}.mw3-logo{display:grid;place-items:center;width:38px;height:38px;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--primary));border-radius:11px;box-shadow:0 7px 20px rgba(102,87,238,.36);font-size:12px}.mw3-sub{color:#9faac0;font-size:11px;font-weight:750;letter-spacing:.13em}.mw3-spacer{flex:1}.mw3-langs{display:flex;gap:7px}.mw3-langs a{padding:7px 11px;color:#fff!important;background:rgba(255,255,255,.07);border-radius:9px;font-size:14px;font-weight:750;text-decoration:none}.mw3-langs a[aria-current="page"]{background:rgba(255,255,255,.18)}.mw3-menu{display:none;padding:8px 11px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:9px;cursor:pointer}
+.hero{position:relative;max-width:940px;margin:112px auto 30px;padding:clamp(30px,5vw,55px);color:#fff;background:linear-gradient(125deg,rgba(102,87,238,.97),rgba(27,55,111,.98)),var(--navy);border:1px solid rgba(255,255,255,.15);border-radius:26px;box-shadow:0 24px 70px rgba(39,47,100,.22);overflow:hidden}.hero::after{right:3%;bottom:-20%;color:rgba(255,255,255,.07);font-size:11rem}.hero h1{max-width:820px;margin:0 0 14px;padding:0;color:#fff;border:0;font-size:clamp(32px,5vw,52px);line-height:1.18;letter-spacing:-.035em}.hero p{max-width:760px;margin-bottom:17px;color:#dce4ff;font-size:1.08rem}.hero .eyebrow{display:inline-block;margin-bottom:16px;padding:7px 11px;color:#e1fcff;background:rgba(9,18,45,.22);border:1px solid rgba(255,255,255,.19);border-radius:999px;font-size:11px;font-weight:850;letter-spacing:.13em}.badge{padding:.25rem .67rem;background:rgba(9,18,45,.12)}
+#TOC{position:fixed;z-index:900;top:96px;left:max(18px,calc(50vw - 620px));width:255px;max-height:calc(100vh - 122px);margin:0;padding:18px 15px 20px;overflow-y:auto;overscroll-behavior:contain;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(31,43,71,.08);backdrop-filter:blur(12px);scrollbar-width:thin}#TOC::before{content:"On this page";display:block;margin:0 7px 10px;color:#28344e;font-size:14px;font-weight:850}#TOC>ul{margin:0;padding:0;columns:1}#TOC ul{padding:0;list-style:none}#TOC ul ul{margin:5px 0 7px 9px;padding-left:10px;border-left:1px solid #e4e9f2;columns:1}#TOC li{margin:2px 0;break-inside:avoid}#TOC a{display:block;padding:5px 7px;color:#59647a;border-radius:7px;font-size:13px;line-height:1.4;text-decoration:none}#TOC>ul>li>a{color:#28344e;font-weight:780}#TOC a:hover{color:#5144d8;background:#f0efff}body.dark #TOC{background:rgba(21,30,49,.96)}body.dark #TOC::before,body.dark #TOC>ul>li>a{color:#edf2ff}body.dark #TOC a{color:#aab5cd}body.dark #TOC a:hover{color:#fff;background:#273552}
+#mw3-content{max-width:940px;margin:0 auto;padding:34px clamp(24px,5vw,62px) 62px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}body.dark #mw3-content{background:rgba(21,30,49,.97)}
+h1,h2,h3{color:#12254a;line-height:1.35;letter-spacing:-.02em;scroll-margin-top:92px}body.dark h1,body.dark h2,body.dark h3{color:#edf2ff}h1{margin:2.8rem 0 1.15rem;padding-bottom:.55rem;border-bottom:1px solid var(--line);font-size:2.15rem}h1:first-child{margin-top:.5rem}h2{margin:2.2rem 0 .85rem;padding:0;border:0;font-size:1.55rem}h3{margin:1.7rem 0 .7rem;font-size:1.19rem}p{margin:0 0 1.05rem}ul,ol{padding-left:1.45rem}li{margin:.32rem 0}strong{color:#1d2d4b}body.dark strong{color:#f4f7ff}hr{margin:2.4rem 0;border:0;border-top:1px solid var(--line)}
+code:not(pre code){padding:.12em .38em;color:#5138d6;background:#f1efff;border:1px solid #e2ddff;border-radius:6px;font-size:.91em}body.dark code:not(pre code){color:#c0bbff;background:#232c49;border-color:#3a4567}div.sourceCode,.mw3-code-shell{position:relative;margin:1.15rem 0 1.45rem;border:1px solid #26334c;border-radius:15px;background:var(--code-bg);box-shadow:0 13px 30px rgba(15,23,42,.13);overflow:hidden}pre{margin:0!important;padding:22px!important;overflow:auto;background:var(--code-bg)!important;border:0!important;border-radius:15px;color:var(--code-text)!important;font-size:14px;line-height:1.62;tab-size:4}pre code{color:var(--code-text)!important;background:transparent!important}.mw3-copy{position:absolute;z-index:4;top:10px;right:10px;padding:6px 10px;color:#d9e1ef;background:#202b40;border:1px solid #34415b;border-radius:8px;font:700 12px/1.2 inherit;cursor:pointer}.mw3-copy:hover{background:#2a3852;transform:none}
+blockquote{margin:1.2rem 0;padding:15px 19px;color:#40506a;background:#f6f8fc;border-left:4px solid var(--cyan);border-radius:0 12px 12px 0}body.dark blockquote{color:#c4cee0;background:#1b2940}.callout{margin:1.3rem 0;padding:18px 20px;background:#f6f7ff;border:1px solid #ccdafa;border-left:5px solid var(--primary);border-radius:13px}.callout.warning{border-color:#f1d2a7;border-left-color:var(--accent);background:#fff8ed}.callout.success{border-color:#bfe6d4;border-left-color:var(--success);background:#f2fbf7}body.dark .callout,body.dark .callout.warning,body.dark .callout.success{background:#1b2940;border-color:#3d4f70}
+table{width:100%;margin:1.25rem 0 1.7rem;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:13px;overflow:hidden;font-size:.93rem}th,td{padding:11px 13px;text-align:left;vertical-align:top;border:0;border-bottom:1px solid var(--line)}th{color:#243451;background:#edf2f8;font-weight:800}tr:last-child td{border-bottom:0}tbody tr:nth-child(even){background:#f9fbfd}body.dark th{color:#edf2ff;background:#22304b}body.dark tbody tr:nth-child(even){background:#19243a}
+.toolbar{margin:0 0 1.8rem}.toolbar button,button{border-radius:10px}.secondary{color:var(--ink);background:var(--surface-2);border:1px solid var(--line)}.grid{gap:14px}.card,.demo,.checkpoint{padding:19px 21px;background:var(--surface);border:1px solid var(--line);border-radius:15px;box-shadow:none}.card:hover{border-color:#b9c7dc}.output{background:var(--surface-2);border:1px solid var(--line)}textarea,input[type="text"]{color:var(--ink);background:var(--surface);border:1px solid var(--line)}details{margin:1rem 0;padding:13px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}summary{color:#3447a8;font-weight:800;cursor:pointer}body.dark summary{color:#aaa3ff}.todo-list li{border-bottom:1px solid var(--line)}
+.personal-note{margin:0 0 1.5rem;padding:13px 17px;color:#40506a;background:linear-gradient(90deg,rgba(19,184,197,.09),rgba(102,87,238,.07));border:1px solid #cfe0eb;border-left:4px solid var(--cyan);border-radius:0 12px 12px 0;font-size:.94rem;font-weight:750}body.dark .personal-note{color:#d7deed;background:linear-gradient(90deg,rgba(19,184,197,.12),rgba(102,87,238,.12));border-color:#344864;border-left-color:var(--cyan)}
+.mw3-top{position:fixed;z-index:850;right:24px;bottom:24px;width:44px;height:44px;padding:0;color:#fff;background:var(--primary);border:0;border-radius:13px;box-shadow:0 10px 26px rgba(102,87,238,.3);cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:.18s ease}.mw3-top.is-visible{opacity:1;transform:none;pointer-events:auto}
+@media(min-width:1260px){.hero,#mw3-content{transform:translateX(142px)}}
+@media(max-width:1120px){#TOC{left:18px;width:225px}.hero,#mw3-content{max-width:760px;margin-left:270px;margin-right:18px}}
+@media(max-width:860px){body{padding-inline:14px}.mw3-topbar{height:64px;padding:0 14px}.mw3-sub{display:none}.mw3-menu{display:inline-block}.hero{margin:88px auto 22px}.hero,#mw3-content{max-width:940px;margin-left:auto;margin-right:auto;transform:none}#TOC{top:76px;left:14px;right:14px;width:auto;max-height:calc(100vh - 92px);transform:translateY(-120%);opacity:0;transition:.2s ease;pointer-events:none}body.mw3-toc-open #TOC{transform:none;opacity:1;pointer-events:auto}#mw3-content{padding:27px 21px 52px}h1{font-size:1.82rem}.mw3-top{right:15px;bottom:15px}}
+@media(max-width:480px){body{font-size:16px}.mw3-langs{display:none}.hero{padding:26px 22px;border-radius:19px}.hero h1{font-size:31px}#mw3-content{border-radius:17px}pre{font-size:12.5px!important;padding:18px!important}table{display:block;overflow-x:auto;white-space:nowrap}}
+@media print{.mw3-topbar,.progress-wrap,.mw3-top,.mw3-copy,#TOC,.toolbar{display:none!important}body{padding:0;background:#fff}.hero,#mw3-content{max-width:none;margin:0;transform:none;box-shadow:none}#mw3-content{border:0}pre{white-space:pre-wrap}}
+</style>
+<div class="progress-wrap" aria-label="Reading progress">
+<div id="reading-progress" class="progress-bar">
+
+</div>
+</div>
+<div class="hero">
+<div class="eyebrow">
+MooseWeb3 · Practical JavaScript · English edition
+</div>
+<h1 id="a-practical-guide-to-javascript">A Practical Guide to
+JavaScript</h1>
+<p>Understand how JavaScript runs, learn the language, DOM, events,
+async programming, and modules, then build a working todo
+application.</p>
+<p><span class="badge">Beginner friendly</span><span class="badge">Runnable examples</span><span class="badge">Interactive
+exercises</span><span class="badge">Browser + Node.js</span></p>
+</div>
+<div class="toolbar">
+<p><button id="theme-toggle" type="button">Toggle light/dark
+theme</button>
+<button id="print-page" class="secondary" type="button">Print / save as
+PDF</button>
+<button id="reset-progress" class="secondary" type="button">Reset
+learning checklist</button></p>
+</div>
+<div class="personal-note" role="note">
+This tutorial is a set of personal learning and practice notes.
+</div>
+<blockquote>
+<p><strong>Learning outcome:</strong> By the end of this guide, you will
+be able to read everyday JavaScript, add behavior to a web page, call
+web APIs, manage asynchronous work, and organize a small front-end
+project.</p>
+</blockquote>
+<h1 id="what-is-javascript">1. What is JavaScript?</h1>
+<p>JavaScript (JS) is a dynamic, prototype-based, multi-paradigm
+programming language. It began as a way to make web pages interactive.
+Today it also runs on servers, desktop and mobile apps, automation
+scripts, and embedded devices.</p>
+<div class="grid">
+<section id="in-the-browser" class="card">
+<h3>In the browser</h3>
+<p>Change page content, respond to clicks, validate forms, request
+server data, and create animation.</p>
+</section>
+<section id="on-the-server" class="card">
+<h3>On the server</h3>
+<p>Use Node.js to build APIs, command-line tools, real-time services,
+and build scripts.</p>
+</section>
+<section id="across-an-ecosystem" class="card">
+<h3>Across an ecosystem</h3>
+<p>npm offers a huge package registry. React, Vue, Svelte, and many
+other tools build on JavaScript.</p>
+</section>
+</div>
+<p>The three core browser technologies divide responsibility like
+this:</p>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Responsibility</th>
+<th>Analogy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML</td>
+<td>Content and structure</td>
+<td>The frame of a house</td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>Presentation and layout</td>
+<td>Decoration and appearance</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>Behavior and data</td>
+<td>Wiring and controls</td>
+</tr>
+</tbody>
+</table>
+<p>JavaScript and Java are separate languages. Their similar names are
+historical; their type systems, runtimes, and common uses are
+different.</p>
+<h2 id="how-javascript-runs">1.1 How JavaScript runs</h2>
+<p>Browsers contain a JavaScript engine: Chrome and Edge use V8, while
+Firefox uses SpiderMonkey. The engine parses and executes your code. A
+typical page works as follows:</p>
+<ol type="1">
+<li>The browser parses HTML and creates the DOM (Document Object
+Model).</li>
+<li>It loads and executes JavaScript when it encounters a
+<code>&lt;script&gt;</code>.</li>
+<li>JavaScript reads or changes the DOM and registers event
+listeners.</li>
+<li>When a user clicks, a network response arrives, or a timer finishes,
+the event loop schedules the relevant callback.</li>
+</ol>
+<p>A <code>.js</code> file is plain text and does not need a manual
+compilation step to run in a browser. Modern engines still compile and
+optimize code internally while the program runs.</p>
+<h1 id="set-up-and-run-your-first-program">2. Set up and run your first
+program</h1>
+<p>You need a modern browser and a text editor. Chrome, Edge, and
+Firefox all have capable developer tools. VS Code, RStudio, or any
+plain-text editor can create the files.</p>
+<h2 id="the-browser-console-the-fastest-experiment">2.1 The browser
+console: the fastest experiment</h2>
+<p>Open a page, press <code>F12</code> or <code>Ctrl + Shift + I</code>
+(macOS: <code>Cmd + Option + I</code>), choose <strong>Console</strong>,
+and enter:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Hello, JavaScript!&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">;</span></span></code></pre></div>
+<p>The console is excellent for testing expressions, inspecting values,
+and debugging. Keep production code in source files.</p>
+<h2 id="include-javascript-in-html">2.2 Include JavaScript in HTML</h2>
+<p>Create these two files:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- index.html --&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!doctype</span> html<span class="dt">&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="ot"> lang</span><span class="op">=</span><span class="st">&quot;en&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> charset</span><span class="op">=</span><span class="st">&quot;UTF-8&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> name</span><span class="op">=</span><span class="st">&quot;viewport&quot;</span><span class="ot"> content</span><span class="op">=</span><span class="st">&quot;width=device-width, initial-scale=1&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>My JavaScript page<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;app.js&quot;</span><span class="ot"> defer</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">h1</span><span class="ot"> id</span><span class="op">=</span><span class="st">&quot;title&quot;</span><span class="dt">&gt;</span>Welcome<span class="dt">&lt;/</span><span class="kw">h1</span><span class="dt">&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> id</span><span class="op">=</span><span class="st">&quot;hello-button&quot;</span><span class="dt">&gt;</span>Click me<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// app.js</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> title <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#title&quot;</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> button <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#hello-button&quot;</span>)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>button<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&quot;click&quot;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  title<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">&quot;JavaScript is running!&quot;</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>The <code>defer</code> attribute waits until HTML parsing has
+finished, runs before <code>DOMContentLoaded</code>, and preserves the
+order of multiple deferred scripts. It is a good default for ordinary
+page scripts.</p>
+<p>An inline <code>&lt;script&gt;</code> is useful for a tiny demo, but
+separate <code>.js</code> files are easier to reuse, cache, test, and
+maintain.</p>
+<h2 id="run-javascript-with-node.js">2.3 Run JavaScript with
+Node.js</h2>
+<p>After installing Node.js, run:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">--version</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> app.js</span></code></pre></div>
+<p>Node.js does not provide the browser’s <code>document</code> or
+<code>window</code>. Instead, it exposes server-side capabilities such
+as files, networking, processes, and streams. Browser and Node programs
+share the core language but use different host APIs.</p>
+<div class="callout">
+<p><strong>Suggested workflow:</strong> use the console for language
+experiments, <code>.html + .js</code> files and developer tools for
+pages, and Node.js for server or automation scripts.</p>
+</div>
+<h1 id="variables-values-and-operators">3. Variables, values, and
+operators</h1>
+<h2 id="const-let-and-var">3.1 <code>const</code>, <code>let</code>, and
+<code>var</code></h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> siteName <span class="op">=</span> <span class="st">&quot;Learn JavaScript&quot;</span><span class="op">;</span> <span class="co">// cannot be reassigned</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> score <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>                       <span class="co">// may be reassigned</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> score <span class="op">+</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Common in older code, but usually avoided in new code</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> legacyValue <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span></code></pre></div>
+<p>Use <code>const</code> by default and <code>let</code> only when a
+binding must be reassigned. Avoid <code>var</code> in new code because
+it is function-scoped and has confusing hoisting behavior.</p>
+<p><code>const</code> prevents reassignment of the binding; it does not
+freeze an object’s contents:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> user <span class="op">=</span> { <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Kim&quot;</span> }<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>user<span class="op">.</span><span class="at">name</span> <span class="op">=</span> <span class="st">&quot;Jo&quot;</span><span class="op">;</span>        <span class="co">// valid: changes a property</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">// user = { name: &quot;Sam&quot; }; // error: reassigns a const</span></span></code></pre></div>
+<h2 id="core-data-types">3.2 Core data types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>string</td>
+<td><code>&quot;hello&quot;</code></td>
+<td>Text</td>
+</tr>
+<tr>
+<td>number</td>
+<td><code>42</code>, <code>3.14</code>, <code>NaN</code></td>
+<td>Integers and decimals</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td><code>9007199254740993n</code></td>
+<td>Very large integers</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td><code>true</code>, <code>false</code></td>
+<td>Logical value</td>
+</tr>
+<tr>
+<td>undefined</td>
+<td><code>let x;</code></td>
+<td>No value assigned yet</td>
+</tr>
+<tr>
+<td>null</td>
+<td><code>const result = null</code></td>
+<td>Intentional absence of a value</td>
+</tr>
+<tr>
+<td>symbol</td>
+<td><code>Symbol(&quot;id&quot;)</code></td>
+<td>Unique identifier</td>
+</tr>
+<tr>
+<td>object</td>
+<td><code>{}</code>, <code>[]</code>, <code>new Date()</code></td>
+<td>Composite data</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span>       <span class="co">// &quot;string&quot;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> <span class="dv">42</span><span class="op">;</span>            <span class="co">// &quot;number&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> <span class="kw">true</span><span class="op">;</span>          <span class="co">// &quot;boolean&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> <span class="kw">undefined</span><span class="op">;</span>     <span class="co">// &quot;undefined&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> {}<span class="op">;</span>            <span class="co">// &quot;object&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typeof</span> <span class="kw">null</span><span class="op">;</span>          <span class="co">// &quot;object&quot; (a historical quirk)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">Array</span><span class="op">.</span><span class="fu">isArray</span>([])<span class="op">;</span>    <span class="co">// true</span></span></code></pre></div>
+<h2 id="operators-and-strict-equality">3.3 Operators and strict
+equality</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> total <span class="op">=</span> <span class="dv">8</span> <span class="op">+</span> <span class="dv">2</span><span class="op">;</span>      <span class="co">// 10</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> remainder <span class="op">=</span> <span class="dv">10</span> <span class="op">%</span> <span class="dv">3</span><span class="op">;</span> <span class="co">// 1</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> power <span class="op">=</span> <span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span><span class="op">;</span>     <span class="co">// 8</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="op">===</span> <span class="dv">5</span><span class="op">;</span>    <span class="co">// true: same value and type</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="op">===</span> <span class="st">&quot;5&quot;</span><span class="op">;</span>  <span class="co">// false</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="op">==</span> <span class="st">&quot;5&quot;</span><span class="op">;</span>   <span class="co">// true: implicit conversion, best avoided</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">true</span> <span class="op">&amp;&amp;</span> <span class="kw">false</span><span class="op">;</span>  <span class="co">// false</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">true</span> <span class="op">||</span> <span class="kw">false</span><span class="op">;</span>  <span class="co">// true</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">!</span><span class="kw">true</span><span class="op">;</span>          <span class="co">// false</span></span></code></pre></div>
+<p>Prefer <code>===</code> and <code>!==</code>. The coercion rules
+behind <code>==</code> and <code>!=</code> are hard to scan and can hide
+bugs.</p>
+<p>Nullish coalescing <code>??</code> uses a fallback only when the left
+side is <code>null</code> or <code>undefined</code>. Optional chaining
+<code>?.</code> returns <code>undefined</code> if a path is missing:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> settings <span class="op">=</span> { <span class="dt">profile</span><span class="op">:</span> { <span class="dt">nickname</span><span class="op">:</span> <span class="st">&quot;Mia&quot;</span> }<span class="op">,</span> <span class="dt">volume</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> nickname <span class="op">=</span> settings<span class="op">.</span><span class="at">profile</span><span class="op">?.</span><span class="at">nickname</span> <span class="op">??</span> <span class="st">&quot;Anonymous&quot;</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> volume <span class="op">=</span> settings<span class="op">.</span><span class="at">volume</span> <span class="op">??</span> <span class="dv">50</span><span class="op">;</span> <span class="co">// remains 0</span></span></code></pre></div>
+<h2 id="strings-and-template-literals">3.4 Strings and template
+literals</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> name <span class="op">=</span> <span class="st">&quot;Alex&quot;</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> lessons <span class="op">=</span> <span class="dv">6</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> message <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>name<span class="sc">}</span><span class="vs"> completed </span><span class="sc">${</span>lessons<span class="sc">}</span><span class="vs"> lessons.`</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>message<span class="op">.</span><span class="at">length</span><span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>message<span class="op">.</span><span class="fu">toUpperCase</span>()<span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>message<span class="op">.</span><span class="fu">includes</span>(<span class="st">&quot;completed&quot;</span>)<span class="op">;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>message<span class="op">.</span><span class="fu">replace</span>(<span class="st">&quot;6&quot;</span><span class="op">,</span> <span class="st">&quot;7&quot;</span>)<span class="op">;</span></span></code></pre></div>
+<p>Template literals use backticks, can include
+<code>${expressions}</code>, and may span multiple lines.</p>
+<h1 id="control-flow">4. Control flow</h1>
+<h2 id="conditions">4.1 Conditions</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> age <span class="op">=</span> <span class="dv">20</span><span class="op">;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (age <span class="op">&gt;=</span> <span class="dv">18</span>) {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Adult&quot;</span>)<span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (age <span class="op">&gt;=</span> <span class="dv">13</span>) {</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Teenager&quot;</span>)<span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Child&quot;</span>)<span class="op">;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ticket <span class="op">=</span> age <span class="op">&gt;=</span> <span class="dv">18</span> <span class="op">?</span> <span class="st">&quot;adult&quot;</span> <span class="op">:</span> <span class="st">&quot;student&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>The following values are falsy: <code>false</code>, <code>0</code>,
+<code>-0</code>, <code>0n</code>, <code>&quot;&quot;</code>, <code>null</code>,
+<code>undefined</code>, and <code>NaN</code>. Empty arrays
+<code>[]</code> and empty objects <code>{}</code> are truthy.</p>
+<p>Use <code>switch</code> when one expression must be compared with
+several fixed values:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">switch</span> (<span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">getDay</span>()) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="dv">6</span><span class="op">:</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Weekend&quot;</span>)<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Weekday&quot;</span>)<span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="loops">4.2 Loops</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">3</span><span class="op">;</span> i <span class="op">+=</span> <span class="dv">1</span>) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(i)<span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> colors <span class="op">=</span> [<span class="st">&quot;red&quot;</span><span class="op">,</span> <span class="st">&quot;green&quot;</span><span class="op">,</span> <span class="st">&quot;blue&quot;</span>]<span class="op">;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> color <span class="kw">of</span> colors) {</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(color)<span class="op">;</span> <span class="co">// iterates values</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> person <span class="op">=</span> { <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="dt">role</span><span class="op">:</span> <span class="st">&quot;developer&quot;</span> }<span class="op">;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> key <span class="kw">in</span> person) {</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(key<span class="op">,</span> person[key])<span class="op">;</span> <span class="co">// iterates enumerable keys</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Prefer <code>for...of</code> or array methods such as
+<code>map</code>, <code>filter</code>, and <code>reduce</code> for
+arrays. <code>for...in</code> is mainly for object keys and is a poor
+default for arrays.</p>
+<h1 id="functions-scope-and-closures">5. Functions, scope, and
+closures</h1>
+<p>Functions package reusable behavior. A clear function usually does
+one job, takes input through parameters, and produces output with
+<code>return</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">calculateTax</span>(price<span class="op">,</span> rate <span class="op">=</span> <span class="fl">0.05</span>) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> price <span class="op">*</span> rate<span class="op">;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> double <span class="op">=</span> <span class="kw">function</span> (value) {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> value <span class="op">*</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> square <span class="op">=</span> value <span class="kw">=&gt;</span> value <span class="op">**</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="fu">calculateTax</span>(<span class="dv">100</span>))<span class="op">;</span> <span class="co">// 5</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="fu">square</span>(<span class="dv">4</span>))<span class="op">;</span>         <span class="co">// 16</span></span></code></pre></div>
+<p>Arrow functions are concise, but they do not have their own
+<code>this</code>, <code>arguments</code>, or <code>prototype</code>. A
+normal function is usually a better choice for methods or constructors
+that need dynamic <code>this</code>.</p>
+<h2 id="scope">5.1 Scope</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> appName <span class="op">=</span> <span class="st">&quot;Notes&quot;</span><span class="op">;</span> <span class="co">// global scope</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">greet</span>() {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> message <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">;</span> <span class="co">// function scope</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="kw">true</span>) {</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> punctuation <span class="op">=</span> <span class="st">&quot;!&quot;</span><span class="op">;</span> <span class="co">// block scope</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(message <span class="op">+</span> punctuation)<span class="op">;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Inner scopes can read variables from outer scopes; outer scopes
+cannot read variables declared inside. Keep scopes small to reduce
+accidental changes.</p>
+<h2 id="closures">5.2 Closures</h2>
+<p>A function remembers the scope in which it was created. This behavior
+is called a closure:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">createCounter</span>() {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">function</span> () {</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> count<span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> nextCount <span class="op">=</span> <span class="fu">createCounter</span>()<span class="op">;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">nextCount</span>()<span class="op">;</span> <span class="co">// 1</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">nextCount</span>()<span class="op">;</span> <span class="co">// 2</span></span></code></pre></div>
+<p>Closures are useful for private state, event handlers, and function
+factories. A long-lived closure that references a large object will also
+keep that object from being garbage-collected.</p>
+<h1 id="arrays-and-objects-organizing-data">6. Arrays and objects:
+organizing data</h1>
+<h2 id="essential-array-methods">6.1 Essential array methods</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> products <span class="op">=</span> [</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Keyboard&quot;</span><span class="op">,</span> <span class="dt">price</span><span class="op">:</span> <span class="dv">80</span><span class="op">,</span> <span class="dt">inStock</span><span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Mouse&quot;</span><span class="op">,</span> <span class="dt">price</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">inStock</span><span class="op">:</span> <span class="kw">false</span> }<span class="op">,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Monitor&quot;</span><span class="op">,</span> <span class="dt">price</span><span class="op">:</span> <span class="dv">420</span><span class="op">,</span> <span class="dt">inStock</span><span class="op">:</span> <span class="kw">true</span> }</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> names <span class="op">=</span> products<span class="op">.</span><span class="fu">map</span>(product <span class="kw">=&gt;</span> product<span class="op">.</span><span class="at">name</span>)<span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> available <span class="op">=</span> products<span class="op">.</span><span class="fu">filter</span>(product <span class="kw">=&gt;</span> product<span class="op">.</span><span class="at">inStock</span>)<span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> expensive <span class="op">=</span> products<span class="op">.</span><span class="fu">find</span>(product <span class="kw">=&gt;</span> product<span class="op">.</span><span class="at">price</span> <span class="op">&gt;</span> <span class="dv">400</span>)<span class="op">;</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> total <span class="op">=</span> products<span class="op">.</span><span class="fu">reduce</span>((sum<span class="op">,</span> product) <span class="kw">=&gt;</span> sum <span class="op">+</span> product<span class="op">.</span><span class="at">price</span><span class="op">,</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> allHaveNames <span class="op">=</span> products<span class="op">.</span><span class="fu">every</span>(product <span class="kw">=&gt;</span> product<span class="op">.</span><span class="at">name</span><span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span>)<span class="op">;</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+<th>Mutates input?</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>map</code></td>
+<td>New array of equal length</td>
+<td>No</td>
+<td>Transform each item</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>Filtered new array</td>
+<td>No</td>
+<td>Keep matching items</td>
+</tr>
+<tr>
+<td><code>find</code></td>
+<td>First item or <code>undefined</code></td>
+<td>No</td>
+<td>Find one item</td>
+</tr>
+<tr>
+<td><code>some</code> / <code>every</code></td>
+<td>Boolean</td>
+<td>No</td>
+<td>Test conditions</td>
+</tr>
+<tr>
+<td><code>reduce</code></td>
+<td>Any accumulated result</td>
+<td>No</td>
+<td>Sum, group, build objects</td>
+</tr>
+<tr>
+<td><code>push</code> / <code>pop</code></td>
+<td>Length / removed item</td>
+<td>Yes</td>
+<td>Add/remove at the end</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>The original array</td>
+<td>Yes</td>
+<td>Sort; copy first when needed</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb18"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> sorted <span class="op">=</span> [<span class="op">...</span>products]<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> a<span class="op">.</span><span class="at">price</span> <span class="op">-</span> b<span class="op">.</span><span class="at">price</span>)<span class="op">;</span></span></code></pre></div>
+<h2 id="objects-destructuring-and-spread">6.2 Objects, destructuring,
+and spread</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> user <span class="op">=</span> {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">id</span><span class="op">:</span> <span class="dv">7</span><span class="op">,</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Lina&quot;</span><span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">address</span><span class="op">:</span> { <span class="dt">city</span><span class="op">:</span> <span class="st">&quot;Calgary&quot;</span> }<span class="op">,</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">greet</span>() {</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="vs">`Hello, I am </span><span class="sc">${</span><span class="kw">this</span><span class="op">.</span><span class="at">name</span><span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { name<span class="op">,</span> <span class="dt">address</span><span class="op">:</span> { city } } <span class="op">=</span> user<span class="op">;</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> updatedUser <span class="op">=</span> { <span class="op">...</span>user<span class="op">,</span> <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;Nora&quot;</span> }<span class="op">;</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(user)<span class="op">;</span>    <span class="co">// array of keys</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="bu">Object</span><span class="op">.</span><span class="fu">values</span>(user)<span class="op">;</span>  <span class="co">// array of values</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="bu">Object</span><span class="op">.</span><span class="fu">entries</span>(user)<span class="op">;</span> <span class="co">// array of [key, value]</span></span></code></pre></div>
+<p>Spread creates a <strong>shallow copy</strong>.
+<code>updatedUser.address</code> and <code>user.address</code> still
+refer to the same nested object. Use <code>structuredClone(user)</code>
+when you need a deep copy of supported data.</p>
+<h1 id="the-dom-controlling-a-web-page">7. The DOM: controlling a web
+page</h1>
+<p>The DOM represents HTML as a tree of nodes. JavaScript can find
+nodes, change content and classes, and create new elements.</p>
+<h2 id="find-and-update-elements">7.1 Find and update elements</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> heading <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;h1&quot;</span>)<span class="op">;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> firstCard <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;.card&quot;</span>)<span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> allButtons <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">&quot;button&quot;</span>)<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>heading<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">&quot;New safe text&quot;</span><span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>firstCard<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">add</span>(<span class="st">&quot;active&quot;</span>)<span class="op">;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>firstCard<span class="op">.</span><span class="fu">setAttribute</span>(<span class="st">&quot;data-state&quot;</span><span class="op">,</span> <span class="st">&quot;ready&quot;</span>)<span class="op">;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>allButtons<span class="op">.</span><span class="fu">forEach</span>(button <span class="kw">=&gt;</span> {</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  button<span class="op">.</span><span class="at">disabled</span> <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Selectors use CSS syntax: <code>#id</code>, <code>.class</code>,
+<code>tag</code>, and <code>[attribute]</code>.
+<code>querySelector</code> returns the first match or <code>null</code>;
+<code>querySelectorAll</code> returns a static
+<code>NodeList</code>.</p>
+<h2 id="create-elements-safely">7.2 Create elements safely</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">addMessage</span>(text) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> item <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&quot;li&quot;</span>)<span class="op">;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  item<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> text<span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  item<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">add</span>(<span class="st">&quot;message&quot;</span>)<span class="op">;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#messages&quot;</span>)<span class="op">.</span><span class="fu">append</span>(item)<span class="op">;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Use <code>textContent</code> for untrusted text from users or
+servers. Assigning untrusted strings to <code>innerHTML</code> can
+create a cross-site scripting (XSS) vulnerability.</p>
+<h2 id="classes-and-styles">7.3 Classes and styles</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> panel <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;.panel&quot;</span>)<span class="op">;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>panel<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">toggle</span>(<span class="st">&quot;is-open&quot;</span>)<span class="op">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>panel<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="fu">setProperty</span>(<span class="st">&quot;--panel-width&quot;</span><span class="op">,</span> <span class="st">&quot;320px&quot;</span>)<span class="op">;</span></span></code></pre></div>
+<p>Prefer defining visual states as CSS classes and switching those
+classes with <code>classList</code>. This keeps structure, presentation,
+and behavior separate.</p>
+<h1 id="events-responding-to-users">8. Events: responding to users</h1>
+<div class="sourceCode" id="cb23"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> id</span><span class="op">=</span><span class="st">&quot;save-button&quot;</span><span class="dt">&gt;</span>Save<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> saveButton <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#save-button&quot;</span>)<span class="op">;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>saveButton<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&quot;click&quot;</span><span class="op">,</span> <span class="bu">event</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="at">currentTarget</span><span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">&quot;Saved&quot;</span><span class="op">;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Click position:&quot;</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">clientX</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">clientY</span>)<span class="op">;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Common events include <code>click</code>, <code>input</code>,
+<code>change</code>, <code>submit</code>, <code>keydown</code>,
+<code>focus</code>, and <code>blur</code>. <code>event.target</code> is
+where the event began; <code>event.currentTarget</code> is the element
+whose listener is currently running.</p>
+<h2 id="form-submission">8.1 Form submission</h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">form</span><span class="ot"> id</span><span class="op">=</span><span class="st">&quot;signup-form&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">label</span><span class="dt">&gt;</span>Email <span class="dt">&lt;</span><span class="kw">input</span><span class="ot"> name</span><span class="op">=</span><span class="st">&quot;email&quot;</span><span class="ot"> type</span><span class="op">=</span><span class="st">&quot;email&quot;</span><span class="ot"> required</span><span class="dt">&gt;&lt;/</span><span class="kw">label</span><span class="dt">&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">button</span><span class="dt">&gt;</span>Sign up<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">form</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> form <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#signup-form&quot;</span>)<span class="op">;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>form<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&quot;submit&quot;</span><span class="op">,</span> <span class="bu">event</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="fu">preventDefault</span>()<span class="op">;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> <span class="kw">new</span> <span class="bu">FormData</span>(form)<span class="op">;</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> email <span class="op">=</span> data<span class="op">.</span><span class="fu">get</span>(<span class="st">&quot;email&quot;</span>)<span class="op">.</span><span class="fu">trim</span>()<span class="op">;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>email<span class="op">.</span><span class="fu">includes</span>(<span class="st">&quot;@&quot;</span>)) {</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&quot;Enter a valid email address&quot;</span>)<span class="op">;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>({ email })<span class="op">;</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Browser validation improves usability, but the server must validate
+every input again.</p>
+<h2 id="event-delegation">8.2 Event delegation</h2>
+<p>When a list is large or changes dynamically, put one listener on a
+common parent:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#task-list&quot;</span>)<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&quot;click&quot;</span><span class="op">,</span> <span class="bu">event</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> deleteButton <span class="op">=</span> <span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="fu">closest</span>(<span class="st">&quot;[data-delete-id]&quot;</span>)<span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>deleteButton) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deleteTask</span>(deleteButton<span class="op">.</span><span class="at">dataset</span><span class="op">.</span><span class="at">deleteId</span>)<span class="op">;</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Events bubble from children toward ancestors, so one parent listener
+can handle both current and future list items.</p>
+<h2 id="interactive-demo-counter">8.3 Interactive demo: counter</h2>
+<div class="demo">
+<p>Click the controls to update state. Open developer tools to inspect
+the elements and events.</p>
+<button id="counter-minus" class="secondary" type="button">
+−1
+</button>
+<p><strong id="counter-value" aria-live="polite">0</strong>
+<button id="counter-plus" type="button">+1</button>
+<button id="counter-reset" class="secondary" type="button">Reset</button></p>
+</div>
+<h1 id="asynchronous-javascript-promises-and-requests">9. Asynchronous
+JavaScript, Promises, and requests</h1>
+<p>The JavaScript main thread runs one piece of synchronous code at a
+time. The environment handles timers and network operations. When those
+operations finish, the event loop schedules their callbacks.
+Asynchronous code lets the page remain responsive while it waits.</p>
+<h2 id="promises">9.1 Promises</h2>
+<p>A Promise represents a result that may succeed or fail in the future.
+Its state is <code>pending</code>, <code>fulfilled</code>, or
+<code>rejected</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">wait</span>(milliseconds) {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">new</span> <span class="bu">Promise</span>(resolve <span class="kw">=&gt;</span> {</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="pp">setTimeout</span>(resolve<span class="op">,</span> milliseconds)<span class="op">;</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">wait</span>(<span class="dv">1000</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(() <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Runs after one second&quot;</span>))</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">catch</span>(error <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(error))</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">finally</span>(() <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Finished&quot;</span>))<span class="op">;</span></span></code></pre></div>
+<h2 id="async-await">9.2 <code>async</code> / <code>await</code></h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">loadUser</span>(userId) {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> {</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`https://jsonplaceholder.typicode.com/users/</span><span class="sc">${</span>userId<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>response<span class="op">.</span><span class="at">ok</span>) {</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="vs">`HTTP </span><span class="sc">${</span>response<span class="op">.</span><span class="at">status</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> user <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> user<span class="op">;</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">catch</span> (error) {</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&quot;Could not load user:&quot;</span><span class="op">,</span> error)<span class="op">;</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> error<span class="op">;</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>fetch</code> rejects automatically only when the network
+operation itself fails. A <code>404</code> or <code>500</code> still
+produces a <code>Response</code>, so check <code>response.ok</code>.</p>
+<p>Run independent requests in parallel:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [user<span class="op">,</span> posts] <span class="op">=</span> <span class="cf">await</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>([</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetch</span>(<span class="st">&quot;/api/user&quot;</span>)<span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">json</span>())<span class="op">,</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetch</span>(<span class="st">&quot;/api/posts&quot;</span>)<span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">json</span>())</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>])<span class="op">;</span></span></code></pre></div>
+<h2 id="cancel-a-request">9.3 Cancel a request</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> controller <span class="op">=</span> <span class="kw">new</span> <span class="fu">AbortController</span>()<span class="op">;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(<span class="st">&quot;/api/search?q=javascript&quot;</span><span class="op">,</span> { <span class="dt">signal</span><span class="op">:</span> controller<span class="op">.</span><span class="at">signal</span> })</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">catch</span>(error <span class="kw">=&gt;</span> {</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (error<span class="op">.</span><span class="at">name</span> <span class="op">!==</span> <span class="st">&quot;AbortError&quot;</span>) <span class="cf">throw</span> error<span class="op">;</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>controller<span class="op">.</span><span class="fu">abort</span>()<span class="op">;</span></span></code></pre></div>
+<p>Canceling obsolete work is especially useful for live search and page
+transitions. It prevents an older response from replacing newer
+data.</p>
+<h2 id="interactive-demo-simulated-loading">9.4 Interactive demo:
+simulated loading</h2>
+<div class="demo">
+<button id="async-demo" type="button">
+Simulate loading data
+</button>
+<div id="async-output" class="output" aria-live="polite">
+Not started
+</div>
+</div>
+<h1 id="error-handling-and-debugging">10. Error handling and
+debugging</h1>
+<div class="sourceCode" id="cb32"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">parseSettings</span>(jsonText) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> value <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(jsonText)<span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">typeof</span> value <span class="op">!==</span> <span class="st">&quot;object&quot;</span> <span class="op">||</span> value <span class="op">===</span> <span class="kw">null</span>) {</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">TypeError</span>(<span class="st">&quot;Settings must be an object&quot;</span>)<span class="op">;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> value<span class="op">;</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">catch</span> (error) {</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(error<span class="op">.</span><span class="at">name</span><span class="op">,</span> error<span class="op">.</span><span class="at">message</span>)<span class="op">;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {}<span class="op">;</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>A productive debugging sequence is:</p>
+<ol type="1">
+<li>Read the first console error and its stack trace, not only the final
+line.</li>
+<li>Log names and values together with
+<code>console.log({ variableA, variableB })</code>.</li>
+<li>Set a breakpoint in the Sources panel, step through, and inspect
+Scope.</li>
+<li>Inspect URL, status, response, and timing in the Network panel.</li>
+<li>reduce the problem to the smallest reproducible code and test each
+assumption.</li>
+</ol>
+<div class="sourceCode" id="cb33"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">table</span>(products)<span class="op">;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">time</span>(<span class="st">&quot;calculation&quot;</span>)<span class="op">;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">// code to measure</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">timeEnd</span>(<span class="st">&quot;calculation&quot;</span>)<span class="op">;</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="cf">debugger</span><span class="op">;</span> <span class="co">// pauses here when developer tools are open</span></span></code></pre></div>
+<div class="callout warning">
+<p>Do not hide failures in an empty <code>catch {}</code>. Record useful
+context or rethrow the error to code that can handle it.</p>
+</div>
+<h1 id="modules-classes-and-organization">11. Modules, classes, and
+organization</h1>
+<h2 id="es-modules">11.1 ES modules</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">// math.js</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> <span class="cn">PI</span> <span class="op">=</span> <span class="fl">3.14159</span><span class="op">;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">add</span>(a<span class="op">,</span> b) {</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">// app.js</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { <span class="cn">PI</span><span class="op">,</span> add } <span class="im">from</span> <span class="st">&quot;./math.js&quot;</span><span class="op">;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="fu">add</span>(<span class="cn">PI</span><span class="op">,</span> <span class="dv">2</span>))<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">&quot;module&quot;</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;app.js&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Modules use strict mode, have their own scope, and are deferred
+automatically. During local development, serve module-based projects
+through a development server instead of opening <code>file://</code>
+directly, which can trigger browser origin restrictions.</p>
+<h2 id="classes">11.2 Classes</h2>
+<p>JavaScript classes are a clearer syntax over prototype-based
+inheritance:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BankAccount {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  #balance <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">constructor</span>(owner) {</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">owner</span> <span class="op">=</span> owner<span class="op">;</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deposit</span>(amount) {</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (amount <span class="op">&lt;=</span> <span class="dv">0</span>) <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">RangeError</span>(<span class="st">&quot;Amount must be positive&quot;</span>)<span class="op">;</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span>#<span class="at">balance</span> <span class="op">+=</span> amount<span class="op">;</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">get</span> <span class="fu">balance</span>() {</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span>#<span class="at">balance</span><span class="op">;</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> account <span class="op">=</span> <span class="kw">new</span> <span class="fu">BankAccount</span>(<span class="st">&quot;Mina&quot;</span>)<span class="op">;</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>account<span class="op">.</span><span class="fu">deposit</span>(<span class="dv">100</span>)<span class="op">;</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(account<span class="op">.</span><span class="at">balance</span>)<span class="op">;</span> <span class="co">// 100</span></span></code></pre></div>
+<p>Plain functions and objects are often enough for small data
+transformations. Classes become useful when many instances share
+behavior and need encapsulated state.</p>
+<h2 id="a-simple-project-structure">11.3 A simple project structure</h2>
+<pre class="text"><code>my-app/
+├── index.html
+├── css/
+│   └── styles.css
+├── js/
+│   ├── app.js          # startup and coordination
+│   ├── api.js          # network requests
+│   ├── storage.js      # local persistence
+│   └── ui.js           # DOM updates
+└── assets/</code></pre>
+<p>Split files by responsibility instead of growing one enormous
+<code>app.js</code>. Module names should describe an area of
+responsibility. Function names should use verbs such as
+<code>loadTasks</code>, <code>renderList</code>, and
+<code>validateEmail</code>.</p>
+<h1 id="browser-storage-and-json">12. Browser storage and JSON</h1>
+<p><code>localStorage</code> persists strings for one website:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> preferences <span class="op">=</span> { <span class="dt">theme</span><span class="op">:</span> <span class="st">&quot;dark&quot;</span><span class="op">,</span> <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">18</span> }<span class="op">;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">&quot;preferences&quot;</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(preferences))<span class="op">;</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> savedText <span class="op">=</span> localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">&quot;preferences&quot;</span>)<span class="op">;</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> savedPreferences <span class="op">=</span> savedText <span class="op">?</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(savedText) <span class="op">:</span> {}<span class="op">;</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>localStorage<span class="op">.</span><span class="fu">removeItem</span>(<span class="st">&quot;preferences&quot;</span>)<span class="op">;</span></span></code></pre></div>
+<p><code>localStorage</code> is synchronous, limited in size, and
+editable by the user. Never store passwords, access tokens, or sensitive
+personal data in it, and do not treat it as a trusted database.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Option</th>
+<th>Lifetime</th>
+<th>Good for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>localStorage</code></td>
+<td>Until explicitly removed</td>
+<td>Small preferences and drafts</td>
+</tr>
+<tr>
+<td><code>sessionStorage</code></td>
+<td>Current tab session</td>
+<td>Temporary flow state</td>
+</tr>
+<tr>
+<td>Cookie</td>
+<td>Configurable; sent with requests</td>
+<td>Server sessions with secure attributes</td>
+</tr>
+<tr>
+<td>IndexedDB</td>
+<td>Persistent, larger capacity</td>
+<td>Offline and structured records</td>
+</tr>
+</tbody>
+</table>
+<h1 id="complete-example-todo-list">13. Complete example: todo list</h1>
+<p>This example combines state, rendering, event delegation, and local
+storage. The demo on this page is fully interactive.</p>
+<div class="demo">
+<div class="todo-row">
+<p><input id="todo-input" type="text" maxlength="80" placeholder="Enter a task, for example: practise array methods" aria-label="New task">
+<button id="todo-add" type="button">Add task</button></p>
+</div>
+<ul id="todo-list" class="todo-list" aria-live="polite">
+</ul>
+<div id="todo-summary" class="output">
+0 tasks
+</div>
+</div>
+<p>The core implementation can look like this:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> STORAGE_KEY <span class="op">=</span> <span class="st">&quot;javascript-guide-tasks&quot;</span><span class="op">;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> tasks <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(STORAGE_KEY) <span class="op">??</span> <span class="st">&quot;[]&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">saveTasks</span>() {</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(STORAGE_KEY<span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(tasks))<span class="op">;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">addTask</span>(text) {</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> cleanText <span class="op">=</span> text<span class="op">.</span><span class="fu">trim</span>()<span class="op">;</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>cleanText) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  tasks<span class="op">.</span><span class="fu">push</span>({</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">id</span><span class="op">:</span> crypto<span class="op">.</span><span class="fu">randomUUID</span>()<span class="op">,</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">text</span><span class="op">:</span> cleanText<span class="op">,</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">done</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveTasks</span>()<span class="op">;</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">renderTasks</span>()<span class="op">;</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">toggleTask</span>(id) {</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  tasks <span class="op">=</span> tasks<span class="op">.</span><span class="fu">map</span>(task <span class="kw">=&gt;</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>    task<span class="op">.</span><span class="at">id</span> <span class="op">===</span> id <span class="op">?</span> { <span class="op">...</span>task<span class="op">,</span> <span class="dt">done</span><span class="op">:</span> <span class="op">!</span>task<span class="op">.</span><span class="at">done</span> } <span class="op">:</span> task</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveTasks</span>()<span class="op">;</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">renderTasks</span>()<span class="op">;</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">deleteTask</span>(id) {</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>  tasks <span class="op">=</span> tasks<span class="op">.</span><span class="fu">filter</span>(task <span class="kw">=&gt;</span> task<span class="op">.</span><span class="at">id</span> <span class="op">!==</span> id)<span class="op">;</span></span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveTasks</span>()<span class="op">;</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">renderTasks</span>()<span class="op">;</span></span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">renderTasks</span>() {</span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> list <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#todo-list&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>  list<span class="op">.</span><span class="fu">replaceChildren</span>()<span class="op">;</span></span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> task <span class="kw">of</span> tasks) {</span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> item <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&quot;li&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>    item<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">toggle</span>(<span class="st">&quot;done&quot;</span><span class="op">,</span> task<span class="op">.</span><span class="at">done</span>)<span class="op">;</span></span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> checkbox <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&quot;input&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>    checkbox<span class="op">.</span><span class="at">type</span> <span class="op">=</span> <span class="st">&quot;checkbox&quot;</span><span class="op">;</span></span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a>    checkbox<span class="op">.</span><span class="at">checked</span> <span class="op">=</span> task<span class="op">.</span><span class="at">done</span><span class="op">;</span></span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a>    checkbox<span class="op">.</span><span class="at">dataset</span><span class="op">.</span><span class="at">toggleId</span> <span class="op">=</span> task<span class="op">.</span><span class="at">id</span><span class="op">;</span></span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-48"><a href="#cb40-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> label <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&quot;span&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-49"><a href="#cb40-49" aria-hidden="true" tabindex="-1"></a>    label<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> task<span class="op">.</span><span class="at">text</span><span class="op">;</span></span>
+<span id="cb40-50"><a href="#cb40-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-51"><a href="#cb40-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> deleteButton <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&quot;button&quot;</span>)<span class="op">;</span></span>
+<span id="cb40-52"><a href="#cb40-52" aria-hidden="true" tabindex="-1"></a>    deleteButton<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">&quot;Delete&quot;</span><span class="op">;</span></span>
+<span id="cb40-53"><a href="#cb40-53" aria-hidden="true" tabindex="-1"></a>    deleteButton<span class="op">.</span><span class="at">dataset</span><span class="op">.</span><span class="at">deleteId</span> <span class="op">=</span> task<span class="op">.</span><span class="at">id</span><span class="op">;</span></span>
+<span id="cb40-54"><a href="#cb40-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-55"><a href="#cb40-55" aria-hidden="true" tabindex="-1"></a>    item<span class="op">.</span><span class="fu">append</span>(checkbox<span class="op">,</span> label<span class="op">,</span> deleteButton)<span class="op">;</span></span>
+<span id="cb40-56"><a href="#cb40-56" aria-hidden="true" tabindex="-1"></a>    list<span class="op">.</span><span class="fu">append</span>(item)<span class="op">;</span></span>
+<span id="cb40-57"><a href="#cb40-57" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb40-58"><a href="#cb40-58" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>This version deliberately separates “change state” from “render the
+interface.” As an application grows, that one-way flow is easier to
+reason about than unrelated DOM mutations scattered throughout the
+code.</p>
+<h1 id="code-quality-performance-and-security">14. Code quality,
+performance, and security</h1>
+<h2 id="reliability-checklist">14.1 Reliability checklist</h2>
+<ul>
+<li>Use meaningful names instead of <code>x1</code> and
+<code>data2</code>.</li>
+<li>Default to <code>const</code>; use <code>let</code> for real
+reassignment.</li>
+<li>Validate external inputs and fail early at boundaries.</li>
+<li>Keep functions focused on one clear responsibility.</li>
+<li>Use ESLint to find likely errors and Prettier for consistent
+formatting.</li>
+<li>Automate tests for important behavior instead of relying only on
+manual clicks.</li>
+<li>Write comments that explain <em>why</em>, not a line-by-line
+translation of <em>what</em>.</li>
+</ul>
+<h2 id="performance-principles">14.2 Performance principles</h2>
+<ul>
+<li>Measure before optimizing; use the Performance panel to locate
+bottlenecks.</li>
+<li>Avoid repeatedly forcing layout inside loops; batch DOM
+updates.</li>
+<li>Debounce or throttle scroll, resize, and live-search handlers.</li>
+<li>Load images and non-critical modules only when needed.</li>
+<li>Use pagination, virtualization, or a <code>DocumentFragment</code>
+for very large lists.</li>
+</ul>
+<div class="sourceCode" id="cb41"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">debounce</span>(fn<span class="op">,</span> delay <span class="op">=</span> <span class="dv">250</span>) {</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> timerId<span class="op">;</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (<span class="op">...</span>args) <span class="kw">=&gt;</span> {</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">clearTimeout</span>(timerId)<span class="op">;</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    timerId <span class="op">=</span> <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> <span class="fu">fn</span>(<span class="op">...</span>args)<span class="op">,</span> delay)<span class="op">;</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> search <span class="op">=</span> <span class="fu">debounce</span>(query <span class="kw">=&gt;</span> {</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Search:&quot;</span><span class="op">,</span> query)<span class="op">;</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="security-baseline">14.3 Security baseline</h2>
+<ul>
+<li>Never put private API keys or database passwords in front-end
+JavaScript. Everyone can download browser code.</li>
+<li>Never concatenate user input into <code>innerHTML</code>,
+<code>eval</code>, or <code>new Function</code>.</li>
+<li>Keep dependencies updated and review security advisories.</li>
+<li>Enforce authorization and validation on the server. Client checks
+are a usability feature, not a security boundary.</li>
+<li>Use HTTPS, a Content Security Policy (CSP), and secure cookie
+attributes.</li>
+</ul>
+<h1 id="built-in-javascript-playground">15. Built-in JavaScript
+playground</h1>
+<p>Edit the code and click Run. The playground captures
+<code>console.log</code> output. Use it only for examples you
+understand; do not paste untrusted code.</p>
+<div class="demo">
+<textarea id="playground-code" spellcheck="false" aria-label="JavaScript code">const numbers = [3, 7, 12, 18];
+const doubled = numbers.map(number =&gt; number * 2);
+const large = doubled.filter(number =&gt; number &gt; 20);
+
+console.log(&quot;Doubled:&quot;, doubled);
+console.log(&quot;Above 20:&quot;, large);</textarea>
+<div class="toolbar">
+<p><button id="playground-run" type="button">Run code</button>
+<button id="playground-clear" class="secondary" type="button">Clear
+output</button></p>
+</div>
+<div id="playground-output" class="output" aria-live="polite">
+Output appears here
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: array aggregation
+</summary>
+Find the sum of all even numbers in <code>[12, 5, 8, 21, 3]</code>.
+Hint: <code>filter</code> first, then <code>reduce</code>. The answer is
+<code>20</code>.
+</details>
+<details>
+<summary>
+Exercise 2: object transformation
+</summary>
+Convert an array of users into an object keyed by <code>id</code>. Try
+<code>reduce</code> and aim for a shape such as
+<code>{ 1: {…}, 2: {…} }</code>.
+</details>
+<details>
+<summary>
+Exercise 3: DOM and events
+</summary>
+Create a button that adds a safely constructed <code>&lt;li&gt;</code>
+to a <code>&lt;ul&gt;</code> on each click and displays the current item
+count.
+</details>
+<h1 id="learning-path-and-checklist">16. Learning path and
+checklist</h1>
+<div class="checkpoint">
+<p>Work through these in order. Checklist progress is saved in the
+current browser.</p>
+<div id="learning-checklist" class="checklist">
+<p><label><input type="checkbox" value="run"> I can run JavaScript in
+the console and an HTML file</label>
+<label><input type="checkbox" value="types"> I understand variables,
+types, and strict equality</label>
+<label><input type="checkbox" value="flow"> I can use conditions, loops,
+and functions</label> <label><input type="checkbox" value="data"> I can
+organize data with array methods and objects</label>
+<label><input type="checkbox" value="dom"> I can query and update the
+DOM safely</label> <label><input type="checkbox" value="events"> I can
+handle click and form events</label>
+<label><input type="checkbox" value="async"> I can use Promises, fetch,
+and async/await</label> <label><input type="checkbox" value="modules"> I
+can split and import ES modules</label>
+<label><input type="checkbox" value="project"> I have completed a small
+project of my own</label></p>
+</div>
+<p><strong id="checklist-summary">Completed 0 / 9</strong></p>
+</div>
+<p>A practical exercise order:</p>
+<ol type="1">
+<li>Retype each small example in this guide instead of only copying
+it.</li>
+<li>Build a counter, guessing game, and expense calculator.</li>
+<li>Build a todo list or budget tracker that uses
+<code>localStorage</code>.</li>
+<li>Call a public API and design loading, success, empty, and failure
+states.</li>
+<li>Learn Git, npm, testing, and a build tool, then choose a
+framework.</li>
+</ol>
+<div class="callout success">
+<p><strong>The most useful next step:</strong> choose a small tool you
+would genuinely use and finish it within a week. When something breaks,
+inspect actual values with developer tools instead of guessing.</p>
+</div>
+<h1 id="quick-reference">17. Quick reference</h1>
+<div class="sourceCode" id="cb42"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Variables and output</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> name <span class="op">=</span> <span class="st">&quot;Kai&quot;</span><span class="op">;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(name<span class="op">,</span> count)<span class="op">;</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Arrays</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>items<span class="op">.</span><span class="fu">map</span>(item <span class="kw">=&gt;</span> item<span class="op">.</span><span class="at">name</span>)<span class="op">;</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>items<span class="op">.</span><span class="fu">filter</span>(item <span class="kw">=&gt;</span> item<span class="op">.</span><span class="at">active</span>)<span class="op">;</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>items<span class="op">.</span><span class="fu">find</span>(item <span class="kw">=&gt;</span> item<span class="op">.</span><span class="at">id</span> <span class="op">===</span> targetId)<span class="op">;</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Objects</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> copy <span class="op">=</span> { <span class="op">...</span>original<span class="op">,</span> <span class="dt">changed</span><span class="op">:</span> <span class="kw">true</span> }<span class="op">;</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { id<span class="op">,</span> title } <span class="op">=</span> copy<span class="op">;</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="co">// DOM and events</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> element <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&quot;#id&quot;</span>)<span class="op">;</span></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>element<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">&quot;Safe text&quot;</span><span class="op">;</span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>element<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&quot;click&quot;</span><span class="op">,</span> handleClick)<span class="op">;</span></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a><span class="co">// Async</span></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(url)<span class="op">;</span></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>response<span class="op">.</span><span class="at">ok</span>) <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="vs">`HTTP </span><span class="sc">${</span>response<span class="op">.</span><span class="at">status</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> data <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a><span class="co">// Errors</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> {</span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">riskyOperation</span>()<span class="op">;</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>} <span class="cf">catch</span> (error) {</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(error)<span class="op">;</span></span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<p>Every interaction in this tutorial uses native JavaScript with no
+framework. Learn these foundations first and every framework will make
+more sense.</p>
+<script>
+(() => {
+  "use strict";
+
+  const byId = id => document.getElementById(id);
+  const safeRead = (key, fallback) => {
+    try {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : JSON.parse(value);
+    } catch {
+      return fallback;
+    }
+  };
+  const safeWrite = (key, value) => {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage may be unavailable */ }
+  };
+
+  // MooseWeb3 reader shell, matching the Python_Notes tutorial pages.
+  const body = document.body;
+  const layoutScript = document.currentScript;
+  const toc = byId("TOC");
+  const hero = document.querySelector(".hero");
+  if (body && layoutScript && hero && !document.querySelector(".mw3-topbar")) {
+    const skip = document.createElement("a");
+    skip.className = "mw3-skip";
+    skip.href = "#mw3-content";
+    skip.textContent = "Skip to content";
+
+    const topbar = document.createElement("header");
+    topbar.className = "mw3-topbar";
+    topbar.innerHTML = `<a class="mw3-brand" href="#" aria-label="Top of the MooseWeb3 JavaScript guide"><span class="mw3-logo" aria-hidden="true">MW3</span><span>MooseWeb3</span><span class="mw3-sub">JAVASCRIPT GUIDE</span></a><span class="mw3-spacer"></span><nav class="mw3-langs" aria-label="Language"><a href="javascript_guide_zh.html">中文</a><a href="javascript_guide_en.html" aria-current="page">EN</a></nav><button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">Contents</button>`;
+    body.prepend(skip, topbar);
+
+    const content = document.createElement("main");
+    content.id = "mw3-content";
+    content.tabIndex = -1;
+    let node = hero.nextSibling;
+    while (node && node !== layoutScript) {
+      const next = node.nextSibling;
+      content.appendChild(node);
+      node = next;
+    }
+    body.insertBefore(content, layoutScript);
+
+    document.querySelectorAll("pre").forEach(pre => {
+      let shell = pre.parentElement;
+      if (!shell || !shell.classList.contains("sourceCode")) {
+        shell = document.createElement("div");
+        pre.parentNode.insertBefore(shell, pre);
+        shell.appendChild(pre);
+      }
+      shell.classList.add("mw3-code-shell");
+      const copyButton = document.createElement("button");
+      copyButton.className = "mw3-copy";
+      copyButton.type = "button";
+      copyButton.textContent = "Copy";
+      copyButton.setAttribute("aria-label", "Copy code");
+      copyButton.addEventListener("click", async () => {
+        try {
+          const code = pre.innerText;
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(code);
+          } else {
+            const helper = document.createElement("textarea");
+            helper.value = code;
+            helper.style.cssText = "position:fixed;opacity:0";
+            body.appendChild(helper);
+            helper.select();
+            document.execCommand("copy");
+            helper.remove();
+          }
+          copyButton.textContent = "Copied";
+          setTimeout(() => { copyButton.textContent = "Copy"; }, 1400);
+        } catch {
+          copyButton.textContent = "Copy failed";
+        }
+      });
+      shell.appendChild(copyButton);
+    });
+
+    const topButton = document.createElement("button");
+    topButton.className = "mw3-top";
+    topButton.type = "button";
+    topButton.textContent = "↑";
+    topButton.setAttribute("aria-label", "Back to top");
+    topButton.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    body.appendChild(topButton);
+
+    const menu = topbar.querySelector(".mw3-menu");
+    if (menu && toc) {
+      menu.addEventListener("click", () => {
+        const open = body.classList.toggle("mw3-toc-open");
+        menu.setAttribute("aria-expanded", String(open));
+      });
+      toc.addEventListener("click", event => {
+        if (event.target.closest("a")) {
+          body.classList.remove("mw3-toc-open");
+          menu.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          body.classList.remove("mw3-toc-open");
+          menu.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+  }
+
+  // Theme and page utilities
+  const savedTheme = safeRead("js-guide-en-theme", "light");
+  document.body.classList.toggle("dark", savedTheme === "dark");
+  byId("theme-toggle")?.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    safeWrite("js-guide-en-theme", document.body.classList.contains("dark") ? "dark" : "light");
+  });
+  byId("print-page")?.addEventListener("click", () => window.print());
+
+  const updateReadingProgress = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 100;
+    const bar = byId("reading-progress");
+    if (bar) bar.style.width = `${Math.min(100, Math.max(0, percent))}%`;
+    document.querySelector(".mw3-top")?.classList.toggle("is-visible", window.scrollY > 560);
+  };
+  window.addEventListener("scroll", updateReadingProgress, { passive: true });
+  updateReadingProgress();
+
+  // Counter demo
+  let count = 0;
+  const renderCount = () => { if (byId("counter-value")) byId("counter-value").textContent = String(count); };
+  byId("counter-minus")?.addEventListener("click", () => { count -= 1; renderCount(); });
+  byId("counter-plus")?.addEventListener("click", () => { count += 1; renderCount(); });
+  byId("counter-reset")?.addEventListener("click", () => { count = 0; renderCount(); });
+
+  // Async demo
+  byId("async-demo")?.addEventListener("click", async event => {
+    const output = byId("async-output");
+    const button = event.currentTarget;
+    button.disabled = true;
+    output.textContent = "Loading…";
+    try {
+      await new Promise(resolve => setTimeout(resolve, 900));
+      output.textContent = `Success at ${new Date().toLocaleTimeString("en-CA")}: received 3 simulated records.`;
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  // Todo demo
+  const todoKey = "js-guide-en-tasks";
+  let tasks = safeRead(todoKey, []);
+  if (!Array.isArray(tasks)) tasks = [];
+  const saveTasks = () => safeWrite(todoKey, tasks);
+  const renderTasks = () => {
+    const list = byId("todo-list");
+    if (!list) return;
+    list.replaceChildren();
+    for (const task of tasks) {
+      const item = document.createElement("li");
+      item.classList.toggle("done", Boolean(task.done));
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = Boolean(task.done);
+      checkbox.dataset.toggleId = task.id;
+      checkbox.setAttribute("aria-label", `Toggle task: ${task.text}`);
+
+      const label = document.createElement("span");
+      label.textContent = task.text;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "delete";
+      deleteButton.textContent = "Delete";
+      deleteButton.dataset.deleteId = task.id;
+
+      item.append(checkbox, label, deleteButton);
+      list.append(item);
+    }
+    const remaining = tasks.filter(task => !task.done).length;
+    byId("todo-summary").textContent = `${tasks.length} task(s), ${remaining} remaining`;
+  };
+  const addTask = () => {
+    const input = byId("todo-input");
+    const text = input.value.trim();
+    if (!text) { input.focus(); return; }
+    tasks.push({ id: globalThis.crypto?.randomUUID?.() ?? String(Date.now()), text, done: false });
+    input.value = "";
+    saveTasks();
+    renderTasks();
+    input.focus();
+  };
+  byId("todo-add")?.addEventListener("click", addTask);
+  byId("todo-input")?.addEventListener("keydown", event => { if (event.key === "Enter") addTask(); });
+  byId("todo-list")?.addEventListener("change", event => {
+    const id = event.target.dataset.toggleId;
+    if (!id) return;
+    tasks = tasks.map(task => task.id === id ? { ...task, done: event.target.checked } : task);
+    saveTasks();
+    renderTasks();
+  });
+  byId("todo-list")?.addEventListener("click", event => {
+    const button = event.target.closest("[data-delete-id]");
+    if (!button) return;
+    tasks = tasks.filter(task => task.id !== button.dataset.deleteId);
+    saveTasks();
+    renderTasks();
+  });
+  renderTasks();
+
+  // Learning checklist
+  const checklistKey = "js-guide-en-checklist";
+  const checklist = byId("learning-checklist");
+  const completed = new Set(safeRead(checklistKey, []));
+  const updateChecklist = () => {
+    const checked = [...checklist.querySelectorAll("input:checked")].map(input => input.value);
+    byId("checklist-summary").textContent = `Completed ${checked.length} / ${checklist.querySelectorAll("input").length}`;
+    safeWrite(checklistKey, checked);
+  };
+  checklist?.querySelectorAll("input").forEach(input => {
+    input.checked = completed.has(input.value);
+    input.addEventListener("change", updateChecklist);
+  });
+  if (checklist) updateChecklist();
+  byId("reset-progress")?.addEventListener("click", () => {
+    checklist?.querySelectorAll("input").forEach(input => { input.checked = false; });
+    updateChecklist();
+  });
+
+  // Playground. This deliberately executes local learner input for the interactive tutorial.
+  const formatValue = value => {
+    if (typeof value === "string") return value;
+    try { return JSON.stringify(value, null, 2); } catch { return String(value); }
+  };
+  byId("playground-run")?.addEventListener("click", () => {
+    const output = byId("playground-output");
+    const lines = [];
+    const tutorialConsole = {
+      log: (...values) => lines.push(values.map(formatValue).join(" ")),
+      warn: (...values) => lines.push(`Warning: ${values.map(formatValue).join(" ")}`),
+      error: (...values) => lines.push(`Error: ${values.map(formatValue).join(" ")}`)
+    };
+    try {
+      Function("console", `"use strict";\n${byId("playground-code").value}`)(tutorialConsole);
+      output.textContent = lines.length ? lines.join("\n") : "Code ran with no console output.";
+    } catch (error) {
+      output.textContent = `${error.name}: ${error.message}`;
+    }
+  });
+  byId("playground-clear")?.addEventListener("click", () => {
+    byId("playground-output").textContent = "Output cleared";
+  });
+})();
+</script>
+<script>document.querySelectorAll('a[href$="_zh.html"]').forEach(link => link.remove());</script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

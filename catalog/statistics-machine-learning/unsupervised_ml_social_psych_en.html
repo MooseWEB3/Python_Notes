@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · This tutorial is a set of personal learning and practice notes." />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>MooseWeb3 | Unsupervised Machine Learning for Sociology and Psychology</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MooseWeb3 | Unsupervised Machine Learning for
+Sociology and Psychology</h1>
+<p class="author">MooseWeb3 · This tutorial is a set of personal
+learning and practice notes.</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#how-to-use-this-tutorial" id="toc-how-to-use-this-tutorial">How to Use This Tutorial</a>
+<ul>
+<li><a href="#learning-goals" id="toc-learning-goals">Learning
+Goals</a></li>
+</ul></li>
+<li><a href="#what-counts-as-unsupervised-learning" id="toc-what-counts-as-unsupervised-learning">1. What Counts as
+Unsupervised Learning?</a>
+<ul>
+<li><a href="#sociology-applications" id="toc-sociology-applications">1.1 Sociology Applications</a></li>
+<li><a href="#psychology-applications" id="toc-psychology-applications">1.2 Psychology Applications</a></li>
+<li><a href="#what-it-cannot-establish" id="toc-what-it-cannot-establish">1.3 What It Cannot Establish</a></li>
+</ul></li>
+<li><a href="#research-design-before-algorithms" id="toc-research-design-before-algorithms">2. Research Design Before
+Algorithms</a>
+<ul>
+<li><a href="#define-the-unit-construct-and-intended-use" id="toc-define-the-unit-construct-and-intended-use">2.1 Define the Unit,
+Construct, and Intended Use</a></li>
+<li><a href="#avoid-leakage-from-future-interpretations" id="toc-avoid-leakage-from-future-interpretations">2.2 Avoid Leakage
+From Future Interpretations</a></li>
+<li><a href="#weights-complex-samples-and-dependence" id="toc-weights-complex-samples-and-dependence">2.3 Weights, Complex
+Samples, and Dependence</a></li>
+</ul></li>
+<li><a href="#a-reusable-simulated-study" id="toc-a-reusable-simulated-study">3. A Reusable Simulated Study</a>
+<ul>
+<li><a href="#recommended-setup" id="toc-recommended-setup">3.1
+Recommended Setup</a></li>
+<li><a href="#r-data" id="toc-r-data">3.2 R Data</a></li>
+<li><a href="#python-data" id="toc-python-data">3.3 Python Data</a></li>
+</ul></li>
+<li><a href="#data-preparation-is-part-of-the-model" id="toc-data-preparation-is-part-of-the-model">4. Data Preparation Is
+Part of the Model</a>
+<ul>
+<li><a href="#choose-features-from-theory" id="toc-choose-features-from-theory">4.1 Choose Features From
+Theory</a></li>
+<li><a href="#scale-continuous-features" id="toc-scale-continuous-features">4.2 Scale Continuous
+Features</a></li>
+<li><a href="#missing-data" id="toc-missing-data">4.3 Missing
+Data</a></li>
+<li><a href="#mixed-data-and-gower-distance" id="toc-mixed-data-and-gower-distance">4.4 Mixed Data and Gower
+Distance</a></li>
+</ul></li>
+<li><a href="#k-means-exploratory-social-profiles" id="toc-k-means-exploratory-social-profiles">5. k-Means: Exploratory
+Social Profiles</a>
+<ul>
+<li><a href="#fit-several-values-of-k-in-r" id="toc-fit-several-values-of-k-in-r">5.1 Fit Several Values of k in
+R</a></li>
+<li><a href="#python-equivalent" id="toc-python-equivalent">5.2 Python
+Equivalent</a></li>
+<li><a href="#interpret-profiles-not-cluster-numbers" id="toc-interpret-profiles-not-cluster-numbers">5.3 Interpret Profiles,
+Not Cluster Numbers</a></li>
+</ul></li>
+<li><a href="#hierarchical-clustering-nested-similarities" id="toc-hierarchical-clustering-nested-similarities">6. Hierarchical
+Clustering: Nested Similarities</a>
+<ul>
+<li><a href="#r-with-ward-linkage" id="toc-r-with-ward-linkage">6.1 R
+With Ward Linkage</a></li>
+<li><a href="#python-with-a-dendrogram" id="toc-python-with-a-dendrogram">6.2 Python With a Dendrogram</a></li>
+</ul></li>
+<li><a href="#gaussian-mixtures-and-latent-profiles" id="toc-gaussian-mixtures-and-latent-profiles">7. Gaussian Mixtures and
+Latent Profiles</a>
+<ul>
+<li><a href="#r-with-mclust" id="toc-r-with-mclust">7.1 R With
+<code>mclust</code></a></li>
+<li><a href="#python-with-gaussianmixture" id="toc-python-with-gaussianmixture">7.2 Python With
+<code>GaussianMixture</code></a></li>
+</ul></li>
+<li><a href="#pca-summarizing-correlated-indicators" id="toc-pca-summarizing-correlated-indicators">8. PCA: Summarizing
+Correlated Indicators</a>
+<ul>
+<li><a href="#r-pca" id="toc-r-pca">8.1 R PCA</a></li>
+<li><a href="#python-pca" id="toc-python-pca">8.2 Python PCA</a></li>
+</ul></li>
+<li><a href="#exploratory-factor-analysis-for-psychological-constructs" id="toc-exploratory-factor-analysis-for-psychological-constructs">9.
+Exploratory Factor Analysis for Psychological Constructs</a>
+<ul>
+<li><a href="#simulate-eight-items-in-r" id="toc-simulate-eight-items-in-r">9.1 Simulate Eight Items in
+R</a></li>
+<li><a href="#python-factor-analysis" id="toc-python-factor-analysis">9.2 Python Factor Analysis</a></li>
+</ul></li>
+<li><a href="#mds-t-sne-and-umap-for-visualization" id="toc-mds-t-sne-and-umap-for-visualization">10. MDS, t-SNE, and UMAP
+for Visualization</a></li>
+<li><a href="#topic-models-for-interviews-and-open-responses" id="toc-topic-models-for-interviews-and-open-responses">11. Topic Models
+for Interviews and Open Responses</a>
+<ul>
+<li><a href="#r-lda-workflow" id="toc-r-lda-workflow">11.1 R LDA
+Workflow</a></li>
+<li><a href="#python-lda-workflow" id="toc-python-lda-workflow">11.2
+Python LDA Workflow</a></li>
+</ul></li>
+<li><a href="#community-detection-in-social-networks" id="toc-community-detection-in-social-networks">12. Community Detection
+in Social Networks</a>
+<ul>
+<li><a href="#r-with-igraph" id="toc-r-with-igraph">12.1 R With
+<code>igraph</code></a></li>
+<li><a href="#python-with-networkx" id="toc-python-with-networkx">12.2
+Python With <code>networkx</code></a></li>
+</ul></li>
+<li><a href="#detecting-unusual-responses-without-labeling-people" id="toc-detecting-unusual-responses-without-labeling-people">13.
+Detecting Unusual Responses Without Labeling People</a>
+<ul>
+<li><a href="#robust-distance-review-in-r" id="toc-robust-distance-review-in-r">13.1 Robust-Distance Review in
+R</a></li>
+<li><a href="#isolation-forest-in-python" id="toc-isolation-forest-in-python">13.2 Isolation Forest in
+Python</a></li>
+</ul></li>
+<li><a href="#validation-the-essential-step" id="toc-validation-the-essential-step">14. Validation: The Essential
+Step</a>
+<ul>
+<li><a href="#internal-separation" id="toc-internal-separation">14.1
+Internal Separation</a></li>
+<li><a href="#stability-across-resamples" id="toc-stability-across-resamples">14.2 Stability Across
+Resamples</a></li>
+<li><a href="#external-and-interpretive-validation" id="toc-external-and-interpretive-validation">14.3 External and
+Interpretive Validation</a></li>
+<li><a href="#sensitivity-grid" id="toc-sensitivity-grid">14.4
+Sensitivity Grid</a></li>
+</ul></li>
+<li><a href="#end-to-end-case-youth-well-being-profiles" id="toc-end-to-end-case-youth-well-being-profiles">15. End-to-End Case:
+Youth Well-Being Profiles</a>
+<ul>
+<li><a href="#research-question" id="toc-research-question">15.1
+Research Question</a></li>
+<li><a href="#analysis-plan" id="toc-analysis-plan">15.2 Analysis
+Plan</a></li>
+<li><a href="#profile-table-and-external-description" id="toc-profile-table-and-external-description">15.3 Profile Table and
+External Description</a></li>
+<li><a href="#responsible-conclusion-template" id="toc-responsible-conclusion-template">15.4 Responsible Conclusion
+Template</a></li>
+</ul></li>
+<li><a href="#method-selection-guide" id="toc-method-selection-guide">16. Method Selection Guide</a></li>
+<li><a href="#reporting-checklist" id="toc-reporting-checklist">17.
+Reporting Checklist</a></li>
+<li><a href="#practice-exercises" id="toc-practice-exercises">18.
+Practice Exercises</a></li>
+</ul>
+</nav>
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--ink:#172033;--muted:#667085;--line:#dfe7f1;--navy:#0a1020;--primary:#6d5dfc;--primary-dark:#5144d8;--cyan:#19c3d2;--green:#20a36a;--amber:#f2a93b;--code:#0d1424;--shadow:0 18px 55px rgba(31,43,71,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}
+body{max-width:none;margin:0;padding:0 24px 72px;color:var(--ink);background:radial-gradient(circle at 86% 5%,rgba(109,93,252,.11),transparent 25rem),radial-gradient(circle at 10% 20%,rgba(25,195,210,.08),transparent 22rem),var(--bg);font:17px/1.78 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary-dark);text-underline-offset:3px}::selection{color:#fff;background:var(--primary)}
+.mw3-progress{position:fixed;z-index:1200;inset:0 auto auto 0;width:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--primary))}.mw3-topbar{position:fixed;z-index:1100;inset:0 0 auto;height:72px;display:flex;align-items:center;gap:20px;padding:0 max(24px,calc((100vw - 1420px)/2));color:#fff;background:rgba(10,16,32,.95);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 8px 30px rgba(10,16,32,.18);backdrop-filter:blur(16px)}
+.mw3-brand{display:inline-flex;flex-shrink:0;align-items:center;gap:10px;color:#fff;font-weight:850;font-size:19px;text-decoration:none}.mw3-brand:hover{color:#fff}.mw3-logo{display:grid;place-items:center;width:38px;height:38px;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--primary));border-radius:11px;font-size:12px;box-shadow:0 7px 20px rgba(109,93,252,.36)}.mw3-sub{color:#9faac0;font-size:11px;font-weight:750;letter-spacing:.13em}.mw3-spacer{flex:1}.mw3-langs{display:flex;flex-shrink:0;gap:5px}.mw3-langs a{padding:7px 11px;color:#b9c3d6;border-radius:9px;font-size:14px;font-weight:750;text-decoration:none}.mw3-langs a:hover,.mw3-langs a[aria-current="page"]{color:#fff;background:rgba(255,255,255,.11)}.mw3-menu{display:none;padding:8px 11px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:9px;cursor:pointer}.mw3-skip{position:fixed;z-index:1300;top:8px;left:12px;padding:8px 12px;color:#fff;background:var(--primary);border-radius:8px;transform:translateY(-160%)}.mw3-skip:focus{transform:translateY(0)}
+#title-block-header{max-width:940px;margin:112px auto 30px;padding:clamp(30px,5vw,54px);color:#fff;text-align:left;background:linear-gradient(125deg,rgba(109,93,252,.97),rgba(36,61,118,.98));border-radius:26px;border:1px solid rgba(255,255,255,.15);box-shadow:0 24px 70px rgba(39,47,100,.22)}#title-block-header::before{content:"MOOSEWEB3 · UNSUPERVISED LEARNING";display:inline-block;margin-bottom:16px;padding:7px 11px;color:#dffcff;background:rgba(9,18,45,.2);border:1px solid rgba(255,255,255,.2);border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.12em}#title-block-header .title{margin:0 0 14px;color:#fff;font-size:clamp(32px,5vw,50px);line-height:1.14;letter-spacing:-.035em}#title-block-header .author,#title-block-header .date{margin:4px 0 0;color:#dce4ff}
+#TOC{position:fixed;z-index:900;top:96px;left:max(18px,calc(50vw - 607px));width:245px;max-height:calc(100vh - 122px);padding:18px 15px 20px;overflow-y:auto;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(31,43,71,.08);backdrop-filter:blur(12px);scrollbar-width:thin}#TOC ul{margin:0;padding:0;list-style:none}#TOC ul ul{margin:5px 0 7px 9px;padding-left:10px;border-left:1px solid #e4e9f2}#TOC a{display:block;padding:5px 7px;color:#59647a;border-radius:7px;font-size:13px;line-height:1.35;text-decoration:none}#TOC>ul>li>a{color:#28344e;font-weight:750}#TOC a:hover{color:var(--primary-dark);background:#f0efff}
+#mw3-content{max-width:940px;margin:0 auto;padding:18px clamp(24px,4vw,58px) 64px;background:var(--surface);border:1px solid rgba(223,231,241,.9);border-radius:24px;box-shadow:var(--shadow)}h1,h2,h3{color:#17254a;scroll-margin-top:92px}h1{margin:3.1rem 0 1.15rem;padding-bottom:.65rem;border-bottom:1px solid var(--line);font-size:clamp(27px,3vw,36px);line-height:1.3;letter-spacing:-.025em}#mw3-content>h1:first-of-type{margin-top:1.4rem}h2{margin:2.25rem 0 .75rem;font-size:24px}h3{margin:1.8rem 0 .6rem;font-size:20px}p,li{color:#344054}
+code{padding:.12em .36em;color:#5b3fd0;background:#f0efff;border-radius:5px;font:.9em "Cascadia Code","SFMono-Regular",Consolas,monospace}.mw3-code-shell{position:relative;margin:1.15rem 0 1.5rem;background:#0d1424!important;border:1px solid #202b42;border-radius:14px;box-shadow:0 12px 28px rgba(13,20,36,.13);overflow:hidden;color:#dfe7f5!important}.mw3-code-shell pre{margin:0;padding:22px 20px;overflow-x:auto;color:#dfe7f5!important;background:transparent!important;border:0;font-size:14px;line-height:1.65}.mw3-code-shell pre code,.mw3-code-shell code,.mw3-code-shell code span{padding:0;color:#dfe7f5;background:transparent!important}.mw3-code-shell code span.kw,.mw3-code-shell code span.cf{color:#c792ea!important}.mw3-code-shell code span.fu,.mw3-code-shell code span.bu{color:#82aaff!important}.mw3-code-shell code span.st,.mw3-code-shell code span.ss{color:#c3e88d!important}.mw3-code-shell code span.dv,.mw3-code-shell code span.fl{color:#f78c6c!important}.mw3-code-shell code span.co{color:#91a0bc!important;font-style:italic}.mw3-code-shell code span.op{color:#89ddff!important}.mw3-copy{position:absolute;z-index:2;top:10px;right:10px;padding:6px 9px;color:#cbd5e7;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;font:700 12px/1.2 inherit;cursor:pointer;opacity:0}.mw3-code-shell:hover .mw3-copy,.mw3-copy:focus{opacity:1}
+table{width:100%;margin:1.25rem 0 1.7rem;border-spacing:0;border-collapse:separate;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}thead{color:#263553;background:#f2f5fa}th,td{padding:.68rem .82rem;border:0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}table code{white-space:nowrap}blockquote,.note,.warning,.success{margin:1.35rem 0;padding:1rem 1.15rem;border-radius:10px}blockquote,.note{background:linear-gradient(90deg,#edfaff,#f7fbff);border:1px solid #cbeef4;border-left:5px solid var(--cyan)}.warning{background:#fff8eb;border:1px solid #f4dfb1;border-left:5px solid var(--amber)}.success{background:#effaf5;border:1px solid #cbeedc;border-left:5px solid var(--green)}.formula{padding:.9rem 1rem;overflow-x:auto;color:#273454;background:#f7f8fc;border:1px solid var(--line);border-radius:10px;text-align:center}.steps{counter-reset:step;list-style:none;padding-left:0}.steps>li{position:relative;margin:.8rem 0;padding:.8rem 1rem .8rem 3.4rem;background:#fafbff;border:1px solid var(--line);border-radius:10px}.steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:1rem;top:.75rem;display:grid;place-items:center;width:1.7rem;height:1.7rem;color:#fff;background:var(--primary);border-radius:50%;font-weight:800}
+.mw3-top{position:fixed;z-index:950;right:24px;bottom:24px;width:44px;height:44px;color:#fff;background:var(--navy);border:0;border-radius:13px;box-shadow:0 10px 28px rgba(10,16,32,.24);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.mw3-top.is-visible{opacity:1;transform:translateY(0);pointer-events:auto}button:focus-visible,a:focus-visible{outline:3px solid rgba(25,195,210,.75);outline-offset:3px}@media(min-width:1241px){#title-block-header,#mw3-content{margin-left:max(291px,calc(50vw - 334px));margin-right:0}}@media(max-width:1240px){#TOC{top:82px;left:14px;width:min(310px,calc(100vw - 28px));max-height:calc(100vh - 96px);transform:translateX(-120%);transition:transform .24s ease}body.mw3-toc-open #TOC{transform:translateX(0)}.mw3-menu{display:inline-flex}}@media(max-width:700px){body{padding:0 12px 48px;font-size:16px}.mw3-topbar{height:64px;padding:0 14px;gap:9px}.mw3-logo{width:34px;height:34px}.mw3-sub{display:none}.mw3-langs a{padding:6px 8px;font-size:13px}#title-block-header{margin:88px 0 18px;padding:27px 23px;border-radius:20px}#title-block-header .title{font-size:30px}#mw3-content{padding:14px 20px 46px;border-radius:18px}h1{font-size:27px}h2{font-size:22px}table{display:block;overflow-x:auto;white-space:nowrap}.mw3-copy{opacity:1}}@media print{body{padding:0;background:#fff}.mw3-topbar,.mw3-progress,.mw3-top,#TOC,.mw3-copy{display:none!important}#title-block-header,#mw3-content{max-width:none;margin:0;box-shadow:none}#mw3-content{border:0}}
+</style>
+<h1 id="how-to-use-this-tutorial">How to Use This Tutorial</h1>
+<p>Unsupervised machine learning searches for structure without a
+pre-labeled outcome. In sociology and psychology, it can help
+researchers explore social types, response profiles, latent dimensions,
+themes in text, network communities, and unusual cases. It does
+<strong>not</strong> automatically discover natural or causal
+categories.</p>
+<p>This tutorial combines conceptual guidance with parallel R and Python
+examples. The data are simulated, the code is displayed rather than
+executed during HTML generation, and every substantive result still
+requires theory, measurement knowledge, robustness checks, and ethical
+review.</p>
+<blockquote>
+<p>Treat unsupervised results as proposals for interpretation. A cluster
+number is an algorithmic assignment, not a diagnosis, identity, or
+intrinsic social group.</p>
+</blockquote>
+<h2 id="learning-goals">Learning Goals</h2>
+<p>You will learn to:</p>
+<ul>
+<li>Match an unsupervised method to a sociological or psychological
+question;</li>
+<li>Prepare survey, scale, text, mixed-type, and network data
+responsibly;</li>
+<li>Use k-means, hierarchical clustering, Gaussian mixtures, PCA,
+exploratory factor analysis, MDS, topic models, community detection, and
+anomaly detection;</li>
+<li>Evaluate stability, separation, sensitivity, and external meaning
+without turning an exploratory analysis into a confirmatory claim;</li>
+<li>Report uncertainty, researcher choices, subgroup risks, and ethical
+limitations.</li>
+</ul>
+<div class="warning">
+<p>These methods can create labels that affect real people. Do not use
+exploratory clusters to make clinical, employment, educational,
+policing, immigration, or benefit decisions without appropriate
+validation, governance, human review, and legal/ethical safeguards.</p>
+</div>
+<h1 id="what-counts-as-unsupervised-learning">1. What Counts as
+Unsupervised Learning?</h1>
+<p>Supervised learning predicts a known target such as depression
+diagnosis or voting intention. Unsupervised learning instead asks
+whether the measurements themselves contain useful organization.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Task</th>
+<th>Unit being organized</th>
+<th>Example question</th>
+<th>Common methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Case clustering</td>
+<td>People, households, schools, neighborhoods</td>
+<td>Are there distinct patterns of civic participation and
+isolation?</td>
+<td>k-means, hierarchical, mixture models</td>
+</tr>
+<tr>
+<td>Variable reduction</td>
+<td>Survey items or indicators</td>
+<td>Can 18 attitude items be summarized by fewer dimensions?</td>
+<td>PCA, factor analysis</td>
+</tr>
+<tr>
+<td>Text structure</td>
+<td>Documents, posts, interview excerpts</td>
+<td>What themes recur in open-ended responses?</td>
+<td>topic models, embeddings + clustering</td>
+</tr>
+<tr>
+<td>Relational structure</td>
+<td>People or organizations linked by ties</td>
+<td>Are there communities in a friendship or collaboration network?</td>
+<td>modularity, spectral methods</td>
+</tr>
+<tr>
+<td>Unusual-case detection</td>
+<td>Respondents or observations</td>
+<td>Which response patterns require data-quality review?</td>
+<td>robust distance, isolation forest</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sociology-applications">1.1 Sociology Applications</h2>
+<ul>
+<li>Construct exploratory lifestyle, class-position,
+civic-participation, migration, or neighborhood profiles;</li>
+<li>Compare welfare attitudes without assuming a single left-right
+axis;</li>
+<li>Discover themes in interviews, policy documents, parliamentary
+speeches, or social-media corpora;</li>
+<li>Detect communities and brokerage positions in organizational or
+interpersonal networks;</li>
+<li>Find municipalities with unusual combinations of inequality,
+housing, and health indicators.</li>
+</ul>
+<h2 id="psychology-applications">1.2 Psychology Applications</h2>
+<ul>
+<li>Explore symptom, coping, emotion-regulation, attachment, or
+personality profiles;</li>
+<li>Examine whether many scale items reflect a smaller number of
+dimensions;</li>
+<li>Identify trajectory shapes after repeated-measure features have been
+constructed;</li>
+<li>Organize experience-sampling days or participants by behavioral
+patterns;</li>
+<li>Flag careless responses for review using completion time, long
+strings, inconsistency, and multivariate distance.</li>
+</ul>
+<h2 id="what-it-cannot-establish">1.3 What It Cannot Establish</h2>
+<p>Unsupervised learning alone cannot show that:</p>
+<ul>
+<li>A discovered cluster exists as a discrete kind in the
+population;</li>
+<li>Cluster membership causes an outcome;</li>
+<li>The chosen number of groups is uniquely correct;</li>
+<li>A visualization preserves every meaningful relationship;</li>
+<li>A latent factor is psychologically real merely because a loading is
+large;</li>
+<li>A topic label is objective rather than a researcher’s
+interpretation.</li>
+</ul>
+<h1 id="research-design-before-algorithms">2. Research Design Before
+Algorithms</h1>
+<h2 id="define-the-unit-construct-and-intended-use">2.1 Define the Unit,
+Construct, and Intended Use</h2>
+<ol class="steps">
+<li>
+<strong>Unit:</strong> Are rows people, observations within people,
+households, schools, documents, or nodes?
+</li>
+<li>
+<strong>Construct:</strong> Which concepts should the variables
+represent, and what evidence supports their measurement?
+</li>
+<li>
+<strong>Scope:</strong> Is the goal description, hypothesis generation,
+measurement development, sampling, or prediction support?
+</li>
+<li>
+<strong>Use:</strong> Who will see the labels, and could those labels
+allocate resources or stigma?
+</li>
+<li>
+<strong>Validation:</strong> What new sample, time point, qualitative
+evidence, or external variable can challenge the result?
+</li>
+</ol>
+<h2 id="avoid-leakage-from-future-interpretations">2.2 Avoid Leakage
+From Future Interpretations</h2>
+<p>Even without a target, leakage can occur. If the goal is to create
+baseline well-being profiles, do not include a future hospitalization
+variable in clustering. Keep later outcomes outside the algorithm and
+use them only for cautious external validation.</p>
+<h2 id="weights-complex-samples-and-dependence">2.3 Weights, Complex
+Samples, and Dependence</h2>
+<p>National surveys may use stratification, clusters, and unequal
+selection probabilities. Standard clustering functions usually ignore
+that design. Decide whether the analysis describes the collected sample
+or a target population; consider weighted summaries, replicate-weight
+sensitivity analyses, and multilevel structure. Repeated observations
+from the same person should not be treated as independent cases without
+first defining person-level features or using an appropriate
+longitudinal method.</p>
+<h1 id="a-reusable-simulated-study">3. A Reusable Simulated Study</h1>
+<p>We will simulate social-connectedness and psychological well-being
+measurements. The hidden profile is retained only to check the teaching
+simulation; a real unsupervised analysis would not know it.</p>
+<h2 id="recommended-setup">3.1 Recommended Setup</h2>
+<p>Base R covers many examples. Install the optional packages when you
+reach mixture, text, or network analysis:</p>
+<pre class="r-install"><code>install.packages(c(&quot;mclust&quot;, &quot;quanteda&quot;, &quot;topicmodels&quot;, &quot;igraph&quot;))</code></pre>
+<p>For Python, create an environment and install the scientific
+stack:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install numpy pandas scipy scikit-learn matplotlib networkx</span></code></pre></div>
+<p>Record package versions with <code>sessionInfo()</code> in R and
+<code>python -m pip freeze</code> in Python when producing a
+reproducible report.</p>
+<h2 id="r-data">3.2 R Data</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">731</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">360</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>profile_truth <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;connected&quot;</span>, <span class="st">&quot;strained&quot;</span>, <span class="st">&quot;withdrawn&quot;</span>), n,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">42</span>, .<span class="dv">34</span>, .<span class="dv">24</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>profile_means <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">connected =</span> <span class="fu">c</span>(<span class="at">trust =</span> <span class="fl">4.3</span>, <span class="at">participation =</span> <span class="fl">4.0</span>, <span class="at">loneliness =</span> <span class="fl">1.8</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">stress =</span> <span class="fl">2.2</span>, <span class="at">efficacy =</span> <span class="fl">4.1</span>, <span class="at">sleep =</span> <span class="fl">4.0</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">strained  =</span> <span class="fu">c</span>(<span class="at">trust =</span> <span class="fl">3.1</span>, <span class="at">participation =</span> <span class="fl">3.3</span>, <span class="at">loneliness =</span> <span class="fl">3.4</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">stress =</span> <span class="fl">4.2</span>, <span class="at">efficacy =</span> <span class="fl">3.0</span>, <span class="at">sleep =</span> <span class="fl">2.5</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">withdrawn =</span> <span class="fu">c</span>(<span class="at">trust =</span> <span class="fl">2.2</span>, <span class="at">participation =</span> <span class="fl">1.7</span>, <span class="at">loneliness =</span> <span class="fl">4.4</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">stress =</span> <span class="fl">3.5</span>, <span class="at">efficacy =</span> <span class="fl">2.3</span>, <span class="at">sleep =</span> <span class="fl">2.8</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>survey <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(<span class="fu">vapply</span>(profile_truth, <span class="cf">function</span>(g) {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pmin</span>(<span class="dv">5</span>, <span class="fu">pmax</span>(<span class="dv">1</span>, <span class="fu">rnorm</span>(<span class="dv">6</span>, profile_means[g, ], .<span class="dv">55</span>)))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>}, <span class="fu">numeric</span>(<span class="dv">6</span>))))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(survey) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(profile_means)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;P%03d&quot;</span>, <span class="fu">seq_len</span>(n))</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="dv">80</span>, <span class="fu">pmax</span>(<span class="dv">18</span>, <span class="fu">rnorm</span>(n, <span class="dv">41</span>, <span class="dv">14</span>))))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>region <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;urban&quot;</span>, <span class="st">&quot;suburban&quot;</span>, <span class="st">&quot;rural&quot;</span>), n, <span class="cn">TRUE</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                               <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">30</span>, .<span class="dv">20</span>)))</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>truth_for_simulation <span class="ot">&lt;-</span> profile_truth</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(survey)</span></code></pre></div>
+<h2 id="python-data">3.3 Python Data</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">731</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">360</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>profiles <span class="op">=</span> np.array([<span class="st">&quot;connected&quot;</span>, <span class="st">&quot;strained&quot;</span>, <span class="st">&quot;withdrawn&quot;</span>])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>truth <span class="op">=</span> rng.choice(profiles, size<span class="op">=</span>n, p<span class="op">=</span>[<span class="fl">0.42</span>, <span class="fl">0.34</span>, <span class="fl">0.24</span>])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;connected&quot;</span>: [<span class="fl">4.3</span>, <span class="fl">4.0</span>, <span class="fl">1.8</span>, <span class="fl">2.2</span>, <span class="fl">4.1</span>, <span class="fl">4.0</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;strained&quot;</span>:  [<span class="fl">3.1</span>, <span class="fl">3.3</span>, <span class="fl">3.4</span>, <span class="fl">4.2</span>, <span class="fl">3.0</span>, <span class="fl">2.5</span>],</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;withdrawn&quot;</span>: [<span class="fl">2.2</span>, <span class="fl">1.7</span>, <span class="fl">4.4</span>, <span class="fl">3.5</span>, <span class="fl">2.3</span>, <span class="fl">2.8</span>],</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">&quot;trust&quot;</span>, <span class="st">&quot;participation&quot;</span>, <span class="st">&quot;loneliness&quot;</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;stress&quot;</span>, <span class="st">&quot;efficacy&quot;</span>, <span class="st">&quot;sleep&quot;</span>]</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.vstack([rng.normal(means[group], <span class="fl">0.55</span>) <span class="cf">for</span> group <span class="kw">in</span> truth])</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.clip(X, <span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>survey <span class="op">=</span> pd.DataFrame(X, columns<span class="op">=</span>features)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;id&quot;</span>] <span class="op">=</span> [<span class="ss">f&quot;P</span><span class="sc">{</span>i<span class="sc">:03d}</span><span class="ss">&quot;</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;age&quot;</span>] <span class="op">=</span> np.clip(np.rint(rng.normal(<span class="dv">41</span>, <span class="dv">14</span>, n)), <span class="dv">18</span>, <span class="dv">80</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;region&quot;</span>] <span class="op">=</span> rng.choice([<span class="st">&quot;urban&quot;</span>, <span class="st">&quot;suburban&quot;</span>, <span class="st">&quot;rural&quot;</span>], n,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                              p<span class="op">=</span>[<span class="fl">0.50</span>, <span class="fl">0.30</span>, <span class="fl">0.20</span>])</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;truth_for_simulation&quot;</span>] <span class="op">=</span> truth</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>survey.head()</span></code></pre></div>
+<p>The two language examples generate comparable but not byte-identical
+random data. They are independent workflows, not a promise of identical
+numerical output.</p>
+<h1 id="data-preparation-is-part-of-the-model">4. Data Preparation Is
+Part of the Model</h1>
+<h2 id="choose-features-from-theory">4.1 Choose Features From
+Theory</h2>
+<p>Feature selection determines the meaning of distance. If twenty
+anxiety items and two social-support items enter clustering separately,
+anxiety dominates partly because it has more columns. Consider validated
+scale scores, domain-balanced features, or explicit feature weights.</p>
+<p>Do not include IDs. Be careful with protected attributes: excluding
+ethnicity or gender from fitting does not guarantee fairness because
+other variables may act as proxies. Keep demographic variables available
+for auditing cluster composition.</p>
+<h2 id="scale-continuous-features">4.2 Scale Continuous Features</h2>
+<p>Euclidean methods are sensitive to units. Age measured in years can
+dominate a 1-5 scale unless variables are standardized.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cluster_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;trust&quot;</span>, <span class="st">&quot;participation&quot;</span>, <span class="st">&quot;loneliness&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;stress&quot;</span>, <span class="st">&quot;efficacy&quot;</span>, <span class="st">&quot;sleep&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">scale</span>(survey[cluster_vars])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(X, <span class="st">&quot;scaled:center&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(X, <span class="st">&quot;scaled:scale&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">&quot;trust&quot;</span>, <span class="st">&quot;participation&quot;</span>, <span class="st">&quot;loneliness&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;stress&quot;</span>, <span class="st">&quot;efficacy&quot;</span>, <span class="st">&quot;sleep&quot;</span>]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> scaler.fit_transform(survey[features])</span></code></pre></div>
+<h2 id="missing-data">4.3 Missing Data</h2>
+<p>Complete-case deletion changes the population if missingness relates
+to distress, literacy, language, or access. Median imputation is
+convenient for demonstrations but understates uncertainty. In
+substantive work, examine missingness by subgroup, consider multiple
+imputation, and repeat the complete unsupervised pipeline across imputed
+datasets.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple demonstration only: median within each feature</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>median_fill <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">replace</span>(x, <span class="fu">is.na</span>(x), <span class="fu">median</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>survey[cluster_vars] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(survey[cluster_vars], median_fill)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>imputer <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>X_imputed <span class="op">=</span> imputer.fit_transform(survey[features])</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> StandardScaler().fit_transform(X_imputed)</span></code></pre></div>
+<h2 id="mixed-data-and-gower-distance">4.4 Mixed Data and Gower
+Distance</h2>
+<p>For numeric, ordinal, nominal, and binary features together, Gower
+distance is often more defensible than arbitrary dummy coding plus
+Euclidean distance.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mixed <span class="ot">&lt;-</span> survey[<span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;region&quot;</span>, <span class="st">&quot;trust&quot;</span>, <span class="st">&quot;loneliness&quot;</span>)]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>gower_distance <span class="ot">&lt;-</span> <span class="fu">daisy</span>(mixed, <span class="at">metric =</span> <span class="st">&quot;gower&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>gower_fit <span class="ot">&lt;-</span> <span class="fu">hclust</span>(gower_distance, <span class="at">method =</span> <span class="st">&quot;average&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gower_fit, <span class="at">labels =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">&quot;Gower-distance hierarchy&quot;</span>)</span></code></pre></div>
+<p>Python users can install <code>gower</code>, or implement a
+documented mixed-distance workflow. Inspect how ordinal variables and
+asymmetric binaries are encoded rather than accepting defaults
+blindly.</p>
+<h1 id="k-means-exploratory-social-profiles">5. k-Means: Exploratory
+Social Profiles</h1>
+<p>k-means divides cases into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+groups by minimizing squared Euclidean distance to cluster centroids. It
+works best for compact, roughly spherical groups on scaled numeric
+features.</p>
+<h2 id="fit-several-values-of-k-in-r">5.1 Fit Several Values of k in
+R</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">902</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>k_grid <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">7</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">lapply</span>(k_grid, <span class="cf">function</span>(k) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kmeans</span>(X, <span class="at">centers =</span> k, <span class="at">nstart =</span> <span class="dv">50</span>, <span class="at">iter.max =</span> <span class="dv">200</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>within_ss <span class="ot">&lt;-</span> <span class="fu">vapply</span>(fits, <span class="cf">function</span>(fit) fit<span class="sc">$</span>tot.withinss, <span class="fu">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(k_grid, within_ss, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Number of clusters&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Total within-cluster SS&quot;</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>chosen_r <span class="ot">&lt;-</span> fits[[<span class="fu">which</span>(k_grid <span class="sc">==</span> <span class="dv">3</span>)]]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>cluster_k3 <span class="ot">&lt;-</span> <span class="fu">factor</span>(chosen_r<span class="sc">$</span>cluster)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(survey[cluster_vars], <span class="fu">list</span>(<span class="at">cluster =</span> survey<span class="sc">$</span>cluster_k3), mean)</span></code></pre></div>
+<h2 id="python-equivalent">5.2 Python Equivalent</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>k_values <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">8</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> [KMeans(n_clusters<span class="op">=</span>k, n_init<span class="op">=</span><span class="dv">50</span>, random_state<span class="op">=</span><span class="dv">902</span>).fit(X)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>          <span class="cf">for</span> k <span class="kw">in</span> k_values]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">list</span>(k_values), [model.inertia_ <span class="cf">for</span> model <span class="kw">in</span> models], marker<span class="op">=</span><span class="st">&quot;o&quot;</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Number of clusters&quot;</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Total within-cluster sum of squares&quot;</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>model_k3 <span class="op">=</span> models[<span class="bu">list</span>(k_values).index(<span class="dv">3</span>)]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;cluster_k3&quot;</span>] <span class="op">=</span> model_k3.labels_.astype(<span class="bu">str</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(survey.groupby(<span class="st">&quot;cluster_k3&quot;</span>)[features].mean().<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div>
+<h2 id="interpret-profiles-not-cluster-numbers">5.3 Interpret Profiles,
+Not Cluster Numbers</h2>
+<p>Centroid tables matter more than labels 1, 2, and 3, whose numbering
+is arbitrary. Name a profile only after examining all defining
+variables. Use neutral descriptions such as “lower participation /
+higher loneliness,” not value-laden names such as “failed
+integrators.”</p>
+<div class="note">
+<p>k-means will return clusters even for a single continuous cloud. Its
+successful execution is not evidence that discrete social types
+exist.</p>
+</div>
+<h1 id="hierarchical-clustering-nested-similarities">6. Hierarchical
+Clustering: Nested Similarities</h1>
+<p>Hierarchical clustering is useful when researchers want a tree of
+nested similarities or have a modest sample. Agglomerative methods begin
+with individual cases and merge them step by step.</p>
+<h2 id="r-with-ward-linkage">6.1 R With Ward Linkage</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>distance_r <span class="ot">&lt;-</span> <span class="fu">dist</span>(X, <span class="at">method =</span> <span class="st">&quot;euclidean&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tree_r <span class="ot">&lt;-</span> <span class="fu">hclust</span>(distance_r, <span class="at">method =</span> <span class="st">&quot;ward.D2&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree_r, <span class="at">labels =</span> <span class="cn">FALSE</span>, <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Hierarchy of respondent profiles&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rect.hclust</span>(tree_r, <span class="at">k =</span> <span class="dv">3</span>, <span class="at">border =</span> <span class="fu">c</span>(<span class="st">&quot;#6d5dfc&quot;</span>, <span class="st">&quot;#19c3d2&quot;</span>, <span class="st">&quot;#20a36a&quot;</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>cluster_hier <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">cutree</span>(tree_r, <span class="at">k =</span> <span class="dv">3</span>))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">kmeans =</span> survey<span class="sc">$</span>cluster_k3, <span class="at">hierarchical =</span> survey<span class="sc">$</span>cluster_hier)</span></code></pre></div>
+<h2 id="python-with-a-dendrogram">6.2 Python With a Dendrogram</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> linkage, dendrogram, fcluster</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>linkage_matrix <span class="op">=</span> linkage(X, method<span class="op">=</span><span class="st">&quot;ward&quot;</span>, metric<span class="op">=</span><span class="st">&quot;euclidean&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>dendrogram(linkage_matrix, no_labels<span class="op">=</span><span class="va">True</span>, color_threshold<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Respondents&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Merge distance&quot;</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;cluster_hier&quot;</span>] <span class="op">=</span> fcluster(linkage_matrix, t<span class="op">=</span><span class="dv">3</span>, criterion<span class="op">=</span><span class="st">&quot;maxclust&quot;</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.crosstab(survey[<span class="st">&quot;cluster_k3&quot;</span>], survey[<span class="st">&quot;cluster_hier&quot;</span>]))</span></code></pre></div>
+<p>Ward linkage is tied to squared Euclidean geometry. For Gower
+distance, use average or complete linkage instead. Single linkage often
+produces long “chains” and is rarely a good default for respondent
+profiles.</p>
+<h1 id="gaussian-mixtures-and-latent-profiles">7. Gaussian Mixtures and
+Latent Profiles</h1>
+<p>A Gaussian mixture model treats the observed distribution as a
+weighted combination of multivariate normal components. It returns
+probabilities of membership rather than only hard assignments. In
+psychological research, continuous-indicator mixture models are often
+called latent profile analysis (LPA); categorical-indicator models are
+latent class analysis (LCA).</p>
+<h2 id="r-with-mclust">7.1 R With <code>mclust</code></h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;mclust&quot;)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>mixture_r <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(X, <span class="at">G =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mixture_r)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mixture_r, <span class="at">what =</span> <span class="st">&quot;BIC&quot;</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>mixture_class <span class="ot">&lt;-</span> <span class="fu">factor</span>(mixture_r<span class="sc">$</span>classification)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>membership_uncertainty <span class="ot">&lt;-</span> mixture_r<span class="sc">$</span>uncertainty</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(membership_uncertainty <span class="sc">~</span> mixture_class, survey, mean)</span></code></pre></div>
+<h2 id="python-with-gaussianmixture">7.2 Python With
+<code>GaussianMixture</code></h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.mixture <span class="im">import</span> GaussianMixture</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>candidates <span class="op">=</span> [</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    GaussianMixture(n_components<span class="op">=</span>k, covariance_type<span class="op">=</span><span class="st">&quot;full&quot;</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                    n_init<span class="op">=</span><span class="dv">20</span>, random_state<span class="op">=</span><span class="dv">44</span>).fit(X)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>bic <span class="op">=</span> [model.bic(X) <span class="cf">for</span> model <span class="kw">in</span> candidates]</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>best <span class="op">=</span> candidates[<span class="bu">int</span>(np.argmin(bic))]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>membership_prob <span class="op">=</span> best.predict_proba(X)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;mixture_class&quot;</span>] <span class="op">=</span> best.predict(X)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;membership_uncertainty&quot;</span>] <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> membership_prob.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.Series(bic, index<span class="op">=</span><span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>), name<span class="op">=</span><span class="st">&quot;BIC&quot;</span>))</span></code></pre></div>
+<p>Use BIC, entropy/uncertainty, class size, interpretability,
+convergence from multiple starts, and replication together. A tiny class
+may be a meaningful rare profile, an outlier collection, or a local
+optimum. Mixture assumptions do not convert convenience samples into
+population evidence.</p>
+<h1 id="pca-summarizing-correlated-indicators">8. PCA: Summarizing
+Correlated Indicators</h1>
+<p>Principal component analysis creates weighted combinations that
+explain maximum variance. It is useful for compression, visualization,
+and reducing collinearity. PCA is not a measurement model and does not
+separate shared variance from item-specific/error variance.</p>
+<h2 id="r-pca">8.1 R PCA</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pca_r <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(survey[cluster_vars], <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca_r)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(pca_r<span class="sc">$</span>rotation[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">2</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pca_r, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">main =</span> <span class="st">&quot;PCA scree plot&quot;</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(pca_r, <span class="at">choices =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">cex =</span> .<span class="dv">55</span>)</span></code></pre></div>
+<h2 id="python-pca">8.2 Python PCA</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA().fit(X)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pca.transform(X)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    pca.components_.T,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>features,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f&quot;PC</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(features) <span class="op">+</span> <span class="dv">1</span>)]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pca.explained_variance_ratio_.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loadings.iloc[:, :<span class="dv">3</span>].<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div>
+<p>Component signs are arbitrary: multiplying a component and its scores
+by -1 changes no fit. Interpret patterns, not sign conventions. Decide
+the number of components using scree shape, parallel analysis,
+out-of-sample reconstruction, and substantive usefulness rather than the
+eigenvalue-greater-than-one rule alone.</p>
+<h1 id="exploratory-factor-analysis-for-psychological-constructs">9.
+Exploratory Factor Analysis for Psychological Constructs</h1>
+<p>Exploratory factor analysis (EFA) models correlations as arising from
+latent common factors plus item-specific variance. This makes it more
+natural than PCA for investigating constructs, but it remains
+exploratory and depends on item quality, extraction, rotation, factor
+count, and sample.</p>
+<h2 id="simulate-eight-items-in-r">9.1 Simulate Eight Items in R</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">118</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="dv">520</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>social_latent <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_items)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>distress_latent <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_items, <span class="at">sd =</span> .<span class="dv">9</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">belong1 =</span> .<span class="dv">78</span> <span class="sc">*</span> social_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">55</span>),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">belong2 =</span> .<span class="dv">72</span> <span class="sc">*</span> social_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">62</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">belong3 =</span> .<span class="dv">68</span> <span class="sc">*</span> social_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">65</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">support1 =</span> .<span class="dv">62</span> <span class="sc">*</span> social_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">70</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">worry1 =</span> .<span class="dv">80</span> <span class="sc">*</span> distress_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">52</span>),</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">worry2 =</span> .<span class="dv">75</span> <span class="sc">*</span> distress_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">58</span>),</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">tension1 =</span> .<span class="dv">70</span> <span class="sc">*</span> distress_latent <span class="sc">+</span> <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">64</span>),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sleep_problem =</span> .<span class="dv">50</span> <span class="sc">*</span> distress_latent <span class="sc">-</span> .<span class="dv">18</span> <span class="sc">*</span> social_latent <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">rnorm</span>(n_items, <span class="dv">0</span>, .<span class="dv">76</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>efa_r <span class="ot">&lt;-</span> <span class="fu">factanal</span>(items, <span class="at">factors =</span> <span class="dv">2</span>, <span class="at">rotation =</span> <span class="st">&quot;promax&quot;</span>, <span class="at">scores =</span> <span class="st">&quot;regression&quot;</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_r<span class="sc">$</span>loadings, <span class="at">cutoff =</span> .<span class="dv">25</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<h2 id="python-factor-analysis">9.2 Python Factor Analysis</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> FactorAnalysis</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>rng_items <span class="op">=</span> np.random.default_rng(<span class="dv">118</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>n_items <span class="op">=</span> <span class="dv">520</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>social_latent <span class="op">=</span> rng_items.normal(size<span class="op">=</span>n_items)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>distress_latent <span class="op">=</span> rng_items.normal(scale<span class="op">=</span><span class="fl">0.9</span>, size<span class="op">=</span>n_items)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>items_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;belong1&quot;</span>: <span class="fl">0.78</span> <span class="op">*</span> social_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.55</span>, n_items),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;belong2&quot;</span>: <span class="fl">0.72</span> <span class="op">*</span> social_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.62</span>, n_items),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;belong3&quot;</span>: <span class="fl">0.68</span> <span class="op">*</span> social_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.65</span>, n_items),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;support1&quot;</span>: <span class="fl">0.62</span> <span class="op">*</span> social_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.70</span>, n_items),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;worry1&quot;</span>: <span class="fl">0.80</span> <span class="op">*</span> distress_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.52</span>, n_items),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;worry2&quot;</span>: <span class="fl">0.75</span> <span class="op">*</span> distress_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.58</span>, n_items),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;tension1&quot;</span>: <span class="fl">0.70</span> <span class="op">*</span> distress_latent <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.64</span>, n_items),</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;sleep_problem&quot;</span>: <span class="fl">0.50</span> <span class="op">*</span> distress_latent <span class="op">-</span> <span class="fl">0.18</span> <span class="op">*</span> social_latent</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                     <span class="op">+</span> rng_items.normal(<span class="dv">0</span>, <span class="fl">0.76</span>, n_items),</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>item_names <span class="op">=</span> [<span class="st">&quot;belong1&quot;</span>, <span class="st">&quot;belong2&quot;</span>, <span class="st">&quot;belong3&quot;</span>, <span class="st">&quot;support1&quot;</span>,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;worry1&quot;</span>, <span class="st">&quot;worry2&quot;</span>, <span class="st">&quot;tension1&quot;</span>, <span class="st">&quot;sleep_problem&quot;</span>]</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>Z_items <span class="op">=</span> StandardScaler().fit_transform(items_df[item_names])</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>fa <span class="op">=</span> FactorAnalysis(n_components<span class="op">=</span><span class="dv">2</span>, rotation<span class="op">=</span><span class="st">&quot;varimax&quot;</span>, random_state<span class="op">=</span><span class="dv">118</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>factor_scores <span class="op">=</span> fa.fit_transform(Z_items)</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(fa.components_.T,</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>                        index<span class="op">=</span>item_names,</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>                        columns<span class="op">=</span>[<span class="st">&quot;Factor1&quot;</span>, <span class="st">&quot;Factor2&quot;</span>])</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loadings.<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div>
+<p>For ordinal Likert items with few categories, consider polychoric
+correlations and robust estimators. After EFA, confirm the proposed
+structure in a new sample using confirmatory factor analysis; do not
+tune and confirm on the same observations.</p>
+<h1 id="mds-t-sne-and-umap-for-visualization">10. MDS, t-SNE, and UMAP
+for Visualization</h1>
+<p>Multidimensional scaling (MDS) places objects in a low-dimensional
+map that approximates distances. It can visualize similarities among
+occupations, values, neighborhoods, or respondents.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>occupation_distance <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">3</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>), <span class="at">nrow =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(occupation_distance) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(occupation_distance) <span class="ot">&lt;-</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;teacher&quot;</span>, <span class="st">&quot;nurse&quot;</span>, <span class="st">&quot;engineer&quot;</span>, <span class="st">&quot;programmer&quot;</span>, <span class="st">&quot;scientist&quot;</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>mds_r <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(<span class="fu">as.dist</span>(occupation_distance), <span class="at">k =</span> <span class="dv">2</span>, <span class="at">eig =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mds_r<span class="sc">$</span>points, <span class="at">type =</span> <span class="st">&quot;n&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Dimension 1&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Dimension 2&quot;</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(mds_r<span class="sc">$</span>points, <span class="at">labels =</span> <span class="fu">rownames</span>(occupation_distance))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> MDS</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">&quot;teacher&quot;</span>, <span class="st">&quot;nurse&quot;</span>, <span class="st">&quot;engineer&quot;</span>, <span class="st">&quot;programmer&quot;</span>, <span class="st">&quot;scientist&quot;</span>]</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.array([</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>], [<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>], [<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">3</span>],</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>], [<span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span>]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>coords <span class="op">=</span> MDS(n_components<span class="op">=</span><span class="dv">2</span>, metric<span class="op">=</span><span class="st">&quot;precomputed&quot;</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>             random_state<span class="op">=</span><span class="dv">12</span>, normalized_stress<span class="op">=</span><span class="st">&quot;auto&quot;</span>).fit_transform(D)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>plt.scatter(coords[:, <span class="dv">0</span>], coords[:, <span class="dv">1</span>])</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, (x, y) <span class="kw">in</span> <span class="bu">zip</span>(labels, coords):</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    plt.text(x, y, label)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<p>t-SNE and UMAP are powerful nonlinear visualizers, but distances
+between distant groups, cluster sizes, and apparent gaps can be
+misleading. Re-run several seeds and parameter settings. Never choose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+merely by counting islands in a t-SNE/UMAP plot.</p>
+<h1 id="topic-models-for-interviews-and-open-responses">11. Topic Models
+for Interviews and Open Responses</h1>
+<p>Topic models represent documents as mixtures of word distributions.
+They can assist with corpus navigation and comparison, but they do not
+replace close reading or qualitative coding.</p>
+<h2 id="r-lda-workflow">11.1 R LDA Workflow</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c(&quot;quanteda&quot;, &quot;topicmodels&quot;))</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(topicmodels)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>responses <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Rent increases make it hard to remain near family&quot;</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;The bus is unreliable and the commute limits my work&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Neighbors organize childcare and share groceries&quot;</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;I feel isolated since community programs closed&quot;</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Flexible work helps but housing costs keep rising&quot;</span>,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Local groups provide support and social connection&quot;</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>tokens_r <span class="ot">&lt;-</span> <span class="fu">tokens</span>(responses, <span class="at">remove_punct =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_tolower</span>() <span class="sc">|&gt;</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">&quot;en&quot;</span>))</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>dfm_r <span class="ot">&lt;-</span> <span class="fu">dfm</span>(tokens_r) <span class="sc">|&gt;</span> <span class="fu">dfm_trim</span>(<span class="at">min_termfreq =</span> <span class="dv">1</span>)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>lda_r <span class="ot">&lt;-</span> <span class="fu">LDA</span>(<span class="fu">convert</span>(dfm_r, <span class="at">to =</span> <span class="st">&quot;topicmodels&quot;</span>), <span class="at">k =</span> <span class="dv">2</span>,</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">seed =</span> <span class="dv">87</span>))</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="fu">terms</span>(lda_r, <span class="dv">5</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior</span>(lda_r)<span class="sc">$</span>topics</span></code></pre></div>
+<h2 id="python-lda-workflow">11.2 Python LDA Workflow</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> LatentDirichletAllocation</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>responses <span class="op">=</span> [</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Rent increases make it hard to remain near family&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;The bus is unreliable and the commute limits my work&quot;</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Neighbors organize childcare and share groceries&quot;</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;I feel isolated since community programs closed&quot;</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Flexible work helps but housing costs keep rising&quot;</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Local groups provide support and social connection&quot;</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">&quot;english&quot;</span>, min_df<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>document_term <span class="op">=</span> vectorizer.fit_transform(responses)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>lda <span class="op">=</span> LatentDirichletAllocation(n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">87</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>                                learning_method<span class="op">=</span><span class="st">&quot;batch&quot;</span>).fit(document_term)</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>terms <span class="op">=</span> np.array(vectorizer.get_feature_names_out())</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> topic_id, weights <span class="kw">in</span> <span class="bu">enumerate</span>(lda.components_):</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(topic_id, terms[np.argsort(weights)[<span class="op">-</span><span class="dv">6</span>:][::<span class="op">-</span><span class="dv">1</span>]])</span></code></pre></div>
+<p>The corpus above is intentionally tiny for readable code; real topic
+models need substantially more documents. Audit tokenization, language,
+spelling, stopwords, document length, and who is absent. Interpret
+topics by reading high-probability and high-exclusivity documents,
+negative cases, and excerpts in context. Human-created labels should be
+presented as interpretations.</p>
+<h1 id="community-detection-in-social-networks">12. Community Detection
+in Social Networks</h1>
+<p>Network communities are sets of nodes with relatively dense internal
+ties. They are relational structures, not clusters from independent
+survey rows.</p>
+<h2 id="r-with-igraph">12.1 R With <code>igraph</code></h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;igraph&quot;)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>ties <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;C&quot;</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">to   =</span> <span class="fu">c</span>(<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;E&quot;</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>network_r <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(ties, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>communities_r <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(network_r)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">membership</span>(communities_r)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">modularity</span>(communities_r)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(communities_r, network_r)</span></code></pre></div>
+<h2 id="python-with-networkx">12.2 Python With
+<code>networkx</code></h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>ties <span class="op">=</span> [(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>), (<span class="st">&quot;A&quot;</span>,<span class="st">&quot;C&quot;</span>), (<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>), (<span class="st">&quot;B&quot;</span>,<span class="st">&quot;D&quot;</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>), (<span class="st">&quot;D&quot;</span>,<span class="st">&quot;E&quot;</span>), (<span class="st">&quot;D&quot;</span>,<span class="st">&quot;F&quot;</span>), (<span class="st">&quot;E&quot;</span>,<span class="st">&quot;F&quot;</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;E&quot;</span>,<span class="st">&quot;G&quot;</span>), (<span class="st">&quot;F&quot;</span>,<span class="st">&quot;G&quot;</span>), (<span class="st">&quot;C&quot;</span>,<span class="st">&quot;E&quot;</span>)]</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>graph <span class="op">=</span> nx.Graph(ties)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>communities <span class="op">=</span> nx.community.louvain_communities(graph, seed<span class="op">=</span><span class="dv">33</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(communities)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nx.community.modularity(graph, communities))</span></code></pre></div>
+<p>Community results depend on which relationships were observed,
+boundary specification, edge weights, direction, resolution, and missing
+nodes. Modularity has a resolution limit and can produce multiple
+near-optimal partitions. Compare seeds and algorithms; incorporate
+network-generation theory.</p>
+<h1 id="detecting-unusual-responses-without-labeling-people">13.
+Detecting Unusual Responses Without Labeling People</h1>
+<p>Anomaly detection can help review survey fraud, bots, impossible
+combinations, or careless responding. “Unusual” means unusual under the
+selected features and model; it does not mean dishonest, ill, or
+dangerous.</p>
+<h2 id="robust-distance-review-in-r">13.1 Robust-Distance Review in
+R</h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">55</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>quality <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">minutes =</span> <span class="fu">c</span>(<span class="fu">rlnorm</span>(<span class="dv">195</span>, <span class="fu">log</span>(<span class="dv">12</span>), .<span class="dv">30</span>), <span class="fu">runif</span>(<span class="dv">5</span>, .<span class="dv">3</span>, <span class="fl">1.2</span>)),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">longstring =</span> <span class="fu">c</span>(<span class="fu">rpois</span>(<span class="dv">195</span>, <span class="dv">4</span>), <span class="fu">sample</span>(<span class="dv">35</span><span class="sc">:</span><span class="dv">55</span>, <span class="dv">5</span>)),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">inconsistency =</span> <span class="fu">c</span>(<span class="fu">rbeta</span>(<span class="dv">195</span>, <span class="dv">2</span>, <span class="dv">12</span>), <span class="fu">runif</span>(<span class="dv">5</span>, .<span class="dv">75</span>, <span class="dv">1</span>))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>quality_z <span class="ot">&lt;-</span> <span class="fu">scale</span>(quality)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>center <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(quality_z)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>covariance <span class="ot">&lt;-</span> <span class="fu">cov</span>(quality_z)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>quality<span class="sc">$</span>distance <span class="ot">&lt;-</span> <span class="fu">mahalanobis</span>(quality_z, center, covariance)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>quality<span class="sc">$</span>review_flag <span class="ot">&lt;-</span> quality<span class="sc">$</span>distance <span class="sc">&gt;</span> <span class="fu">qchisq</span>(.<span class="dv">995</span>, <span class="at">df =</span> <span class="fu">ncol</span>(quality_z))</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(quality, review_flag)</span></code></pre></div>
+<h2 id="isolation-forest-in-python">13.2 Isolation Forest in Python</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">55</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>quality <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;minutes&quot;</span>: np.r_[rng.lognormal(np.log(<span class="dv">12</span>), <span class="fl">.30</span>, <span class="dv">195</span>), rng.uniform(<span class="fl">.3</span>, <span class="fl">1.2</span>, <span class="dv">5</span>)],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;longstring&quot;</span>: np.r_[rng.poisson(<span class="dv">4</span>, <span class="dv">195</span>), rng.integers(<span class="dv">35</span>, <span class="dv">56</span>, <span class="dv">5</span>)],</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;inconsistency&quot;</span>: np.r_[rng.beta(<span class="dv">2</span>, <span class="dv">12</span>, <span class="dv">195</span>), rng.uniform(<span class="fl">.75</span>, <span class="dv">1</span>, <span class="dv">5</span>)]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> IsolationForest(contamination<span class="op">=</span><span class="fl">0.025</span>, random_state<span class="op">=</span><span class="dv">55</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>quality[<span class="st">&quot;review_flag&quot;</span>] <span class="op">=</span> detector.fit_predict(quality) <span class="op">==</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>quality.loc[quality[<span class="st">&quot;review_flag&quot;</span>]]</span></code></pre></div>
+<p>Flags should initiate review, not automatic deletion. Examine device
+problems, accessibility needs, language mismatch, genuine extreme
+experiences, and preregistered quality rules. Report how conclusions
+change when flagged cases are retained versus excluded.</p>
+<h1 id="validation-the-essential-step">14. Validation: The Essential
+Step</h1>
+<h2 id="internal-separation">14.1 Internal Separation</h2>
+<p>Silhouette values compare within-cluster cohesion with
+nearest-cluster separation. Values near 1 indicate separation, near 0
+indicate overlap, and negative values suggest possible
+misassignment.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>sil_r <span class="ot">&lt;-</span> <span class="fu">silhouette</span>(chosen_r<span class="sc">$</span>cluster, <span class="fu">dist</span>(X))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sil_r)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sil_r, <span class="at">border =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score, silhouette_samples</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(silhouette_score(X, model_k3.labels_))</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>survey[<span class="st">&quot;silhouette&quot;</span>] <span class="op">=</span> silhouette_samples(X, model_k3.labels_)</span></code></pre></div>
+<p>Internal indices reward particular geometry. Do not choose a model
+solely because it has the highest silhouette.</p>
+<h2 id="stability-across-resamples">14.2 Stability Across Resamples</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>base_labels <span class="ot">&lt;-</span> chosen_r<span class="sc">$</span>cluster</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>co_membership <span class="ot">&lt;-</span> <span class="fu">outer</span>(base_labels, base_labels, <span class="st">&quot;==&quot;</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Example framework: refit on bootstrap samples and compare</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>bootstrap_centers <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">50</span>, {</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(X)), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  fit_b <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(X[rows, ], <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">30</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.vector</span>(<span class="fu">t</span>(fit_b<span class="sc">$</span>centers[<span class="fu">order</span>(fit_b<span class="sc">$</span>centers[, <span class="st">&quot;loneliness&quot;</span>]), ]))</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(bootstrap_centers, <span class="dv">1</span>, sd)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> adjusted_rand_score</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">99</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> []</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> rng.integers(<span class="dv">0</span>, <span class="bu">len</span>(X), <span class="bu">len</span>(X))</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    boot_model <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, n_init<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                        random_state<span class="op">=</span><span class="bu">int</span>(rng.integers(<span class="dv">1_000_000</span>))).fit(X[rows])</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compare predictions on the same full dataset to avoid duplicate-row alignment.</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    agreement.append(adjusted_rand_score(</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>        model_k3.labels_, boot_model.predict(X)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.Series(agreement).describe())</span></code></pre></div>
+<p>The R snippet summarizes centroid variability after ordering by
+loneliness; the Python snippet evaluates adjusted Rand agreement on
+common cases. More formal stability tools can align labels and quantify
+membership probabilities.</p>
+<h2 id="external-and-interpretive-validation">14.3 External and
+Interpretive Validation</h2>
+<p>Keep external variables out of fitting, then ask whether profiles
+differ on theoretically relevant outcomes, behaviors, or qualitative
+accounts. Avoid circular validation: if loneliness defines clusters,
+strong loneliness differences do not validate them. Replicate in a new
+sample, time, site, or language group.</p>
+<h2 id="sensitivity-grid">14.4 Sensitivity Grid</h2>
+<p>At minimum, vary:</p>
+<ul>
+<li>Feature definitions and scale construction;</li>
+<li>Scaling and transformations;</li>
+<li>Missing-data treatment;</li>
+<li>Distance metric and algorithm;</li>
+<li>Number of clusters/components/topics;</li>
+<li>Random seeds and starting values;</li>
+<li>Inclusion of survey weights or sites;</li>
+<li>Subgroups and time periods.</li>
+</ul>
+<p>Report which interpretations survive these choices.</p>
+<h1 id="end-to-end-case-youth-well-being-profiles">15. End-to-End Case:
+Youth Well-Being Profiles</h1>
+<h2 id="research-question">15.1 Research Question</h2>
+<p>“Which recurring combinations of belonging, participation, stress,
+sleep, loneliness, and efficacy appear among surveyed youth, and are
+those patterns stable enough to guide future qualitative sampling?” This
+is exploratory and does not claim diagnoses or causal types.</p>
+<h2 id="analysis-plan">15.2 Analysis Plan</h2>
+<pre class="text"><code>Unit: one respondent at baseline
+Inputs: six prespecified, domain-balanced scale scores
+Excluded from fitting: demographics and later help-seeking
+Preparation: inspect missingness; impute within a sensitivity workflow; z-score inputs
+Candidate methods: k-means, Ward hierarchy, Gaussian mixtures
+Candidate group counts: 2 through 6
+Evaluation: silhouette, BIC, resampling stability, minimum group size
+Interpretation: centroid/probability profiles plus interview excerpts
+Audit: composition by gender, region, language, and socioeconomic position
+Replication: holdout schools and the following survey wave</code></pre>
+<h2 id="profile-table-and-external-description">15.3 Profile Table and
+External Description</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>profile_table_r <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  survey[cluster_vars],</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">profile =</span> survey<span class="sc">$</span>cluster_k3),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">round</span>(<span class="fu">mean</span>(x), <span class="dv">2</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>profile_table_r</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Demographics describe composition; they did not define the clusters.</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">prop.table</span>(<span class="fu">table</span>(survey<span class="sc">$</span>cluster_k3, survey<span class="sc">$</span>region), <span class="dv">1</span>), <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>profile_table_py <span class="op">=</span> (</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    survey.groupby(<span class="st">&quot;cluster_k3&quot;</span>)[features]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>          .mean()</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>          .<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(profile_table_py)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.crosstab(survey[<span class="st">&quot;cluster_k3&quot;</span>], survey[<span class="st">&quot;region&quot;</span>], normalize<span class="op">=</span><span class="st">&quot;index&quot;</span>).<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div>
+<h2 id="responsible-conclusion-template">15.4 Responsible Conclusion
+Template</h2>
+<pre class="text"><code>Using six standardized baseline scales, the selected exploratory solution
+contained three recurring response profiles. The profiles differed most on ... .
+Average silhouette was ..., and resampling showed ... stability. Solutions with
+two and four groups produced ... . Profile composition varied by ..., which may
+reflect social processes, measurement differences, or sampling. These profiles
+are descriptive summaries, not diagnoses or fixed types. They will be tested in
+new schools and used to purposively sample interviews before any program decision.</code></pre>
+<h1 id="method-selection-guide">16. Method Selection Guide</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Question</th>
+<th>Best starting point</th>
+<th>Important alternative/check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compact groups in scaled numeric survey scores</td>
+<td>k-means</td>
+<td>Gaussian mixture, Ward hierarchy</td>
+</tr>
+<tr>
+<td>Mixed numeric, ordinal, and nominal features</td>
+<td>Gower distance + hierarchy/PAM</td>
+<td>Sensitivity to coding and weights</td>
+</tr>
+<tr>
+<td>Probabilistic continuous profiles</td>
+<td>Gaussian mixture/LPA</td>
+<td>BIC, entropy, local starts, replication</td>
+</tr>
+<tr>
+<td>Reduce correlated indicators for visualization</td>
+<td>PCA</td>
+<td>Parallel analysis, held-out reconstruction</td>
+</tr>
+<tr>
+<td>Explore latent psychological constructs</td>
+<td>EFA</td>
+<td>Polychoric correlations, CFA in new data</td>
+</tr>
+<tr>
+<td>Visualize a distance matrix</td>
+<td>MDS</td>
+<td>Stress and dimensionality checks</td>
+</tr>
+<tr>
+<td>Explore themes in many documents</td>
+<td>Topic model</td>
+<td>Close reading, qualitative coding, embeddings</td>
+</tr>
+<tr>
+<td>Find dense relational subgroups</td>
+<td>Community detection</td>
+<td>Resolution/seed/algorithm sensitivity</td>
+</tr>
+<tr>
+<td>Review unusual response patterns</td>
+<td>Robust distance/isolation forest</td>
+<td>Human review and retain/exclude sensitivity</td>
+</tr>
+</tbody>
+</table>
+<h1 id="reporting-checklist">17. Reporting Checklist</h1>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>The unit of analysis and intended
+population are explicit;</label></li>
+<li><label><input type="checkbox"></input>Features have a theoretical and
+measurement rationale;</label></li>
+<li><label><input type="checkbox"></input>Scaling, coding, missingness, and
+survey design are documented;</label></li>
+<li><label><input type="checkbox"></input>Protected groups and proxy variables
+are considered in an impact audit;</label></li>
+<li><label><input type="checkbox"></input>Several plausible algorithms and
+complexity levels were compared;</label></li>
+<li><label><input type="checkbox"></input>Random seeds, initializations,
+software versions, and preprocessing are reproducible;</label></li>
+<li><label><input type="checkbox"></input>Separation, stability, uncertainty,
+and minimum group size are reported;</label></li>
+<li><label><input type="checkbox"></input>External variables used for
+interpretation were not secretly used in fitting;</label></li>
+<li><label><input type="checkbox"></input>Labels are neutral and do not reify,
+diagnose, or stigmatize people;</label></li>
+<li><label><input type="checkbox"></input>Alternative specifications and
+negative cases are discussed;</label></li>
+<li><label><input type="checkbox"></input>Qualitative or domain evidence
+participates in interpretation;</label></li>
+<li><label><input type="checkbox"></input>Replication is planned before
+high-impact use.</label></li>
+</ul>
+<h1 id="practice-exercises">18. Practice Exercises</h1>
+<ol type="1">
+<li>Repeat k-means before and after scaling age with the six 1-5 scores;
+explain the change;</li>
+<li>Add ten highly correlated stress items and show how feature
+multiplicity changes clustering;</li>
+<li>Compare Ward, average, and complete linkage on the same standardized
+data;</li>
+<li>Fit 1-6 Gaussian components and graph BIC and average
+uncertainty;</li>
+<li>Compare PCA loadings with a two-factor EFA and explain why they
+differ;</li>
+<li>Introduce 15% missingness related to loneliness and compare
+complete-case and imputed profiles;</li>
+<li>Run t-SNE or UMAP across several seeds and document which visual
+patterns are unstable;</li>
+<li>Build a topic model, then read representative and contradictory
+documents for each topic;</li>
+<li>Compare two network community algorithms and resolution
+settings;</li>
+<li>Write a profile report that includes stability, subgroup
+composition, limitations, and a replication plan.</li>
+</ol>
+<p>The strongest unsupervised analysis does not end with a colorful
+plot. It ends with a transparent record of choices, uncertainty,
+competing explanations, and evidence that the pattern can survive
+outside the dataset that produced it.</p>
+<script>
+(function(){"use strict";const d=document,b=d.body;if(!b||d.querySelector(".mw3-topbar"))return;const zh=(d.documentElement.lang||"").toLowerCase().startsWith("zh"),s=d.currentScript,t=d.getElementById("TOC");const p=d.createElement("div");p.className="mw3-progress";p.setAttribute("aria-hidden","true");const skip=d.createElement("a");skip.className="mw3-skip";skip.href="#mw3-content";skip.textContent=zh?"跳到正文":"Skip to content";const h=d.createElement("header");h.className="mw3-topbar";h.innerHTML=`<a class="mw3-brand" href="#title-block-header"><span class="mw3-logo">MW3</span><span>MooseWeb3</span><span class="mw3-sub">UNSUPERVISED ML</span></a><span class="mw3-spacer"></span><nav class="mw3-langs" aria-label="${zh?"语言选择":"Language selector"}"><a href="unsupervised_ml_social_psych_zh.html" aria-current="${zh?"page":"false"}">中文</a><a href="unsupervised_ml_social_psych_en.html" aria-current="${zh?"false":"page"}">EN</a></nav><button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">${zh?"目录":"Contents"}</button>`;b.prepend(p,skip,h);const m=d.createElement("main");m.id="mw3-content";m.tabIndex=-1;if(t&&s){let n=t.nextSibling;while(n&&n!==s){const next=n.nextSibling;m.appendChild(n);n=next;}b.insertBefore(m,s);}d.querySelectorAll("pre").forEach(pre=>{let shell=pre.parentElement;if(!shell||!shell.classList.contains("sourceCode")){shell=d.createElement("div");pre.parentNode.insertBefore(shell,pre);shell.appendChild(pre);}shell.classList.add("mw3-code-shell");const btn=d.createElement("button");btn.className="mw3-copy";btn.type="button";btn.textContent=zh?"复制":"Copy";btn.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(pre.innerText);btn.textContent=zh?"已复制":"Copied";setTimeout(()=>btn.textContent=zh?"复制":"Copy",1300);}catch(e){btn.textContent=zh?"复制失败":"Copy failed";}});shell.appendChild(btn);});const top=d.createElement("button");top.className="mw3-top";top.type="button";top.textContent="↑";top.setAttribute("aria-label",zh?"返回顶部":"Back to top");top.onclick=()=>scrollTo({top:0,behavior:"smooth"});b.appendChild(top);const menu=h.querySelector(".mw3-menu");if(menu&&t){menu.onclick=()=>{const open=b.classList.toggle("mw3-toc-open");menu.setAttribute("aria-expanded",String(open));};t.onclick=e=>{if(e.target.closest("a")){b.classList.remove("mw3-toc-open");menu.setAttribute("aria-expanded","false");}};}const update=()=>{const max=d.documentElement.scrollHeight-innerHeight;p.style.width=`${max>0?Math.min(scrollY/max,1)*100:0}%`;top.classList.toggle("is-visible",scrollY>560);};update();addEventListener("scroll",update,{passive:true});addEventListener("resize",update);})();
+</script>
+<script>document.querySelectorAll('a[href$="_zh.html"]').forEach(link => link.remove());</script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

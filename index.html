@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MooseWeb3 Python Notes is a guided learning hub for Python fundamentals, advanced language design, data workflows, software development, statistics, modeling, and reproducible publishing.">
+  <meta name="description" content="MooseWeb3 Learning Hub brings together 28 practical HTML guides from six repositories covering Python, R, statistics, machine learning, HTML, CSS, JavaScript, and software development.">
   <meta name="theme-color" content="#111827">
-  <title>MooseWeb3 Python Learning Hub</title>
+  <title>MooseWeb3 Code, Data &amp; Modeling Learning Hub</title>
   <style>
     :root {
       --ink: #10213f;
@@ -391,6 +391,25 @@
     .topic-line { margin: 25px 0 32px; color: #53627a; font-size: 0.84rem; font-weight: 700; }
     .course-link { display: inline-flex; align-items: center; gap: 10px; color: var(--accent); font-weight: 850; text-decoration: none; }
 
+    .repo-section { margin-top: 82px; scroll-margin-top: 105px; }
+    .repo-section:first-of-type { margin-top: 42px; }
+    .repo-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: end;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .repo-heading h3 { margin: 5px 0 0; font: 500 clamp(1.8rem, 3.2vw, 2.75rem)/1.05 Georgia, serif; letter-spacing: -0.035em; }
+    .repo-heading p { max-width: 720px; margin: 8px 0 0; color: var(--muted); }
+    .repo-label { color: var(--blue); font-size: 0.7rem; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; }
+    .repo-actions { flex: 0 0 auto; display: flex; gap: 10px; align-items: center; }
+    .repo-count { padding: 8px 12px; color: #45546d; background: #edf2f8; border-radius: 999px; font-size: 0.74rem; font-weight: 850; white-space: nowrap; }
+    .repo-source { color: var(--blue); font-size: 0.78rem; font-weight: 850; text-decoration: none; white-space: nowrap; }
+    .repo-source:hover { text-decoration: underline; }
+
     .tracks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .track-card {
       padding: 29px;
@@ -442,6 +461,7 @@
       .overview-card { max-width: 620px; }
       .path-grid { grid-template-columns: 1fr 1fr; }
       .tracks { grid-template-columns: 1fr; }
+      .repo-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
     }
 
     @media (max-width: 760px) {
@@ -494,17 +514,17 @@
 
   <header class="site-header">
     <nav class="nav" aria-label="Main navigation">
-      <a class="brand" href="#top" aria-label="MooseWeb3 Python Notes home">
+      <a class="brand" href="#top" aria-label="MooseWeb3 Learning Hub home">
         <span class="brand-mark" aria-hidden="true">MW3</span>
-        <span class="brand-copy">MooseWeb3 <small>Python Notes</small></span>
+        <span class="brand-copy">MooseWeb3 <small>Learning Hub</small></span>
       </a>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-menu" aria-label="Open navigation">☰</button>
       <div class="nav-links" id="main-menu">
-        <a href="#learning-path">Learning path</a>
-        <a href="#course-library">Course library</a>
+        <a href="#repositories">Repositories</a>
+        <a href="#course-library">All guides</a>
         <a href="#choose-a-track">Choose a track</a>
         <a href="#about">About</a>
-        <a class="repo-link" href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">Repository ↗</a>
+        <a class="repo-link" href="https://github.com/MooseWEB3" target="_blank" rel="noreferrer">Repositories ↗</a>
       </div>
     </nav>
   </header>
@@ -513,100 +533,70 @@
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow">A practical Python learning hub</span>
-          <h1 id="hero-title">Learn Python as a <span>connected practice.</span></h1>
-          <p class="hero-lead">Move from your first Python program through trustworthy data workflows, advanced language design, the full software lifecycle, statistical models, and reproducible publishing—all through detailed, practical guides.</p>
+          <span class="eyebrow">Six repositories · one practical learning hub</span>
+          <h1 id="hero-title">Learn code, data, and models as a <span>connected practice.</span></h1>
+          <p class="hero-lead">Explore a unified collection of detailed HTML guides for Python, R, statistics, machine learning, HTML, CSS, JavaScript, software engineering, and reproducible publishing.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="python_fundamentals_en.html">Start with Python fundamentals <span class="arrow" aria-hidden="true">→</span></a>
-            <a class="button button-secondary" href="#course-library">Browse all courses</a>
+            <a class="button button-secondary" href="#course-library">Browse all guides</a>
           </div>
         </div>
-        <aside class="overview-card" aria-label="Curriculum at a glance">
-          <p class="overview-label">Curriculum at a glance</p>
-          <p class="overview-number">11 guided<br>courses</p>
+        <aside class="overview-card" aria-label="Learning collection at a glance">
+          <p class="overview-label">Collection at a glance</p>
+          <p class="overview-number">28 HTML<br>guides</p>
           <div class="overview-grid">
-            <div class="metric"><strong>Code + craft</strong><span>Python, R, data workflows, software design, testing, delivery, and operations</span></div>
-            <div class="metric"><strong>Visible code</strong><span>worked examples and reproducible patterns throughout</span></div>
-            <div class="metric"><strong>Self-paced</strong><span>follow the sequence or jump directly to a topic</span></div>
-            <div class="metric"><strong>Portable HTML</strong><span>read every guide without a notebook server</span></div>
+            <div class="metric"><strong>6 repositories</strong><span>one navigable home for the complete MooseWeb3 learning collection</span></div>
+            <div class="metric"><strong>Code + evidence</strong><span>web development, data workflows, statistics, modeling, and engineering</span></div>
+            <div class="metric"><strong>Self-paced</strong><span>follow a track or jump directly to any published tutorial</span></div>
+            <div class="metric"><strong>Portable HTML</strong><span>read every guide directly in the browser without a notebook server</span></div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section class="section section-tint" id="learning-path" aria-labelledby="path-title">
+    <section class="section section-tint" id="repositories" aria-labelledby="repositories-title">
       <div class="container">
         <header class="section-head">
-          <span class="section-kicker">Recommended sequence</span>
-          <h2 id="path-title">A path, not a pile of pages.</h2>
-          <p>Build confidence in layers. Start with Python itself, add fluent data, text, and time workflows, progress through object and advanced language design, then build, compare, model, and publish.</p>
+          <span class="section-kicker">Explore by repository</span>
+          <h2 id="repositories-title">Six focused collections. One connected curriculum.</h2>
+          <p>Start with a language, strengthen your web foundations, or move directly into statistics and modeling. Every repository remains visible as the source while every published guide opens from this hub.</p>
         </header>
         <div class="path-grid">
           <article class="path-step">
-            <span class="step-number">01</span>
-            <h3>Build Python foundations</h3>
-            <p>Learn syntax, types, collections, control flow, functions, files, classes, testing, and project habits through practical examples.</p>
-            <a class="step-link" href="python_fundamentals_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">02</span>
-            <h3>Prepare trustworthy data</h3>
-            <p>Load, inspect, clean, reshape, join, summarize, and export tabular data with pandas.</p>
-            <a class="step-link" href="python_data_processing_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">03</span>
-            <h3>Transform data fluently</h3>
-            <p>Select, filter, mutate, group, summarize, join, and reshape data with dplyr and equivalent pandas patterns.</p>
-            <a class="step-link" href="dplyr_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+            <span class="step-number">11</span>
+            <h3>Python Notes</h3>
+            <p>Python foundations, data workflows, object design, advanced language features, testing, statistics, regression, and publishing.</p>
+            <a class="step-link" href="#repo-python">Browse 11 guides <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
             <span class="step-number">04</span>
-            <h3>Work with text safely</h3>
-            <p>Clean, detect, extract, replace, and validate text with stringr, regular expressions, and Python equivalents.</p>
-            <a class="step-link" href="stringr_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">05</span>
-            <h3>Handle time reliably</h3>
-            <p>Parse, transform, compare, and validate dates, time zones, DST boundaries, and intervals with lubridate and pandas.</p>
-            <a class="step-link" href="lubridate_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">06</span>
-            <h3>Design with objects</h3>
-            <p>Use classes, properties, composition, dataclasses, protocols, and tests to build maintainable Python programs.</p>
-            <a class="step-link" href="python_oop_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">07</span>
-            <h3>Master advanced Python</h3>
-            <p>Understand protocols, generators, decorators, typing, concurrency, async systems, performance, security, and production architecture.</p>
-            <a class="step-link" href="python_advanced_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
-          </article>
-          <article class="path-step">
-            <span class="step-number">08</span>
-            <h3>Develop software systematically</h3>
-            <p>Connect requirements, architecture, Git, testing, security, CI/CD, reliability, and teamwork into one practical lifecycle.</p>
-            <a class="step-link" href="software_development_fundamentals_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+            <h3>Statistics &amp; Machine Learning</h3>
+            <p>Biostatistics, high-dimensional regression, and supervised and unsupervised learning for social research.</p>
+            <a class="step-link" href="#repo-statistics">Browse 4 guides <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
             <span class="step-number">09</span>
-            <h3>Compare with evidence</h3>
-            <p>Choose statistical tests from the research question, assumptions, and data structure.</p>
-            <a class="step-link" href="python_statistical_tests_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+            <h3>R Notes</h3>
+            <p>R functions, iteration, joins, tidy evaluation, regression choice, tidymodels, Shiny, distributed lags, and advanced R.</p>
+            <a class="step-link" href="#repo-r">Browse 9 guides <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
-            <span class="step-number">10</span>
-            <h3>Build reliable models</h3>
-            <p>Understand linear and generalized linear regression, diagnostics, interpretation, and prediction.</p>
-            <a class="step-link" href="python_regression_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+            <span class="step-number">01</span>
+            <h3>HTML Notes</h3>
+            <p>Understand how R Markdown becomes semantic, styled, portable HTML and how the document pipeline fits together.</p>
+            <a class="step-link" href="#repo-html">Browse the HTML guide <span class="arrow" aria-hidden="true">→</span></a>
           </article>
           <article class="path-step">
-            <span class="step-number">11</span>
-            <h3>Publish reproducibly</h3>
-            <p>Turn analysis, narrative, tables, and code into a polished HTML document with Quarto.</p>
-            <a class="step-link" href="quarto_guide_en.html">Open the guide <span class="arrow" aria-hidden="true">→</span></a>
+            <span class="step-number">01</span>
+            <h3>CSS Notes</h3>
+            <p>Move from selectors and the cascade to responsive layouts, components, accessibility, and maintainable visual systems.</p>
+            <a class="step-link" href="#repo-css">Browse the CSS guide <span class="arrow" aria-hidden="true">→</span></a>
+          </article>
+          <article class="path-step">
+            <span class="step-number">02</span>
+            <h3>JavaScript Notes</h3>
+            <p>Learn web development foundations and practical JavaScript for behavior, data, asynchronous work, and browser applications.</p>
+            <a class="step-link" href="#repo-javascript">Browse 2 guides <span class="arrow" aria-hidden="true">→</span></a>
           </article>
         </div>
       </div>
@@ -615,11 +605,20 @@
     <section class="section" id="course-library" aria-labelledby="library-title">
       <div class="container">
         <header class="section-head">
-          <span class="section-kicker">Complete course library</span>
-          <h2 id="library-title">Eleven guides. One practical workflow.</h2>
-          <p>Each course is a standalone English HTML page with explanations, runnable examples, reference tables, checklists, and exercises. No sign-in or special reader is required.</p>
+          <span class="section-kicker">Complete cross-repository library</span>
+          <h2 id="library-title">28 guides. Six repositories. One front door.</h2>
+          <p>Every published tutorial below is a standalone English HTML page. External repository guides are mirrored into this site so readers get one stable, browser-ready catalog without sign-in or special software.</p>
         </header>
-        <div class="course-grid">
+        <section class="repo-section" id="repo-python" aria-labelledby="repo-python-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 01 · Python</span>
+              <h3 id="repo-python-title">Python Notes</h3>
+              <p>From first syntax and daily data work to advanced language design, software engineering, statistical inference, regression, and reproducible publishing.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">11 guides</span><a class="repo-source" href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
           <article class="course-card">
             <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Beginner</span><span class="pill">Python foundations</span></div>
             <h3>Python Fundamentals</h3>
@@ -697,7 +696,192 @@
             <p class="topic-line">projects · execution · citations · themes · HTML · automation</p>
             <a class="course-link" href="quarto_guide_en.html">Open the Quarto guide <span class="arrow" aria-hidden="true">→</span></a>
           </article>
-        </div>
+          </div>
+        </section>
+
+        <section class="repo-section" id="repo-statistics" aria-labelledby="repo-statistics-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 02 · Evidence &amp; modeling</span>
+              <h3 id="repo-statistics-title">Statistics and Machine Learning</h3>
+              <p>Study design, classical biostatistics, regularized high-dimensional models, and supervised and unsupervised learning for social and behavioral research.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">4 guides</span><a class="repo-source" href="https://github.com/MooseWEB3/Statistics-and-Machine-Learning" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Intermediate</span><span class="pill">Biostatistics</span></div>
+              <h3>Practical Biostatistics with R</h3>
+              <p>Connect study design to descriptive analysis, hypothesis tests, regression, repeated measures, survival analysis, and responsible reporting.</p>
+              <p class="topic-line">study design · inference · regression · survival · R · reporting</p>
+              <a class="course-link" href="catalog/statistics-machine-learning/biostatistics_guide_en.html">Open biostatistics <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Advanced</span><span class="pill">Regularization</span></div>
+              <h3>High-Dimensional Regression Modeling</h3>
+              <p>Learn ridge, lasso, elastic net, cross-validation, stability, feature selection, and reproducible analysis when predictors are numerous.</p>
+              <p class="topic-line">ridge · lasso · elastic net · cross-validation · feature selection</p>
+              <a class="course-link" href="catalog/statistics-machine-learning/high_dimensional_regression_guide_en.html">Open high-dimensional regression <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">03</span><span class="pill">Intermediate</span><span class="pill">Supervised ML</span></div>
+              <h3>Supervised Machine Learning in Sociology and Psychology</h3>
+              <p>Frame prediction questions, prepare social-science data, compare algorithms, validate performance, and interpret models without losing domain context.</p>
+              <p class="topic-line">classification · prediction · validation · fairness · interpretation</p>
+              <a class="course-link" href="catalog/statistics-machine-learning/supervised_ml_social_psychology_en.html">Open supervised learning <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">04</span><span class="pill">Intermediate</span><span class="pill">Unsupervised ML</span></div>
+              <h3>Unsupervised Machine Learning for Sociology and Psychology</h3>
+              <p>Use clustering, dimensionality reduction, latent structure, validation, and visualization to explore complex behavioral and social data.</p>
+              <p class="topic-line">clustering · PCA · latent structure · validation · visualization</p>
+              <a class="course-link" href="catalog/statistics-machine-learning/unsupervised_ml_social_psych_en.html">Open unsupervised learning <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </section>
+
+        <section class="repo-section" id="repo-r" aria-labelledby="repo-r-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 03 · R programming</span>
+              <h3 id="repo-r-title">R Notes</h3>
+              <p>Practical R language, data manipulation, metaprogramming, modeling, applications, and advanced techniques—from reusable functions to Shiny and tidymodels.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">9 guides</span><a class="repo-source" href="https://github.com/MooseWEB3/R_Notes" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Advanced</span><span class="pill">Language internals</span></div>
+              <h3>Advanced R: A Detailed Practical Summary</h3>
+              <p>Study R's object systems, environments, evaluation model, functional patterns, metaprogramming, performance, and robust package-level design.</p>
+              <p class="topic-line">objects · environments · evaluation · metaprogramming · performance</p>
+              <a class="course-link" href="catalog/r-notes/advanced_r_detailed_summary_en.html">Open advanced R <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Beginner–Intermediate</span><span class="pill">Iteration</span></div>
+              <h3>Iteration in R: apply() and purrr::map()</h3>
+              <p>Compare loops, the apply family, and purrr mapping functions while learning type stability, parallel inputs, error handling, and readable pipelines.</p>
+              <p class="topic-line">apply · lapply · vapply · purrr · map2 · pmap</p>
+              <a class="course-link" href="catalog/r-notes/apply_and_purrr_map_guide_en.html">Open R iteration <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">03</span><span class="pill">Advanced</span><span class="pill">Time-varying exposure</span></div>
+              <h3>Distributed Lag Models with dlnm</h3>
+              <p>Model delayed and nonlinear exposure effects with cross-basis functions, prediction surfaces, diagnostics, and interpretable summaries.</p>
+              <p class="topic-line">dlnm · cross-basis · lag effects · nonlinear models · prediction</p>
+              <a class="course-link" href="catalog/r-notes/dlnm_package_tutorial_en.html">Open the dlnm tutorial <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">04</span><span class="pill">Beginner–Advanced</span><span class="pill">Functions</span></div>
+              <h3>Writing R Functions</h3>
+              <p>Progress from arguments and return values to validation, environments, functional composition, tidy evaluation, documentation, and testing.</p>
+              <p class="topic-line">functions · scope · validation · composition · documentation · tests</p>
+              <a class="course-link" href="catalog/r-notes/r_functions_beginner_to_advanced_en.html">Open R functions <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">05</span><span class="pill">Beginner–Intermediate</span><span class="pill">Data joins</span></div>
+              <h3>Joining Data in R</h3>
+              <p>Master mutating, filtering, inequality, rolling, and overlap joins across dplyr, base R, and data.table with validation safeguards.</p>
+              <p class="topic-line">dplyr · merge · data.table · keys · cardinality · validation</p>
+              <a class="course-link" href="catalog/r-notes/r_join_functions_guide_en.html">Open R joins <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">06</span><span class="pill">Intermediate</span><span class="pill">Model selection</span></div>
+              <h3>Choosing Regression Models and R Functions</h3>
+              <p>Map outcome types, dependence structures, nonlinearities, counts, survival data, and mixed effects to appropriate models and R functions.</p>
+              <p class="topic-line">lm · glm · mixed models · survival · counts · diagnostics</p>
+              <a class="course-link" href="catalog/r-notes/regression_models_function_guide_en.html">Open regression model selection <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">07</span><span class="pill">Beginner–Advanced</span><span class="pill">Applications</span></div>
+              <h3>R Shiny</h3>
+              <p>Build reactive applications from the first UI and server functions through modules, validation, testing, performance, and maintainable deployment.</p>
+              <p class="topic-line">reactivity · UI · server · modules · testing · deployment</p>
+              <a class="course-link" href="catalog/r-notes/shiny_tutorial_en.html">Open the Shiny guide <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">08</span><span class="pill">Intermediate</span><span class="pill">Tidy evaluation</span></div>
+              <h3>Mastering Tidy Evaluation and !! Unquote</h3>
+              <p>Understand data masking, quosures, embracing, injection, dynamic names, and safe reusable dplyr and ggplot2 programming patterns.</p>
+              <p class="topic-line">rlang · quosures · !! · {{ }} · data masking · injection</p>
+              <a class="course-link" href="catalog/r-notes/tidy_eval_unquote_en.html">Open tidy evaluation <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">09</span><span class="pill">Intermediate</span><span class="pill">Modeling workflow</span></div>
+              <h3>tidymodels Functions</h3>
+              <p>Build repeatable preprocessing, model specification, resampling, tuning, workflow sets, evaluation, and finalization pipelines.</p>
+              <p class="topic-line">recipes · parsnip · workflows · rsample · tune · yardstick</p>
+              <a class="course-link" href="catalog/r-notes/tidymodels_functions_en.html">Open tidymodels <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </section>
+
+        <section class="repo-section" id="repo-html" aria-labelledby="repo-html-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 04 · Document structure</span>
+              <h3 id="repo-html-title">HTML Notes</h3>
+              <p>A detailed bridge between reproducible R Markdown authoring and the semantic HTML, metadata, assets, and accessibility of the final web document.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">1 guide</span><a class="repo-source" href="https://github.com/MooseWEB3/HTML_Notes" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">All levels</span><span class="pill">HTML publishing</span></div>
+              <h3>Using R Markdown to Build HTML</h3>
+              <p>Follow the full rendering pipeline from YAML and Markdown through knitr and Pandoc to semantic HTML, CSS, JavaScript, accessibility, and deployment.</p>
+              <p class="topic-line">R Markdown · Pandoc · semantic HTML · assets · accessibility</p>
+              <a class="course-link" href="catalog/html-notes/HTML_RMarkdown_Guide_en.html">Open the HTML guide <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </section>
+
+        <section class="repo-section" id="repo-css" aria-labelledby="repo-css-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 05 · Visual systems</span>
+              <h3 id="repo-css-title">CSS Notes</h3>
+              <p>A complete practical reference for styling documents and applications—from the cascade and box model to responsive components and modern layout.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">1 guide</span><a class="repo-source" href="https://github.com/MooseWEB3/CSS_Notes" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Beginner–Advanced</span><span class="pill">Responsive design</span></div>
+              <h3>A Practical Guide to CSS</h3>
+              <p>Learn selectors, specificity, the cascade, spacing, typography, Flexbox, Grid, responsive design, components, animation, accessibility, and maintainable architecture.</p>
+              <p class="topic-line">cascade · box model · Flexbox · Grid · responsive · accessibility</p>
+              <a class="course-link" href="catalog/css-notes/CSS_Guide_en.html">Open the CSS guide <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </section>
+
+        <section class="repo-section" id="repo-javascript" aria-labelledby="repo-javascript-title">
+          <header class="repo-heading">
+            <div>
+              <span class="repo-label">Repository 06 · Browser programming</span>
+              <h3 id="repo-javascript-title">JavaScript Notes</h3>
+              <p>Build the web platform foundation first, then add practical JavaScript language, DOM, event, data, module, and asynchronous programming skills.</p>
+            </div>
+            <div class="repo-actions"><span class="repo-count">2 guides</span><a class="repo-source" href="https://github.com/MooseWEB3/Javascript_Notes" target="_blank" rel="noreferrer">Source repository ↗</a></div>
+          </header>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">01</span><span class="pill">Beginner–Intermediate</span><span class="pill">JavaScript</span></div>
+              <h3>A Practical Guide to JavaScript</h3>
+              <p>Learn values, functions, arrays, objects, modules, the DOM, events, asynchronous work, APIs, errors, testing, performance, and secure browser patterns.</p>
+              <p class="topic-line">language · DOM · events · modules · async · APIs · testing</p>
+              <a class="course-link" href="catalog/javascript-notes/javascript_guide_en.html">Open JavaScript <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+            <article class="course-card">
+              <div class="course-meta"><span class="pill pill-number">02</span><span class="pill">Beginner</span><span class="pill">Web foundations</span></div>
+              <h3>Web Development Fundamentals</h3>
+              <p>Understand browsers, HTTP, semantic HTML, CSS, JavaScript, accessibility, responsive design, developer tools, deployment, performance, and security.</p>
+              <p class="topic-line">web platform · HTTP · HTML · CSS · JavaScript · deployment</p>
+              <a class="course-link" href="catalog/javascript-notes/web_development_guide_en.html">Open web development <span class="arrow" aria-hidden="true">→</span></a>
+            </article>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -710,22 +894,22 @@
         </header>
         <div class="tracks">
           <article class="track-card">
-            <span class="track-label">New learner</span>
-            <h3>Understand and prepare data</h3>
-            <p>Build a strong foundation before making formal comparisons.</p>
-            <ol><li>Python fundamentals</li><li>Data processing</li><li>Text and date-time handling</li><li>Python OOP</li><li>Advanced Python and software development</li></ol>
+            <span class="track-label">Web developer</span>
+            <h3>From page structure to behavior</h3>
+            <p>Understand the platform, build accessible layouts, and add reliable browser behavior.</p>
+            <ol><li>Web Development Fundamentals</li><li>HTML publishing</li><li>CSS</li><li>JavaScript</li><li>Software Development Fundamentals</li></ol>
           </article>
           <article class="track-card">
             <span class="track-label">Data analyst</span>
-            <h3>From tables to models</h3>
-            <p>Create analysis-ready data and explain outcomes with interpretable models.</p>
-            <ol><li>Python fundamentals</li><li>Data processing and dplyr</li><li>Text and date-time handling</li><li>Statistical tests</li><li>Regression</li></ol>
+            <h3>From raw tables to evidence</h3>
+            <p>Prepare data in Python or R, choose defensible analyses, and publish reproducible results.</p>
+            <ol><li>Python Fundamentals</li><li>Python data processing or R joins</li><li>Biostatistics</li><li>Regression model selection</li><li>Quarto publishing</li></ol>
           </article>
           <article class="track-card">
-            <span class="track-label">Technical author</span>
-            <h3>Publish reproducible work</h3>
-            <p>Turn code and results into a durable learning resource or report.</p>
-            <ol><li>Python fundamentals and advanced Python</li><li>Software development fundamentals</li><li>Choose an analysis or design guide</li><li>Quarto publishing</li></ol>
+            <span class="track-label">Modeler &amp; researcher</span>
+            <h3>From inference to machine learning</h3>
+            <p>Connect research design, statistical foundations, predictive modeling, and interpretable validation.</p>
+            <ol><li>Statistical Tests or Biostatistics</li><li>Regression</li><li>tidymodels</li><li>High-Dimensional Regression</li><li>Supervised and Unsupervised ML</li></ol>
           </article>
         </div>
       </div>
@@ -735,10 +919,10 @@
       <div class="container">
         <div class="about-panel">
           <div>
-            <span class="section-kicker">About MooseWeb3 Python Notes</span>
+            <span class="section-kicker">About the MooseWeb3 Learning Hub</span>
             <h2 id="about-title">Learn the reasoning—not just the command.</h2>
-            <p>The collection is designed for readers who want practical code and the judgment behind it. Every guide connects the question, the data, the method, the assumptions, and the final interpretation.</p>
-            <a class="button button-secondary" href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">View the repository <span class="arrow" aria-hidden="true">↗</span></a>
+            <p>This hub unifies six MooseWeb3 repositories for readers who want practical code and the judgment behind it. Every guide keeps its source repository visible while the complete published collection remains accessible from one site.</p>
+            <a class="button button-secondary" href="https://github.com/MooseWEB3" target="_blank" rel="noreferrer">View all MooseWeb3 repositories <span class="arrow" aria-hidden="true">↗</span></a>
           </div>
           <div class="principles">
             <div class="principle"><span class="principle-icon" aria-hidden="true">01</span><div><strong>Beginner-friendly</strong><span>Plain-language explanations build up to practical technical detail.</span></div></div>
@@ -752,10 +936,10 @@
 
   <footer class="site-footer">
     <div class="footer-grid">
-      <div><strong>MooseWeb3 · Python Learning Hub</strong><p>Python foundations, data, advanced design, software engineering, statistics, modeling, and reproducible publishing.</p></div>
+      <div><strong>MooseWeb3 · Code, Data &amp; Modeling Hub</strong><p>28 browser-ready guides from six repositories: Python, R, statistics, machine learning, HTML, CSS, and JavaScript.</p></div>
       <nav class="footer-links" aria-label="Footer navigation">
-        <a href="#learning-path">Learning path</a>
-        <a href="#course-library">All courses</a>
+        <a href="#repositories">Repositories</a>
+        <a href="#course-library">All guides</a>
         <a href="https://github.com/MooseWEB3/Python_Notes" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
     </div>

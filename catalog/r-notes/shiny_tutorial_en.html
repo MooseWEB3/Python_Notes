@@ -1,0 +1,1670 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 Advanced R guide">
+  <meta name="description" content="A detailed, example-driven tutorial
+for building reliable interactive web applications with R Shiny.">
+  <title>R Shiny: From First App to Maintainable Applications</title>
+  <style>
+  :root {
+    --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+    --text: #172033; --muted: #61708a; --line: #dbe3ee;
+    --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+    --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+  }
+  html[data-theme="dark"] {
+    --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+    --text: #e7eef8; --muted: #9babc2; --line: #283750;
+    --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+    --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.72;
+  }
+  html[lang^="zh"] body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Inter, ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.82;
+  }
+  a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+  .progress {
+    position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 15; display: flex; align-items: center;
+    justify-content: space-between; min-height: 58px; padding: 0 4vw;
+    background: color-mix(in srgb, var(--surface) 91%, transparent);
+    border-bottom: 1px solid var(--line); backdrop-filter: blur(16px);
+  }
+  .brand { font-weight: 750; letter-spacing: -.02em; }
+  .actions { display: flex; align-items: center; gap: .6rem; }
+  .button {
+    display: inline-flex; align-items: center; border: 1px solid var(--line);
+    border-radius: 999px; padding: .38rem .75rem; color: var(--text);
+    background: var(--surface); font: inherit; font-size: .86rem;
+    text-decoration: none; cursor: pointer;
+  }
+  .button:hover { border-color: var(--accent); }
+  .hero {
+    padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%),
+      linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: .8rem; font-size: .78rem;
+    letter-spacing: .14em; text-transform: uppercase; opacity: .82;
+  }
+  .hero h1 {
+    max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+    line-height: 1.04; letter-spacing: -.045em;
+  }
+  html[lang^="zh"] .hero h1 { letter-spacing: -.025em; line-height: 1.12; }
+  .hero p {
+    max-width: 780px; margin: 1.25rem 0 0;
+    font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9;
+  }
+  .hero .personal-note {
+    width: fit-content; max-width: 100%; margin-top: .9rem; padding: .4rem .72rem;
+    border: 1px solid rgba(255,255,255,.38); border-radius: 8px;
+    background: rgba(255,255,255,.12); font-size: .9rem; font-weight: 650; opacity: 1;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+  .badge {
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem;
+  }
+  .shell {
+    display: grid; grid-template-columns: 260px minmax(0, 820px);
+    gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .toc {
+    position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px);
+    overflow: auto; padding-right: 1rem; scrollbar-width: thin;
+  }
+  .toc > h2 {
+    margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted);
+  }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc ul ul { padding-left: .85rem; font-size: .88rem; }
+  .toc li { margin: .22rem 0; }
+  .toc a {
+    display: block; padding: .22rem .5rem; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+  .content { min-width: 0; }
+  .notice {
+    margin: 0 0 2rem; padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    background: var(--surface-2); color: var(--muted); font-size: .92rem;
+  }
+  .content h1, .content h2, .content h3 {
+    scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em;
+  }
+  html[lang^="zh"] .content h1,
+  html[lang^="zh"] .content h2,
+  html[lang^="zh"] .content h3 { line-height: 1.35; letter-spacing: -.015em; }
+  .content h1 {
+    margin: 3.5rem 0 1rem; padding-top: .4rem;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line);
+  }
+  .content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+  .content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+  .content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+  .content p, .content li { color: var(--text); }
+  .content ul, .content ol { padding-left: 1.4rem; }
+  .content li { margin: .3rem 0; }
+  blockquote {
+    margin: 1.5rem 0; padding: .25rem 1.15rem;
+    border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0;
+    background: var(--surface-2);
+  }
+  blockquote p { color: var(--muted) !important; }
+  table {
+    width: 100%; margin: 1.4rem 0; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 12px;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--surface); box-shadow: var(--shadow); font-size: .94rem;
+  }
+  th, td {
+    padding: .72rem .85rem; border: 0; border-bottom: 1px solid var(--line);
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    padding: .12em .34em; border-radius: 5px; background: var(--surface-2);
+    color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  div.sourceCode, pre {
+    margin: 1.3rem 0; overflow: auto; border: 1px solid #263247;
+    border-radius: 12px; background: var(--code); box-shadow: var(--shadow);
+  }
+  pre { padding: 1rem 1.1rem; tab-size: 2; }
+  div.sourceCode pre { margin: 0; border: 0; box-shadow: none; }
+  pre code {
+    padding: 0; color: var(--code-text); background: transparent;
+    font-size: .88rem; white-space: pre;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .footer {
+    padding: 2rem; border-top: 1px solid var(--line); color: var(--muted);
+    background: var(--surface); text-align: center; font-size: .88rem;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+    .toc {
+      position: static; max-height: 320px; padding: 1rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+    }
+    .hero { padding: 4rem 1.2rem 3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+    .topbar { padding: 0 1rem; }
+    table { display: block; max-width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 520px) {
+    .brand { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .button { padding: .32rem .6rem; font-size: .8rem; }
+  }
+  @media print {
+    .topbar, .toc, .progress { display: none !important; }
+    .hero { padding: 2rem; background: white; color: black; }
+    .shell { display: block; max-width: none; padding: 1rem; }
+    table, div.sourceCode, pre { box-shadow: none; break-inside: avoid; }
+    a { color: black; }
+  }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · R Shiny</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · SHINY · REACTIVE WEB APPLICATIONS</span>
+    <h1>R Shiny: From First App to Maintainable Applications</h1>
+    <p>A practical guide to UI, server logic, reactivity, events,
+modules, dynamic interfaces, files, caching, testing, and deployment</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">MooseWeb3</span>
+      <span class="badge">Shiny 1.14.0</span>
+      <span class="badge">Reactive programming</span>
+      <span class="badge">Runnable examples</span>
+      <span class="badge">R Markdown</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#what-shiny-is-and-how-to-use-this-guide"
+      id="toc-what-shiny-is-and-how-to-use-this-guide">1. What Shiny is
+      and how to use this guide</a></li>
+      <li><a href="#installation-app-formats-and-running-an-app"
+      id="toc-installation-app-formats-and-running-an-app">2.
+      Installation, app formats, and running an app</a>
+      <ul>
+      <li><a href="#the-single-file-app.r-format"
+      id="toc-the-single-file-app.r-format">2.1 The single-file
+      <code>app.R</code> format</a></li>
+      <li><a href="#ui.r-and-server.r" id="toc-ui.r-and-server.r">2.2
+      <code>ui.R</code> and <code>server.R</code></a></li>
+      </ul></li>
+      <li><a href="#the-four-objects-that-explain-most-shiny-code"
+      id="toc-the-four-objects-that-explain-most-shiny-code">3. The four
+      objects that explain most Shiny code</a></li>
+      <li><a href="#building-the-user-interface"
+      id="toc-building-the-user-interface">4. Building the user
+      interface</a>
+      <ul>
+      <li><a href="#page-and-layout-functions"
+      id="toc-page-and-layout-functions">4.1 Page and layout
+      functions</a></li>
+      <li><a href="#html-tags-and-safe-styling"
+      id="toc-html-tags-and-safe-styling">4.2 HTML tags and safe
+      styling</a></li>
+      </ul></li>
+      <li><a href="#inputs-values-coming-from-the-browser"
+      id="toc-inputs-values-coming-from-the-browser">5. Inputs: values
+      coming from the browser</a></li>
+      <li><a href="#outputs-and-matching-render-functions"
+      id="toc-outputs-and-matching-render-functions">6. Outputs and
+      matching render functions</a></li>
+      <li><a href="#reactivity-the-core-mental-model"
+      id="toc-reactivity-the-core-mental-model">7. Reactivity: the core
+      mental model</a>
+      <ul>
+      <li><a href="#dependency-tracking-and-invalidation"
+      id="toc-dependency-tracking-and-invalidation">7.1 Dependency
+      tracking and invalidation</a></li>
+      <li><a href="#reactive-expressions-versus-observers"
+      id="toc-reactive-expressions-versus-observers">7.2 Reactive
+      expressions versus observers</a></li>
+      <li><a href="#isolate" id="toc-isolate">7.3
+      <code>isolate()</code></a></li>
+      </ul></li>
+      <li><a href="#first-complete-app-interactive-mtcars-explorer"
+      id="toc-first-complete-app-interactive-mtcars-explorer">8. First
+      complete app: interactive <code>mtcars</code> explorer</a></li>
+      <li><a href="#missing-inputs-validation-and-user-facing-errors"
+      id="toc-missing-inputs-validation-and-user-facing-errors">9.
+      Missing inputs, validation, and user-facing errors</a>
+      <ul>
+      <li><a href="#req-for-prerequisites"
+      id="toc-req-for-prerequisites">9.1 <code>req()</code> for
+      prerequisites</a></li>
+      <li><a href="#validate-and-need-for-explanatory-messages"
+      id="toc-validate-and-need-for-explanatory-messages">9.2
+      <code>validate()</code> and <code>need()</code> for explanatory
+      messages</a></li>
+      </ul></li>
+      <li><a href="#event-driven-behavior-with-bindevent"
+      id="toc-event-driven-behavior-with-bindevent">10. Event-driven
+      behavior with <code>bindEvent()</code></a></li>
+      <li><a href="#mutable-reactive-state"
+      id="toc-mutable-reactive-state">11. Mutable reactive state</a>
+      <ul>
+      <li><a href="#one-value-with-reactiveval"
+      id="toc-one-value-with-reactiveval">11.1 One value with
+      <code>reactiveVal()</code></a></li>
+      <li><a href="#several-values-with-reactivevalues"
+      id="toc-several-values-with-reactivevalues">11.2 Several values
+      with <code>reactiveValues()</code></a></li>
+      </ul></li>
+      <li><a href="#updating-inputs-and-generating-dynamic-ui"
+      id="toc-updating-inputs-and-generating-dynamic-ui">12. Updating
+      inputs and generating dynamic UI</a>
+      <ul>
+      <li><a href="#update-functions" id="toc-update-functions">12.1
+      <code>update*()</code> functions</a></li>
+      <li><a href="#conditionalpanel-versus-renderui"
+      id="toc-conditionalpanel-versus-renderui">12.2
+      <code>conditionalPanel()</code> versus
+      <code>renderUI()</code></a></li>
+      </ul></li>
+      <li><a href="#uploads-downloads-and-temporary-files"
+      id="toc-uploads-downloads-and-temporary-files">13. Uploads,
+      downloads, and temporary files</a>
+      <ul>
+      <li><a href="#csv-upload" id="toc-csv-upload">13.1 CSV
+      upload</a></li>
+      <li><a href="#download-handler" id="toc-download-handler">13.2
+      Download handler</a></li>
+      </ul></li>
+      <li><a href="#modules-reusable-testable-features"
+      id="toc-modules-reusable-testable-features">14. Modules: reusable,
+      testable features</a></li>
+      <li><a href="#performance-debounce-caching-and-scope"
+      id="toc-performance-debounce-caching-and-scope">15. Performance:
+      debounce, caching, and scope</a>
+      <ul>
+      <li><a href="#reduce-noisy-invalidations"
+      id="toc-reduce-noisy-invalidations">15.1 Reduce noisy
+      invalidations</a></li>
+      <li><a href="#cache-expensive-calculations"
+      id="toc-cache-expensive-calculations">15.2 Cache expensive
+      calculations</a></li>
+      <li><a href="#put-work-in-the-right-scope"
+      id="toc-put-work-in-the-right-scope">15.3 Put work in the right
+      scope</a></li>
+      </ul></li>
+      <li><a href="#long-running-work-with-extendedtask"
+      id="toc-long-running-work-with-extendedtask">16. Long-running work
+      with <code>ExtendedTask</code></a></li>
+      <li><a href="#testing-and-debugging"
+      id="toc-testing-and-debugging">17. Testing and debugging</a>
+      <ul>
+      <li><a href="#extract-pure-functions-first"
+      id="toc-extract-pure-functions-first">17.1 Extract pure functions
+      first</a></li>
+      <li><a href="#test-server-logic-with-testserver"
+      id="toc-test-server-logic-with-testserver">17.2 Test server logic
+      with <code>testServer()</code></a></li>
+      <li><a href="#inspect-the-reactive-graph"
+      id="toc-inspect-the-reactive-graph">17.3 Inspect the reactive
+      graph</a></li>
+      </ul></li>
+      <li><a href="#project-organization-and-dependency-boundaries"
+      id="toc-project-organization-and-dependency-boundaries">18.
+      Project organization and dependency boundaries</a></li>
+      <li><a href="#deployment-and-production-checklist"
+      id="toc-deployment-and-production-checklist">19. Deployment and
+      production checklist</a></li>
+      <li><a
+      href="#complete-example-upload-filter-visualize-and-download"
+      id="toc-complete-example-upload-filter-visualize-and-download">20.
+      Complete example: upload, filter, visualize, and download</a></li>
+      <li><a href="#function-decision-table"
+      id="toc-function-decision-table">21. Function decision
+      table</a></li>
+      <li><a href="#common-mistakes" id="toc-common-mistakes">22. Common
+      mistakes</a></li>
+      <li><a href="#official-references-and-next-steps"
+      id="toc-official-references-and-next-steps">23. Official
+      references and next steps</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">Version contract: this guide targets Shiny
+1.14.0, the current CRAN release on 2026-08-12. Examples use the modern
+moduleServer(), bindEvent(), bindCache(), and testServer() interfaces.
+App code is displayed rather than launched while this portable HTML is
+built.</div>
+      <section id="what-shiny-is-and-how-to-use-this-guide"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">1. What Shiny is and how to use this
+      guide</h1>
+      <p><a href="https://shiny.posit.co/">Shiny</a> is an R framework
+      for building interactive web applications. You describe the
+      interface with R functions, perform calculations in R, and let
+      Shiny maintain the connection between browser inputs and R
+      outputs. You can build useful applications without writing
+      JavaScript, although HTML, CSS, and JavaScript remain available
+      when you need deeper customization.</p>
+      <p>As of 2026-08-12, the current CRAN release is Shiny 1.14.0. The
+      most important idea is not a particular widget. It is the reactive
+      dependency graph:</p>
+      <pre class="text"><code>browser input
+     ↓
+reactive expression
+     ↓
+render function
+     ↓
+browser output</code></pre>
+      <p>Use this guide in layers:</p>
+      <ol type="1">
+      <li>Run the first app and understand <code>ui</code>,
+      <code>server</code>, <code>input</code>, and
+      <code>output</code>.</li>
+      <li>Learn reactive expressions before adding many widgets.</li>
+      <li>Use validation and event control to make behavior
+      predictable.</li>
+      <li>Move repeated features into modules.</li>
+      <li>Add caching, tests, and deployment controls only after the
+      data flow is clear.</li>
+      </ol>
+      <p>Shiny for R is different from Shiny for Python. This tutorial
+      covers the R package.</p>
+      </section>
+      <section id="installation-app-formats-and-running-an-app"
+      class="level1">
+      <h1>2. Installation, app formats, and running an app</h1>
+      <p>Install Shiny once, then load it in each R session:</p>
+      <div class="sourceCode" id="cb2"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;shiny&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;shiny&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">runExample</span>(<span class="st">&quot;01_hello&quot;</span>)</span></code></pre></div>
+      <section id="the-single-file-app.r-format" class="level2">
+      <h2>2.1 The single-file <code>app.R</code> format</h2>
+      <p>The simplest project is a directory containing one
+      <code>app.R</code> file:</p>
+      <pre class="text"><code>my_app/
+└── app.R</code></pre>
+      <p><code>app.R</code> creates a UI object, a server function, and
+      passes both to <code>shinyApp()</code>:</p>
+      <div class="sourceCode" id="cb4"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">&quot;Hello Shiny&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;n&quot;</span>, <span class="st">&quot;Number of observations&quot;</span>, <span class="dv">10</span>, <span class="dv">200</span>, <span class="dv">50</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plotOutput</span>(<span class="st">&quot;histogram&quot;</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>histogram <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hist</span>(<span class="fu">rnorm</span>(input<span class="sc">$</span>n), <span class="at">col =</span> <span class="st">&quot;#1769aa&quot;</span>, <span class="at">border =</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code></pre></div>
+      <p>Run the directory from R:</p>
+      <div class="sourceCode" id="cb5"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runApp</span>(<span class="st">&quot;my_app&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Useful during development</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runApp</span>(<span class="st">&quot;my_app&quot;</span>, <span class="at">launch.browser =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+      <p>RStudio’s <strong>Run App</strong> button performs the same
+      basic task. Stop a local app with the console’s Stop button or by
+      interrupting the R process.</p>
+      </section>
+      <section id="ui.r-and-server.r" class="level2">
+      <h2>2.2 <code>ui.R</code> and <code>server.R</code></h2>
+      <p>Older and larger projects may split the app into
+      <code>ui.R</code> and <code>server.R</code>. This format still
+      works, but <code>app.R</code> plus ordinary helper files is often
+      easier to navigate. Whichever format you choose, keep one
+      convention per project.</p>
+      </section>
+      </section>
+      <section id="the-four-objects-that-explain-most-shiny-code"
+      class="level1">
+      <h1>3. The four objects that explain most Shiny code</h1>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Object</th>
+      <th>Role</th>
+      <th>Typical use</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>ui</code></td>
+      <td>Describes browser structure and controls</td>
+      <td><code>fluidPage()</code>, <code>sliderInput()</code>,
+      <code>plotOutput()</code></td>
+      </tr>
+      <tr>
+      <td><code>server</code></td>
+      <td>Runs once per browser session</td>
+      <td>Create reactives, outputs, observers, and cleanup hooks</td>
+      </tr>
+      <tr>
+      <td><code>input</code></td>
+      <td>Read-only, list-like reactive values from the browser</td>
+      <td><code>input$bins</code>, <code>input$species</code></td>
+      </tr>
+      <tr>
+      <td><code>output</code></td>
+      <td>List-like registry of render instructions</td>
+      <td><code>output$plot &lt;- renderPlot({...})</code></td>
+      </tr>
+      <tr>
+      <td><code>session</code></td>
+      <td>Current client connection and namespace</td>
+      <td>Update inputs, send messages, end-session cleanup</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>The string ID connects the browser placeholder to server
+      logic:</p>
+      <div class="sourceCode" id="cb6"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UI: reserve a location named &quot;summary&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">textOutput</span>(<span class="st">&quot;summary&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Server: define how &quot;summary&quot; is calculated</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>summary <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(<span class="st">&quot;Current value:&quot;</span>, input<span class="sc">$</span>x)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>The names must match exactly. A typo usually produces an empty
+      output rather than a helpful compile-time error.</p>
+      </section>
+      <section id="building-the-user-interface" class="level1">
+      <h1>4. Building the user interface</h1>
+      <section id="page-and-layout-functions" class="level2">
+      <h2>4.1 Page and layout functions</h2>
+      <p>Classic Shiny layouts are composed from nested tag objects:</p>
+      <div class="sourceCode" id="cb7"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">&quot;Iris explorer&quot;</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sidebarLayout</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarPanel</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">selectInput</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;species&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Species&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">choices =</span> <span class="fu">unique</span>(iris<span class="sc">$</span>Species),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">selected =</span> <span class="st">&quot;setosa&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plotOutput</span>(<span class="st">&quot;scatter&quot;</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tableOutput</span>(<span class="st">&quot;rows&quot;</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Useful containers include:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Purpose</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>fluidPage()</code></td>
+      <td>Responsive Bootstrap page</td>
+      </tr>
+      <tr>
+      <td><code>sidebarLayout()</code></td>
+      <td>Sidebar plus main content</td>
+      </tr>
+      <tr>
+      <td><code>fluidRow()</code> / <code>column()</code></td>
+      <td>Twelve-column responsive grid</td>
+      </tr>
+      <tr>
+      <td><code>tabsetPanel()</code> / <code>tabPanel()</code></td>
+      <td>Tabbed content</td>
+      </tr>
+      <tr>
+      <td><code>navbarPage()</code></td>
+      <td>Top-level navigation</td>
+      </tr>
+      <tr>
+      <td><code>fillPage()</code> / <code>fillRow()</code> /
+      <code>fillCol()</code></td>
+      <td>Fill available browser space</td>
+      </tr>
+      <tr>
+      <td><code>div()</code>, <code>span()</code>,
+      <code>tags$...</code></td>
+      <td>Raw HTML tag composition</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>For newer dashboard-like layouts and theming, Shiny imports
+      <code>bslib</code>; <code>bslib::page_sidebar()</code>,
+      <code>page_navbar()</code>, <code>card()</code>, and
+      <code>value_box()</code> provide a modern alternative while
+      preserving the same server model.</p>
+      </section>
+      <section id="html-tags-and-safe-styling" class="level2">
+      <h2>4.2 HTML tags and safe styling</h2>
+      <div class="sourceCode" id="cb8"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">head</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">style</span>(<span class="fu">HTML</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">      .important { color: #0e8f83; font-weight: 700; }</span><span class="sc">\n</span><span class="st">    &quot;</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">h1</span>(<span class="st">&quot;Sales monitor&quot;</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">p</span>(<span class="at">class =</span> <span class="st">&quot;important&quot;</span>, <span class="st">&quot;Updated when filters change.&quot;</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">hr</span>(),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  tags<span class="sc">$</span><span class="fu">a</span>(<span class="at">href =</span> <span class="st">&quot;https://shiny.posit.co/&quot;</span>, <span class="st">&quot;Official Shiny website&quot;</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Prefer <code>www/styles.css</code> for substantial CSS. Avoid
+      inserting untrusted user text with <code>HTML()</code> because it
+      disables HTML escaping. Ordinary character strings are escaped by
+      <code>htmltools</code>.</p>
+      </section>
+      </section>
+      <section id="inputs-values-coming-from-the-browser"
+      class="level1">
+      <h1>5. Inputs: values coming from the browser</h1>
+      <p>Every input has an <code>inputId</code>, a label, and
+      type-specific arguments. Its current value appears at
+      <code>input$inputId</code>.</p>
+      <div class="sourceCode" id="cb9"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textInput</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;Name&quot;</span>, <span class="at">value =</span> <span class="st">&quot;Ada&quot;</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;Age&quot;</span>, <span class="at">value =</span> <span class="dv">30</span>, <span class="at">min =</span> <span class="dv">0</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;range&quot;</span>, <span class="st">&quot;Range&quot;</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">100</span>, <span class="at">value =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">80</span>)),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">selectInput</span>(<span class="st">&quot;group&quot;</span>, <span class="st">&quot;Group&quot;</span>, <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>)),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">checkboxInput</span>(<span class="st">&quot;smooth&quot;</span>, <span class="st">&quot;Add smoother&quot;</span>, <span class="at">value =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">checkboxGroupInput</span>(<span class="st">&quot;vars&quot;</span>, <span class="st">&quot;Variables&quot;</span>, <span class="at">choices =</span> <span class="fu">names</span>(mtcars)),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">radioButtons</span>(<span class="st">&quot;format&quot;</span>, <span class="st">&quot;Format&quot;</span>, <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;Table&quot;</span>, <span class="st">&quot;Plot&quot;</span>)),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dateInput</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;Date&quot;</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">actionButton</span>(<span class="st">&quot;go&quot;</span>, <span class="st">&quot;Calculate&quot;</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Important value shapes:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Input</th>
+      <th>Server value</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>textInput()</code></td>
+      <td>Length-one character string</td>
+      </tr>
+      <tr>
+      <td><code>numericInput()</code></td>
+      <td>Number, sometimes <code>NA</code> during editing</td>
+      </tr>
+      <tr>
+      <td><code>sliderInput()</code></td>
+      <td>One number or a two-number range</td>
+      </tr>
+      <tr>
+      <td><code>selectInput(multiple = TRUE)</code></td>
+      <td>Character vector, possibly empty/<code>NULL</code></td>
+      </tr>
+      <tr>
+      <td><code>checkboxInput()</code></td>
+      <td><code>TRUE</code> or <code>FALSE</code></td>
+      </tr>
+      <tr>
+      <td><code>actionButton()</code></td>
+      <td>Integer click count; use it as an event, not business
+      data</td>
+      </tr>
+      <tr>
+      <td><code>fileInput()</code></td>
+      <td>Data frame describing the uploaded temporary file</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>Never assign directly to <code>input$x</code>. To change a
+      control from the server, use an <code>update*()</code>
+      function.</p>
+      </section>
+      <section id="outputs-and-matching-render-functions"
+      class="level1">
+      <h1>6. Outputs and matching render functions</h1>
+      <p>Most visible outputs use a UI placeholder and a server
+      renderer.</p>
+      <table>
+      <thead>
+      <tr>
+      <th>UI function</th>
+      <th>Server function</th>
+      <th>Expected value</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>textOutput()</code></td>
+      <td><code>renderText()</code></td>
+      <td>Character text</td>
+      </tr>
+      <tr>
+      <td><code>verbatimTextOutput()</code></td>
+      <td><code>renderPrint()</code></td>
+      <td>Printed R output</td>
+      </tr>
+      <tr>
+      <td><code>plotOutput()</code></td>
+      <td><code>renderPlot()</code></td>
+      <td>Base or grid plot</td>
+      </tr>
+      <tr>
+      <td><code>tableOutput()</code></td>
+      <td><code>renderTable()</code></td>
+      <td>Data frame or matrix</td>
+      </tr>
+      <tr>
+      <td><code>uiOutput()</code></td>
+      <td><code>renderUI()</code></td>
+      <td>HTML tags</td>
+      </tr>
+      <tr>
+      <td><code>imageOutput()</code></td>
+      <td><code>renderImage()</code></td>
+      <td>Image metadata list</td>
+      </tr>
+      <tr>
+      <td><code>downloadButton()</code></td>
+      <td><code>downloadHandler()</code></td>
+      <td>Download response</td>
+      </tr>
+      </tbody>
+      </table>
+      <div class="sourceCode" id="cb10"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>message <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&quot;Hello&quot;</span>, input<span class="sc">$</span>name)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>model <span class="ot">&lt;-</span> <span class="fu">renderPrint</span>({</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> wt <span class="sc">+</span> hp, <span class="at">data =</span> mtcars))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(mtcars<span class="sc">$</span>wt, mtcars<span class="sc">$</span>mpg, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;#1769aa&quot;</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(mtcars, input<span class="sc">$</span>n)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">striped =</span> <span class="cn">TRUE</span>, <span class="at">bordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Use a widget-specific output/render pair for htmlwidgets, such
+      as <code>DT::DTOutput()</code> with <code>DT::renderDT()</code> or
+      <code>plotly::plotlyOutput()</code> with
+      <code>plotly::renderPlotly()</code>.</p>
+      </section>
+      <section id="reactivity-the-core-mental-model" class="level1">
+      <h1>7. Reactivity: the core mental model</h1>
+      <section id="dependency-tracking-and-invalidation" class="level2">
+      <h2>7.1 Dependency tracking and invalidation</h2>
+      <p>When code inside a reactive consumer reads <code>input$x</code>
+      or calls another reactive expression, Shiny records a dependency.
+      When an upstream value changes, downstream nodes become invalid.
+      They recalculate only when needed.</p>
+      <div class="sourceCode" id="cb11"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>filtered_rows <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  mtcars[mtcars<span class="sc">$</span>cyl <span class="sc">==</span> input<span class="sc">$</span>cyl, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>count <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(<span class="fu">nrow</span>(<span class="fu">filtered_rows</span>()), <span class="st">&quot;rows&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filtered_rows</span>()</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Notice the parentheses: <code>filtered_rows</code> is a
+      reactive expression object, while <code>filtered_rows()</code>
+      reads its current value.</p>
+      </section>
+      <section id="reactive-expressions-versus-observers"
+      class="level2">
+      <h2>7.2 Reactive expressions versus observers</h2>
+      <p>Use <code>reactive()</code> for a calculated value. Use
+      <code>observe()</code> for a side effect.</p>
+      <div class="sourceCode" id="cb12"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Returns a value and is lazy/cached</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>selected_data <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(iris, Species <span class="sc">%in%</span> input<span class="sc">$</span>species)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Performs a side effect and does not return a useful value</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">observe</span>({</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;Selected rows: &quot;</span>, <span class="fu">nrow</span>(<span class="fu">selected_data</span>()))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>A good rule is: data transformation belongs in a reactive
+      expression; notifications, input updates, logging, and writes
+      belong in an observer.</p>
+      </section>
+      <section id="isolate" class="level2">
+      <h2>7.3 <code>isolate()</code></h2>
+      <p><code>isolate()</code> reads a reactive value without creating
+      a dependency:</p>
+      <div class="sourceCode" id="cb13"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">observeEvent</span>(input<span class="sc">$</span>log_now, {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;Current filter: &quot;</span>, <span class="fu">isolate</span>(input<span class="sc">$</span>species))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Use it deliberately. Excessive isolation hides the dependency
+      graph and often creates stale interfaces.</p>
+      </section>
+      </section>
+      <section id="first-complete-app-interactive-mtcars-explorer"
+      class="level1">
+      <h1>8. First complete app: interactive <code>mtcars</code>
+      explorer</h1>
+      <p>Save the following as <code>app.R</code> and run
+      <code>shiny::runApp()</code> from its directory.</p>
+      <div class="sourceCode" id="cb14"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">&quot;mtcars explorer&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sidebarLayout</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarPanel</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">checkboxGroupInput</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;cyl&quot;</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Cylinders&quot;</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">choices =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(mtcars<span class="sc">$</span>cyl)),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">selected =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(mtcars<span class="sc">$</span>cyl))</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">selectInput</span>(</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;x&quot;</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;X variable&quot;</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">choices =</span> <span class="fu">c</span>(<span class="st">&quot;Weight&quot;</span> <span class="ot">=</span> <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;Horsepower&quot;</span> <span class="ot">=</span> <span class="st">&quot;hp&quot;</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sliderInput</span>(<span class="st">&quot;point_size&quot;</span>, <span class="st">&quot;Point size&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">textOutput</span>(<span class="st">&quot;summary&quot;</span>),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plotOutput</span>(<span class="st">&quot;scatter&quot;</span>, <span class="at">height =</span> <span class="dv">420</span>),</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tableOutput</span>(<span class="st">&quot;preview&quot;</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  cars <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>cyl)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    mtcars[mtcars<span class="sc">$</span>cyl <span class="sc">%in%</span> <span class="fu">as.numeric</span>(input<span class="sc">$</span>cyl), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>summary <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;%d cars; mean mpg = %.1f&quot;</span>,</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">nrow</span>(<span class="fu">cars</span>()),</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mean</span>(<span class="fu">cars</span>()<span class="sc">$</span>mpg)</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>scatter <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">cars</span>()[[input<span class="sc">$</span>x]]</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>      x,</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cars</span>()<span class="sc">$</span>mpg,</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> input<span class="sc">$</span>x,</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">&quot;mpg&quot;</span>,</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">cex =</span> input<span class="sc">$</span>point_size,</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="st">&quot;#1769aa&quot;</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grid</span>()</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>preview <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="fu">cars</span>(), <span class="dv">10</span>)</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">rownames =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code></pre></div>
+      <p>One reactive expression supplies three downstream outputs.
+      Filtering is therefore written once and cached until
+      <code>input$cyl</code> changes.</p>
+      </section>
+      <section id="missing-inputs-validation-and-user-facing-errors"
+      class="level1">
+      <h1>9. Missing inputs, validation, and user-facing errors</h1>
+      <section id="req-for-prerequisites" class="level2">
+      <h2>9.1 <code>req()</code> for prerequisites</h2>
+      <p><code>req()</code> stops the current reactive chain silently
+      when a required value is not truthy:</p>
+      <div class="sourceCode" id="cb15"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>uploaded <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req</span>(input<span class="sc">$</span>file)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(input<span class="sc">$</span>file<span class="sc">$</span>datapath, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Use <code>cancelOutput = TRUE</code> when the last valid output
+      should remain visible while a prerequisite is temporarily
+      missing:</p>
+      <div class="sourceCode" id="cb16"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req</span>(input<span class="sc">$</span>variable, <span class="at">cancelOutput =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hist</span>(<span class="fu">dataset</span>()[[input<span class="sc">$</span>variable]])</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      </section>
+      <section id="validate-and-need-for-explanatory-messages"
+      class="level2">
+      <h2>9.2 <code>validate()</code> and <code>need()</code> for
+      explanatory messages</h2>
+      <div class="sourceCode" id="cb17"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>scatter <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">validate</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">need</span>(<span class="fu">length</span>(input<span class="sc">$</span>vars) <span class="sc">==</span> <span class="dv">2</span>, <span class="st">&quot;Select exactly two variables.&quot;</span>),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">need</span>(<span class="fu">all</span>(input<span class="sc">$</span>vars <span class="sc">%in%</span> <span class="fu">names</span>(mtcars)), <span class="st">&quot;Unknown variable selected.&quot;</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(mtcars[[input<span class="sc">$</span>vars[<span class="dv">1</span>]]], mtcars[[input<span class="sc">$</span>vars[<span class="dv">2</span>]]])</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Use <code>req()</code> when no explanation is needed; use
+      <code>validate(need(...))</code> when the user needs a corrective
+      message. Do not expose database details, secrets, or full stack
+      traces in production error messages.</p>
+      </section>
+      </section>
+      <section id="event-driven-behavior-with-bindevent" class="level1">
+      <h1>10. Event-driven behavior with <code>bindEvent()</code></h1>
+      <p>Normal reactive code updates whenever any dependency changes.
+      Sometimes you want a calculation only after a button click. Modern
+      Shiny provides <code>bindEvent()</code> for reactive expressions,
+      observers, and render functions.</p>
+      <div class="sourceCode" id="cb18"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  input<span class="sc">$</span>x <span class="sc">^</span> input<span class="sc">$</span>power</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bindEvent</span>(input<span class="sc">$</span>calculate)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>result <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(<span class="st">&quot;Result:&quot;</span>, <span class="fu">result</span>())</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>For a side effect:</p>
+      <div class="sourceCode" id="cb19"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">observe</span>({</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">showNotification</span>(<span class="st">&quot;Settings saved&quot;</span>, <span class="at">type =</span> <span class="st">&quot;message&quot;</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bindEvent</span>(input<span class="sc">$</span>save, <span class="at">ignoreInit =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+      <p>Older code often uses <code>eventReactive()</code> and
+      <code>observeEvent()</code>. They remain valid.
+      <code>bindEvent()</code> is more composable and can also wrap
+      render functions and combine with <code>bindCache()</code>.</p>
+      <p>Key arguments:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Argument</th>
+      <th>Meaning</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>ignoreNULL = TRUE</code></td>
+      <td>Do not run for <code>NULL</code> or action-button value
+      <code>0</code></td>
+      </tr>
+      <tr>
+      <td><code>ignoreInit = TRUE</code></td>
+      <td>Do not run when the observer/reactive is first created</td>
+      </tr>
+      <tr>
+      <td><code>once = TRUE</code></td>
+      <td>Destroy an observer after its first execution</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="mutable-reactive-state" class="level1">
+      <h1>11. Mutable reactive state</h1>
+      <section id="one-value-with-reactiveval" class="level2">
+      <h2>11.1 One value with <code>reactiveVal()</code></h2>
+      <p>Calling without an argument reads the value; calling with an
+      argument sets it.</p>
+      <div class="sourceCode" id="cb20"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  count <span class="ot">&lt;-</span> <span class="fu">reactiveVal</span>(<span class="dv">0</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">observeEvent</span>(input<span class="sc">$</span>add, {</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="fu">count</span>() <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">observeEvent</span>(input<span class="sc">$</span>reset, {</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="dv">0</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>count <span class="ot">&lt;-</span> <span class="fu">renderText</span>(<span class="fu">count</span>())</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="several-values-with-reactivevalues" class="level2">
+      <h2>11.2 Several values with <code>reactiveValues()</code></h2>
+      <div class="sourceCode" id="cb21"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>state <span class="ot">&lt;-</span> <span class="fu">reactiveValues</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="cn">NULL</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">status =</span> <span class="st">&quot;idle&quot;</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">last_updated =</span> <span class="cn">NULL</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">observeEvent</span>(input<span class="sc">$</span>refresh, {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  state<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">&quot;loading&quot;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  state<span class="sc">$</span>data <span class="ot">&lt;-</span> <span class="fu">load_data</span>()</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  state<span class="sc">$</span>last_updated <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  state<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="st">&quot;ready&quot;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Only individual fields that are read become dependencies. Keep
+      session-specific state inside <code>server</code>; an object
+      created outside <code>server</code> is shared across sessions and
+      can leak one user’s state to another.</p>
+      </section>
+      </section>
+      <section id="updating-inputs-and-generating-dynamic-ui"
+      class="level1">
+      <h1>12. Updating inputs and generating dynamic UI</h1>
+      <section id="update-functions" class="level2">
+      <h2>12.1 <code>update*()</code> functions</h2>
+      <p>The server can change an existing browser control through
+      <code>session</code>:</p>
+      <div class="sourceCode" id="cb22"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">observeEvent</span>(input<span class="sc">$</span>dataset, {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">get</span>(input<span class="sc">$</span>dataset, <span class="st">&quot;package:datasets&quot;</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  numeric_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(data)[<span class="fu">vapply</span>(data, is.numeric, <span class="fu">logical</span>(<span class="dv">1</span>))]</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">updateSelectInput</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    session,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;variable&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">choices =</span> numeric_vars,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">selected =</span> numeric_vars[<span class="dv">1</span>]</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>There are matching functions such as
+      <code>updateTextInput()</code>, <code>updateSliderInput()</code>,
+      <code>updateCheckboxInput()</code>, and
+      <code>updateTabsetPanel()</code>.</p>
+      </section>
+      <section id="conditionalpanel-versus-renderui" class="level2">
+      <h2>12.2 <code>conditionalPanel()</code> versus
+      <code>renderUI()</code></h2>
+      <p><code>conditionalPanel()</code> hides or shows existing
+      browser-side UI:</p>
+      <div class="sourceCode" id="cb23"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conditionalPanel</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="st">&quot;input.plot_type == &#39;histogram&#39;&quot;</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sliderInput</span>(<span class="st">&quot;bins&quot;</span>, <span class="st">&quot;Bins&quot;</span>, <span class="at">min =</span> <span class="dv">5</span>, <span class="at">max =</span> <span class="dv">80</span>, <span class="at">value =</span> <span class="dv">30</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The condition is JavaScript syntax and is not a security
+      boundary. Hidden values can still be manipulated by a client.</p>
+      <p><code>renderUI()</code> creates UI on the server:</p>
+      <div class="sourceCode" id="cb24"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uiOutput</span>(<span class="st">&quot;parameter_ui&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>parameter_ui <span class="ot">&lt;-</span> <span class="fu">renderUI</span>({</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (input<span class="sc">$</span>model <span class="sc">==</span> <span class="st">&quot;linear&quot;</span>) {</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">checkboxInput</span>(<span class="st">&quot;intercept&quot;</span>, <span class="st">&quot;Include intercept&quot;</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sliderInput</span>(<span class="st">&quot;degree&quot;</span>, <span class="st">&quot;Polynomial degree&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p>Prefer updating a stable input over repeatedly destroying and
+      recreating it. Dynamic UI can reset values and makes the reactive
+      graph harder to inspect.</p>
+      </section>
+      </section>
+      <section id="uploads-downloads-and-temporary-files"
+      class="level1">
+      <h1>13. Uploads, downloads, and temporary files</h1>
+      <section id="csv-upload" class="level2">
+      <h2>13.1 CSV upload</h2>
+      <p><code>input$file</code> is a data frame with fields including
+      <code>name</code>, <code>size</code>, <code>type</code>, and
+      <code>datapath</code>. Read the server-managed temporary path, not
+      the original client filename.</p>
+      <div class="sourceCode" id="cb25"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fileInput</span>(<span class="st">&quot;file&quot;</span>, <span class="st">&quot;Upload CSV&quot;</span>, <span class="at">accept =</span> <span class="fu">c</span>(<span class="st">&quot;.csv&quot;</span>, <span class="st">&quot;text/csv&quot;</span>)),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">checkboxInput</span>(<span class="st">&quot;header&quot;</span>, <span class="st">&quot;Header row&quot;</span>, <span class="cn">TRUE</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;preview&quot;</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  uploaded <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>file)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">validate</span>(<span class="fu">need</span>(input<span class="sc">$</span>file<span class="sc">$</span>size <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>, <span class="st">&quot;Maximum size is 5 MB.&quot;</span>))</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read.csv</span>(</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>      input<span class="sc">$</span>file<span class="sc">$</span>datapath,</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">header =</span> input<span class="sc">$</span>header,</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>preview <span class="ot">&lt;-</span> <span class="fu">renderTable</span>(<span class="fu">head</span>(<span class="fu">uploaded</span>(), <span class="dv">20</span>))</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The <code>accept</code> argument helps the file chooser but is
+      not server-side validation. Enforce size, extension, content, and
+      schema rules after upload. Avoid deserializing untrusted R objects
+      with <code>readRDS()</code>.</p>
+      </section>
+      <section id="download-handler" class="level2">
+      <h2>13.2 Download handler</h2>
+      <div class="sourceCode" id="cb26"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(<span class="fu">downloadButton</span>(<span class="st">&quot;download&quot;</span>, <span class="st">&quot;Download filtered CSV&quot;</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  filtered <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    mtcars[mtcars<span class="sc">$</span>cyl <span class="sc">%in%</span> input<span class="sc">$</span>cyl, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>download <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() {</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(<span class="st">&quot;mtcars-&quot;</span>, <span class="fu">Sys.Date</span>(), <span class="st">&quot;.csv&quot;</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) {</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(<span class="fu">filtered</span>(), file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">contentType =</span> <span class="st">&quot;text/csv&quot;</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p><code>content</code> receives a temporary output path. Write
+      the file there; do not treat it as the user’s requested local
+      path.</p>
+      </section>
+      </section>
+      <section id="modules-reusable-testable-features" class="level1">
+      <h1>14. Modules: reusable, testable features</h1>
+      <p>A module has a UI function and a server function.
+      <code>NS()</code> namespaces browser IDs;
+      <code>moduleServer()</code> creates the matching server scope.</p>
+      <div class="sourceCode" id="cb27"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>filterUI <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  ns <span class="ot">&lt;-</span> <span class="fu">NS</span>(id)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tagList</span>(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">selectInput</span>(</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ns</span>(<span class="st">&quot;species&quot;</span>),</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Species&quot;</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">choices =</span> <span class="fu">levels</span>(iris<span class="sc">$</span>Species),</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiple =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">selected =</span> <span class="fu">levels</span>(iris<span class="sc">$</span>Species)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">textOutput</span>(<span class="fu">ns</span>(<span class="st">&quot;count&quot;</span>))</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>filterServer <span class="ot">&lt;-</span> <span class="cf">function</span>(id, data) {</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moduleServer</span>(id, <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    filtered <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">req</span>(input<span class="sc">$</span>species)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data</span>()[<span class="fu">data</span>()<span class="sc">$</span>Species <span class="sc">%in%</span> input<span class="sc">$</span>species, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    output<span class="sc">$</span>count <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="fu">nrow</span>(<span class="fu">filtered</span>()), <span class="st">&quot;rows&quot;</span>)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>    filtered</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Use the module twice without ID collisions:</p>
+      <div class="sourceCode" id="cb28"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filterUI</span>(<span class="st">&quot;left&quot;</span>),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;left_table&quot;</span>),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filterUI</span>(<span class="st">&quot;right&quot;</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tableOutput</span>(<span class="st">&quot;right_table&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  source_data <span class="ot">&lt;-</span> <span class="fu">reactive</span>(iris)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  left_data <span class="ot">&lt;-</span> <span class="fu">filterServer</span>(<span class="st">&quot;left&quot;</span>, source_data)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  right_data <span class="ot">&lt;-</span> <span class="fu">filterServer</span>(<span class="st">&quot;right&quot;</span>, source_data)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>left_table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>(<span class="fu">left_data</span>())</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>right_table <span class="ot">&lt;-</span> <span class="fu">renderTable</span>(<span class="fu">right_data</span>())</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Pass ordinary values or reactive expressions explicitly. Avoid
+      modules that reach into unrelated global variables.
+      <code>moduleServer()</code> is preferred over older
+      <code>callModule()</code> syntax and works naturally with
+      <code>testServer()</code>.</p>
+      </section>
+      <section id="performance-debounce-caching-and-scope"
+      class="level1">
+      <h1>15. Performance: debounce, caching, and scope</h1>
+      <section id="reduce-noisy-invalidations" class="level2">
+      <h2>15.1 Reduce noisy invalidations</h2>
+      <p><code>debounce()</code> waits until changes pause;
+      <code>throttle()</code> limits the update rate.</p>
+      <div class="sourceCode" id="cb29"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>search_text <span class="ot">&lt;-</span> <span class="fu">reactive</span>(input<span class="sc">$</span>search) <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">debounce</span>(<span class="at">millis =</span> <span class="dv">400</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">grep</span>(<span class="fu">search_text</span>(), <span class="fu">rownames</span>(mtcars), <span class="at">value =</span> <span class="cn">TRUE</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      </section>
+      <section id="cache-expensive-calculations" class="level2">
+      <h2>15.2 Cache expensive calculations</h2>
+      <p>A normal <code>reactive()</code> remembers only its most recent
+      value. <code>bindCache()</code> can retain multiple keyed values
+      and, with app-scoped caching, share results across sessions.</p>
+      <div class="sourceCode" id="cb30"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">2</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="fu">reformulate</span>(input<span class="sc">$</span>predictors, <span class="at">response =</span> input<span class="sc">$</span>response), <span class="at">data =</span> <span class="fu">data</span>())</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bindCache</span>(input<span class="sc">$</span>response, input<span class="sc">$</span>predictors, <span class="fu">data_version</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bindEvent</span>(input<span class="sc">$</span>fit)</span></code></pre></div>
+      <p>The cache key must include every reactive input or
+      external-data version that can affect the result. Keep keys cheap
+      to serialize and hash. The required order is
+      <code>bindCache()</code> first, then <code>bindEvent()</code>.</p>
+      </section>
+      <section id="put-work-in-the-right-scope" class="level2">
+      <h2>15.3 Put work in the right scope</h2>
+      <div class="sourceCode" id="cb31"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Runs once when the R process starts; shared and read-only is safest</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>lookup_table <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/lookup.csv&quot;</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Runs once per browser session</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  session_state <span class="ot">&lt;-</span> <span class="fu">reactiveValues</span>(<span class="at">selected =</span> <span class="fu">character</span>())</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  session<span class="sc">$</span><span class="fu">onSessionEnded</span>(<span class="cf">function</span>() {</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Session ended&quot;</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Loading immutable reference data outside <code>server</code>
+      can save memory and time. Never place mutable user-specific data
+      there unless deliberate cross-session sharing is required and
+      properly synchronized.</p>
+      </section>
+      </section>
+      <section id="long-running-work-with-extendedtask" class="level1">
+      <h1>16. Long-running work with <code>ExtendedTask</code></h1>
+      <p>Ordinary reactive calculations block their current session
+      while running. <code>ExtendedTask</code> runs an asynchronous
+      function in the background so that the same browser session can
+      remain responsive. The task function should receive input values
+      as arguments rather than reading reactive inputs internally.</p>
+      <p>This optional example uses <code>mirai</code> and modern
+      <code>bslib</code> task buttons:</p>
+      <div class="sourceCode" id="cb32"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirai)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">daemons</span>(<span class="dv">1</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="fu">onStop</span>(<span class="cf">function</span>() <span class="fu">daemons</span>(<span class="dv">0</span>))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">page_fluid</span>(</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">numericInput</span>(<span class="st">&quot;n&quot;</span>, <span class="st">&quot;Calculate up to n&quot;</span>, <span class="at">value =</span> <span class="dv">100</span>, <span class="at">min =</span> <span class="dv">1</span>),</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">input_task_button</span>(<span class="st">&quot;go&quot;</span>, <span class="st">&quot;Run slow calculation&quot;</span>),</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textOutput</span>(<span class="st">&quot;status&quot;</span>),</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textOutput</span>(<span class="st">&quot;result&quot;</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  slow_sum <span class="ot">&lt;-</span> ExtendedTask<span class="sc">$</span><span class="fu">new</span>(<span class="cf">function</span>(n) {</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mirai</span>({</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Sys.sleep</span>(<span class="dv">2</span>)</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(<span class="fu">seq_len</span>(n))</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">n =</span> n)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">|&gt;</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_task_button</span>(<span class="st">&quot;go&quot;</span>)</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">observeEvent</span>(input<span class="sc">$</span>go, {</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req</span>(input<span class="sc">$</span>n <span class="sc">&gt;=</span> <span class="dv">1</span>)</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>    slow_sum<span class="sc">$</span><span class="fu">invoke</span>(input<span class="sc">$</span>n)</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">renderText</span>(slow_sum<span class="sc">$</span><span class="fu">status</span>())</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>result <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">&quot;Result:&quot;</span>, slow_sum<span class="sc">$</span><span class="fu">result</span>())</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code></pre></div>
+      <p>Each <code>ExtendedTask</code> object queues overlapping
+      invocations instead of running them simultaneously. Use this
+      pattern only after measuring a real blocking problem.</p>
+      </section>
+      <section id="testing-and-debugging" class="level1">
+      <h1>17. Testing and debugging</h1>
+      <section id="extract-pure-functions-first" class="level2">
+      <h2>17.1 Extract pure functions first</h2>
+      <p>Pure R functions are the easiest code to test:</p>
+      <div class="sourceCode" id="cb33"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>filter_cylinders <span class="ot">&lt;-</span> <span class="cf">function</span>(data, cylinders) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.data.frame</span>(data))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  data[data<span class="sc">$</span>cyl <span class="sc">%in%</span> cylinders, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">nrow</span>(<span class="fu">filter_cylinders</span>(mtcars, <span class="dv">4</span>)) <span class="sc">==</span> <span class="dv">11</span>)</span></code></pre></div>
+      </section>
+      <section id="test-server-logic-with-testserver" class="level2">
+      <h2>17.2 Test server logic with <code>testServer()</code></h2>
+      <div class="sourceCode" id="cb34"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  product <span class="ot">&lt;-</span> <span class="fu">reactive</span>(input<span class="sc">$</span>a <span class="sc">*</span> input<span class="sc">$</span>b)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">testServer</span>(server, {</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  session<span class="sc">$</span><span class="fu">setInputs</span>(<span class="at">a =</span> <span class="dv">6</span>, <span class="at">b =</span> <span class="dv">7</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">product</span>() <span class="sc">==</span> <span class="dv">42</span>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+      <p><code>testServer()</code> can also test module server
+      functions. Use <code>shinytest2</code> when you need browser-level
+      snapshots and interactions.</p>
+      </section>
+      <section id="inspect-the-reactive-graph" class="level2">
+      <h2>17.3 Inspect the reactive graph</h2>
+      <div class="sourceCode" id="cb35"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;reactlog&quot;</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">shiny.reactlog =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runApp</span>()</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># After exercising the app, press Ctrl+F3 in the browser,</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># or inspect the last log from R:</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">reactlogShow</span>()</span></code></pre></div>
+      <p>Useful debugging habits:</p>
+      <ul>
+      <li>Give important reactives labels:
+      <code>reactive({...}, label = "filtered data")</code>.</li>
+      <li>Inspect browser developer-console errors for JavaScript or
+      resource failures.</li>
+      <li>Log identifiers and timings, but never secrets or uploaded
+      data contents.</li>
+      <li>Reproduce with the smallest app that still fails.</li>
+      <li>Profile before optimizing; use <code>profvis</code> for CPU
+      work and <code>reactlog</code> for invalidation problems.</li>
+      </ul>
+      </section>
+      </section>
+      <section id="project-organization-and-dependency-boundaries"
+      class="level1">
+      <h1>18. Project organization and dependency boundaries</h1>
+      <p>A maintainable medium-sized app might use:</p>
+      <pre class="text"><code>my_app/
+├── app.R
+├── R/
+│   ├── data.R
+│   ├── mod_filter.R
+│   ├── mod_summary.R
+│   └── utilities.R
+├── data/
+│   └── lookup.csv
+├── www/
+│   └── styles.css
+├── tests/
+│   └── testthat/
+├── renv.lock
+└── README.md</code></pre>
+      <p>Recommended boundaries:</p>
+      <ol type="1">
+      <li>Pure domain functions should not know about <code>input</code>
+      or <code>output</code>.</li>
+      <li>Reactive expressions adapt domain functions to changing
+      values.</li>
+      <li>Modules own a coherent feature and expose explicit return
+      values.</li>
+      <li>The top-level server wires modules together.</li>
+      <li>External resources such as databases should use connection
+      pooling and parameterized queries.</li>
+      </ol>
+      <p>Use <code>renv</code> to record package versions when
+      reproducibility matters:</p>
+      <div class="sourceCode" id="cb37"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;renv&quot;</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div>
+      </section>
+      <section id="deployment-and-production-checklist" class="level1">
+      <h1>19. Deployment and production checklist</h1>
+      <p>Common hosting choices include shinyapps.io, Posit Connect, and
+      Shiny Server. A deployment uploads the application and its
+      required files; the static tutorial HTML you are reading is not
+      itself a running Shiny server.</p>
+      <p>Before deployment:</p>
+      <ul>
+      <li>Start the app in a clean R session and exercise every input
+      path.</li>
+      <li>Pin dependencies and confirm the required R version.</li>
+      <li>Keep credentials in environment variables or a secret store,
+      never source files.</li>
+      <li>Treat browser input, uploaded files, URL parameters, and
+      database text as untrusted.</li>
+      <li>Use parameterized SQL; never paste user input into a
+      query.</li>
+      <li>Set upload, runtime, memory, and result-size limits.</li>
+      <li>Escape user text and avoid
+      <code>HTML(untrusted_text)</code>.</li>
+      <li>Do not rely on hidden UI for authorization; enforce access on
+      the server.</li>
+      <li>Separate global read-only data from per-session mutable
+      state.</li>
+      <li>Add logging, health monitoring, and user-safe error
+      messages.</li>
+      <li>Test simultaneous sessions and slow operations, not only one
+      browser tab.</li>
+      </ul>
+      <p>A minimal shinyapps.io deployment uses the separate
+      <code>rsconnect</code> package:</p>
+      <div class="sourceCode" id="cb38"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rsconnect&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure the account once, then deploy the app directory.</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Never commit account tokens to the repository.</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>rsconnect<span class="sc">::</span><span class="fu">deployApp</span>(<span class="st">&quot;my_app&quot;</span>)</span></code></pre></div>
+      </section>
+      <section
+      id="complete-example-upload-filter-visualize-and-download"
+      class="level1">
+      <h1>20. Complete example: upload, filter, visualize, and
+      download</h1>
+      <p>This app combines the main patterns. If no file is uploaded, it
+      uses <code>iris</code>; otherwise it reads a CSV. It updates the
+      variable selector, validates numeric plotting columns, filters
+      rows, and provides a download.</p>
+      <div class="sourceCode" id="cb39"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">&quot;Data explorer&quot;</span>),</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sidebarLayout</span>(</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarPanel</span>(</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fileInput</span>(<span class="st">&quot;file&quot;</span>, <span class="st">&quot;Optional CSV&quot;</span>, <span class="at">accept =</span> <span class="st">&quot;.csv&quot;</span>),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">selectInput</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;Numeric variable&quot;</span>, <span class="at">choices =</span> <span class="cn">NULL</span>),</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sliderInput</span>(<span class="st">&quot;rows&quot;</span>, <span class="st">&quot;Rows to show&quot;</span>, <span class="dv">5</span>, <span class="dv">50</span>, <span class="dv">10</span>),</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">actionButton</span>(<span class="st">&quot;refresh&quot;</span>, <span class="st">&quot;Apply settings&quot;</span>),</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">downloadButton</span>(<span class="st">&quot;download&quot;</span>, <span class="st">&quot;Download current data&quot;</span>)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">textOutput</span>(<span class="st">&quot;status&quot;</span>),</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plotOutput</span>(<span class="st">&quot;histogram&quot;</span>),</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tableOutput</span>(<span class="st">&quot;preview&quot;</span>)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.null</span>(input<span class="sc">$</span>file)) {</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>      iris</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">validate</span>(<span class="fu">need</span>(input<span class="sc">$</span>file<span class="sc">$</span>size <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>, <span class="st">&quot;CSV must be 5 MB or smaller.&quot;</span>))</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">read.csv</span>(input<span class="sc">$</span>file<span class="sc">$</span>datapath, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">observeEvent</span>(<span class="fu">raw_data</span>(), {</span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>    numeric_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">raw_data</span>())[<span class="fu">vapply</span>(<span class="fu">raw_data</span>(), is.numeric, <span class="fu">logical</span>(<span class="dv">1</span>))]</span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">updateSelectInput</span>(session, <span class="st">&quot;x&quot;</span>, <span class="at">choices =</span> numeric_vars)</span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">ignoreInit =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>  selected_data <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">raw_data</span>()</span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">validate</span>(<span class="fu">need</span>(input<span class="sc">$</span>x <span class="sc">%in%</span> <span class="fu">names</span>(data), <span class="st">&quot;Choose a numeric variable.&quot;</span>))</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">validate</span>(<span class="fu">need</span>(<span class="fu">is.numeric</span>(data[[input<span class="sc">$</span>x]]), <span class="st">&quot;The selected variable is not numeric.&quot;</span>))</span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a>    data</span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">|&gt;</span></span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bindEvent</span>(input<span class="sc">$</span>refresh, <span class="fu">raw_data</span>())</span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;%d rows and %d columns&quot;</span>, <span class="fu">nrow</span>(<span class="fu">selected_data</span>()), <span class="fu">ncol</span>(<span class="fu">selected_data</span>()))</span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>histogram <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hist</span>(</span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">selected_data</span>()[[input<span class="sc">$</span>x]],</span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> input<span class="sc">$</span>x,</span>
+<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> input<span class="sc">$</span>x,</span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="st">&quot;#1769aa&quot;</span>,</span>
+<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">border =</span> <span class="st">&quot;white&quot;</span></span>
+<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>preview <span class="ot">&lt;-</span> <span class="fu">renderTable</span>({</span>
+<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="fu">selected_data</span>(), input<span class="sc">$</span>rows)</span>
+<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>download <span class="ot">&lt;-</span> <span class="fu">downloadHandler</span>(</span>
+<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">filename =</span> <span class="cf">function</span>() <span class="fu">paste0</span>(<span class="st">&quot;data-&quot;</span>, <span class="fu">Sys.Date</span>(), <span class="st">&quot;.csv&quot;</span>),</span>
+<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">content =</span> <span class="cf">function</span>(file) <span class="fu">write.csv</span>(<span class="fu">selected_data</span>(), file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code></pre></div>
+      <p>For a production app, move the upload/selection feature into a
+      module, add explicit schema rules, and test the server logic.</p>
+      </section>
+      <section id="function-decision-table" class="level1">
+      <h1>21. Function decision table</h1>
+      <table>
+      <thead>
+      <tr>
+      <th>Need</th>
+      <th>Prefer</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Build a page</td>
+      <td><code>fluidPage()</code> or a <code>bslib::page_*()</code>
+      function</td>
+      </tr>
+      <tr>
+      <td>Read a browser value</td>
+      <td><code>input$id</code> inside a reactive consumer</td>
+      </tr>
+      <tr>
+      <td>Display a value</td>
+      <td>Matching <code>*Output()</code> plus
+      <code>render*()</code></td>
+      </tr>
+      <tr>
+      <td>Reuse a calculated value</td>
+      <td><code>reactive()</code></td>
+      </tr>
+      <tr>
+      <td>Store one mutable value</td>
+      <td><code>reactiveVal()</code></td>
+      </tr>
+      <tr>
+      <td>Store several mutable values</td>
+      <td><code>reactiveValues()</code></td>
+      </tr>
+      <tr>
+      <td>Wait for a button/event</td>
+      <td><code>bindEvent()</code></td>
+      </tr>
+      <tr>
+      <td>Stop until data exists</td>
+      <td><code>req()</code></td>
+      </tr>
+      <tr>
+      <td>Explain invalid input</td>
+      <td><code>validate(need(...))</code></td>
+      </tr>
+      <tr>
+      <td>Change an existing input</td>
+      <td><code>update*()</code></td>
+      </tr>
+      <tr>
+      <td>Build server-generated controls</td>
+      <td><code>renderUI()</code> + <code>uiOutput()</code></td>
+      </tr>
+      <tr>
+      <td>Reuse a feature</td>
+      <td><code>NS()</code> + <code>moduleServer()</code></td>
+      </tr>
+      <tr>
+      <td>Slow repeated computation</td>
+      <td><code>bindCache()</code></td>
+      </tr>
+      <tr>
+      <td>Noisy text/slider input</td>
+      <td><code>debounce()</code> or <code>throttle()</code></td>
+      </tr>
+      <tr>
+      <td>Non-blocking long task</td>
+      <td><code>ExtendedTask</code> with an async backend</td>
+      </tr>
+      <tr>
+      <td>Test server reactivity</td>
+      <td><code>testServer()</code></td>
+      </tr>
+      <tr>
+      <td>Inspect dependencies</td>
+      <td><code>reactlog</code></td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="common-mistakes" class="level1">
+      <h1>22. Common mistakes</h1>
+      <ol type="1">
+      <li>Forgetting <code>()</code> when reading a reactive
+      expression.</li>
+      <li>Using an observer to calculate reusable data instead of
+      <code>reactive()</code>.</li>
+      <li>Performing expensive work independently in several
+      outputs.</li>
+      <li>Reading <code>input$...</code> outside a reactive
+      consumer.</li>
+      <li>Expecting <code>conditionalPanel()</code> to enforce
+      security.</li>
+      <li>Recreating controls with <code>renderUI()</code> when an
+      <code>update*()</code> call is enough.</li>
+      <li>Omitting a dependency from a <code>bindCache()</code>
+      key.</li>
+      <li>Storing user-specific mutable state outside
+      <code>server</code>.</li>
+      <li>Trusting uploaded filenames, extensions, MIME types, or
+      contents.</li>
+      <li>Building one huge server function instead of extracting pure
+      functions and modules.</li>
+      </ol>
+      </section>
+      <section id="official-references-and-next-steps" class="level1">
+      <h1>23. Official references and next steps</h1>
+      <ul>
+      <li><a href="https://shiny.posit.co/r/">Shiny for R</a></li>
+      <li><a href="https://rstudio.github.io/shiny/reference/">Shiny
+      package reference</a></li>
+      <li><a href="https://shiny.posit.co/r/getstarted/">Get started
+      tutorials</a></li>
+      <li><a href="https://shiny.posit.co/r/articles/">Shiny
+      articles</a></li>
+      <li><a href="https://cran.r-project.org/package=shiny">CRAN
+      package page</a></li>
+      <li><a href="https://mastering-shiny.org/">Mastering
+      Shiny</a></li>
+      <li><a
+      href="https://rstudio.github.io/shiny/reference/bindEvent.html"><code>bindEvent()</code>
+      reference</a></li>
+      <li><a
+      href="https://rstudio.github.io/shiny/reference/bindCache.html"><code>bindCache()</code>
+      reference</a></li>
+      <li><a
+      href="https://rstudio.github.io/shiny/reference/moduleServer.html"><code>moduleServer()</code>
+      reference</a></li>
+      <li><a
+      href="https://rstudio.github.io/shiny/reference/testServer.html"><code>testServer()</code>
+      reference</a></li>
+      <li><a
+      href="https://rstudio.github.io/shiny/reference/ExtendedTask.html"><code>ExtendedTask</code>
+      reference</a></li>
+      </ul>
+      <p>The best next exercise is to rebuild the complete example with
+      a data set from your own work. First make the reactive graph
+      correct; then add validation, modules, tests, and performance
+      controls one layer at a time.</p>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">R Shiny practical guide · Source available as R
+Markdown · MooseWeb3 · R Notes · 2026-08-12</footer>
+  <script>
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('guide-theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('guide-theme', root.dataset.theme);
+  });
+  const progress = document.querySelector('.progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, {passive: true});
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sections = tocLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    tocLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + visible.target.id);
+    });
+  }, {rootMargin: '-15% 0px -75% 0px'});
+  sections.forEach((section) => observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

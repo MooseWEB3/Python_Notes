@@ -1,0 +1,1823 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 tidymodels guide">
+  <meta name="description" content="A detailed English guide to the core
+tidymodels packages, functions, arguments, return objects, and
+end-to-end examples.">
+  <title>tidymodels functions: a complete modeling guide</title>
+  <style>
+  :root {
+    --bg:#f7f9fc; --surface:#ffffff; --surface-2:#eef4fb;
+    --text:#172033; --muted:#61708a; --line:#dbe3ee;
+    --accent:#1769aa; --accent-2:#0e8f83; --code:#111827;
+    --code-text:#e5edf7; --shadow:0 12px 34px rgba(25,45,75,.09);
+  }
+  html[data-theme="dark"] {
+    --bg:#0c1220; --surface:#111a2b; --surface-2:#17243a;
+    --text:#e7eef8; --muted:#9babc2; --line:#283750;
+    --accent:#69b6f2; --accent-2:#58d1c1; --code:#080d17;
+    --code-text:#dce8f5; --shadow:0 12px 34px rgba(0,0,0,.28);
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; color:var(--text); background:var(--bg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    line-height:1.72;
+  }
+  html[lang^="zh"] body {
+    font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Inter,sans-serif;
+    line-height:1.82;
+  }
+  a { color:var(--accent); text-underline-offset:.16em; }
+  .progress {
+    position:fixed; inset:0 0 auto 0; z-index:30; width:0; height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  }
+  .topbar {
+    position:sticky; top:0; z-index:20; min-height:58px; padding:0 4vw;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    background:color-mix(in srgb,var(--surface) 91%,transparent);
+    backdrop-filter:blur(16px);
+  }
+  .brand { font-weight:760; letter-spacing:-.02em; }
+  .actions { display:flex; gap:.55rem; align-items:center; }
+  .button {
+    display:inline-flex; padding:.38rem .76rem; border:1px solid var(--line);
+    border-radius:999px; color:var(--text); background:var(--surface);
+    font:inherit; font-size:.85rem; text-decoration:none; cursor:pointer;
+  }
+  .button:hover { border-color:var(--accent); }
+  .hero {
+    padding:5.2rem max(5vw,calc((100vw - 1240px)/2)) 4rem; color:#fff;
+    background:
+      radial-gradient(circle at 85% 15%,rgba(94,234,212,.24),transparent 28%),
+      linear-gradient(125deg,#0b3e72,#1769aa 52%,#087e76);
+  }
+  .eyebrow {
+    display:inline-block; margin-bottom:.8rem; opacity:.84;
+    font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  }
+  .hero h1 {
+    max-width:920px; margin:0; font-size:clamp(2.4rem,5.5vw,4.8rem);
+    line-height:1.04; letter-spacing:-.045em;
+  }
+  html[lang^="zh"] .hero h1 { line-height:1.14; letter-spacing:-.025em; }
+  .hero p { max-width:780px; margin:1.25rem 0 0; opacity:.9; font-size:clamp(1rem,2vw,1.3rem); }
+  .hero .personal-note {
+    width:fit-content; max-width:100%; margin-top:.9rem; padding:.4rem .72rem;
+    border:1px solid rgba(255,255,255,.38); border-radius:8px;
+    background:rgba(255,255,255,.12); font-size:.9rem; font-weight:650; opacity:1;
+  }
+  .badges { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.5rem; }
+  .badge {
+    padding:.3rem .7rem; border:1px solid rgba(255,255,255,.35);
+    border-radius:999px; background:rgba(255,255,255,.1); font-size:.82rem;
+  }
+  .shell {
+    display:grid; grid-template-columns:260px minmax(0,820px);
+    gap:clamp(2rem,5vw,5rem); max-width:1240px; margin:0 auto; padding:3rem 2rem 6rem;
+  }
+  .toc {
+    position:sticky; top:82px; align-self:start; max-height:calc(100vh - 104px);
+    overflow:auto; padding-right:1rem; scrollbar-width:thin;
+  }
+  .toc > h2 {
+    margin:0 0 .8rem; color:var(--muted); font-size:.78rem;
+    letter-spacing:.12em; text-transform:uppercase;
+  }
+  .toc ul { margin:0; padding:0; list-style:none; }
+  .toc ul ul { padding-left:.85rem; font-size:.87rem; }
+  .toc li { margin:.22rem 0; }
+  .toc a {
+    display:block; padding:.23rem .5rem; border-left:2px solid transparent;
+    color:var(--muted); text-decoration:none; line-height:1.35;
+  }
+  .toc a:hover,.toc a.active { color:var(--accent); border-color:var(--accent); }
+  .content { min-width:0; }
+  .notice {
+    margin:0 0 2rem; padding:1rem 1.1rem;
+    border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line));
+    border-left:4px solid var(--accent); border-radius:10px;
+    color:var(--muted); background:var(--surface-2); font-size:.92rem;
+  }
+  .content h1,.content h2,.content h3 {
+    scroll-margin-top:78px; line-height:1.27; letter-spacing:-.025em;
+  }
+  .content h1 {
+    margin:3.5rem 0 1rem; padding-top:.45rem; border-top:1px solid var(--line);
+    font-size:clamp(1.9rem,4vw,2.55rem);
+  }
+  .content h1:first-of-type { margin-top:1rem; border-top:0; }
+  .content h2 { margin:2.35rem 0 .75rem; font-size:1.52rem; }
+  .content h3 { margin:1.75rem 0 .55rem; font-size:1.18rem; }
+  .content ul,.content ol { padding-left:1.45rem; }
+  .content li { margin:.3rem 0; }
+  blockquote {
+    margin:1.45rem 0; padding:.35rem 1.15rem;
+    border-left:4px solid var(--accent-2); border-radius:0 10px 10px 0;
+    background:var(--surface-2);
+  }
+  blockquote p { color:var(--muted); }
+  .table-wrap {
+    max-width:100%; margin:1.4rem 0; overflow-x:auto;
+    border:1px solid var(--line); border-radius:12px;
+    background:var(--surface); box-shadow:var(--shadow);
+  }
+  table { width:100%; border-collapse:collapse; font-size:.94rem; }
+  th,td {
+    min-width:120px; padding:.72rem .85rem; border:0; border-bottom:1px solid var(--line);
+    text-align:left; vertical-align:top;
+  }
+  th { background:var(--surface-2); font-weight:700; }
+  tr:last-child td { border-bottom:0; }
+  code {
+    padding:.12em .34em; border-radius:5px; color:var(--accent);
+    background:var(--surface-2);
+    font:.9em/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  .code-block {
+    margin:1.3rem 0; overflow:hidden; border:1px solid #263247;
+    border-radius:12px; background:var(--code); box-shadow:var(--shadow);
+  }
+  div.sourceCode.code-block { overflow:hidden; background:var(--code); }
+  .code-head {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:.45rem .72rem; border-bottom:1px solid #29354a;
+    color:#9fb0c8; background:#151e2d;
+    font-size:.75rem; text-transform:uppercase; letter-spacing:.08em;
+  }
+  .copy-button {
+    border:1px solid #39475e; border-radius:6px; padding:.25rem .52rem;
+    color:#c8d5e6; background:transparent; cursor:pointer;
+  }
+  pre { margin:0; padding:1rem 1.1rem; overflow:auto; tab-size:2; }
+  pre code { padding:0; color:var(--code-text); background:transparent; font-size:.88rem; white-space:pre; }
+  .footer { padding:2rem; border-top:1px solid var(--line); color:var(--muted); background:var(--surface); text-align:center; font-size:.88rem; }
+  @media (max-width:880px) {
+    .shell { grid-template-columns:1fr; padding:2rem 1.2rem 4rem; }
+    .toc { position:static; max-height:340px; padding:1rem; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+    .hero { padding:4rem 1.2rem 3rem; }
+    .topbar { padding:0 1rem; }
+  }
+  @media (max-width:520px) {
+    .brand { max-width:47vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .button { padding:.32rem .58rem; font-size:.78rem; }
+  }
+  @media print {
+    .topbar,.toc,.progress,.copy-button { display:none !important; }
+    .hero { padding:2rem; color:#000; background:#fff; }
+    .shell { display:block; max-width:none; padding:1rem; }
+    .code-block,.table-wrap { box-shadow:none; break-inside:avoid; }
+  }
+  </style>
+  <style>
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · R Modeling Notes</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Light /
+dark</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · tidymodels · machine learning</span>
+    <h1>tidymodels functions: a complete modeling guide</h1>
+    <p>From data splitting, feature engineering, and unified model
+specifications to resampling, tuning, and final testing</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">tidymodels</span>
+      <span class="badge">rsample · recipes</span>
+      <span class="badge">parsnip · workflows</span>
+      <span class="badge">tune · yardstick</span>
+      <span class="badge">R Markdown</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#scope-and-the-core-mental-model"
+      id="toc-scope-and-the-core-mental-model">Scope and the core mental
+      model</a></li>
+      <li><a href="#functions-in-the-tidymodels-meta-package"
+      id="toc-functions-in-the-tidymodels-meta-package">1. Functions in
+      the tidymodels meta-package</a>
+      <ul>
+      <li><a href="#what-librarytidymodels-loads"
+      id="toc-what-librarytidymodels-loads">1.1 What library(tidymodels)
+      loads</a></li>
+      <li><a href="#conflict-and-version-tools"
+      id="toc-conflict-and-version-tools">1.2 Conflict and version
+      tools</a></li>
+      </ul></li>
+      <li><a href="#rsample-splitting-and-resampling-data"
+      id="toc-rsample-splitting-and-resampling-data">2. rsample:
+      splitting and resampling data</a>
+      <ul>
+      <li><a href="#initial_split-training-and-testing"
+      id="toc-initial_split-training-and-testing">2.1 initial_split(),
+      training(), and testing()</a></li>
+      <li><a href="#vfold_cv-and-repeats"
+      id="toc-vfold_cv-and-repeats">2.2 vfold_cv() and repeats</a></li>
+      <li><a href="#other-useful-resampling-functions"
+      id="toc-other-useful-resampling-functions">2.3 Other useful
+      resampling functions</a></li>
+      </ul></li>
+      <li><a href="#recipes-trainable-preprocessing"
+      id="toc-recipes-trainable-preprocessing">3. recipes: trainable
+      preprocessing</a>
+      <ul>
+      <li><a href="#recipe-and-variable-roles"
+      id="toc-recipe-and-variable-roles">3.1 recipe() and variable
+      roles</a></li>
+      <li><a href="#common-step_-functions"
+      id="toc-common-step_-functions">3.2 Common step_*()
+      functions</a></li>
+      <li><a href="#prep-bake-and-leakage"
+      id="toc-prep-bake-and-leakage">3.3 prep(), bake(), and
+      leakage</a></li>
+      </ul></li>
+      <li><a href="#parsnip-unified-model-specifications"
+      id="toc-parsnip-unified-model-specifications">4. parsnip: unified
+      model specifications</a>
+      <ul>
+      <li><a href="#model-type-mode-and-engine"
+      id="toc-model-type-mode-and-engine">4.1 Model type, mode, and
+      engine</a></li>
+      <li><a href="#common-model-constructors"
+      id="toc-common-model-constructors">4.2 Common model
+      constructors</a></li>
+      <li><a href="#fit-fit_xy-and-predict"
+      id="toc-fit-fit_xy-and-predict">4.3 fit(), fit_xy(), and
+      predict()</a></li>
+      </ul></li>
+      <li><a href="#workflows-bind-all-modeling-components"
+      id="toc-workflows-bind-all-modeling-components">5. workflows: bind
+      all modeling components</a>
+      <ul>
+      <li><a href="#workflow-add_recipe-and-add_model"
+      id="toc-workflow-add_recipe-and-add_model">5.1 workflow(),
+      add_recipe(), and add_model()</a></li>
+      <li><a href="#fit-predict-and-augment"
+      id="toc-fit-predict-and-augment">5.2 fit(), predict(), and
+      augment()</a></li>
+      <li><a href="#extract_-and-component-updates"
+      id="toc-extract_-and-component-updates">5.3 extract_*() and
+      component updates</a></li>
+      </ul></li>
+      <li><a href="#yardstick-consistent-performance-metrics"
+      id="toc-yardstick-consistent-performance-metrics">6. yardstick:
+      consistent performance metrics</a>
+      <ul>
+      <li><a href="#regression-metrics" id="toc-regression-metrics">6.1
+      Regression metrics</a></li>
+      <li><a href="#class-and-probability-metrics"
+      id="toc-class-and-probability-metrics">6.2 Class and probability
+      metrics</a></li>
+      <li><a href="#conf_mat-curves-and-thresholds"
+      id="toc-conf_mat-curves-and-thresholds">6.3 conf_mat(), curves,
+      and thresholds</a></li>
+      </ul></li>
+      <li><a href="#fit_resamples-assess-a-fixed-workflow"
+      id="toc-fit_resamples-assess-a-fixed-workflow">7. fit_resamples():
+      assess a fixed workflow</a></li>
+      <li><a href="#dials-and-tune-parameter-objects-and-search-grids"
+      id="toc-dials-and-tune-parameter-objects-and-search-grids">8.
+      dials and tune: parameter objects and search grids</a>
+      <ul>
+      <li><a href="#mark-unknown-parameters-with-tune"
+      id="toc-mark-unknown-parameters-with-tune">8.1 Mark unknown
+      parameters with tune()</a></li>
+      <li><a href="#update-and-grid_" id="toc-update-and-grid_">8.2
+      update() and grid_*()</a></li>
+      </ul></li>
+      <li><a href="#tune_grid-search-compare-and-select"
+      id="toc-tune_grid-search-compare-and-select">9. tune_grid():
+      search, compare, and select</a>
+      <ul>
+      <li><a href="#select_best-and-robust-selection-rules"
+      id="toc-select_best-and-robust-selection-rules">9.1 select_best()
+      and robust selection rules</a></li>
+      <li><a href="#tune_bayes-and-advanced-search"
+      id="toc-tune_bayes-and-advanced-search">9.2 tune_bayes() and
+      advanced search</a></li>
+      </ul></li>
+      <li><a href="#finalize_workflow-last_fit-and-fit_best"
+      id="toc-finalize_workflow-last_fit-and-fit_best">10.
+      finalize_workflow(), last_fit(), and fit_best()</a></li>
+      <li><a href="#broom-and-tidy-model-results"
+      id="toc-broom-and-tidy-model-results">11. broom and tidy model
+      results</a></li>
+      <li><a href="#complete-binary-classification-workflow"
+      id="toc-complete-binary-classification-workflow">12. Complete
+      binary-classification workflow</a></li>
+      <li><a href="#complete-regression-workflow"
+      id="toc-complete-regression-workflow">13. Complete regression
+      workflow</a></li>
+      <li><a href="#workflowsets-compare-preprocessors-and-models"
+      id="toc-workflowsets-compare-preprocessors-and-models">14.
+      workflowsets: compare preprocessors and models</a></li>
+      <li><a href="#common-errors-and-production-guidance"
+      id="toc-common-errors-and-production-guidance">15. Common errors
+      and production guidance</a>
+      <ul>
+      <li><a href="#data-leakage" id="toc-data-leakage">15.1 Data
+      leakage</a></li>
+      <li><a href="#outcome-and-event-level"
+      id="toc-outcome-and-event-level">15.2 Outcome and event
+      level</a></li>
+      <li><a href="#do-not-mix-probability-and-class-predictions"
+      id="toc-do-not-mix-probability-and-class-predictions">15.3 Do not
+      mix probability and class predictions</a></li>
+      <li><a href="#engine-dependencies-and-reproducibility"
+      id="toc-engine-dependencies-and-reproducibility">15.4 Engine
+      dependencies and reproducibility</a></li>
+      <li><a href="#do-not-bypass-the-workflow-for-prediction"
+      id="toc-do-not-bypass-the-workflow-for-prediction">15.5 Do not
+      bypass the workflow for prediction</a></li>
+      </ul></li>
+      <li><a href="#function-quick-reference"
+      id="toc-function-quick-reference">16. Function quick
+      reference</a></li>
+      <li><a href="#extension-packages-and-next-steps"
+      id="toc-extension-packages-and-next-steps">17. Extension packages
+      and next steps</a></li>
+      <li><a href="#official-references"
+      id="toc-official-references">18. Official references</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">tidymodels is not one modeling-algorithm
+package. It is a meta-package that loads and coordinates rsample,
+recipes, parsnip, workflows, tune, yardstick, dials, broom, and related
+packages. This guide focuses on stable, commonly used user-facing
+functions rather than every developer API.</div>
+      <section id="scope-and-the-core-mental-model" class="level1">
+      <h1>Scope and the core mental model</h1>
+      <p><a href="https://www.tidymodels.org/">tidymodels</a> is a
+      collection of modeling and machine-learning packages designed
+      around tidyverse principles. It decomposes a traditional modeling
+      process into composable objects: splits, recipes, model
+      specifications, workflows, resamples, metrics, and tuning results.
+      Its real advantage is not shorter function names but a consistent
+      interface across models.</p>
+      <pre class="text"><code>Raw data
+  ↓ rsample: training set, test set, cross-validation
+recipe: estimate preprocessing parameters from training data only
+  +
+parsnip: declare model type, mode, and engine
+  ↓ workflows: bind preprocessing, model, and postprocessing
+fit / fit_resamples / tune_grid
+  ↓ yardstick: compare models and parameter configurations
+finalize_workflow
+  ↓ last_fit: refit on training data, assess the test set once</code></pre>
+      <p>This guide uses two runnable threads:</p>
+      <ul>
+      <li>Binary classification: <code>modeldata::two_class_dat</code>,
+      logistic regression, and a decision tree.</li>
+      <li>Regression: Base R’s <code>mtcars</code> and linear
+      regression.</li>
+      </ul>
+      <p>The examples assume that tidymodels is installed:</p>
+      <div class="sourceCode" id="cb2"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run once if needed.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tidymodels&quot;)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20260811</span>)</span></code></pre></div>
+      <p>Some engines require additional packages, such as
+      <code>ranger</code>, <code>xgboost</code>, or <code>glmnet</code>.
+      You can create a model specification without them, but the engine
+      package must be installed before <code>fit()</code>.</p>
+      </section>
+      <section id="functions-in-the-tidymodels-meta-package"
+      class="level1">
+      <h1>1. Functions in the tidymodels meta-package</h1>
+      <section id="what-librarytidymodels-loads" class="level2">
+      <h2>1.1 What library(tidymodels) loads</h2>
+      <p><code>library(tidymodels)</code> loads the commonly used
+      modeling packages and data tools. Inspect the current collection
+      with:</p>
+      <div class="sourceCode" id="cb3"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_packages</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_packages</span>(<span class="at">include_self =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+      <p>The collection includes modeling infrastructure and data
+      packages such as dplyr, ggplot2, purrr, tibble, and tidyr. It does
+      not automatically load every extension package. For example,
+      stacks, finetune, probably, and butcher must be installed and
+      attached separately.</p>
+      </section>
+      <section id="conflict-and-version-tools" class="level2">
+      <h2>1.2 Conflict and version tools</h2>
+      <div class="sourceCode" id="cb4"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span></code></pre></div>
+      <p><code>tidymodels_prefer()</code> uses conflicted rules to
+      prefer tidymodels/tidyverse versions of commonly ambiguous
+      function names. Other meta-package tools include:</p>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Purpose</th>
+      <th>Guidance</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>tidymodels_packages()</code></td>
+      <td>List packages in the collection</td>
+      <td>Inspect an environment</td>
+      </tr>
+      <tr>
+      <td><code>tidymodels_conflicts()</code></td>
+      <td>Report function-name conflicts</td>
+      <td>Check after loading other ecosystems</td>
+      </tr>
+      <tr>
+      <td><code>tidymodels_prefer()</code></td>
+      <td>Establish common conflict preferences</td>
+      <td>Call near the start of a script</td>
+      </tr>
+      <tr>
+      <td><code>tidymodels_update()</code></td>
+      <td>Check/update related packages</td>
+      <td>Changes the local library; inspect prompts first</td>
+      </tr>
+      <tr>
+      <td><code>pkg_deps()</code></td>
+      <td>Inspect dependency state</td>
+      <td>Environment diagnostics</td>
+      </tr>
+      <tr>
+      <td><code>tag_show()</code>, <code>tag_attach()</code></td>
+      <td>Manage release tags</td>
+      <td>Advanced reproduction/development</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      </section>
+      <section id="rsample-splitting-and-resampling-data"
+      class="level1">
+      <h1>2. rsample: splitting and resampling data</h1>
+      <section id="initial_split-training-and-testing" class="level2">
+      <h2>2.1 initial_split(), training(), and testing()</h2>
+      <p>The test set simulates completely unseen data. Split it before
+      estimating a recipe, selecting variables, or tuning.</p>
+      <div class="sourceCode" id="cb5"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(two_class_dat, <span class="at">package =</span> <span class="st">&quot;modeldata&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1001</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>class_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  two_class_dat,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop =</span> <span class="fl">0.80</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> Class</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>class_train <span class="ot">&lt;-</span> <span class="fu">training</span>(class_split)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>class_test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(class_split)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(class_train)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(class_test)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(class_train<span class="sc">$</span>Class))</span></code></pre></div>
+      <ul>
+      <li><code>prop</code> is the fraction assigned to training.</li>
+      <li><code>strata</code> approximately preserves class proportions;
+      classification tasks normally stratify on the outcome.</li>
+      <li>The return value is an <code>rsplit</code>, not two copied
+      data frames.</li>
+      <li><code>training()</code> and <code>testing()</code> extract the
+      rows.</li>
+      </ul>
+      </section>
+      <section id="vfold_cv-and-repeats" class="level2">
+      <h2>2.2 vfold_cv() and repeats</h2>
+      <div class="sourceCode" id="cb6"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1002</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>class_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  class_train,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">v =</span> <span class="dv">5</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">repeats =</span> <span class="dv">2</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> Class</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>class_folds</span></code></pre></div>
+      <p>Each split contains analysis data for fitting and assessment
+      data for validation. With <code>v = 5</code> and <code>repeats =
+      2</code>, this design yields ten assessments.</p>
+      </section>
+      <section id="other-useful-resampling-functions" class="level2">
+      <h2>2.3 Other useful resampling functions</h2>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Appropriate use</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>bootstraps(data, times)</code></td>
+      <td>Bootstrap uncertainty and performance</td>
+      </tr>
+      <tr>
+      <td><code>mc_cv(data, prop, times)</code></td>
+      <td>Repeated Monte Carlo splits</td>
+      </tr>
+      <tr>
+      <td><code>group_vfold_cv(data, group)</code></td>
+      <td>One patient, hospital, or household must not cross folds</td>
+      </tr>
+      <tr>
+      <td><code>initial_time_split()</code></td>
+      <td>An initial split for ordered time data</td>
+      </tr>
+      <tr>
+      <td><code>sliding_window()</code> /
+      <code>sliding_period()</code></td>
+      <td>Rolling time-window validation</td>
+      </tr>
+      <tr>
+      <td><code>nested_cv()</code></td>
+      <td>Outer performance estimation with inner tuning</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>A common form of leakage in healthcare data occurs when
+      multiple records from the same patient appear in both training and
+      validation folds. Use group-aware splitting instead of ordinary
+      random CV.</p>
+      </section>
+      </section>
+      <section id="recipes-trainable-preprocessing" class="level1">
+      <h1>3. recipes: trainable preprocessing</h1>
+      <section id="recipe-and-variable-roles" class="level2">
+      <h2>3.1 recipe() and variable roles</h2>
+      <p><code>recipe()</code> describes outcomes, predictors, and
+      preprocessing steps. It does not calculate means, factor levels,
+      or imputation values when it is created.</p>
+      <div class="sourceCode" id="cb7"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>class_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> ., <span class="at">data =</span> class_train) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>class_rec</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(class_rec)</span></code></pre></div>
+      <p>Common selectors:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Selector</th>
+      <th>What it selects</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>all_predictors()</code></td>
+      <td>All predictors</td>
+      </tr>
+      <tr>
+      <td><code>all_outcomes()</code></td>
+      <td>All outcomes</td>
+      </tr>
+      <tr>
+      <td><code>all_numeric_predictors()</code></td>
+      <td>Numeric predictors</td>
+      </tr>
+      <tr>
+      <td><code>all_nominal_predictors()</code></td>
+      <td>Factor/character predictors</td>
+      </tr>
+      <tr>
+      <td><code>has_role(“id variable”)</code></td>
+      <td>A designated role</td>
+      </tr>
+      <tr>
+      <td><code>starts_with()</code>, <code>all_of()</code></td>
+      <td>tidyselect name rules</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>An ID should not usually be a predictor. Change its role:</p>
+      <div class="sourceCode" id="cb8"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>patient_example <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">patient_id =</span> <span class="dv">101</span><span class="sc">:</span><span class="dv">106</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">62</span>, <span class="dv">47</span>, <span class="dv">71</span>, <span class="dv">59</span>, <span class="dv">65</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>id_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(outcome <span class="sc">~</span> ., <span class="at">data =</span> patient_example) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(patient_id, <span class="at">new_role =</span> <span class="st">&quot;id variable&quot;</span>)</span></code></pre></div>
+      </section>
+      <section id="common-step_-functions" class="level2">
+      <h2>3.2 Common step_*() functions</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Purpose</th>
+      <th>Important detail</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>step_impute_median()</code></td>
+      <td>Median imputation for numeric data</td>
+      <td>Learn the statistic from training only</td>
+      </tr>
+      <tr>
+      <td><code>step_impute_mode()</code></td>
+      <td>Mode imputation for categories</td>
+      <td>Different from a novel level</td>
+      </tr>
+      <tr>
+      <td><code>step_unknown()</code></td>
+      <td>Convert missing categories to a level</td>
+      <td>Run before dummy encoding</td>
+      </tr>
+      <tr>
+      <td><code>step_novel()</code></td>
+      <td>Handle levels absent during training</td>
+      <td>Run before dummy encoding</td>
+      </tr>
+      <tr>
+      <td><code>step_other()</code></td>
+      <td>Pool infrequent categories</td>
+      <td>Controlled by a frequency threshold</td>
+      </tr>
+      <tr>
+      <td><code>step_dummy()</code></td>
+      <td>Convert factors to dummy variables</td>
+      <td>Drops a reference level by default</td>
+      </tr>
+      <tr>
+      <td><code>step_normalize()</code></td>
+      <td>Center and scale</td>
+      <td>Common for distance/regularized models</td>
+      </tr>
+      <tr>
+      <td><code>step_log()</code>, <code>step_YeoJohnson()</code></td>
+      <td>Reduce skew</td>
+      <td>Yeo–Johnson supports non-positive values</td>
+      </tr>
+      <tr>
+      <td><code>step_zv()</code>, <code>step_nzv()</code></td>
+      <td>Remove zero/near-zero variance</td>
+      <td>Usually early in the recipe</td>
+      </tr>
+      <tr>
+      <td><code>step_corr()</code></td>
+      <td>Remove highly correlated predictors</td>
+      <td>Configure with threshold</td>
+      </tr>
+      <tr>
+      <td><code>step_interact()</code></td>
+      <td>Create interaction terms</td>
+      <td>Watch dimensional growth</td>
+      </tr>
+      <tr>
+      <td><code>step_pca()</code></td>
+      <td>Principal components</td>
+      <td>Normally normalize first</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>An example with missing values and a novel category:</p>
+      <div class="sourceCode" id="cb9"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>toy_train <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">11</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">120</span>, <span class="dv">110</span>, <span class="dv">150</span>, <span class="dv">140</span>, <span class="dv">130</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">site =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="cn">NA</span>, <span class="st">&quot;A&quot;</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>toy_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span> ., <span class="at">data =</span> toy_train) <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_novel</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span></code></pre></div>
+      </section>
+      <section id="prep-bake-and-leakage" class="level2">
+      <h2>3.3 prep(), bake(), and leakage</h2>
+      <p>For manual recipe inspection:</p>
+      <div class="sourceCode" id="cb10"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>toy_prep <span class="ot">&lt;-</span> <span class="fu">prep</span>(toy_rec, <span class="at">training =</span> toy_train)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>processed_train <span class="ot">&lt;-</span> <span class="fu">bake</span>(toy_prep, <span class="at">new_data =</span> <span class="cn">NULL</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>toy_new <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="cn">NA</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> <span class="fu">c</span>(<span class="dv">125</span>, <span class="dv">160</span>),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">site =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;C&quot;</span>, <span class="st">&quot;A&quot;</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>processed_new <span class="ot">&lt;-</span> <span class="fu">bake</span>(toy_prep, <span class="at">new_data =</span> toy_new)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>processed_train</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>processed_new</span></code></pre></div>
+      <ul>
+      <li><code>prep()</code> estimates parameters from training data
+      only.</li>
+      <li><code>bake()</code> applies those same estimates to new
+      data.</li>
+      <li><code>bake(prepped, new_data = NULL)</code> returns retained
+      processed training data.</li>
+      <li>For modeling, normally let <code>workflow()</code> handle
+      prep/bake so each CV fold estimates the recipe from its analysis
+      data only.</li>
+      </ul>
+      </section>
+      </section>
+      <section id="parsnip-unified-model-specifications" class="level1">
+      <h1>4. parsnip: unified model specifications</h1>
+      <section id="model-type-mode-and-engine" class="level2">
+      <h2>4.1 Model type, mode, and engine</h2>
+      <p>parsnip separates three concepts:</p>
+      <ol type="1">
+      <li>Model type, such as <code>linear_reg()</code> or
+      <code>rand_forest()</code>.</li>
+      <li>Mode: <code>“regression”</code>,
+      <code>“classification”</code>, or censored regression.</li>
+      <li>Engine: the underlying implementation, such as
+      <code>“lm”</code>, <code>“glm”</code>, <code>“rpart”</code>, or
+      <code>“ranger”</code>.</li>
+      </ol>
+      <div class="sourceCode" id="cb11"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>log_spec <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;glm&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>tree_spec <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cost_complexity =</span> <span class="fl">0.01</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_depth =</span> <span class="dv">6</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n =</span> <span class="dv">10</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;rpart&quot;</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>log_spec</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>tree_spec</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">show_engines</span>(<span class="st">&quot;decision_tree&quot;</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="fu">translate</span>(log_spec)</span></code></pre></div>
+      <p><code>set_engine()</code> can receive engine-specific
+      arguments. Put tunable model hyperparameters in the model
+      constructor whenever possible so tune can identify them.</p>
+      </section>
+      <section id="common-model-constructors" class="level2">
+      <h2>4.2 Common model constructors</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Task</th>
+      <th>Common tunable arguments</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>linear_reg()</code></td>
+      <td>Numeric regression</td>
+      <td>penalty, mixture for some engines</td>
+      </tr>
+      <tr>
+      <td><code>logistic_reg()</code></td>
+      <td>Binary classification</td>
+      <td>penalty, mixture</td>
+      </tr>
+      <tr>
+      <td><code>multinom_reg()</code></td>
+      <td>Multiclass classification</td>
+      <td>penalty, mixture</td>
+      </tr>
+      <tr>
+      <td><code>decision_tree()</code></td>
+      <td>Classification/regression trees</td>
+      <td>cost_complexity, tree_depth, min_n</td>
+      </tr>
+      <tr>
+      <td><code>rand_forest()</code></td>
+      <td>Random forests</td>
+      <td>mtry, trees, min_n</td>
+      </tr>
+      <tr>
+      <td><code>boost_tree()</code></td>
+      <td>Boosting</td>
+      <td>trees, tree_depth, learn_rate, and others</td>
+      </tr>
+      <tr>
+      <td><code>nearest_neighbor()</code></td>
+      <td>K-nearest neighbors</td>
+      <td>neighbors, weight_func, dist_power</td>
+      </tr>
+      <tr>
+      <td><code>svm_linear()</code>, <code>svm_rbf()</code></td>
+      <td>Support vector machines</td>
+      <td>cost, rbf_sigma</td>
+      </tr>
+      <tr>
+      <td><code>mlp()</code></td>
+      <td>Single-hidden-layer neural network</td>
+      <td>hidden_units, penalty, epochs</td>
+      </tr>
+      <tr>
+      <td><code>poisson_reg()</code></td>
+      <td>Count outcome</td>
+      <td>penalty, mixture</td>
+      </tr>
+      <tr>
+      <td><code>survival_reg()</code></td>
+      <td>Parametric survival model</td>
+      <td>dist</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="fit-fit_xy-and-predict" class="level2">
+      <h2>4.3 fit(), fit_xy(), and predict()</h2>
+      <p>Fit a specification directly:</p>
+      <div class="sourceCode" id="cb12"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>log_fit_direct <span class="ot">&lt;-</span> log_spec <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Class <span class="sc">~</span> A <span class="sc">+</span> B, <span class="at">data =</span> class_train)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(log_fit_direct, <span class="at">new_data =</span> class_test)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(log_fit_direct, <span class="at">new_data =</span> class_test, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div>
+      <p><code>fit_xy()</code> is useful when predictors and the outcome
+      are already separated:</p>
+      <div class="sourceCode" id="cb13"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>log_fit_xy <span class="ot">&lt;-</span> log_spec <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_xy</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> class_train <span class="sc">|&gt;</span> <span class="fu">select</span>(A, B),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> class_train<span class="sc">$</span>Class</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+      <p>Common prediction types:</p>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Mode</th>
+      <th>type</th>
+      <th>Output</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>regression</td>
+      <td><code>“numeric”</code></td>
+      <td><code>.pred</code></td>
+      </tr>
+      <tr>
+      <td>classification</td>
+      <td><code>“class”</code></td>
+      <td><code>.pred_class</code></td>
+      </tr>
+      <tr>
+      <td>classification</td>
+      <td><code>“prob”</code></td>
+      <td>One probability column per level</td>
+      </tr>
+      <tr>
+      <td>Models supporting intervals</td>
+      <td><code>“conf_int”</code> / <code>“pred_int”</code></td>
+      <td>Interval columns</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      </section>
+      <section id="workflows-bind-all-modeling-components"
+      class="level1">
+      <h1>5. workflows: bind all modeling components</h1>
+      <section id="workflow-add_recipe-and-add_model" class="level2">
+      <h2>5.1 workflow(), add_recipe(), and add_model()</h2>
+      <div class="sourceCode" id="cb14"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>log_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(class_rec) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(log_spec)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>log_wf</span></code></pre></div>
+      <p>The concise constructor is:</p>
+      <div class="sourceCode" id="cb15"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>log_wf_short <span class="ot">&lt;-</span> <span class="fu">workflow</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">preprocessor =</span> class_rec,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> log_spec</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>A fitted workflow remembers recipe estimates, the model fit,
+      and the blueprint, ensuring prediction performs exactly the same
+      processing as training.</p>
+      </section>
+      <section id="fit-predict-and-augment" class="level2">
+      <h2>5.2 fit(), predict(), and augment()</h2>
+      <div class="sourceCode" id="cb16"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>log_wf_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(log_wf, <span class="at">data =</span> class_train)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>class_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(log_wf_fit, <span class="at">new_data =</span> class_test)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>class_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(log_wf_fit, <span class="at">new_data =</span> class_test, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>class_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(log_wf_fit, <span class="at">new_data =</span> class_test)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>class_pred</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>class_prob</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>class_aug</span></code></pre></div>
+      <p>Do not manually <code>bake()</code> and then pass the result to
+      a fitted workflow. <code>predict.workflow()</code> automatically
+      runs the correct recipe.</p>
+      </section>
+      <section id="extract_-and-component-updates" class="level2">
+      <h2>5.3 extract_*() and component updates</h2>
+      <div class="sourceCode" id="cb17"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_recipe</span>(log_wf_fit, <span class="at">estimated =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_spec_parsnip</span>(log_wf_fit)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_fit_parsnip</span>(log_wf_fit)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_fit_engine</span>(log_wf_fit)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_fit_time</span>(log_wf_fit)</span></code></pre></div>
+      <p>Extracting the engine fit is useful for coefficients,
+      summaries, or variable importance. Continue predicting from the
+      workflow, however, or you may bypass preprocessing.</p>
+      <p>Common replacement functions are <code>update_model()</code>,
+      <code>update_recipe()</code>, <code>remove_model()</code>, and
+      <code>remove_recipe()</code>.</p>
+      </section>
+      </section>
+      <section id="yardstick-consistent-performance-metrics"
+      class="level1">
+      <h1>6. yardstick: consistent performance metrics</h1>
+      <section id="regression-metrics" class="level2">
+      <h2>6.1 Regression metrics</h2>
+      <div class="sourceCode" id="cb18"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>regression_predictions <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">20</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">14</span>, <span class="dv">18</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse</span>(regression_predictions, truth, estimate)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mae</span>(regression_predictions, truth, estimate)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rsq</span>(regression_predictions, truth, estimate)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>reg_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(rmse, mae, rsq)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">reg_metrics</span>(regression_predictions, truth, estimate)</span></code></pre></div>
+      <ul>
+      <li>Smaller RMSE and MAE are better.</li>
+      <li>R-squared is generally better when larger.</li>
+      <li>RMSE penalizes large errors more strongly and is in the
+      outcome’s units.</li>
+      <li>Metrics estimate generalization only when computed from
+      out-of-sample predictions.</li>
+      </ul>
+      </section>
+      <section id="class-and-probability-metrics" class="level2">
+      <h2>6.2 Class and probability metrics</h2>
+      <div class="sourceCode" id="cb19"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>class_test_predictions <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  class_test,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(log_wf_fit, class_test),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(log_wf_fit, class_test, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(class_test_predictions, Class, .pred_class)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">roc_auc</span>(class_test_predictions, Class, .pred_Class1)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sens</span>(class_test_predictions, Class, .pred_class)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(class_test_predictions, Class, .pred_class)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>class_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(roc_auc, accuracy, sens, spec)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="fu">class_metrics</span>(</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  class_test_predictions,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> Class,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  .pred_Class1</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>For binary classification, yardstick treats the first factor
+      level as the event by default. Always inspect it:</p>
+      <div class="sourceCode" id="cb20"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(class_train<span class="sc">$</span>Class)</span></code></pre></div>
+      <p>If the business-positive class is the second level, reorder
+      factor levels or explicitly set <code>event_level =
+      “second”</code> where supported. Do not redefine the event after
+      seeing results.</p>
+      </section>
+      <section id="conf_mat-curves-and-thresholds" class="level2">
+      <h2>6.3 conf_mat(), curves, and thresholds</h2>
+      <div class="sourceCode" id="cb21"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">conf_mat</span>(class_test_predictions, Class, .pred_class)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cm</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cm)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(cm, <span class="at">type =</span> <span class="st">&quot;heatmap&quot;</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">roc_curve</span>(class_test_predictions, Class, .pred_Class1) <span class="sc">|&gt;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">pr_curve</span>(class_test_predictions, Class, .pred_Class1) <span class="sc">|&gt;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code></pre></div>
+      <p>With class imbalance, accuracy can hide poor minority-class
+      performance. Combine it with sensitivity, specificity, precision,
+      recall, F-measure, ROC AUC, or PR AUC.</p>
+      </section>
+      </section>
+      <section id="fit_resamples-assess-a-fixed-workflow"
+      class="level1">
+      <h1>7. fit_resamples(): assess a fixed workflow</h1>
+      <p>When the model and hyperparameters are fixed, use
+      <code>fit_resamples()</code> to estimate a performance
+      distribution:</p>
+      <div class="sourceCode" id="cb22"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1003</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>log_resamples <span class="ot">&lt;-</span> <span class="fu">fit_resamples</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  log_wf,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> class_folds,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> class_metrics,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(log_resamples)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(log_resamples)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_notes</span>(log_resamples)</span></code></pre></div>
+      <p>The returned object is an rset-style tibble containing
+      metrics/predictions list-columns for each split.
+      <code>collect_metrics()</code> summarizes means, standard errors,
+      and resample counts by default.</p>
+      <p>Inspect fold-level stability:</p>
+      <div class="sourceCode" id="cb23"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(log_resamples) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, id2) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(Class, .pred_class)</span></code></pre></div>
+      </section>
+      <section id="dials-and-tune-parameter-objects-and-search-grids"
+      class="level1">
+      <h1>8. dials and tune: parameter objects and search grids</h1>
+      <section id="mark-unknown-parameters-with-tune" class="level2">
+      <h2>8.1 Mark unknown parameters with tune()</h2>
+      <div class="sourceCode" id="cb24"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tree_tune_spec <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cost_complexity =</span> <span class="fu">tune</span>(),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_depth =</span> <span class="fu">tune</span>(),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n =</span> <span class="fu">tune</span>()</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;rpart&quot;</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>tree_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">preprocessor =</span> class_rec,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> tree_tune_spec</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>tree_params <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(tree_wf)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>tree_params</span></code></pre></div>
+      <p><code>tune()</code> is only a placeholder. A dials parameter
+      object stores type, range, transformation, and label.</p>
+      </section>
+      <section id="update-and-grid_" class="level2">
+      <h2>8.2 update() and grid_*()</h2>
+      <div class="sourceCode" id="cb25"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>tree_params <span class="ot">&lt;-</span> tree_params <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tree_depth =</span> <span class="fu">tree_depth</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">10</span><span class="dt">L</span>)),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_n =</span> <span class="fu">min_n</span>(<span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">30</span><span class="dt">L</span>))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1004</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>tree_grid <span class="ot">&lt;-</span> <span class="fu">grid_space_filling</span>(</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  tree_params,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="dv">15</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>tree_grid</span></code></pre></div>
+      <p>Common grid functions:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Function</th>
+      <th>Characteristic</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>grid_regular()</code></td>
+      <td>Regular levels per parameter; combinations explode in high
+      dimensions</td>
+      </tr>
+      <tr>
+      <td><code>grid_random()</code></td>
+      <td>Random parameter combinations</td>
+      </tr>
+      <tr>
+      <td><code>grid_space_filling()</code></td>
+      <td>Attempts to cover parameter space efficiently</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>Some parameters, such as random forest <code>mtry()</code>,
+      have an upper bound determined by the number of predictors. Use
+      <code>finalize()</code> with training data or extract the
+      data-informed range from a workflow.</p>
+      </section>
+      </section>
+      <section id="tune_grid-search-compare-and-select" class="level1">
+      <h1>9. tune_grid(): search, compare, and select</h1>
+      <div class="sourceCode" id="cb26"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1005</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>tree_results <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  tree_wf,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> class_folds,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid =</span> tree_grid,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">control_grid</span>(</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_pred =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_workflow =</span> <span class="cn">TRUE</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(tree_results)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tree_results, <span class="at">metric =</span> <span class="st">&quot;roc_auc&quot;</span>, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tree_results)</span></code></pre></div>
+      <p><code>save_pred = TRUE</code> makes out-of-fold predictions
+      available later. <code>save_workflow = TRUE</code> lets
+      <code>fit_best()</code> recover and fit the original workflow.
+      Both options increase object size.</p>
+      <section id="select_best-and-robust-selection-rules"
+      class="level2">
+      <h2>9.1 select_best() and robust selection rules</h2>
+      <div class="sourceCode" id="cb27"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(tree_results, <span class="at">metric =</span> <span class="st">&quot;roc_auc&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>best_auc</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>final_tree_wf <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(tree_wf, best_auc)</span></code></pre></div>
+      <p><code>select_best()</code> picks the numerical optimum. If
+      simplicity and stability matter, consider:</p>
+      <div class="sourceCode" id="cb28"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>simple_tree <span class="ot">&lt;-</span> <span class="fu">select_by_one_std_err</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  tree_results,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  tree_depth</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p><code>select_by_one_std_err()</code> uses expressions to
+      specify the ordering toward a simpler model. Decide the primary
+      metric and tie-breaking policy before examining final test
+      performance.</p>
+      </section>
+      <section id="tune_bayes-and-advanced-search" class="level2">
+      <h2>9.2 tune_bayes() and advanced search</h2>
+      <p><code>tune_bayes()</code> iteratively proposes configurations
+      based on previous results and is useful for expensive models. It
+      requires an initial design and uses <code>control_bayes()</code>
+      for iteration and saving behavior. Start with a space-filling grid
+      for small, low-dimensional problems.</p>
+      </section>
+      </section>
+      <section id="finalize_workflow-last_fit-and-fit_best"
+      class="level1">
+      <h1>10. finalize_workflow(), last_fit(), and fit_best()</h1>
+      <p>The test set must not participate in parameter selection. After
+      choosing the final workflow:</p>
+      <div class="sourceCode" id="cb29"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>final_tree_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  final_tree_wf,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> class_split,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(final_tree_fit)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(final_tree_fit)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>fitted_final_workflow <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_tree_fit)</span></code></pre></div>
+      <p><code>last_fit()</code> fits on all training data and assesses
+      the test data once. Its result contains metrics, predictions, and
+      the fitted workflow.</p>
+      <p>If you already have tuning results and want to fit the best
+      configuration to a supplied data set:</p>
+      <div class="sourceCode" id="cb30"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit to class_train without touching the test set.</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>best_tree_fit <span class="ot">&lt;-</span> <span class="fu">fit_best</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  tree_results,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="st">&quot;roc_auc&quot;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p><code>fit_best()</code> returns a fitted workflow.
+      <code>last_fit()</code> also performs test-set assessment. Choose
+      based on whether you have reached the final testing stage.</p>
+      </section>
+      <section id="broom-and-tidy-model-results" class="level1">
+      <h1>11. broom and tidy model results</h1>
+      <p><code>broom</code> converts engine-specific results into
+      predictable tibbles:</p>
+      <div class="sourceCode" id="cb31"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_wf_fit)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(log_wf_fit)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_wf_fit, <span class="at">what =</span> <span class="st">&quot;recipe&quot;</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>class_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(log_wf_fit, <span class="at">new_data =</span> class_test)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>class_aug</span></code></pre></div>
+      <ul>
+      <li><code>tidy()</code>: one coefficient, term, or component per
+      row.</li>
+      <li><code>glance()</code>: one-row model summary.</li>
+      <li><code>augment()</code>: original data plus
+      predictions/residuals.</li>
+      <li>Not every engine implements exactly the same tidiers; inspect
+      the method documentation.</li>
+      </ul>
+      </section>
+      <section id="complete-binary-classification-workflow"
+      class="level1">
+      <h1>12. Complete binary-classification workflow</h1>
+      <p>The full thread as a reusable template:</p>
+      <div class="sourceCode" id="cb32"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(two_class_dat, <span class="at">package =</span> <span class="st">&quot;modeldata&quot;</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2001</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>split_obj <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(two_class_dat, <span class="at">strata =</span> Class)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>train_dat <span class="ot">&lt;-</span> <span class="fu">training</span>(split_obj)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train_dat, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> Class)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> ., <span class="at">data =</span> train_dat) <span class="sc">|&gt;</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;glm&quot;</span>)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>(</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">preprocessor =</span> rec,</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> spec</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> <span class="fu">fit_resamples</span>(</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>  wf,</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> folds,</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy)</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(cv_results)</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>test_results <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>  wf,</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> split_obj,</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy)</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(test_results)</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>final_model <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(test_results)</span></code></pre></div>
+      <p>Use the final workflow for new predictions:</p>
+      <div class="sourceCode" id="cb33"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>new_patients <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="fl">2.2</span>, <span class="fl">3.0</span>),</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="fl">1.4</span>, <span class="fl">2.1</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(final_model, new_patients)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(final_model, new_patients, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div>
+      </section>
+      <section id="complete-regression-workflow" class="level1">
+      <h1>13. Complete regression workflow</h1>
+      <div class="sourceCode" id="cb34"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mtcars_tbl <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(mtcars)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3001</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>mt_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(mtcars_tbl, <span class="at">prop =</span> <span class="fl">0.75</span>, <span class="at">strata =</span> mpg)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>mt_train <span class="ot">&lt;-</span> <span class="fu">training</span>(mt_split)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>mt_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> mt_train) <span class="sc">|&gt;</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>lm_spec <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;lm&quot;</span>)</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>lm_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>(</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">preprocessor =</span> mt_rec,</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> lm_spec</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>lm_last <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  lm_wf,</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> mt_split,</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(rmse, mae, rsq)</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(lm_last)</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(lm_last)</span></code></pre></div>
+      <p>Residual-oriented visualization:</p>
+      <div class="sourceCode" id="cb35"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>lm_test_predictions <span class="ot">&lt;-</span> <span class="fu">collect_predictions</span>(lm_last)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>lm_test_predictions <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(.pred, mpg)) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_obs_pred</span>() <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Predicted mpg&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Observed mpg&quot;</span>)</span></code></pre></div>
+      <p>Test metrics from this tiny demonstration will be highly
+      variable. Real projects need adequate data, appropriate
+      resampling, and uncertainty intervals.</p>
+      </section>
+      <section id="workflowsets-compare-preprocessors-and-models"
+      class="level1">
+      <h1>14. workflowsets: compare preprocessors and models</h1>
+      <p><code>workflowsets</code> creates a table of preprocessor ×
+      model combinations:</p>
+      <div class="sourceCode" id="cb36"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model_set <span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">raw =</span> Class <span class="sc">~</span> A <span class="sc">+</span> B,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">normalized =</span> class_rec</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">logistic =</span> log_spec,</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tree =</span> tree_spec</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cross =</span> <span class="cn">TRUE</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>model_set</span></code></pre></div>
+      <p>Use <code>workflow_map()</code> for batch assessment:</p>
+      <div class="sourceCode" id="cb37"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This may take some time.</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model_set_results &lt;- workflow_map(</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   model_set,</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;fit_resamples&quot;,</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   resamples = class_folds,</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   metrics = metric_set(roc_auc, accuracy)</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co"># collect_metrics(model_set_results)</span></span></code></pre></div>
+      <p>Workflow sets support planned comparison of a modest candidate
+      set. They are not a substitute for understanding the data,
+      features, and validation design.</p>
+      </section>
+      <section id="common-errors-and-production-guidance"
+      class="level1">
+      <h1>15. Common errors and production guidance</h1>
+      <section id="data-leakage" class="level2">
+      <h2>15.1 Data leakage</h2>
+      <ul>
+      <li>Computing means, standard deviations, PCA, or feature
+      selection on all data before splitting.</li>
+      <li>Prepping once manually and passing the processed full training
+      set into CV.</li>
+      <li>Allowing the same patient or future time records to cross
+      folds.</li>
+      <li>Repeatedly modifying a model based on test-set results.</li>
+      </ul>
+      <p>Put all learned preprocessing in a recipe and the recipe in a
+      workflow.</p>
+      </section>
+      <section id="outcome-and-event-level" class="level2">
+      <h2>15.2 Outcome and event level</h2>
+      <p>A classification outcome should be a factor. Fix the
+      positive/event level according to the domain definition before
+      modeling. Character outcomes may be interpreted differently by
+      engines.</p>
+      </section>
+      <section id="do-not-mix-probability-and-class-predictions"
+      class="level2">
+      <h2>15.3 Do not mix probability and class predictions</h2>
+      <ul>
+      <li><code>accuracy()</code> and <code>sens()</code> need
+      <code>.pred_class</code>.</li>
+      <li><code>roc_auc()</code> and <code>pr_auc()</code> need the
+      event probability.</li>
+      <li>Threshold-dependent and threshold-free metrics answer
+      different questions.</li>
+      </ul>
+      </section>
+      <section id="engine-dependencies-and-reproducibility"
+      class="level2">
+      <h2>15.4 Engine dependencies and reproducibility</h2>
+      <div class="sourceCode" id="cb38"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_engines</span>(<span class="st">&quot;rand_forest&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># For example:</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ranger&quot;)</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># rand_forest(trees = 1000) |&gt;</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   set_mode(&quot;classification&quot;) |&gt;</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   set_engine(&quot;ranger&quot;)</span></span></code></pre></div>
+      <p>Set random seeds, record package versions, and save the final
+      workflow and training-data schema. Parallel tuning also needs a
+      reproducible parallel random-number strategy.</p>
+      </section>
+      <section id="do-not-bypass-the-workflow-for-prediction"
+      class="level2">
+      <h2>15.5 Do not bypass the workflow for prediction</h2>
+      <p>Even after extracting an engine:</p>
+      <div class="sourceCode" id="cb39"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correct: automatically runs the recipe.</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(log_wf_fit, class_test)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Not recommended: may bypass workflow preprocessing.</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># predict(extract_fit_engine(log_wf_fit), class_test)</span></span></code></pre></div>
+      </section>
+      </section>
+      <section id="function-quick-reference" class="level1">
+      <h1>16. Function quick reference</h1>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Stage</th>
+      <th>Package</th>
+      <th>Core functions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Load and diagnose</td>
+      <td>tidymodels</td>
+      <td><code>tidymodels_packages()</code>,
+      <code>tidymodels_prefer()</code></td>
+      </tr>
+      <tr>
+      <td>Initial split</td>
+      <td>rsample</td>
+      <td><code>initial_split()</code>, <code>training()</code>,
+      <code>testing()</code></td>
+      </tr>
+      <tr>
+      <td>Resampling</td>
+      <td>rsample</td>
+      <td><code>vfold_cv()</code>, <code>bootstraps()</code>,
+      <code>group_vfold_cv()</code></td>
+      </tr>
+      <tr>
+      <td>Define preprocessing</td>
+      <td>recipes</td>
+      <td><code>recipe()</code>, <code>update_role()</code>,
+      <code>step_*()</code></td>
+      </tr>
+      <tr>
+      <td>Manual preprocessing</td>
+      <td>recipes</td>
+      <td><code>prep()</code>, <code>bake()</code>,
+      <code>tidy()</code></td>
+      </tr>
+      <tr>
+      <td>Model specification</td>
+      <td>parsnip</td>
+      <td>Model constructor, <code>set_mode()</code>,
+      <code>set_engine()</code></td>
+      </tr>
+      <tr>
+      <td>Direct model fit</td>
+      <td>parsnip</td>
+      <td><code>fit()</code>, <code>fit_xy()</code>,
+      <code>predict()</code></td>
+      </tr>
+      <tr>
+      <td>Bind components</td>
+      <td>workflows</td>
+      <td><code>workflow()</code>, <code>add_recipe()</code>,
+      <code>add_model()</code></td>
+      </tr>
+      <tr>
+      <td>Workflow operations</td>
+      <td>workflows</td>
+      <td><code>fit()</code>, <code>predict()</code>,
+      <code>augment()</code>, <code>extract_*()</code></td>
+      </tr>
+      <tr>
+      <td>Metrics</td>
+      <td>yardstick</td>
+      <td><code>metric_set()</code>, <code>rmse()</code>,
+      <code>accuracy()</code>, <code>roc_auc()</code></td>
+      </tr>
+      <tr>
+      <td>Diagnostic plots</td>
+      <td>yardstick</td>
+      <td><code>conf_mat()</code>, <code>roc_curve()</code>,
+      <code>pr_curve()</code></td>
+      </tr>
+      <tr>
+      <td>Fixed-model CV</td>
+      <td>tune</td>
+      <td><code>fit_resamples()</code>,
+      <code>collect_metrics()</code></td>
+      </tr>
+      <tr>
+      <td>Parameter definitions</td>
+      <td>tune/dials</td>
+      <td><code>tune()</code>, <code>parameters()</code>,
+      <code>update()</code></td>
+      </tr>
+      <tr>
+      <td>Grids</td>
+      <td>dials</td>
+      <td><code>grid_regular()</code>, <code>grid_random()</code>,
+      <code>grid_space_filling()</code></td>
+      </tr>
+      <tr>
+      <td>Tuning</td>
+      <td>tune</td>
+      <td><code>tune_grid()</code>, <code>tune_bayes()</code>,
+      <code>show_best()</code></td>
+      </tr>
+      <tr>
+      <td>Final selection</td>
+      <td>tune</td>
+      <td><code>select_best()</code>, <code>finalize_workflow()</code>,
+      <code>last_fit()</code></td>
+      </tr>
+      <tr>
+      <td>Tidy results</td>
+      <td>broom</td>
+      <td><code>tidy()</code>, <code>glance()</code>,
+      <code>augment()</code></td>
+      </tr>
+      <tr>
+      <td>Batch comparison</td>
+      <td>workflowsets</td>
+      <td><code>workflow_set()</code>, <code>workflow_map()</code></td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="extension-packages-and-next-steps" class="level1">
+      <h1>17. Extension packages and next steps</h1>
+      <p>The wider tidymodels ecosystem includes:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Package</th>
+      <th>Purpose</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>stacks</td>
+      <td>Stacked model ensembles</td>
+      </tr>
+      <tr>
+      <td>finetune</td>
+      <td>Racing, simulated annealing, and advanced tuning</td>
+      </tr>
+      <tr>
+      <td>probably</td>
+      <td>Probability calibration, thresholds, and prediction
+      intervals</td>
+      </tr>
+      <tr>
+      <td>tailor</td>
+      <td>Workflow postprocessing steps</td>
+      </tr>
+      <tr>
+      <td>butcher</td>
+      <td>Reduce fitted model object size</td>
+      </tr>
+      <tr>
+      <td>applicable</td>
+      <td>Detect extrapolation in new data</td>
+      </tr>
+      <tr>
+      <td>textrecipes / themis</td>
+      <td>Text features and class-imbalance recipe steps</td>
+      </tr>
+      <tr>
+      <td>censored</td>
+      <td>Censored regression and survival model support</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>A useful learning order:</p>
+      <ol type="1">
+      <li>Master split → recipe → specification → workflow.</li>
+      <li>Learn yardstick metrics and <code>fit_resamples()</code>.</li>
+      <li>Add dials and tune.</li>
+      <li>Move to workflowsets, parallel execution, ensembles, and
+      deployment.</li>
+      </ol>
+      </section>
+      <section id="official-references" class="level1">
+      <h1>18. Official references</h1>
+      <ul>
+      <li><a href="https://www.tidymodels.org/">tidymodels home</a></li>
+      <li><a href="https://www.tidymodels.org/packages/">Core and
+      extension packages</a></li>
+      <li><a href="https://www.tidymodels.org/start/">Get Started
+      series</a></li>
+      <li><a href="https://rsample.tidymodels.org/reference/">rsample
+      reference</a></li>
+      <li><a href="https://recipes.tidymodels.org/reference/">recipes
+      reference</a></li>
+      <li><a href="https://parsnip.tidymodels.org/reference/">parsnip
+      reference</a></li>
+      <li><a
+      href="https://workflows.tidymodels.org/reference/">workflows
+      reference</a></li>
+      <li><a href="https://tune.tidymodels.org/reference/">tune
+      reference</a></li>
+      <li><a
+      href="https://yardstick.tidymodels.org/reference/">yardstick
+      reference</a></li>
+      <li><a href="https://dials.tidymodels.org/reference/">dials
+      reference</a></li>
+      <li><a href="https://www.tmwr.org/">Tidy Modeling with R</a></li>
+      </ul>
+      <p>The most valuable knowledge is not a collection of isolated
+      functions but the contracts between objects: a split controls data
+      boundaries, a recipe learns from analysis/training data only, a
+      workflow guarantees consistent training and prediction, resampling
+      estimates uncertainty, and the test set provides one final honest
+      assessment.</p>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">English tidymodels function guide · R Markdown
+source · MooseWeb3 · 2026-08-11</footer>
+  <script>
+  const root=document.documentElement;
+  const savedTheme=localStorage.getItem('guide-theme');
+  if(savedTheme) root.dataset.theme=savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click',()=>{
+    root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';
+    localStorage.setItem('guide-theme',root.dataset.theme);
+  });
+  document.querySelectorAll('.content table').forEach(table=>{
+    if(table.parentElement.classList.contains('table-wrap')) return;
+    const wrap=document.createElement('div');
+    wrap.className='table-wrap';
+    table.parentNode.insertBefore(wrap,table);
+    wrap.appendChild(table);
+  });
+  document.querySelectorAll('div.sourceCode').forEach(block=>{
+    block.classList.add('code-block');
+    const code=block.querySelector('code');
+    const label=code&&code.classList.contains('r')?'R':'Code';
+    const head=document.createElement('div');
+    head.className='code-head';
+    head.innerHTML='<span>'+label+'</span><button class="copy-button" type="button">Copy</button>';
+    block.insertBefore(head,block.firstChild);
+  });
+  document.querySelectorAll('.content pre').forEach(pre=>{
+    if(pre.closest('div.sourceCode')||pre.parentElement.classList.contains('code-block')) return;
+    const wrap=document.createElement('div');
+    wrap.className='code-block';
+    const head=document.createElement('div');
+    head.className='code-head';
+    head.innerHTML='<span>Text</span><button class="copy-button" type="button">Copy</button>';
+    pre.parentNode.insertBefore(wrap,pre);
+    wrap.appendChild(head);
+    wrap.appendChild(pre);
+  });
+  async function copyText(text){
+    if(window.navigator&&navigator.clipboard&&window.isSecureContext){
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch(error) {
+        // Fall through to the selection-based method below.
+      }
+    }
+    const helper=document.createElement('textarea');
+    helper.value=text;
+    helper.setAttribute('readonly','');
+    helper.style.position='fixed';
+    helper.style.opacity='0';
+    document.body.appendChild(helper);
+    helper.select();
+    const copied=document.execCommand('copy');
+    helper.remove();
+    return copied;
+  }
+  document.querySelectorAll('.copy-button').forEach(button=>{
+    button.addEventListener('click',async()=>{
+      const text=button.closest('.code-block').querySelector('code').innerText;
+      const copied=await copyText(text);
+      const old=button.textContent;
+      button.textContent=copied?'Copied':'Select & copy';
+      setTimeout(()=>button.textContent=old,1200);
+    });
+  });
+  const progress=document.querySelector('.progress');
+  addEventListener('scroll',()=>{
+    const max=document.documentElement.scrollHeight-innerHeight;
+    progress.style.width=(max>0?scrollY/max*100:0)+'%';
+  },{passive:true});
+  const tocLinks=[...document.querySelectorAll('.toc a')];
+  const sections=tocLinks.map(link=>{
+    const href=link.getAttribute('href');
+    return href&&href.startsWith('#')?document.getElementById(decodeURIComponent(href.slice(1))):null;
+  }).filter(Boolean);
+  const observer=new IntersectionObserver(entries=>{
+    const visible=entries.filter(entry=>entry.isIntersecting)
+      .sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if(!visible) return;
+    tocLinks.forEach(link=>link.classList.toggle('active',link.getAttribute('href')==='#'+visible.target.id));
+  },{rootMargin:'-15% 0px -75% 0px'});
+  sections.forEach(section=>observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

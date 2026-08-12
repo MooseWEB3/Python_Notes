@@ -1,0 +1,2144 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 Advanced R guide">
+  <meta name="description" content="A progressive, example-driven guide
+to writing reliable R functions, from first principles to advanced API
+design.">
+  <title>Writing R Functions: From Beginner to Advanced</title>
+  <style>
+  :root {
+    --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+    --text: #172033; --muted: #61708a; --line: #dbe3ee;
+    --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+    --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+  }
+  html[data-theme="dark"] {
+    --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+    --text: #e7eef8; --muted: #9babc2; --line: #283750;
+    --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+    --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.72;
+  }
+  html[lang^="zh"] body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Inter, ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.82;
+  }
+  a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+  .progress {
+    position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 15; display: flex; align-items: center;
+    justify-content: space-between; min-height: 58px; padding: 0 4vw;
+    background: color-mix(in srgb, var(--surface) 91%, transparent);
+    border-bottom: 1px solid var(--line); backdrop-filter: blur(16px);
+  }
+  .brand { font-weight: 750; letter-spacing: -.02em; }
+  .actions { display: flex; align-items: center; gap: .6rem; }
+  .button {
+    display: inline-flex; align-items: center; border: 1px solid var(--line);
+    border-radius: 999px; padding: .38rem .75rem; color: var(--text);
+    background: var(--surface); font: inherit; font-size: .86rem;
+    text-decoration: none; cursor: pointer;
+  }
+  .button:hover { border-color: var(--accent); }
+  .hero {
+    padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%),
+      linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: .8rem; font-size: .78rem;
+    letter-spacing: .14em; text-transform: uppercase; opacity: .82;
+  }
+  .hero h1 {
+    max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+    line-height: 1.04; letter-spacing: -.045em;
+  }
+  html[lang^="zh"] .hero h1 { letter-spacing: -.025em; line-height: 1.12; }
+  .hero p {
+    max-width: 780px; margin: 1.25rem 0 0;
+    font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9;
+  }
+  .hero .personal-note {
+    width: fit-content; max-width: 100%; margin-top: .9rem; padding: .4rem .72rem;
+    border: 1px solid rgba(255,255,255,.38); border-radius: 8px;
+    background: rgba(255,255,255,.12); font-size: .9rem; font-weight: 650; opacity: 1;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+  .badge {
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem;
+  }
+  .shell {
+    display: grid; grid-template-columns: 260px minmax(0, 820px);
+    gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .toc {
+    position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px);
+    overflow: auto; padding-right: 1rem; scrollbar-width: thin;
+  }
+  .toc > h2 {
+    margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted);
+  }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc ul ul { padding-left: .85rem; font-size: .88rem; }
+  .toc li { margin: .22rem 0; }
+  .toc a {
+    display: block; padding: .22rem .5rem; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+  .content { min-width: 0; }
+  .notice {
+    margin: 0 0 2rem; padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    background: var(--surface-2); color: var(--muted); font-size: .92rem;
+  }
+  .content h1, .content h2, .content h3 {
+    scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em;
+  }
+  html[lang^="zh"] .content h1,
+  html[lang^="zh"] .content h2,
+  html[lang^="zh"] .content h3 { line-height: 1.35; letter-spacing: -.015em; }
+  .content h1 {
+    margin: 3.5rem 0 1rem; padding-top: .4rem;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line);
+  }
+  .content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+  .content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+  .content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+  .content p, .content li { color: var(--text); }
+  .content ul, .content ol { padding-left: 1.4rem; }
+  .content li { margin: .3rem 0; }
+  blockquote {
+    margin: 1.5rem 0; padding: .25rem 1.15rem;
+    border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0;
+    background: var(--surface-2);
+  }
+  blockquote p { color: var(--muted) !important; }
+  table {
+    width: 100%; margin: 1.4rem 0; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 12px;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--surface); box-shadow: var(--shadow); font-size: .94rem;
+  }
+  th, td {
+    padding: .72rem .85rem; border: 0; border-bottom: 1px solid var(--line);
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    padding: .12em .34em; border-radius: 5px; background: var(--surface-2);
+    color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  div.sourceCode, pre {
+    margin: 1.3rem 0; overflow: auto; border: 1px solid #263247;
+    border-radius: 12px; background: var(--code); box-shadow: var(--shadow);
+  }
+  pre { padding: 1rem 1.1rem; tab-size: 2; }
+  div.sourceCode pre { margin: 0; border: 0; box-shadow: none; }
+  pre code {
+    padding: 0; color: var(--code-text); background: transparent;
+    font-size: .88rem; white-space: pre;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .footer {
+    padding: 2rem; border-top: 1px solid var(--line); color: var(--muted);
+    background: var(--surface); text-align: center; font-size: .88rem;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+    .toc {
+      position: static; max-height: 320px; padding: 1rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+    }
+    .hero { padding: 4rem 1.2rem 3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+    .topbar { padding: 0 1rem; }
+    table { display: block; max-width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 520px) {
+    .brand { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .button { padding: .32rem .6rem; font-size: .8rem; }
+  }
+  @media print {
+    .topbar, .toc, .progress { display: none !important; }
+    .hero { padding: 2rem; background: white; color: black; }
+    .shell { display: block; max-width: none; padding: 1rem; }
+    table, div.sourceCode, pre { box-shadow: none; break-inside: avoid; }
+    a { color: black; }
+  }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · R Functions</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · FUNCTIONS · BEGINNER TO ADVANCED</span>
+    <h1>Writing R Functions: From Beginner to Advanced</h1>
+    <p>Syntax, contracts, scoping, functional patterns, metaprogramming,
+testing, and performance</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">MooseWeb3</span>
+      <span class="badge">Advanced R</span>
+      <span class="badge">R Markdown</span>
+      <span class="badge">25 Chapters</span>
+      <span class="badge">Self-contained HTML</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#how-to-use-this-guide"
+      id="toc-how-to-use-this-guide">How to use this guide</a>
+      <ul>
+      <li><a href="#learning-map" id="toc-learning-map">Learning
+      map</a></li>
+      <li><a href="#a-function-quality-ladder"
+      id="toc-a-function-quality-ladder">A function-quality
+      ladder</a></li>
+      </ul></li>
+      <li><a href="#part-i-beginner-foundations"
+      id="toc-part-i-beginner-foundations">Part I — Beginner
+      foundations</a>
+      <ul>
+      <li><a href="#your-first-function" id="toc-your-first-function">1.
+      Your first function</a>
+      <ul>
+      <li><a href="#naming-and-shape" id="toc-naming-and-shape">Naming
+      and shape</a></li>
+      <li><a href="#beginner-checklist"
+      id="toc-beginner-checklist">Beginner checklist</a></li>
+      </ul></li>
+      <li><a href="#arguments-defaults-and-matching"
+      id="toc-arguments-defaults-and-matching">2. Arguments, defaults,
+      and matching</a>
+      <ul>
+      <li><a href="#defaults-are-expressions"
+      id="toc-defaults-are-expressions">Defaults are
+      expressions</a></li>
+      <li><a href="#detecting-a-missing-argument"
+      id="toc-detecting-a-missing-argument">Detecting a missing
+      argument</a></li>
+      <li><a href="#match-choice-arguments-explicitly"
+      id="toc-match-choice-arguments-explicitly">Match choice arguments
+      explicitly</a></li>
+      </ul></li>
+      <li><a href="#return-values-and-output-contracts"
+      id="toc-return-values-and-output-contracts">3. Return values and
+      output contracts</a>
+      <ul>
+      <li><a href="#return-one-stable-shape"
+      id="toc-return-one-stable-shape">Return one stable shape</a></li>
+      <li><a href="#visible-and-invisible-returns"
+      id="toc-visible-and-invisible-returns">Visible and invisible
+      returns</a></li>
+      <li><a href="#empty-input-is-part-of-the-contract"
+      id="toc-empty-input-is-part-of-the-contract">Empty input is part
+      of the contract</a></li>
+      </ul></li>
+      <li><a href="#input-validation-and-informative-errors"
+      id="toc-input-validation-and-informative-errors">4. Input
+      validation and informative errors</a>
+      <ul>
+      <li><a href="#errors-versus-warnings"
+      id="toc-errors-versus-warnings">Errors versus warnings</a></li>
+      <li><a href="#avoid-over-validation"
+      id="toc-avoid-over-validation">Avoid over-validation</a></li>
+      </ul></li>
+      <li><a href="#vectorization-recycling-and-missing-values"
+      id="toc-vectorization-recycling-and-missing-values">5.
+      Vectorization, recycling, and missing values</a>
+      <ul>
+      <li><a href="#missing-value-policy"
+      id="toc-missing-value-policy">Missing-value policy</a></li>
+      <li><a href="#simplification-and-attributes"
+      id="toc-simplification-and-attributes">Simplification and
+      attributes</a></li>
+      </ul></li>
+      </ul></li>
+      <li><a href="#part-ii-intermediate-r-function-design"
+      id="toc-part-ii-intermediate-r-function-design">Part II —
+      Intermediate R function design</a>
+      <ul>
+      <li><a href="#lexical-scoping-and-environments"
+      id="toc-lexical-scoping-and-environments">6. Lexical scoping and
+      environments</a>
+      <ul>
+      <li><a href="#local-names-do-not-leak"
+      id="toc-local-names-do-not-leak">Local names do not leak</a></li>
+      <li><a href="#inspecting-a-closure"
+      id="toc-inspecting-a-closure">Inspecting a closure</a></li>
+      <li><a href="#dependency-injection"
+      id="toc-dependency-injection">Dependency injection</a></li>
+      </ul></li>
+      <li><a href="#lazy-evaluation-and-promises"
+      id="toc-lazy-evaluation-and-promises">7. Lazy evaluation and
+      promises</a>
+      <ul>
+      <li><a href="#side-effects-in-arguments-are-confusing"
+      id="toc-side-effects-in-arguments-are-confusing">Side effects in
+      arguments are confusing</a></li>
+      <li><a
+      href="#defaults-and-supplied-arguments-use-different-environments"
+      id="toc-defaults-and-supplied-arguments-use-different-environments">Defaults
+      and supplied arguments use different environments</a></li>
+      </ul></li>
+      <li><a href="#the-dots-argument-and-forwarding"
+      id="toc-the-dots-argument-and-forwarding">8. The dots argument and
+      forwarding</a>
+      <ul>
+      <li><a href="#capture-and-inspect-dots"
+      id="toc-capture-and-inspect-dots">Capture and inspect
+      dots</a></li>
+      <li><a href="#reject-unused-arguments"
+      id="toc-reject-unused-arguments">Reject unused arguments</a></li>
+      <li><a href="#programmatic-calls"
+      id="toc-programmatic-calls">Programmatic calls</a></li>
+      <li><a href="#a-forwarding-guideline"
+      id="toc-a-forwarding-guideline">A forwarding guideline</a></li>
+      </ul></li>
+      <li><a href="#functions-as-values-and-higher-order-functions"
+      id="toc-functions-as-values-and-higher-order-functions">9.
+      Functions as values and higher-order functions</a>
+      <ul>
+      <li><a href="#composition"
+      id="toc-composition">Composition</a></li>
+      <li><a href="#separate-configuration-from-execution"
+      id="toc-separate-configuration-from-execution">Separate
+      configuration from execution</a></li>
+      </ul></li>
+      <li><a href="#iteration-with-functionals"
+      id="toc-iteration-with-functionals">10. Iteration with
+      functionals</a>
+      <ul>
+      <li><a href="#write-the-loop-first"
+      id="toc-write-the-loop-first">Write the loop first</a></li>
+      <li><a href="#reduction" id="toc-reduction">Reduction</a></li>
+      <li><a href="#optional-purrr-vocabulary"
+      id="toc-optional-purrr-vocabulary">Optional purrr
+      vocabulary</a></li>
+      </ul></li>
+      <li><a href="#side-effects-resources-and-cleanup"
+      id="toc-side-effects-resources-and-cleanup">11. Side effects,
+      resources, and cleanup</a>
+      <ul>
+      <li><a href="#always-clean-up-acquired-resources"
+      id="toc-always-clean-up-acquired-resources">Always clean up
+      acquired resources</a></li>
+      <li><a href="#restore-temporary-state"
+      id="toc-restore-temporary-state">Restore temporary state</a></li>
+      <li><a href="#randomness-as-a-dependency"
+      id="toc-randomness-as-a-dependency">Randomness as a
+      dependency</a></li>
+      </ul></li>
+      <li><a href="#conditions-debugging-documentation-and-tests"
+      id="toc-conditions-debugging-documentation-and-tests">12.
+      Conditions, debugging, documentation, and tests</a>
+      <ul>
+      <li><a href="#debug-from-evidence"
+      id="toc-debug-from-evidence">Debug from evidence</a></li>
+      <li><a href="#document-the-contract"
+      id="toc-document-the-contract">Document the contract</a></li>
+      <li><a href="#base-assertions-and-testthat"
+      id="toc-base-assertions-and-testthat">Base assertions and
+      testthat</a></li>
+      </ul></li>
+      </ul></li>
+      <li><a href="#part-iii-advanced-patterns"
+      id="toc-part-iii-advanced-patterns">Part III — Advanced
+      patterns</a>
+      <ul>
+      <li><a href="#closures-and-function-factories"
+      id="toc-closures-and-function-factories">13. Closures and function
+      factories</a>
+      <ul>
+      <li><a href="#parameterized-validators"
+      id="toc-parameterized-validators">Parameterized
+      validators</a></li>
+      <li><a href="#stateful-closures"
+      id="toc-stateful-closures">Stateful closures</a></li>
+      <li><a href="#memory-retention" id="toc-memory-retention">Memory
+      retention</a></li>
+      </ul></li>
+      <li><a href="#function-operators-and-decorators"
+      id="toc-function-operators-and-decorators">14. Function operators
+      and decorators</a>
+      <ul>
+      <li><a href="#timing" id="toc-timing">Timing</a></li>
+      <li><a href="#retry-with-a-bounded-policy"
+      id="toc-retry-with-a-bounded-policy">Retry with a bounded
+      policy</a></li>
+      <li><a href="#memoization"
+      id="toc-memoization">Memoization</a></li>
+      </ul></li>
+      <li><a href="#recursion-and-recursive-data"
+      id="toc-recursion-and-recursive-data">15. Recursion and recursive
+      data</a>
+      <ul>
+      <li><a href="#walking-an-expression-tree"
+      id="toc-walking-an-expression-tree">Walking an expression
+      tree</a></li>
+      <li><a href="#accumulator-pattern"
+      id="toc-accumulator-pattern">Accumulator pattern</a></li>
+      </ul></li>
+      <li><a href="#extensible-behavior-with-s3-generics"
+      id="toc-extensible-behavior-with-s3-generics">16. Extensible
+      behavior with S3 generics</a>
+      <ul>
+      <li><a href="#creating-a-small-s3-class"
+      id="toc-creating-a-small-s3-class">Creating a small S3
+      class</a></li>
+      </ul></li>
+      <li><a href="#metaprogramming-and-tidy-evaluation"
+      id="toc-metaprogramming-and-tidy-evaluation">17. Metaprogramming
+      and tidy evaluation</a>
+      <ul>
+      <li><a href="#a-base-r-data-mask-wrapper"
+      id="toc-a-base-r-data-mask-wrapper">A base R data-mask
+      wrapper</a></li>
+      <li><a href="#optional-rlang-pattern"
+      id="toc-optional-rlang-pattern">Optional rlang pattern</a></li>
+      <li><a href="#metaprogramming-risks"
+      id="toc-metaprogramming-risks">Metaprogramming risks</a></li>
+      </ul></li>
+      <li><a href="#performance-and-production-api-design"
+      id="toc-performance-and-production-api-design">18. Performance and
+      production API design</a>
+      <ul>
+      <li><a href="#optional-benchmarking"
+      id="toc-optional-benchmarking">Optional benchmarking</a></li>
+      <li><a href="#production-function-checklist"
+      id="toc-production-function-checklist">Production function
+      checklist</a></li>
+      <li><a href="#optimization-order"
+      id="toc-optimization-order">Optimization order</a></li>
+      </ul></li>
+      </ul></li>
+      <li><a href="#pattern-cookbook" id="toc-pattern-cookbook">Pattern
+      cookbook</a>
+      <ul>
+      <li><a href="#guard-clause" id="toc-guard-clause">Guard
+      clause</a></li>
+      <li><a href="#strategy-argument"
+      id="toc-strategy-argument">Strategy argument</a></li>
+      <li><a href="#dependency-injection-1"
+      id="toc-dependency-injection-1">Dependency injection</a></li>
+      <li><a href="#pure-core-side-effect-shell"
+      id="toc-pure-core-side-effect-shell">Pure core, side-effect
+      shell</a></li>
+      <li><a href="#typed-iteration" id="toc-typed-iteration">Typed
+      iteration</a></li>
+      <li><a href="#safe-result-object" id="toc-safe-result-object">Safe
+      result object</a></li>
+      </ul></li>
+      <li><a href="#common-anti-patterns"
+      id="toc-common-anti-patterns">Common anti-patterns</a></li>
+      <li><a href="#sources-and-further-reading"
+      id="toc-sources-and-further-reading">Sources and further
+      reading</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">The examples are intentionally small and
+mostly use base R. Optional purrr, rlang, testthat, and bench patterns
+are clearly marked. Code blocks are shown rather than executed during
+this portable HTML build.</div>
+      <section id="how-to-use-this-guide" class="level1 unnumbered">
+      <h1 class="unnumbered">How to use this guide</h1>
+      <p>This tutorial builds one layer at a time. The beginner section
+      teaches function syntax and contracts. The intermediate section
+      explains the language mechanisms that make R functions
+      distinctive. The advanced section turns those mechanisms into
+      reusable abstractions and production-quality APIs.</p>
+      <p>Do not try to memorize every pattern. Instead, retain three
+      questions:</p>
+      <ol type="1">
+      <li>What inputs does the function accept?</li>
+      <li>What output and side effects does it promise?</li>
+      <li>In which environment, and at what time, are names and
+      arguments evaluated?</li>
+      </ol>
+      <p>If those questions have clear answers, most function code
+      becomes easier to test, compose, and maintain.</p>
+      <section id="learning-map" class="level2 unnumbered">
+      <h2 class="unnumbered">Learning map</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Level</th>
+      <th>Topics</th>
+      <th>What you should be able to do</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Beginner</td>
+      <td>syntax, arguments, returns, validation, vectors</td>
+      <td>Turn repeated analysis steps into predictable functions.</td>
+      </tr>
+      <tr>
+      <td>Intermediate</td>
+      <td>environments, lazy arguments, dots, higher-order functions,
+      conditions, tests</td>
+      <td>Explain why a function behaves as it does and design safer
+      interfaces.</td>
+      </tr>
+      <tr>
+      <td>Advanced</td>
+      <td>closures, factories, operators, recursion, S3,
+      metaprogramming, performance</td>
+      <td>Build reusable function families, extensible APIs, and
+      carefully optimized tools.</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="a-function-quality-ladder" class="level2 unnumbered">
+      <h2 class="unnumbered">A function-quality ladder</h2>
+      <p>A function often evolves through these stages:</p>
+      <ul>
+      <li><strong>Works once:</strong> the happy path produces the
+      expected result.</li>
+      <li><strong>Has a contract:</strong> accepted inputs, output type,
+      missing-value behavior, and errors are defined.</li>
+      <li><strong>Composes:</strong> it returns a stable shape, avoids
+      hidden state, and separates computation from side effects.</li>
+      <li><strong>Is observable:</strong> errors contain context, tests
+      protect behavior, and profiling can locate cost.</li>
+      <li><strong>Is extensible:</strong> higher-order functions,
+      generics, or metaprogramming are introduced only when a real reuse
+      problem requires them.</li>
+      </ul>
+      </section>
+      </section>
+      <section id="part-i-beginner-foundations" class="level1">
+      <h1>Part I — Beginner foundations</h1>
+      <section id="your-first-function" class="level2">
+      <h2>1. Your first function</h2>
+      <p>A function packages a computation behind a name. The basic
+      syntax has an argument list and a body:</p>
+      <div class="sourceCode" id="cb1"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>circle_area <span class="ot">&lt;-</span> <span class="cf">function</span>(radius) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  pi <span class="sc">*</span> radius<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">circle_area</span>(<span class="dv">3</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 28.27433</span></span></code></pre></div>
+      <p>R also supports a concise anonymous-function syntax, available
+      in modern R:</p>
+      <div class="sourceCode" id="cb2"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>square <span class="ot">&lt;-</span> \(x) x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">square</span>(<span class="dv">5</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 25</span></span></code></pre></div>
+      <p>Use a named function when the behavior deserves a reusable
+      name, documentation, or tests. Use an anonymous function for a
+      short local transformation:</p>
+      <div class="sourceCode" id="cb3"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>numbers <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vapply</span>(numbers, \(x) x<span class="sc">^</span><span class="dv">2</span>, <span class="fu">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># [1]  1  4  9 16 25</span></span></code></pre></div>
+      <p>Every ordinary R closure has three components:</p>
+      <ul>
+      <li><strong>formals:</strong> its argument definitions;</li>
+      <li><strong>body:</strong> the code that is evaluated;</li>
+      <li><strong>environment:</strong> the enclosing environment used
+      to resolve free names.</li>
+      </ul>
+      <div class="sourceCode" id="cb4"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">formals</span>(circle_area)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">body</span>(circle_area)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">environment</span>(circle_area)</span></code></pre></div>
+      <p>This is more than introspection trivia. The environment is why
+      a function can use <strong>pi</strong> even though
+      <strong>pi</strong> is not an argument, and it later enables
+      closures and function factories.</p>
+      <section id="naming-and-shape" class="level3">
+      <h3>Naming and shape</h3>
+      <p>Prefer a verb for an action and a noun for a constructor or
+      accessor. Names such as <strong>calculate_tax()</strong>,
+      <strong>validate_order()</strong>,
+      <strong>new_customer()</strong>, and
+      <strong>customer_id()</strong> communicate intent better than
+      <strong>process()</strong> or <strong>do_it()</strong>.</p>
+      <p>The body may be one expression, but braces are usually clearer
+      once validation or intermediate names appear:</p>
+      <div class="sourceCode" id="cb5"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fahrenheit_to_celsius <span class="ot">&lt;-</span> <span class="cf">function</span>(fahrenheit) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  celsius <span class="ot">&lt;-</span> (fahrenheit <span class="sc">-</span> <span class="dv">32</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">/</span> <span class="dv">9</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  celsius</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The final expression is returned automatically. An explicit
+      <strong>return()</strong> is most useful for early exits, not as
+      mandatory punctuation at the bottom of every function.</p>
+      </section>
+      <section id="beginner-checklist" class="level3">
+      <h3>Beginner checklist</h3>
+      <ul>
+      <li>Can the function name be read as a clear action?</li>
+      <li>Does each argument have one understandable role?</li>
+      <li>Is the returned value obvious from the final expression?</li>
+      <li>Can you call it with a tiny example?</li>
+      </ul>
+      <p><strong>Key lesson.</strong> A function is an object containing
+      code plus an environment, not just a textual block.</p>
+      </section>
+      </section>
+      <section id="arguments-defaults-and-matching" class="level2">
+      <h2>2. Arguments, defaults, and matching</h2>
+      <p>Arguments define the public controls of a function. Required
+      arguments have no default; optional arguments do:</p>
+      <div class="sourceCode" id="cb6"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rescale <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  limits <span class="ot">&lt;-</span> <span class="fu">range</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  (x <span class="sc">-</span> limits[<span class="dv">1</span>]) <span class="sc">/</span> <span class="fu">diff</span>(limits) <span class="sc">*</span> <span class="fu">diff</span>(to) <span class="sc">+</span> to[<span class="dv">1</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rescale</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rescale</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>), <span class="at">to =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+      <p>Choose defaults that are safe and common. Avoid a default that
+      silently discards information or performs an expensive side
+      effect.</p>
+      <p>R matches arguments in three stages for ordinary calls:</p>
+      <ol type="1">
+      <li>exact name;</li>
+      <li>partial name;</li>
+      <li>position.</li>
+      </ol>
+      <p>Partial matching is convenient interactively but fragile in
+      maintained code. Prefer exact names for optional or easily
+      confused arguments:</p>
+      <div class="sourceCode" id="cb7"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="at">x =</span> <span class="fl">3.14159</span>, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+      <p>Put the main data argument first, followed by the most
+      frequently changed controls. This makes pipe-oriented calls
+      natural:</p>
+      <div class="sourceCode" id="cb8"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>trim_range <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">lower =</span> <span class="fl">0.05</span>, <span class="at">upper =</span> <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  bounds <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(lower, upper), <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  x[x <span class="sc">&gt;=</span> bounds[<span class="dv">1</span>] <span class="sc">&amp;</span> x <span class="sc">&lt;=</span> bounds[<span class="dv">2</span>]]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>values <span class="sc">|&gt;</span> <span class="fu">trim_range</span>(<span class="at">lower =</span> <span class="fl">0.10</span>)</span></code></pre></div>
+      <section id="defaults-are-expressions" class="level3">
+      <h3>Defaults are expressions</h3>
+      <p>A default can refer to an earlier argument because it is
+      evaluated inside the function call:</p>
+      <div class="sourceCode" id="cb9"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>label_values <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">labels =</span> <span class="fu">names</span>(x)) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(labels)) {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    labels <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(x)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(labels, <span class="st">&quot;: &quot;</span>, x)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>This is useful, but complex defaults can hide work. If a
+      default needs several steps or can fail, consider using
+      <strong>NULL</strong> as a sentinel and compute the value
+      explicitly:</p>
+      <div class="sourceCode" id="cb10"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sample_rows <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">size =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(size)) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    size <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">10</span><span class="dt">L</span>, <span class="fu">nrow</span>(data))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  data[<span class="fu">sample.int</span>(<span class="fu">nrow</span>(data), size), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="detecting-a-missing-argument" class="level3">
+      <h3>Detecting a missing argument</h3>
+      <p>Sometimes “not supplied” differs from
+      <strong>NULL</strong>:</p>
+      <div class="sourceCode" id="cb11"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>show_setting <span class="ot">&lt;-</span> <span class="cf">function</span>(value) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">missing</span>(value)) {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">&quot;No argument was supplied&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(value)) {</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">&quot;NULL was supplied explicitly&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  value</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Use this distinction sparingly. Most APIs are simpler when a
+      documented sentinel such as <strong>NULL</strong> represents
+      automatic behavior.</p>
+      </section>
+      <section id="match-choice-arguments-explicitly" class="level3">
+      <h3>Match choice arguments explicitly</h3>
+      <p>For a small fixed set of string choices,
+      <strong>match.arg()</strong> validates and normalizes:</p>
+      <div class="sourceCode" id="cb12"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>center_data <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">method =</span> <span class="fu">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;none&quot;</span>)) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  method <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(method)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  center <span class="ot">&lt;-</span> <span class="cf">switch</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    method,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(x),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(x),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">none =</span> <span class="dv">0</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">-</span> center</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p><strong>Key lesson.</strong> Argument order, names, and
+      defaults are API design—not merely syntax.</p>
+      </section>
+      </section>
+      <section id="return-values-and-output-contracts" class="level2">
+      <h2>3. Return values and output contracts</h2>
+      <p>R returns the value of the final expression:</p>
+      <div class="sourceCode" id="cb13"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>range_width <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  limits <span class="ot">&lt;-</span> <span class="fu">range</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">diff</span>(limits)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Use an early <strong>return()</strong> to handle guard
+      clauses:</p>
+      <div class="sourceCode" id="cb14"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>safe_ratio <span class="ot">&lt;-</span> <span class="cf">function</span>(numerator, denominator) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(numerator) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span> <span class="sc">||</span> <span class="fu">length</span>(denominator) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">numeric</span>())</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(denominator <span class="sc">==</span> <span class="dv">0</span>)) {</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;denominator must not contain zero&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  numerator <span class="sc">/</span> denominator</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The output contract includes more than the value:</p>
+      <ul>
+      <li>type: logical, integer, double, character, list, data frame,
+      or classed object;</li>
+      <li>length and dimensions;</li>
+      <li>names and other attributes;</li>
+      <li>behavior for empty input and missing values;</li>
+      <li>whether the value is visible;</li>
+      <li>possible conditions and side effects.</li>
+      </ul>
+      <section id="return-one-stable-shape" class="level3">
+      <h3>Return one stable shape</h3>
+      <p>A function that sometimes returns a vector, sometimes a data
+      frame, and sometimes <strong>NULL</strong> forces every caller to
+      branch. Prefer a consistent type:</p>
+      <div class="sourceCode" id="cb15"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>numeric_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">length</span>(x),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(x)),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na.rm),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>For multiple related results, use a named list:</p>
+      <div class="sourceCode" id="cb16"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_line <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> model,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">coefficients =</span> <span class="fu">coef</span>(model),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fitted =</span> <span class="fu">fitted</span>(model),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">residuals =</span> <span class="fu">residuals</span>(model)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="visible-and-invisible-returns" class="level3">
+      <h3>Visible and invisible returns</h3>
+      <p>A function called mainly for a side effect can invisibly return
+      a useful value:</p>
+      <div class="sourceCode" id="cb17"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>save_report <span class="ot">&lt;-</span> <span class="cf">function</span>(text, path) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(text, path)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="fu">normalizePath</span>(path, <span class="at">mustWork =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The console stays quiet, but callers can still assign or pipe
+      the path. Replacement functions and print methods also commonly
+      use invisible returns.</p>
+      </section>
+      <section id="empty-input-is-part-of-the-contract" class="level3">
+      <h3>Empty input is part of the contract</h3>
+      <p>Decide intentionally:</p>
+      <div class="sourceCode" id="cb18"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>first_or <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">default =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(default)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  x[[<span class="dv">1</span>]]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Do not let an accidental “subscript out of bounds” error define
+      the API for you.</p>
+      <p><strong>Key lesson.</strong> A reliable function promises a
+      stable output type and shape for normal, missing, and empty
+      inputs.</p>
+      </section>
+      </section>
+      <section id="input-validation-and-informative-errors"
+      class="level2">
+      <h2>4. Input validation and informative errors</h2>
+      <p>Validation should occur near the function boundary and should
+      test conditions required by the implementation—not every
+      imaginable property.</p>
+      <div class="sourceCode" id="cb19"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>weighted_average <span class="ot">&lt;-</span> <span class="cf">function</span>(x, weights, <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must be a numeric vector&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(weights)) {</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;weights must be a numeric vector&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">!=</span> <span class="fu">length</span>(weights)) {</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x and weights must have the same length&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(weights <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;weights must be non-negative&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(x, weights, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Good errors answer three questions:</p>
+      <ol type="1">
+      <li>Which argument is wrong?</li>
+      <li>What was required?</li>
+      <li>What relevant property was received?</li>
+      </ol>
+      <div class="sourceCode" id="cb20"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>assert_scalar_number <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">arg =</span> <span class="st">&quot;x&quot;</span>) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  ok <span class="ot">&lt;-</span> <span class="fu">is.numeric</span>(x) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">1</span><span class="dt">L</span> <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;&amp;</span> <span class="fu">is.finite</span>(x)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>ok) {</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sprintf</span>(<span class="st">&quot;%s must be one finite, non-missing number&quot;</span>, arg),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">call. =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(x)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Return the checked value invisibly so the helper works both as
+      a statement and inside a pipeline.</p>
+      <section id="errors-versus-warnings" class="level3">
+      <h3>Errors versus warnings</h3>
+      <p>Use an error when a valid result cannot be produced. Use a
+      warning when a result is returned but may be surprising. Use a
+      message for progress or diagnostics that a user may suppress.</p>
+      <div class="sourceCode" id="cb21"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>log_positive <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(x <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must not contain negative values&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(x <span class="sc">==</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">&quot;zero values produce -Inf&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(x)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Do not use <strong>print()</strong> for warnings or progress.
+      Printed text is difficult for callers to classify or suppress.</p>
+      </section>
+      <section id="avoid-over-validation" class="level3">
+      <h3>Avoid over-validation</h3>
+      <p>Repeatedly scanning a huge vector can dominate runtime.
+      Validate structural properties once, combine checks when possible,
+      and trust internal helpers after a public boundary has established
+      invariants.</p>
+      <p><strong>Key lesson.</strong> Validation is executable
+      documentation of the function contract.</p>
+      </section>
+      </section>
+      <section id="vectorization-recycling-and-missing-values"
+      class="level2">
+      <h2>5. Vectorization, recycling, and missing values</h2>
+      <p>R functions often receive vectors even when the example uses a
+      single number. Decide whether your function is scalar, vectorized,
+      or summary-producing.</p>
+      <div class="sourceCode" id="cb22"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>discount_price <span class="ot">&lt;-</span> <span class="cf">function</span>(price, <span class="at">discount =</span> <span class="dv">0</span>) {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  price <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> discount)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">discount_price</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">50</span>), <span class="at">discount =</span> <span class="fl">0.10</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 90 72 45</span></span></code></pre></div>
+      <p>This function is naturally vectorized because its primitives
+      are vectorized. However, recycling can hide mistakes:</p>
+      <div class="sourceCode" id="cb23"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">discount_price</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">50</span>), <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.20</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A warning is expected because lengths are incompatible.</span></span></code></pre></div>
+      <p>If only scalar controls are allowed, assert them:</p>
+      <div class="sourceCode" id="cb24"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>discount_price <span class="ot">&lt;-</span> <span class="cf">function</span>(price, <span class="at">discount =</span> <span class="dv">0</span>) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(price)) {</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;price must be numeric&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(discount) <span class="sc">||</span> <span class="fu">length</span>(discount) <span class="sc">!=</span> <span class="dv">1</span><span class="dt">L</span> <span class="sc">||</span> <span class="fu">is.na</span>(discount)) {</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;discount must be one non-missing number&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (discount <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">||</span> discount <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;discount must be between 0 and 1&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  price <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> discount)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <section id="missing-value-policy" class="level3">
+      <h3>Missing-value policy</h3>
+      <p>Do not silently choose <strong>na.rm = TRUE</strong> unless
+      dropping missing observations is unquestionably correct. Expose
+      the choice or document it:</p>
+      <div class="sourceCode" id="cb25"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>coefficient_of_variation <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  average <span class="ot">&lt;-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.na</span>(average)) {</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NA_real_</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (average <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;coefficient of variation is undefined when mean(x) is zero&quot;</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sd</span>(x, <span class="at">na.rm =</span> na.rm) <span class="sc">/</span> average</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Use typed missing values when output type matters:
+      <strong>NA_integer_</strong>, <strong>NA_real_</strong>,
+      <strong>NA_character_</strong>, or
+      <strong>NA_complex_</strong>.</p>
+      </section>
+      <section id="simplification-and-attributes" class="level3">
+      <h3>Simplification and attributes</h3>
+      <p>Some vectorized helpers simplify or coerce results. Confirm
+      that dates, factors, names, and dimensions are preserved when your
+      contract requires them. Use <strong>seq_along(x)</strong> instead
+      of <strong>1:length(x)</strong>, because the former correctly
+      produces an empty integer vector for empty input.</p>
+      <p><strong>Key lesson.</strong> Vectorized code is still an API:
+      define recycling, missingness, and output attributes rather than
+      inheriting accidental behavior.</p>
+      </section>
+      </section>
+      </section>
+      <section id="part-ii-intermediate-r-function-design"
+      class="level1">
+      <h1>Part II — Intermediate R function design</h1>
+      <section id="lexical-scoping-and-environments" class="level2">
+      <h2>6. Lexical scoping and environments</h2>
+      <p>When R encounters a name inside a function, it first looks in
+      the current execution environment, then follows the chain of
+      enclosing environments. This is lexical scoping: where a function
+      was created matters more than where it is called.</p>
+      <div class="sourceCode" id="cb26"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>tax_rate <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>calculate_total <span class="ot">&lt;-</span> <span class="cf">function</span>(subtotal) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  subtotal <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> tax_rate)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_total</span>(<span class="dv">100</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 105</span></span></code></pre></div>
+      <p>Here <strong>tax_rate</strong> is a free variable. The function
+      finds it in its enclosing environment. Changing that global
+      binding changes later results, which may be convenient
+      interactively but creates a hidden dependency.</p>
+      <p>Prefer passing essential configuration explicitly:</p>
+      <div class="sourceCode" id="cb27"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>calculate_total <span class="ot">&lt;-</span> <span class="cf">function</span>(subtotal, tax_rate) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  subtotal <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> tax_rate)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <section id="local-names-do-not-leak" class="level3">
+      <h3>Local names do not leak</h3>
+      <p>Every call creates a new execution environment:</p>
+      <div class="sourceCode" id="cb28"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>standardize <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  center <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  spread <span class="ot">&lt;-</span> <span class="fu">sd</span>(x)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  (x <span class="sc">-</span> center) <span class="sc">/</span> spread</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># center and spread do not appear in the caller.</span></span></code></pre></div>
+      <p>Assignment with <strong>&lt;-</strong> creates or changes a
+      local binding by default. Superassignment with
+      <strong>&lt;&lt;-</strong> searches enclosing environments and
+      mutates the first existing binding. Because that side effect is
+      non-local, it should be confined to carefully designed
+      closures.</p>
+      </section>
+      <section id="inspecting-a-closure" class="level3">
+      <h3>Inspecting a closure</h3>
+      <div class="sourceCode" id="cb29"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">environment</span>(calculate_total)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parent.env</span>(<span class="fu">environment</span>(calculate_total))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">environmentName</span>(<span class="fu">globalenv</span>())</span></code></pre></div>
+      <p>Do not confuse the enclosing environment with the caller
+      environment. The enclosing environment controls lexical lookup.
+      The caller is a runtime relationship visible in the call stack and
+      can be accessed with tools such as <strong>parent.frame()</strong>
+      when an API genuinely needs it.</p>
+      </section>
+      <section id="dependency-injection" class="level3">
+      <h3>Dependency injection</h3>
+      <p>Passing dependencies as functions makes behavior testable:</p>
+      <div class="sourceCode" id="cb30"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fetch_and_parse <span class="ot">&lt;-</span> <span class="cf">function</span>(url, <span class="at">fetch =</span> download.file, <span class="at">parse =</span> readLines) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">unlink</span>(path), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetch</span>(url, path, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parse</span>(path, <span class="at">warn =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Tests can provide fake <strong>fetch</strong> and
+      <strong>parse</strong> functions without network access.</p>
+      <p><strong>Key lesson.</strong> A function’s environment is part
+      of its behavior. Make important dependencies explicit and use
+      captured state deliberately.</p>
+      </section>
+      </section>
+      <section id="lazy-evaluation-and-promises" class="level2">
+      <h2>7. Lazy evaluation and promises</h2>
+      <p>R arguments are promises. Each promise stores the supplied
+      expression and the caller’s environment. It is evaluated only when
+      the argument is first used, and the value is then cached.</p>
+      <div class="sourceCode" id="cb31"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>first_only <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  x</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">first_only</span>(<span class="dv">10</span>, <span class="fu">stop</span>(<span class="st">&quot;y is never evaluated&quot;</span>))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 10</span></span></code></pre></div>
+      <p>Lazy evaluation enables useful defaults:</p>
+      <div class="sourceCode" id="cb32"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>plot_centered <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">center =</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x <span class="sc">-</span> center)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(center)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>It also delays errors. A bad argument may fail far from the
+      call site when it is first forced. If an argument must be checked
+      or captured immediately, force it near the boundary:</p>
+      <div class="sourceCode" id="cb33"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>make_adder <span class="ot">&lt;-</span> <span class="cf">function</span>(amount) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(amount)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) x <span class="sc">+</span> amount</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <section id="side-effects-in-arguments-are-confusing"
+      class="level3">
+      <h3>Side effects in arguments are confusing</h3>
+      <div class="sourceCode" id="cb34"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>repeat_value <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(x, x)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="fu">repeat_value</span>({</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  counter <span class="ot">&lt;-</span> counter <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  counter</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The promise is evaluated once, so the result is c(1, 1).</span></span></code></pre></div>
+      <p>Avoid relying on this subtlety in ordinary APIs. Compute
+      side-effecting expressions before the call.</p>
+      </section>
+      <section
+      id="defaults-and-supplied-arguments-use-different-environments"
+      class="level3">
+      <h3>Defaults and supplied arguments use different
+      environments</h3>
+      <p>Default expressions are evaluated inside the function’s
+      execution environment. Supplied expressions are evaluated in the
+      caller’s environment:</p>
+      <div class="sourceCode" id="cb35"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>where_is_x <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">value =</span> x) {</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  value</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="fu">where_is_x</span>()</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 10</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="fu">where_is_x</span>(x)</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 100</span></span></code></pre></div>
+      <p>Understanding this rule removes many apparent scoping
+      paradoxes.</p>
+      <p><strong>Key lesson.</strong> An argument is initially a delayed
+      computation, not merely a value. Know when forcing occurs.</p>
+      </section>
+      </section>
+      <section id="the-dots-argument-and-forwarding" class="level2">
+      <h2>8. The dots argument and forwarding</h2>
+      <p>The <strong>…</strong> argument collects inputs that did not
+      match named formals. Its most common use is forwarding options to
+      another function:</p>
+      <div class="sourceCode" id="cb36"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>plot_series <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, <span class="at">main =</span> <span class="cn">NULL</span>, ...) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(main)) {</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    main <span class="ot">&lt;-</span> <span class="st">&quot;Series&quot;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">main =</span> main, ...)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_series</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)<span class="sc">^</span><span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code></pre></div>
+      <p>This makes wrappers flexible, but it also hides the accepted
+      interface. A misspelled forwarded argument may be ignored or fail
+      far downstream. Keep important controls as explicit arguments.</p>
+      <section id="capture-and-inspect-dots" class="level3">
+      <h3>Capture and inspect dots</h3>
+      <div class="sourceCode" id="cb37"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>collect_options <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  options <span class="ot">&lt;-</span> <span class="fu">list</span>(...)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(<span class="fu">names</span>(options))) {</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(options) <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">&quot;&quot;</span>, <span class="fu">length</span>(options))</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  options</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Modern base R also exposes <strong>…length()</strong>,
+      <strong>…names()</strong>, and <strong>…elt()</strong> for
+      low-level access without necessarily building a list.</p>
+      </section>
+      <section id="reject-unused-arguments" class="level3">
+      <h3>Reject unused arguments</h3>
+      <p>A strict public function can reserve dots for future extension
+      while rejecting current inputs:</p>
+      <div class="sourceCode" id="cb38"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>calculate_score <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ..., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  extra <span class="ot">&lt;-</span> <span class="fu">list</span>(...)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(extra) <span class="sc">&gt;</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Unused arguments: &quot;</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="fu">names</span>(extra), <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>),</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">call. =</span> <span class="cn">FALSE</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="programmatic-calls" class="level3">
+      <h3>Programmatic calls</h3>
+      <p>When arguments are already stored in a list,
+      <strong>do.call()</strong> constructs a call:</p>
+      <div class="sourceCode" id="cb39"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>options <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">8</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(mean, options)</span></code></pre></div>
+      <p>Do not parse strings to create ordinary calls. A function plus
+      a named argument list is safer and clearer.</p>
+      </section>
+      <section id="a-forwarding-guideline" class="level3">
+      <h3>A forwarding guideline</h3>
+      <p>If a constant argument belongs to the inner function, an
+      explicit anonymous wrapper often produces clearer errors:</p>
+      <div class="sourceCode" id="cb40"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(files, \(path) <span class="fu">read.csv</span>(path, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+      <p>This is clearer than placing many unnamed constants after the
+      mapped function.</p>
+      <p><strong>Key lesson.</strong> Dots are an interface escape
+      hatch. Forward narrowly, document the destination, and validate
+      when ambiguity would be costly.</p>
+      </section>
+      </section>
+      <section id="functions-as-values-and-higher-order-functions"
+      class="level2">
+      <h2>9. Functions as values and higher-order functions</h2>
+      <p>Functions can be stored in variables, lists, and data frames;
+      supplied as arguments; or returned as results.</p>
+      <div class="sourceCode" id="cb41"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>operations <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">add =</span> \(x, y) x <span class="sc">+</span> y,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">multiply =</span> \(x, y) x <span class="sc">*</span> y,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">maximum =</span> max</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>operations<span class="sc">$</span><span class="fu">multiply</span>(<span class="dv">6</span>, <span class="dv">7</span>)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 42</span></span></code></pre></div>
+      <p>A higher-order function consumes or produces functions:</p>
+      <div class="sourceCode" id="cb42"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>apply_twice <span class="ot">&lt;-</span> <span class="cf">function</span>(f, x) {</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f</span>(<span class="fu">f</span>(x))</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply_twice</span>(sqrt, <span class="dv">16</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 2</span></span></code></pre></div>
+      <p>Validate function arguments with <strong>is.function()</strong>
+      when misuse would otherwise generate a cryptic call error:</p>
+      <div class="sourceCode" id="cb43"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>apply_safely <span class="ot">&lt;-</span> <span class="cf">function</span>(f, x) {</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.function</span>(f)) {</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;f must be a function&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f</span>(x)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <section id="composition" class="level3">
+      <h3>Composition</h3>
+      <p>Composition connects the output of one function to the input of
+      another:</p>
+      <div class="sourceCode" id="cb44"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>compose2 <span class="ot">&lt;-</span> <span class="cf">function</span>(f, g) {</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(f)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(g)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(...) <span class="fu">f</span>(<span class="fu">g</span>(...))</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>log1p_abs <span class="ot">&lt;-</span> <span class="fu">compose2</span>(log1p, abs)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="fu">log1p_abs</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">3</span>))</span></code></pre></div>
+      <p>Composition works best when intermediate functions have simple,
+      stable contracts and limited side effects.</p>
+      </section>
+      <section id="separate-configuration-from-execution"
+      class="level3">
+      <h3>Separate configuration from execution</h3>
+      <p>Instead of branching inside a loop, choose the strategy
+      once:</p>
+      <div class="sourceCode" id="cb45"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>choose_center <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">method =</span> <span class="fu">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>)) {</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  method <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(method)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span>(method, <span class="at">mean =</span> mean, <span class="at">median =</span> median)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>center <span class="ot">&lt;-</span> <span class="fu">choose_center</span>(<span class="st">&quot;median&quot;</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="fu">center</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">100</span>))</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 2</span></span></code></pre></div>
+      <p>This pattern becomes a function factory when the returned
+      function also captures configuration.</p>
+      <p><strong>Key lesson.</strong> Treating functions as data makes
+      behavior configurable without duplicating control flow.</p>
+      </section>
+      </section>
+      <section id="iteration-with-functionals" class="level2">
+      <h2>10. Iteration with functionals</h2>
+      <p>A functional makes an iteration contract explicit. Base R
+      provides several useful families:</p>
+      <ul>
+      <li><strong>lapply()</strong> returns a list;</li>
+      <li><strong>vapply()</strong> requires a declared output shape and
+      type;</li>
+      <li><strong>Map()</strong> iterates over multiple inputs;</li>
+      <li><strong>Filter()</strong> keeps elements satisfying a
+      predicate;</li>
+      <li><strong>Reduce()</strong> combines elements into one
+      result;</li>
+      <li><strong>walk-like behavior</strong> can be written with a loop
+      when only side effects matter.</li>
+      </ul>
+      <div class="sourceCode" id="cb46"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">b =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">8</span>), <span class="at">c =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vapply</span>(columns, mean, <span class="fu">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    a    b    c</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  3.0  4.7 15.0</span></span></code></pre></div>
+      <p>Prefer <strong>vapply()</strong> over <strong>sapply()</strong>
+      in programmatic code because the output contract is explicit:</p>
+      <div class="sourceCode" id="cb47"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>lengths <span class="ot">&lt;-</span> <span class="fu">vapply</span>(columns, length, <span class="fu">integer</span>(<span class="dv">1</span>))</span></code></pre></div>
+      <section id="write-the-loop-first" class="level3">
+      <h3>Write the loop first</h3>
+      <p>If the pattern is unclear, a preallocated loop is an excellent
+      starting point:</p>
+      <div class="sourceCode" id="cb48"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(columns))</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(out) <span class="ot">&lt;-</span> <span class="fu">names</span>(columns)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(columns)) {</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  out[[i]] <span class="ot">&lt;-</span> <span class="fu">mean</span>(columns[[i]])</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Once the input, operation, and output shape are stable, a
+      functional may express the same contract more directly.</p>
+      </section>
+      <section id="reduction" class="level3">
+      <h3>Reduction</h3>
+      <div class="sourceCode" id="cb49"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Reduce</span>(</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> \(left, right) <span class="fu">paste</span>(left, right, <span class="at">sep =</span> <span class="st">&quot; -&gt; &quot;</span>),</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;extract&quot;</span>, <span class="st">&quot;transform&quot;</span>, <span class="st">&quot;load&quot;</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] &quot;extract -&gt; transform -&gt; load&quot;</span></span></code></pre></div>
+      </section>
+      <section id="optional-purrr-vocabulary" class="level3">
+      <h3>Optional purrr vocabulary</h3>
+      <p>The purrr package provides a regular map family:</p>
+      <div class="sourceCode" id="cb50"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;purrr&quot;)</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(columns, mean)       <span class="co"># list</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dbl</span>(columns, mean)   <span class="co"># double vector</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">map_int</span>(columns, length) <span class="co"># integer vector</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(files, process_file) <span class="co"># side effects; returns input invisibly</span></span></code></pre></div>
+      <p>Typed variants fail if each result is not length one and
+      compatible with the requested type. That failure is valuable: it
+      catches contract drift near the source.</p>
+      <p><strong>Key lesson.</strong> Choose iteration by input arity,
+      output type, and side-effect policy—not by a belief that loops are
+      inherently slow.</p>
+      </section>
+      </section>
+      <section id="side-effects-resources-and-cleanup" class="level2">
+      <h2>11. Side effects, resources, and cleanup</h2>
+      <p>Pure functions depend only on arguments and return a value
+      without changing outside state. They are easiest to test and
+      compose. Real programs also write files, draw plots, emit logs,
+      update databases, and use connections. Keep the pure core separate
+      from the side-effect shell.</p>
+      <div class="sourceCode" id="cb51"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>format_report <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  summary <span class="ot">&lt;-</span> <span class="fu">numeric_summary</span>(data)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;n=%d, missing=%d, mean=%.2f, sd=%.2f&quot;</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    summary<span class="sc">$</span>n, summary<span class="sc">$</span>missing, summary<span class="sc">$</span>mean, summary<span class="sc">$</span>sd</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>write_report <span class="ot">&lt;-</span> <span class="cf">function</span>(data, path) {</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  text <span class="ot">&lt;-</span> <span class="fu">format_report</span>(data)</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(text, path)</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(path)</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <section id="always-clean-up-acquired-resources" class="level3">
+      <h3>Always clean up acquired resources</h3>
+      <p>Register cleanup immediately after acquisition:</p>
+      <div class="sourceCode" id="cb52"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>read_first_line <span class="ot">&lt;-</span> <span class="cf">function</span>(path) {</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  connection <span class="ot">&lt;-</span> <span class="fu">file</span>(path, <span class="at">open =</span> <span class="st">&quot;rt&quot;</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(connection), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">readLines</span>(connection, <span class="at">n =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">warn =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Using <strong>add = TRUE</strong> avoids replacing earlier exit
+      handlers. Cleanup runs on normal return and on errors.</p>
+      </section>
+      <section id="restore-temporary-state" class="level3">
+      <h3>Restore temporary state</h3>
+      <div class="sourceCode" id="cb53"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>with_digits <span class="ot">&lt;-</span> <span class="cf">function</span>(digits, code) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  old <span class="ot">&lt;-</span> <span class="fu">options</span>(<span class="at">digits =</span> digits)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">options</span>(old), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(code)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Avoid changing global options, working directory, random seed,
+      or graphical parameters without restoring them.</p>
+      </section>
+      <section id="randomness-as-a-dependency" class="level3">
+      <h3>Randomness as a dependency</h3>
+      <p>For deterministic tests, either accept a seed explicitly and
+      restore state carefully, or pass a generator function:</p>
+      <div class="sourceCode" id="cb54"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>bootstrap_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">draw =</span> sample) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  resampled <span class="ot">&lt;-</span> <span class="fu">draw</span>(x, <span class="at">size =</span> <span class="fu">length</span>(x), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(resampled)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Tests can provide a fixed <strong>draw</strong>
+      implementation.</p>
+      <p><strong>Key lesson.</strong> Side effects should be narrow,
+      explicit, and paired with immediate cleanup registration.</p>
+      </section>
+      </section>
+      <section id="conditions-debugging-documentation-and-tests"
+      class="level2">
+      <h2>12. Conditions, debugging, documentation, and tests</h2>
+      <p>Errors, warnings, and messages are structured conditions. A
+      function signals; a caller decides how to handle.</p>
+      <div class="sourceCode" id="cb55"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>parse_percentage <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.character</span>(x)) {</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must be character&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  clean <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;%$&quot;</span>, <span class="st">&quot;&quot;</span>, x)</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  value <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(clean))</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  bad <span class="ot">&lt;-</span> <span class="fu">is.na</span>(value) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(x)</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(bad)) {</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sprintf</span>(<span class="st">&quot;%d value(s) could not be parsed&quot;</span>, <span class="fu">sum</span>(bad)),</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">call. =</span> <span class="cn">FALSE</span></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  value <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Catch only conditions you can recover from:</p>
+      <div class="sourceCode" id="cb56"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>read_config <span class="ot">&lt;-</span> <span class="cf">function</span>(path, <span class="at">default =</span> <span class="fu">list</span>()) {</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">readRDS</span>(path),</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(condition) {</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">warning</span>(</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Could not read configuration: &quot;</span>,</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">conditionMessage</span>(condition),</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">call. =</span> <span class="cn">FALSE</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>      default</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>A catch-all that silently returns <strong>NULL</strong> usually
+      hides defects.</p>
+      <section id="debug-from-evidence" class="level3">
+      <h3>Debug from evidence</h3>
+      <ol type="1">
+      <li>Make the failure reproducible.</li>
+      <li>Reduce it to the smallest input.</li>
+      <li>Inspect <strong>traceback()</strong> or the IDE call
+      stack.</li>
+      <li>Add <strong>browser()</strong>, <strong>debugonce()</strong>,
+      or temporary assertions at the narrowest suspected point.</li>
+      <li>Convert the confirmed bug into a regression test.</li>
+      </ol>
+      </section>
+      <section id="document-the-contract" class="level3">
+      <h3>Document the contract</h3>
+      <p>A useful function description covers:</p>
+      <ul>
+      <li>purpose in one sentence;</li>
+      <li>each argument, including type and missing-value meaning;</li>
+      <li>returned type and shape;</li>
+      <li>side effects and conditions;</li>
+      <li>one minimal example and one edge case.</li>
+      </ul>
+      </section>
+      <section id="base-assertions-and-testthat" class="level3">
+      <h3>Base assertions and testthat</h3>
+      <p>Small internal checks can use <strong>stopifnot()</strong>, but
+      public-facing errors often need custom messages. A testthat test
+      might look like:</p>
+      <div class="sourceCode" id="cb57"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># testthat::test_that(&quot;safe_ratio rejects zero denominators&quot;, {</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   testthat::expect_error(</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     safe_ratio(1, 0),</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     &quot;denominator must not contain zero&quot;</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co"># })</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="co"># testthat::test_that(&quot;safe_ratio preserves empty output&quot;, {</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   testthat::expect_identical(</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     safe_ratio(numeric(), numeric()),</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     numeric()</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="co"># })</span></span></code></pre></div>
+      <p>Test normal behavior, empty input, missing values, invalid
+      types, boundaries, class and attributes, warnings/errors, and side
+      effects.</p>
+      <p><strong>Key lesson.</strong> Production functions are defined
+      as much by their conditions, documentation, and tests as by their
+      happy-path result.</p>
+      </section>
+      </section>
+      </section>
+      <section id="part-iii-advanced-patterns" class="level1">
+      <h1>Part III — Advanced patterns</h1>
+      <section id="closures-and-function-factories" class="level2">
+      <h2>13. Closures and function factories</h2>
+      <p>A function factory returns a function. The returned closure
+      retains the factory call’s execution environment.</p>
+      <div class="sourceCode" id="cb58"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>make_power <span class="ot">&lt;-</span> <span class="cf">function</span>(exponent) {</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(exponent)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) x<span class="sc">^</span>exponent</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>square <span class="ot">&lt;-</span> <span class="fu">make_power</span>(<span class="dv">2</span>)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>cube <span class="ot">&lt;-</span> <span class="fu">make_power</span>(<span class="dv">3</span>)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="fu">square</span>(<span class="dv">4</span>)</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cube</span>(<span class="dv">4</span>)</span></code></pre></div>
+      <p>The manufactured functions share code structure but capture
+      different values. Inspect their environments:</p>
+      <div class="sourceCode" id="cb59"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">environment</span>(square)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>(<span class="fu">environment</span>(square))</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">get</span>(<span class="st">&quot;exponent&quot;</span>, <span class="at">envir =</span> <span class="fu">environment</span>(square))</span></code></pre></div>
+      <section id="parameterized-validators" class="level3">
+      <h3>Parameterized validators</h3>
+      <div class="sourceCode" id="cb60"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>make_range_validator <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">lower =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">upper =</span> <span class="cn">Inf</span>, <span class="at">inclusive =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(lower)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(upper)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(inclusive)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x, <span class="at">arg =</span> <span class="st">&quot;x&quot;</span>) {</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(arg, <span class="st">&quot; must be numeric&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>    ok <span class="ot">&lt;-</span> <span class="cf">if</span> (inclusive) {</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">&gt;=</span> lower <span class="sc">&amp;</span> x <span class="sc">&lt;=</span> upper</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">&gt;</span> lower <span class="sc">&amp;</span> x <span class="sc">&lt;</span> upper</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">any</span>(<span class="sc">!</span>ok <span class="sc">|</span> <span class="fu">is.na</span>(ok))) {</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sprintf</span>(<span class="st">&quot;%s must be inside the configured range&quot;</span>, arg),</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">call. =</span> <span class="cn">FALSE</span></span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">invisible</span>(x)</span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a>assert_probability <span class="ot">&lt;-</span> <span class="fu">make_range_validator</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span></code></pre></div>
+      </section>
+      <section id="stateful-closures" class="level3">
+      <h3>Stateful closures</h3>
+      <p>Closures can intentionally modify captured state:</p>
+      <div class="sourceCode" id="cb61"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>make_counter <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">start =</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  value <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(start)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(<span class="at">step =</span> <span class="dv">1</span><span class="dt">L</span>) {</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    value <span class="ot">&lt;&lt;-</span> value <span class="sc">+</span> <span class="fu">as.integer</span>(step)</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    value</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="fu">make_counter</span>()</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="fu">counter</span>()</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="fu">counter</span>(<span class="dv">5</span><span class="dt">L</span>)</span></code></pre></div>
+      <p>This is controlled reference-like state. It is useful for
+      counters, caches, or mock objects, but it reduces transparency.
+      Provide methods to inspect or reset state if callers need them,
+      and avoid sharing one stateful closure accidentally across
+      tests.</p>
+      </section>
+      <section id="memory-retention" class="level3">
+      <h3>Memory retention</h3>
+      <p>A closure keeps its enclosing environment reachable. If that
+      environment contains a huge temporary object, it may remain in
+      memory. Factories should create a small environment containing
+      only necessary configuration.</p>
+      <p><strong>Key lesson.</strong> A closure packages code with
+      private data. Force captured promises and keep the captured
+      environment intentionally small.</p>
+      </section>
+      </section>
+      <section id="function-operators-and-decorators" class="level2">
+      <h2>14. Function operators and decorators</h2>
+      <p>A function operator takes a function and returns a modified
+      function. This separates a reusable policy from the underlying
+      calculation.</p>
+      <section id="timing" class="level3">
+      <h3>Timing</h3>
+      <div class="sourceCode" id="cb62"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>with_timing <span class="ot">&lt;-</span> <span class="cf">function</span>(f) {</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(f)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(...) {</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    started <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()[[<span class="st">&quot;elapsed&quot;</span>]]</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">on.exit</span>({</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>      elapsed <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()[[<span class="st">&quot;elapsed&quot;</span>]] <span class="sc">-</span> started</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Elapsed: %.3f seconds&quot;</span>, elapsed))</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(...)</span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>timed_mean <span class="ot">&lt;-</span> <span class="fu">with_timing</span>(mean)</span></code></pre></div>
+      </section>
+      <section id="retry-with-a-bounded-policy" class="level3">
+      <h3>Retry with a bounded policy</h3>
+      <div class="sourceCode" id="cb63"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>with_retry <span class="ot">&lt;-</span> <span class="cf">function</span>(f, <span class="at">attempts =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">wait =</span> <span class="dv">0</span>) {</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(f)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  attempts <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(attempts)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(attempts) <span class="sc">!=</span> <span class="dv">1</span><span class="dt">L</span> <span class="sc">||</span> <span class="fu">is.na</span>(attempts) <span class="sc">||</span> attempts <span class="sc">&lt;</span> <span class="dv">1</span><span class="dt">L</span>) {</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;attempts must be a positive integer&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(...) {</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>    last_error <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (attempt <span class="cf">in</span> <span class="fu">seq_len</span>(attempts)) {</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>      result <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">list</span>(<span class="at">ok =</span> <span class="cn">TRUE</span>, <span class="at">value =</span> <span class="fu">f</span>(...)),</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">error =</span> <span class="cf">function</span>(condition) {</span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>          last_error <span class="ot">&lt;&lt;-</span> condition</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>          <span class="fu">list</span>(<span class="at">ok =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (result<span class="sc">$</span>ok) {</span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(result<span class="sc">$</span>value)</span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (attempt <span class="sc">&lt;</span> attempts <span class="sc">&amp;&amp;</span> wait <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Sys.sleep</span>(wait)</span>
+<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(last_error)</span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Retries are appropriate only for transient failures and
+      idempotent operations. Repeating a non-idempotent write may
+      duplicate side effects.</p>
+      </section>
+      <section id="memoization" class="level3">
+      <h3>Memoization</h3>
+      <p>A small cache can use an environment:</p>
+      <div class="sourceCode" id="cb64"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>memoize_one_arg <span class="ot">&lt;-</span> <span class="cf">function</span>(f) {</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(f)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  cache <span class="ot">&lt;-</span> <span class="fu">new.env</span>(<span class="at">parent =</span> <span class="fu">emptyenv</span>())</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) {</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    key <span class="ot">&lt;-</span> <span class="fu">serialize</span>(x, <span class="cn">NULL</span>, <span class="at">version =</span> <span class="dv">3</span>)</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>    key <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">as.integer</span>(key), <span class="at">collapse =</span> <span class="st">&quot;-&quot;</span>)</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">exists</span>(key, <span class="at">envir =</span> cache, <span class="at">inherits =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">assign</span>(key, <span class="fu">f</span>(x), <span class="at">envir =</span> cache)</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get</span>(key, <span class="at">envir =</span> cache, <span class="at">inherits =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>Production caching needs size limits, invalidation,
+      collision-resistant keys, and a policy for hidden dependencies.
+      Never memoize a function whose result depends on time, randomness,
+      files, options, or network state unless those dependencies are
+      represented in the cache key.</p>
+      <p><strong>Key lesson.</strong> Operators are powerful for
+      reusable cross-cutting behavior, but wrappers must preserve
+      argument forwarding, errors, and side-effect semantics.</p>
+      </section>
+      </section>
+      <section id="recursion-and-recursive-data" class="level2">
+      <h2>15. Recursion and recursive data</h2>
+      <p>Recursion solves a problem by applying the same function to
+      smaller instances. Every recursive function needs:</p>
+      <ul>
+      <li>a base case that terminates;</li>
+      <li>a step that makes measurable progress;</li>
+      <li>a rule for combining results.</li>
+      </ul>
+      <div class="sourceCode" id="cb65"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>sum_nested <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.list</span>(x)) {</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;leaves must be numeric&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>(x))</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">vapply</span>(x, sum_nested, <span class="fu">numeric</span>(<span class="dv">1</span>)))</span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sum_nested</span>(<span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="fu">list</span>(<span class="dv">4</span>, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>))))</span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 21</span></span></code></pre></div>
+      <section id="walking-an-expression-tree" class="level3">
+      <h3>Walking an expression tree</h3>
+      <div class="sourceCode" id="cb66"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>count_symbols <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.symbol</span>(expr)) {</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.call</span>(expr)) {</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="dv">0</span><span class="dt">L</span>)</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  children <span class="ot">&lt;-</span> <span class="fu">as.list</span>(expr)</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">vapply</span>(children, count_symbols, <span class="fu">integer</span>(<span class="dv">1</span>)))</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a><span class="fu">count_symbols</span>(<span class="fu">quote</span>(<span class="fu">mean</span>(x <span class="sc">+</span> y)))</span></code></pre></div>
+      <p>R does not optimize tail calls, and deep recursion can exhaust
+      the evaluation stack. Prefer an explicit stack or loop for very
+      deep or linear recursion.</p>
+      </section>
+      <section id="accumulator-pattern" class="level3">
+      <h3>Accumulator pattern</h3>
+      <p>For tree traversal, pass accumulated context explicitly rather
+      than using globals:</p>
+      <div class="sourceCode" id="cb67"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>collect_names <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">path =</span> <span class="fu">character</span>()) {</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.list</span>(x)) {</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(path))</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>  labels <span class="ot">&lt;-</span> <span class="fu">names</span>(x)</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(labels)) {</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>    labels <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">seq_along</span>(x))</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>(</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Map</span>(</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>      \(item, label) <span class="fu">collect_names</span>(item, <span class="fu">c</span>(path, label)),</span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>      x,</span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>      labels</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">recursive =</span> <span class="cn">FALSE</span></span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p><strong>Key lesson.</strong> Recursion is natural for trees and
+      language objects; prove termination and keep context explicit.</p>
+      </section>
+      </section>
+      <section id="extensible-behavior-with-s3-generics" class="level2">
+      <h2>16. Extensible behavior with S3 generics</h2>
+      <p>An S3 generic selects a method based primarily on the class of
+      its first argument.</p>
+      <div class="sourceCode" id="cb68"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>describe <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">UseMethod</span>(<span class="st">&quot;describe&quot;</span>)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>describe.default <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">&quot;&lt;%s&gt; length %d&quot;</span>, <span class="fu">typeof</span>(x), <span class="fu">length</span>(x))</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>describe.data.frame <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">&quot;&lt;data.frame&gt; %d rows x %d columns&quot;</span>, <span class="fu">nrow</span>(x), <span class="fu">ncol</span>(x))</span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>describe.factor <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">&quot;&lt;factor&gt; %d values, %d levels&quot;</span>, <span class="fu">length</span>(x), <span class="fu">nlevels</span>(x))</span>
+<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <div class="sourceCode" id="cb69"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(iris)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;high&quot;</span>, <span class="st">&quot;low&quot;</span>)))</span></code></pre></div>
+      <p>Keep the generic thin. Its job is dispatch, not substantial
+      computation. Methods should share a compatible argument interface
+      and output contract.</p>
+      <section id="creating-a-small-s3-class" class="level3">
+      <h3>Creating a small S3 class</h3>
+      <div class="sourceCode" id="cb70"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>new_percentage <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">x =</span> <span class="fu">double</span>()) {</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.double</span>(x))</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">structure</span>(x, <span class="at">class =</span> <span class="st">&quot;percentage&quot;</span>)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>percentage <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must be numeric&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.double</span>(x)</span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(x <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">|</span> x <span class="sc">&gt;</span> <span class="dv">1</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must be between 0 and 1&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">new_percentage</span>(x)</span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>format.percentage <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">digits =</span> <span class="dv">1</span>, ...) {</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">formatC</span>(<span class="fu">unclass</span>(x) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">digits =</span> digits, <span class="at">format =</span> <span class="st">&quot;f&quot;</span>), <span class="st">&quot;%&quot;</span>)</span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>print.percentage <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">format</span>(x, ...), <span class="at">quote =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(x)</span>
+<span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The constructor establishes representation, the helper performs
+      user-friendly validation/coercion, and methods define behavior. A
+      class is worthwhile when several functions should share invariants
+      and dispatch, not merely to rename a vector.</p>
+      <p><strong>Key lesson.</strong> Use S3 when external packages or
+      users need to add behavior without modifying the original
+      function.</p>
+      </section>
+      </section>
+      <section id="metaprogramming-and-tidy-evaluation" class="level2">
+      <h2>17. Metaprogramming and tidy evaluation</h2>
+      <p>R can capture code without evaluating it. Base tools include
+      <strong>quote()</strong>, <strong>substitute()</strong>,
+      <strong>bquote()</strong>, <strong>call()</strong>, and
+      <strong>eval()</strong>:</p>
+      <div class="sourceCode" id="cb71"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>expr <span class="ot">&lt;-</span> <span class="fu">quote</span>(x <span class="sc">+</span> y)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eval</span>(expr, <span class="at">envir =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="dv">5</span>))</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 15</span></span></code></pre></div>
+      <p>This power should solve a real interface problem. Ordinary
+      value-based functions are easier to understand and compose.</p>
+      <section id="a-base-r-data-mask-wrapper" class="level3">
+      <h3>A base R data-mask wrapper</h3>
+      <div class="sourceCode" id="cb72"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>subset_rows <span class="ot">&lt;-</span> <span class="cf">function</span>(data, condition) {</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  condition <span class="ot">&lt;-</span> <span class="fu">substitute</span>(condition)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  keep <span class="ot">&lt;-</span> <span class="fu">eval</span>(condition, <span class="at">envir =</span> data, <span class="at">enclos =</span> <span class="fu">parent.frame</span>())</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.logical</span>(keep) <span class="sc">||</span> <span class="fu">length</span>(keep) <span class="sc">!=</span> <span class="fu">nrow</span>(data)) {</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;condition must produce one logical value per row&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>  data[keep <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(keep), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a><span class="fu">subset_rows</span>(iris, Sepal.Length <span class="sc">&gt;</span> <span class="dv">7</span> <span class="sc">&amp;</span> Species <span class="sc">==</span> <span class="st">&quot;virginica&quot;</span>)</span></code></pre></div>
+      <p>The expression is evaluated with columns visible as names, then
+      falls back to the caller environment. This convenience creates
+      ambiguity when a column and caller variable share a name.</p>
+      </section>
+      <section id="optional-rlang-pattern" class="level3">
+      <h3>Optional rlang pattern</h3>
+      <p>rlang pairs captured expressions with their environment in
+      quosures:</p>
+      <div class="sourceCode" id="cb73"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(rlang)</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(dplyr)</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summarise_mean &lt;- function(data, column) {</span></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   column &lt;- enquo(column)</span></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   summarise(data, mean = mean(!!column, na.rm = TRUE))</span></span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # Modern embracing syntax for a single data-masked argument:</span></span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="co"># summarise_mean &lt;- function(data, column) {</span></span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   dplyr::summarise(data, mean = mean({{ column }}, na.rm = TRUE))</span></span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code></pre></div>
+      <p>Use <strong>.data</strong> and <strong>.env</strong> pronouns
+      when data-mask ambiguity matters. Capture only arguments that the
+      interface explicitly defines as expressions; ordinary arguments
+      should remain ordinary values.</p>
+      </section>
+      <section id="metaprogramming-risks" class="level3">
+      <h3>Metaprogramming risks</h3>
+      <ul>
+      <li>evaluating an expression twice;</li>
+      <li>losing the caller’s environment;</li>
+      <li>injecting untrusted text as code;</li>
+      <li>accepting duplicate or unnamed dynamic arguments;</li>
+      <li>creating an interface that is concise interactively but
+      difficult to wrap.</li>
+      </ul>
+      <p><strong>Key lesson.</strong> Track expression, evaluation
+      environment, and data context separately. Prefer standard
+      evaluation unless syntax capture materially improves the user
+      interface.</p>
+      </section>
+      </section>
+      <section id="performance-and-production-api-design"
+      class="level2">
+      <h2>18. Performance and production API design</h2>
+      <p>Do not optimize by intuition. First establish correctness, then
+      profile realistic work, then benchmark alternatives.</p>
+      <div class="sourceCode" id="cb74"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>slow_growth <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">numeric</span>()</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> <span class="fu">c</span>(out, <span class="fu">sqrt</span>(i))</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>preallocated <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>    out[[i]] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(i)</span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-17"><a href="#cb74-17" aria-hidden="true" tabindex="-1"></a>vectorized <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb74-18"><a href="#cb74-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(<span class="fu">seq_len</span>(n))</span>
+<span id="cb74-19"><a href="#cb74-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      <p>The progression illustrates three common improvements: avoid
+      repeated growth, preallocate, then use an existing vectorized
+      primitive when it precisely matches the task.</p>
+      <section id="optional-benchmarking" class="level3">
+      <h3>Optional benchmarking</h3>
+      <div class="sourceCode" id="cb75"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(bench)</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="co"># bench::mark(</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   preallocated = preallocated(10000),</span></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   vectorized = vectorized(10000),</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   check = TRUE</span></span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+      <p>Benchmark representative inputs and compare distributions,
+      allocations, and garbage collection—not one timing.</p>
+      </section>
+      <section id="production-function-checklist" class="level3">
+      <h3>Production function checklist</h3>
+      <p><strong>Contract</strong></p>
+      <ul>
+      <li>Are argument types, lengths, classes, and missing-value
+      behavior clear?</li>
+      <li>Is the output type and shape stable?</li>
+      <li>Are empty input and boundaries intentional?</li>
+      </ul>
+      <p><strong>Evaluation</strong></p>
+      <ul>
+      <li>Are important dependencies explicit?</li>
+      <li>Could lazy evaluation delay an error or retain a large
+      environment?</li>
+      <li>Does captured code keep the correct caller environment?</li>
+      </ul>
+      <p><strong>Side effects</strong></p>
+      <ul>
+      <li>Are files, options, connections, randomness, and global state
+      controlled?</li>
+      <li>Is cleanup registered immediately with
+      <strong>on.exit()</strong>?</li>
+      <li>Is retry or caching behavior safe?</li>
+      </ul>
+      <p><strong>Extensibility</strong></p>
+      <ul>
+      <li>Is a plain function enough?</li>
+      <li>Would a function argument solve the variation more simply than
+      a class?</li>
+      <li>Is S3 or metaprogramming justified by external extension
+      needs?</li>
+      </ul>
+      <p><strong>Evidence</strong></p>
+      <ul>
+      <li>Do tests cover normal, empty, missing, invalid, and boundary
+      cases?</li>
+      <li>Was the real bottleneck found with a profiler?</li>
+      <li>Do benchmarks check equivalent results?</li>
+      </ul>
+      </section>
+      <section id="optimization-order" class="level3">
+      <h3>Optimization order</h3>
+      <ol type="1">
+      <li>Remove unnecessary work.</li>
+      <li>Choose a better algorithm.</li>
+      <li>Reuse a mature implementation.</li>
+      <li>Vectorize with an appropriate primitive.</li>
+      <li>Reduce copying and allocation.</li>
+      <li>Parallelize only independent, sufficiently large tasks.</li>
+      <li>Move a proven hot kernel to C++ only when the complexity is
+      justified.</li>
+      </ol>
+      <p><strong>Key lesson.</strong> The most advanced function is not
+      the cleverest one; it is the smallest interface that remains
+      correct, observable, composable, and fast enough.</p>
+      </section>
+      </section>
+      </section>
+      <section id="pattern-cookbook" class="level1">
+      <h1>Pattern cookbook</h1>
+      <section id="guard-clause" class="level2">
+      <h2>Guard clause</h2>
+      <div class="sourceCode" id="cb76"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>normalize <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">0</span><span class="dt">L</span>) {</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">numeric</span>())</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x must be numeric&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">sum</span>(x)</span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (total <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;sum(x) must not be zero&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">/</span> total</span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="strategy-argument" class="level2">
+      <h2>Strategy argument</h2>
+      <div class="sourceCode" id="cb77"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>aggregate_values <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">strategy =</span> <span class="fu">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;sum&quot;</span>)) {</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  strategy <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(strategy)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  f <span class="ot">&lt;-</span> <span class="cf">switch</span>(strategy, <span class="at">mean =</span> mean, <span class="at">median =</span> median, <span class="at">sum =</span> sum)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f</span>(x)</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="dependency-injection-1" class="level2">
+      <h2>Dependency injection</h2>
+      <div class="sourceCode" id="cb78"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>timestamp_message <span class="ot">&lt;-</span> <span class="cf">function</span>(text, <span class="at">clock =</span> Sys.time) {</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">&quot;[%s] %s&quot;</span>, <span class="fu">format</span>(<span class="fu">clock</span>(), <span class="st">&quot;%Y-%m-%d %H:%M:%S&quot;</span>), text)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="pure-core-side-effect-shell" class="level2">
+      <h2>Pure core, side-effect shell</h2>
+      <div class="sourceCode" id="cb79"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>make_csv <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  connection <span class="ot">&lt;-</span> <span class="fu">textConnection</span>(<span class="st">&quot;out&quot;</span>, <span class="st">&quot;w&quot;</span>, <span class="at">local =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(connection), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(data, connection, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(out, <span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>save_csv <span class="ot">&lt;-</span> <span class="cf">function</span>(data, path) {</span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">make_csv</span>(data), path)</span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(path)</span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="typed-iteration" class="level2">
+      <h2>Typed iteration</h2>
+      <div class="sourceCode" id="cb80"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>column_missing_rate <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vapply</span>(data, \(column) <span class="fu">mean</span>(<span class="fu">is.na</span>(column)), <span class="fu">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      <section id="safe-result-object" class="level2">
+      <h2>Safe result object</h2>
+      <div class="sourceCode" id="cb81"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>capture_result <span class="ot">&lt;-</span> <span class="cf">function</span>(expr) {</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">ok =</span> <span class="cn">TRUE</span>, <span class="at">value =</span> <span class="fu">force</span>(expr), <span class="at">error =</span> <span class="cn">NULL</span>),</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(condition) {</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">ok =</span> <span class="cn">FALSE</span>, <span class="at">value =</span> <span class="cn">NULL</span>, <span class="at">error =</span> condition)</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+      </section>
+      </section>
+      <section id="common-anti-patterns" class="level1">
+      <h1>Common anti-patterns</h1>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Anti-pattern</th>
+      <th>Why it hurts</th>
+      <th>Better approach</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Reading required values from globals</td>
+      <td>Hidden dependency and fragile tests</td>
+      <td>Pass values or functions explicitly</td>
+      </tr>
+      <tr>
+      <td>Returning different types for similar cases</td>
+      <td>Every caller must branch</td>
+      <td>Define one stable output contract</td>
+      </tr>
+      <tr>
+      <td>Silently dropping missing values</td>
+      <td>Can change analytical meaning</td>
+      <td>Expose and document <strong>na.rm</strong></td>
+      </tr>
+      <tr>
+      <td>Growing vectors in a loop</td>
+      <td>Repeated allocation and copying</td>
+      <td>Preallocate or use a suitable functional</td>
+      </tr>
+      <tr>
+      <td>Broad <strong>tryCatch()</strong> returning
+      <strong>NULL</strong></td>
+      <td>Hides programming defects</td>
+      <td>Catch specific recoverable failures</td>
+      </tr>
+      <tr>
+      <td>Parsing strings into code</td>
+      <td>Injection risk and lost structure</td>
+      <td>Use values, calls, or captured expressions</td>
+      </tr>
+      <tr>
+      <td>Using <strong>&lt;&lt;-</strong> for ordinary output</td>
+      <td>Non-local mutation</td>
+      <td>Return a value; restrict state to closures</td>
+      </tr>
+      <tr>
+      <td>Adding S3 or tidy evaluation immediately</td>
+      <td>Complexity before a reuse need exists</td>
+      <td>Start with a plain function</td>
+      </tr>
+      <tr>
+      <td>Optimizing before profiling</td>
+      <td>Work may target the wrong code</td>
+      <td>Profile realistic inputs first</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="sources-and-further-reading" class="level1">
+      <h1>Sources and further reading</h1>
+      <ul>
+      <li>R Core Team, <a
+      href="https://cran.r-project.org/doc/manuals/r-release/R-lang.html">The
+      R Language Definition</a>, especially functions, evaluation,
+      scope, object-oriented programming, and exception handling.</li>
+      <li>R Core Team, <a
+      href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/function.html">Function
+      Definition</a>.</li>
+      <li>R Core Team, <a
+      href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/on.exit.html">Function
+      Exit Code and on.exit()</a>.</li>
+      <li>R Core Team, <a
+      href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/conditions.html">Condition
+      Handling and Recovery</a>.</li>
+      <li>R Core Team, <a
+      href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/UseMethod.html">S3
+      Class Methods and UseMethod()</a>.</li>
+      <li>Hadley Wickham, <a
+      href="https://adv-r.hadley.nz/functions.html">Advanced R:
+      Functions</a>, with related chapters on environments, conditions,
+      and functional programming.</li>
+      <li>purrr maintainers, <a
+      href="https://purrr.tidyverse.org/reference/map.html">map family
+      reference</a>.</li>
+      <li>rlang maintainers, <a
+      href="https://rlang.r-lib.org/reference/topic-data-mask.html">Data-mask
+      programming</a> and <a
+      href="https://rlang.r-lib.org/reference/defusing-advanced.html">advanced
+      defusal operators</a>.</li>
+      <li>testthat maintainers, <a
+      href="https://testthat.r-lib.org/articles/test-fixtures.html">test
+      fixtures</a>.</li>
+      <li>bench maintainers, <a
+      href="https://bench.r-lib.org/reference/mark.html">bench::mark()
+      reference</a>.</li>
+      </ul>
+      <p>Interfaces in contributed packages evolve. Check the installed
+      package documentation before relying on exact contemporary
+      signatures.</p>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">R function writing guide · Source available as
+R Markdown · MooseWeb3 · R Notes · 2026-08-11</footer>
+  <script>
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('guide-theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('guide-theme', root.dataset.theme);
+  });
+  const progress = document.querySelector('.progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, {passive: true});
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sections = tocLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    tocLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + visible.target.id);
+    });
+  }, {rootMargin: '-15% 0px -75% 0px'});
+  sections.forEach((section) => observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

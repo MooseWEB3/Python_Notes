@@ -1,0 +1,1514 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 Advanced R guide">
+  <meta name="description" content="A detailed tutorial on the dlnm R
+package and Gasparrini’s 2011 paper, using current dlnm syntax and
+validated examples.">
+  <title>Distributed Lag Models with dlnm in R</title>
+  <style>
+  :root {
+    --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+    --text: #172033; --muted: #61708a; --line: #dbe3ee;
+    --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+    --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+  }
+  html[data-theme="dark"] {
+    --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+    --text: #e7eef8; --muted: #9babc2; --line: #283750;
+    --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+    --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.72;
+  }
+  html[lang^="zh"] body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Inter, ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.82;
+  }
+  a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+  .progress {
+    position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 15; display: flex; align-items: center;
+    justify-content: space-between; min-height: 58px; padding: 0 4vw;
+    background: color-mix(in srgb, var(--surface) 91%, transparent);
+    border-bottom: 1px solid var(--line); backdrop-filter: blur(16px);
+  }
+  .brand { font-weight: 750; letter-spacing: -.02em; }
+  .actions { display: flex; align-items: center; gap: .6rem; }
+  .button {
+    display: inline-flex; align-items: center; border: 1px solid var(--line);
+    border-radius: 999px; padding: .38rem .75rem; color: var(--text);
+    background: var(--surface); font: inherit; font-size: .86rem;
+    text-decoration: none; cursor: pointer;
+  }
+  .button:hover { border-color: var(--accent); }
+  .hero {
+    padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%),
+      linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: .8rem; font-size: .78rem;
+    letter-spacing: .14em; text-transform: uppercase; opacity: .82;
+  }
+  .hero h1 {
+    max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+    line-height: 1.04; letter-spacing: -.045em;
+  }
+  html[lang^="zh"] .hero h1 { letter-spacing: -.025em; line-height: 1.12; }
+  .hero p {
+    max-width: 780px; margin: 1.25rem 0 0;
+    font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9;
+  }
+  .hero .personal-note {
+    width: fit-content; max-width: 100%; margin-top: .9rem; padding: .4rem .72rem;
+    border: 1px solid rgba(255,255,255,.38); border-radius: 8px;
+    background: rgba(255,255,255,.12); font-size: .9rem; font-weight: 650; opacity: 1;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+  .badge {
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem;
+  }
+  .shell {
+    display: grid; grid-template-columns: 260px minmax(0, 820px);
+    gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .toc {
+    position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px);
+    overflow: auto; padding-right: 1rem; scrollbar-width: thin;
+  }
+  .toc > h2 {
+    margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted);
+  }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc ul ul { padding-left: .85rem; font-size: .88rem; }
+  .toc li { margin: .22rem 0; }
+  .toc a {
+    display: block; padding: .22rem .5rem; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+  .content { min-width: 0; }
+  .notice {
+    margin: 0 0 2rem; padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    background: var(--surface-2); color: var(--muted); font-size: .92rem;
+  }
+  .content h1, .content h2, .content h3 {
+    scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em;
+  }
+  html[lang^="zh"] .content h1,
+  html[lang^="zh"] .content h2,
+  html[lang^="zh"] .content h3 { line-height: 1.35; letter-spacing: -.015em; }
+  .content h1 {
+    margin: 3.5rem 0 1rem; padding-top: .4rem;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line);
+  }
+  .content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+  .content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+  .content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+  .content p, .content li { color: var(--text); }
+  .content ul, .content ol { padding-left: 1.4rem; }
+  .content li { margin: .3rem 0; }
+  blockquote {
+    margin: 1.5rem 0; padding: .25rem 1.15rem;
+    border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0;
+    background: var(--surface-2);
+  }
+  blockquote p { color: var(--muted) !important; }
+  table {
+    width: 100%; margin: 1.4rem 0; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 12px;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--surface); box-shadow: var(--shadow); font-size: .94rem;
+  }
+  th, td {
+    padding: .72rem .85rem; border: 0; border-bottom: 1px solid var(--line);
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    padding: .12em .34em; border-radius: 5px; background: var(--surface-2);
+    color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  div.sourceCode, pre {
+    margin: 1.3rem 0; overflow: auto; border: 1px solid #263247;
+    border-radius: 12px; background: var(--code); box-shadow: var(--shadow);
+  }
+  pre { padding: 1rem 1.1rem; tab-size: 2; }
+  div.sourceCode pre { margin: 0; border: 0; box-shadow: none; }
+  pre code {
+    padding: 0; color: var(--code-text); background: transparent;
+    font-size: .88rem; white-space: pre;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .footer {
+    padding: 2rem; border-top: 1px solid var(--line); color: var(--muted);
+    background: var(--surface); text-align: center; font-size: .88rem;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+    .toc {
+      position: static; max-height: 320px; padding: 1rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+    }
+    .hero { padding: 4rem 1.2rem 3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+    .topbar { padding: 0 1rem; }
+    table { display: block; max-width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 520px) {
+    .brand { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .button { padding: .32rem .6rem; font-size: .8rem; }
+  }
+  @media print {
+    .topbar, .toc, .progress { display: none !important; }
+    .hero { padding: 2rem; background: white; color: black; }
+    .shell { display: block; max-width: none; padding: 1rem; }
+    table, div.sourceCode, pre { box-shadow: none; break-inside: avoid; }
+    a { color: black; }
+  }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · dlnm</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · DISTRIBUTED LAGS · CURRENT API</span>
+    <h1>Distributed Lag Models with dlnm in R</h1>
+    <p>A current, example-driven guide to DLMs and DLNMs, from
+cross-basis design to prediction, reduction, diagnostics, and
+penalization</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">MooseWeb3</span>
+      <span class="badge">dlnm 2.4.10</span>
+      <span class="badge">DLM + DLNM</span>
+      <span class="badge">Validated R code</span>
+      <span class="badge">Self-contained HTML</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#how-to-use-this-guide"
+      id="toc-how-to-use-this-guide">How to use this guide</a>
+      <ul>
+      <li><a href="#version-contract-and-reproducibility"
+      id="toc-version-contract-and-reproducibility">Version contract and
+      reproducibility</a></li>
+      </ul></li>
+      <li><a href="#why-distributed-lag-models"
+      id="toc-why-distributed-lag-models">1. Why distributed lag
+      models?</a>
+      <ul>
+      <li><a href="#three-model-classes"
+      id="toc-three-model-classes">Three model classes</a></li>
+      </ul></li>
+      <li><a href="#the-cross-basis-idea"
+      id="toc-the-cross-basis-idea">2. The cross-basis idea</a>
+      <ul>
+      <li><a href="#basis-choices" id="toc-basis-choices">Basis
+      choices</a></li>
+      <li><a href="#intercepts-and-identifiability"
+      id="toc-intercepts-and-identifiability">Intercepts and
+      identifiability</a></li>
+      </ul></li>
+      <li><a href="#the-current-dlnm-workflow"
+      id="toc-the-current-dlnm-workflow">3. The current dlnm
+      workflow</a></li>
+      <li><a href="#install-the-package-and-inspect-the-data"
+      id="toc-install-the-package-and-inspect-the-data">4. Install the
+      package and inspect the data</a>
+      <ul>
+      <li><a href="#installation"
+      id="toc-installation">Installation</a></li>
+      <li><a href="#chicago-nmmaps-data"
+      id="toc-chicago-nmmaps-data">Chicago NMMAPS data</a></li>
+      <li><a href="#preserve-the-calendar"
+      id="toc-preserve-the-calendar">Preserve the calendar</a></li>
+      </ul></li>
+      <li><a href="#choosing-a-lag-window-and-basis"
+      id="toc-choosing-a-lag-window-and-basis">5. Choosing a lag window
+      and basis</a>
+      <ul>
+      <li><a href="#start-from-the-scientific-time-scale"
+      id="toc-start-from-the-scientific-time-scale">Start from the
+      scientific time scale</a></li>
+      <li><a href="#knots-and-degrees-of-freedom"
+      id="toc-knots-and-degrees-of-freedom">Knots and degrees of
+      freedom</a></li>
+      </ul></li>
+      <li><a href="#example-a-a-linear-dlm-for-ozone"
+      id="toc-example-a-a-linear-dlm-for-ozone">6. Example A — a linear
+      DLM for ozone</a></li>
+      <li><a href="#example-b-reconstruct-the-papers-threshold-model"
+      id="toc-example-b-reconstruct-the-papers-threshold-model">7.
+      Example B — reconstruct the paper’s threshold model</a>
+      <ul>
+      <li><a href="#keep-summer-segments-independent"
+      id="toc-keep-summer-segments-independent">Keep summer segments
+      independent</a></li>
+      </ul></li>
+      <li><a href="#example-c-a-non-linear-temperature-dlnm"
+      id="toc-example-c-a-non-linear-temperature-dlnm">8. Example C — a
+      non-linear temperature DLNM</a></li>
+      <li><a href="#prediction-objects-and-four-essential-plots"
+      id="toc-prediction-objects-and-four-essential-plots">9. Prediction
+      objects and four essential plots</a>
+      <ul>
+      <li><a href="#inspect-before-plotting"
+      id="toc-inspect-before-plotting">Inspect before plotting</a></li>
+      <li><a href="#surface-and-contour"
+      id="toc-surface-and-contour">Surface and contour</a></li>
+      <li><a href="#slices-in-two-directions"
+      id="toc-slices-in-two-directions">Slices in two
+      directions</a></li>
+      <li><a href="#overall-cumulative-association"
+      id="toc-overall-cumulative-association">Overall cumulative
+      association</a></li>
+      </ul></li>
+      <li><a href="#reduce-a-fitted-dlnm-with-crossreduce"
+      id="toc-reduce-a-fitted-dlnm-with-crossreduce">10. Reduce a fitted
+      DLNM with crossreduce()</a></li>
+      <li><a href="#missing-values-gaps-groups-and-exposure-histories"
+      id="toc-missing-values-gaps-groups-and-exposure-histories">11.
+      Missing values, gaps, groups, and exposure histories</a>
+      <ul>
+      <li><a href="#missing-exposure-values-propagate-forward"
+      id="toc-missing-exposure-values-propagate-forward">Missing
+      exposure values propagate forward</a></li>
+      <li><a href="#independent-series-with-group"
+      id="toc-independent-series-with-group">Independent series with
+      group</a></li>
+      <li><a href="#matrix-input-beyond-regular-time-series"
+      id="toc-matrix-input-beyond-regular-time-series">Matrix input
+      beyond regular time series</a></li>
+      </ul></li>
+      <li><a href="#diagnostics-and-sensitivity-analysis"
+      id="toc-diagnostics-and-sensitivity-analysis">12. Diagnostics and
+      sensitivity analysis</a>
+      <ul>
+      <li><a
+      href="#diagnose-the-complete-regression-not-just-the-surface"
+      id="toc-diagnose-the-complete-regression-not-just-the-surface">Diagnose
+      the complete regression, not just the surface</a></li>
+      <li><a href="#a-disciplined-sensitivity-grid"
+      id="toc-a-disciplined-sensitivity-grid">A disciplined sensitivity
+      grid</a></li>
+      </ul></li>
+      <li><a href="#advanced-option-penalized-dlnms"
+      id="toc-advanced-option-penalized-dlnms">13. Advanced option —
+      penalized DLNMs</a></li>
+      <li><a href="#migrating-the-2011-paper-code"
+      id="toc-migrating-the-2011-paper-code">14. Migrating the 2011
+      paper code</a></li>
+      <li><a href="#interpretation-checklist-and-common-mistakes"
+      id="toc-interpretation-checklist-and-common-mistakes">15.
+      Interpretation checklist and common mistakes</a>
+      <ul>
+      <li><a href="#common-mistakes" id="toc-common-mistakes">Common
+      mistakes</a></li>
+      </ul></li>
+      <li><a href="#a-compact-reusable-analysis-skeleton"
+      id="toc-a-compact-reusable-analysis-skeleton">16. A compact
+      reusable analysis skeleton</a></li>
+      <li><a href="#sources-and-further-reading"
+      id="toc-sources-and-further-reading">17. Sources and further
+      reading</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">Version contract: this guide targets dlnm
+2.4.10 and the current list-based crossbasis() API. The principal
+examples were executed with R 4.5.2. Code is displayed, rather than run,
+during this portable HTML build.</div>
+      <section id="how-to-use-this-guide" class="level1 unnumbered">
+      <h1 class="unnumbered">How to use this guide</h1>
+      <p>Antonio Gasparrini’s 2011 paper, <em>Distributed Lag Linear and
+      Non-Linear Models in R: The Package dlnm</em>, introduced a
+      practical framework for relationships that may be non-linear in
+      exposure and delayed across time. This guide explains that
+      framework, reconstructs its key example with the current package
+      interface, and then extends the workflow through prediction,
+      reduction, diagnostics, missing data, and penalized models.</p>
+      <p>Read Chapters 1–5 for the concepts, Chapters 6–10 for a
+      complete analysis, and Chapters 11–15 before adapting the code to
+      research data. The examples estimate associations; they do not, by
+      themselves, establish causality.</p>
+      <section id="version-contract-and-reproducibility"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Version contract and reproducibility</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Item</th>
+      <th>This guide uses</th>
+      <th>Why it matters</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Paper</td>
+      <td>Gasparrini (2011), JSS 43(8)</td>
+      <td>Defines the original DLNM framework and package workflow.</td>
+      </tr>
+      <tr>
+      <td>Package</td>
+      <td><code>dlnm</code> 2.4.10</td>
+      <td>Current syntax differs materially from the 2011 examples.</td>
+      </tr>
+      <tr>
+      <td>R</td>
+      <td>R &gt;= 4.4; examples checked with 4.5.2</td>
+      <td>Current CRAN release declares R &gt;= 4.4.</td>
+      </tr>
+      <tr>
+      <td>Model family</td>
+      <td>Quasi-Poisson with log link</td>
+      <td>Appropriate starting point for overdispersed daily
+      counts.</td>
+      </tr>
+      <tr>
+      <td>Example data</td>
+      <td><code>chicagoNMMAPS</code></td>
+      <td>Daily Chicago mortality, weather, and pollution data supplied
+      by <code>dlnm</code>.</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>Save the output of <code>sessionInfo()</code> with an analysis.
+      A fitted surface depends on the package version, basis
+      definitions, lag range, confounder specification, and rows
+      retained in the model.</p>
+      </section>
+      </section>
+      <section id="why-distributed-lag-models"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">1. Why distributed lag models?</h1>
+      <p>An exposure observed today may affect an outcome today,
+      tomorrow, or weeks later. Temperature can have acute heat effects
+      and longer cold effects; air pollution may have effects spread
+      over several days. A conventional regression containing only
+      today’s exposure imposes lag 0. Adding one coefficient per lag is
+      flexible but often unstable because adjacent lagged exposures are
+      highly correlated.</p>
+      <p>A distributed lag model constrains the lag pattern to a
+      lower-dimensional function. A distributed lag non-linear model
+      adds a second flexible function for the exposure-response
+      shape.</p>
+      <section id="three-model-classes" class="level2 unnumbered">
+      <h2 class="unnumbered">Three model classes</h2>
+      <table>
+      <colgroup>
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      <col style="width: 25%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Model</th>
+      <th>Exposure-response</th>
+      <th>Lag-response</th>
+      <th>Typical question</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Single-lag regression</td>
+      <td>Usually linear or spline</td>
+      <td>One selected lag</td>
+      <td>What is the association at lag 2?</td>
+      </tr>
+      <tr>
+      <td>DLM</td>
+      <td>Linear</td>
+      <td>Flexible</td>
+      <td>How is the effect of a fixed exposure increment distributed
+      across lags?</td>
+      </tr>
+      <tr>
+      <td>DLNM</td>
+      <td>Flexible</td>
+      <td>Flexible</td>
+      <td>How do both exposure level and delay shape the
+      association?</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>In compact form, a time-series DLNM contributes this term to
+      the linear predictor:</p>
+      <pre class="text"><code>sum over lag l = 0,...,L of  f(exposure at time t-l, lag l)</code></pre>
+      <p>The regression model supplies the outcome family, link,
+      confounders, and uncertainty calculation. The cross-basis supplies
+      <code>f()</code>, the two-dimensional exposure-lag-response
+      surface.</p>
+      </section>
+      </section>
+      <section id="the-cross-basis-idea" class="level1 unnumbered">
+      <h1 class="unnumbered">2. The cross-basis idea</h1>
+      <p><code>crossbasis()</code> constructs basis functions in two
+      spaces and combines them:</p>
+      <ol type="1">
+      <li><strong>Predictor space:</strong> how risk changes as exposure
+      changes.</li>
+      <li><strong>Lag space:</strong> how an exposure’s association
+      changes as time since exposure increases.</li>
+      </ol>
+      <p>If the predictor basis has <code>p</code> columns and the lag
+      basis has <code>q</code> columns, the cross-basis usually
+      contributes <code>p * q</code> columns. Regression estimates one
+      coefficient for each combined basis column.
+      <code>crosspred()</code> then maps those coefficients back to
+      interpretable contrasts on an exposure-by-lag grid.</p>
+      <section id="basis-choices" class="level2 unnumbered">
+      <h2 class="unnumbered">Basis choices</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th><code>fun</code></th>
+      <th>Meaning</th>
+      <th>Good use</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>"lin"</code></td>
+      <td>Linear term</td>
+      <td>A DLM or a scientifically justified linear dimension.</td>
+      </tr>
+      <tr>
+      <td><code>"ns"</code></td>
+      <td>Natural cubic spline</td>
+      <td>Smooth, stable curves with linear tails.</td>
+      </tr>
+      <tr>
+      <td><code>"bs"</code></td>
+      <td>B-spline</td>
+      <td>Flexible piecewise-polynomial curves with explicit degree/df
+      control.</td>
+      </tr>
+      <tr>
+      <td><code>"thr"</code></td>
+      <td>High, low, or double threshold</td>
+      <td>A piecewise-linear effect beyond selected thresholds.</td>
+      </tr>
+      <tr>
+      <td><code>"strata"</code></td>
+      <td>Piecewise-constant intervals</td>
+      <td>Interpretable lag blocks or exposure categories.</td>
+      </tr>
+      <tr>
+      <td><code>"integer"</code></td>
+      <td>One indicator per integer</td>
+      <td>Unconstrained lag coefficients for a short lag range.</td>
+      </tr>
+      <tr>
+      <td><code>"poly"</code></td>
+      <td>Polynomial basis</td>
+      <td>Compact curves, but potentially fragile at boundaries.</td>
+      </tr>
+      <tr>
+      <td><code>"ps"</code>, <code>"cr"</code></td>
+      <td>Penalized splines</td>
+      <td>Advanced models where smoothness is estimated.</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>Use a simple, scientifically defensible specification first.
+      Increasing flexibility in both dimensions multiplies the number of
+      parameters and can create a visually impressive but unstable
+      surface.</p>
+      </section>
+      <section id="intercepts-and-identifiability"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Intercepts and identifiability</h2>
+      <p>Do not include an intercept in <code>argvar</code>. The
+      regression already has an intercept; an intercept in predictor
+      space commonly creates collinearity and rank deficiency. An
+      intercept in the lag basis is included by default and is normally
+      appropriate.</p>
+      <div class="sourceCode" id="cb2"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cb <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  x,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">21</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">4</span>, <span class="at">intercept =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">4</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cb)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">qr</span>(cb[<span class="fu">complete.cases</span>(cb), ])<span class="sc">$</span>rank</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(cb)</span></code></pre></div>
+      <p>If rank is smaller than the number of columns, simplify the
+      basis before fitting. Prediction and reduction can fail when the
+      regression silently drops collinear columns.</p>
+      </section>
+      </section>
+      <section id="the-current-dlnm-workflow" class="level1 unnumbered">
+      <h1 class="unnumbered">3. The current dlnm workflow</h1>
+      <p>The reusable workflow has six steps:</p>
+      <ol type="1">
+      <li>Preserve a complete, correctly ordered time index.</li>
+      <li>Choose a lag window and two marginal basis functions.</li>
+      <li>Build a cross-basis with <code>crossbasis()</code>.</li>
+      <li>Include that object in a supported regression model.</li>
+      <li>Generate contrasts with <code>crosspred()</code> and an
+      explicit reference value.</li>
+      <li>Visualize or reduce the fitted surface with
+      <code>plot()</code> and <code>crossreduce()</code>.</li>
+      </ol>
+      <div class="sourceCode" id="cb3"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dlnm)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splines)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cb <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>exposure,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">21</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">4</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">4</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  outcome <span class="sc">~</span> cb <span class="sc">+</span> <span class="fu">ns</span>(time, <span class="at">df =</span> <span class="dv">7</span> <span class="sc">*</span> years) <span class="sc">+</span> day_of_week,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(cb, fit, <span class="at">cen =</span> reference, <span class="at">by =</span> <span class="dv">1</span>, <span class="at">cumul =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred, <span class="st">&quot;overall&quot;</span>)</span></code></pre></div>
+      <p>The exact same object name matters: <code>crosspred()</code>
+      and <code>crossreduce()</code> use the basis object and
+      coefficient names to locate the relevant model terms. Give two
+      cross-bases distinct names when both enter one model.</p>
+      </section>
+      <section id="install-the-package-and-inspect-the-data"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">4. Install the package and inspect the
+      data</h1>
+      <section id="installation" class="level2 unnumbered">
+      <h2 class="unnumbered">Installation</h2>
+      <div class="sourceCode" id="cb4"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;dlnm&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dlnm)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splines)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;dlnm&quot;</span>)</span></code></pre></div>
+      <p>For an analysis intended to be reproduced later, record package
+      versions with <code>sessionInfo()</code> or use a project library
+      manager such as <code>renv</code>.</p>
+      </section>
+      <section id="chicago-nmmaps-data" class="level2 unnumbered">
+      <h2 class="unnumbered">Chicago NMMAPS data</h2>
+      <div class="sourceCode" id="cb5"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;chicagoNMMAPS&quot;</span>, <span class="at">package =</span> <span class="st">&quot;dlnm&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(chicagoNMMAPS)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 5114 rows, 14 variables</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(chicagoNMMAPS)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(chicagoNMMAPS[<span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;death&quot;</span>, <span class="st">&quot;temp&quot;</span>, <span class="st">&quot;o3&quot;</span>, <span class="st">&quot;dow&quot;</span>)])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(chicagoNMMAPS[<span class="fu">c</span>(<span class="st">&quot;death&quot;</span>, <span class="st">&quot;temp&quot;</span>, <span class="st">&quot;o3&quot;</span>, <span class="st">&quot;pm10&quot;</span>)])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(chicagoNMMAPS))</span></code></pre></div>
+      <p>The data contain daily observations from 1987–2000.
+      <code>death</code> is the daily non-accidental death count;
+      <code>temp</code> is temperature; <code>o3</code> and
+      <code>pm10</code> are reconstructed pollutant series. The package
+      documentation warns that reconstructed pollutant values can be
+      negative. Do not silently truncate them without a scientific and
+      measurement-model justification.</p>
+      </section>
+      <section id="preserve-the-calendar" class="level2 unnumbered">
+      <h2 class="unnumbered">Preserve the calendar</h2>
+      <p>For vector input, <code>crossbasis()</code> assumes an equally
+      spaced, complete, ordered series. Do not run
+      <code>na.omit()</code> on the entire data frame before building
+      the basis: removing a date makes adjacent rows look like adjacent
+      days even when they are not.</p>
+      <div class="sourceCode" id="cb6"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">is.unsorted</span>(chicagoNMMAPS<span class="sc">$</span>date))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">diff</span>(chicagoNMMAPS<span class="sc">$</span>date) <span class="sc">==</span> <span class="dv">1</span>))</span></code></pre></div>
+      <p>Missing exposure values are allowed, but one missing exposure
+      makes the basis row and subsequent rows in its lag window
+      unavailable. Long lag windows can therefore amplify data loss.</p>
+      </section>
+      </section>
+      <section id="choosing-a-lag-window-and-basis"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">5. Choosing a lag window and basis</h1>
+      <section id="start-from-the-scientific-time-scale"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Start from the scientific time scale</h2>
+      <p>The maximum lag is a scientific assumption before it is a
+      tuning parameter. It should be long enough to capture plausible
+      delayed effects, but not so long that unrelated variation is
+      folded into the exposure term.</p>
+      <ul>
+      <li>Acute pollution effects often use a relatively short
+      window.</li>
+      <li>Temperature effects may require several weeks.</li>
+      <li>Long-latency occupational or pharmaceutical settings can use
+      negative or much longer lags when the study design supports
+      them.</li>
+      </ul>
+      <p>Run sensitivity analyses around a defensible primary lag,
+      rather than searching every possible maximum and reporting the
+      most striking curve.</p>
+      </section>
+      <section id="knots-and-degrees-of-freedom"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Knots and degrees of freedom</h2>
+      <p><code>df</code> lets a spline function choose knots
+      automatically. Explicit knots make the model specification easier
+      to reproduce and explain.</p>
+      <div class="sourceCode" id="cb7"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lag_knots <span class="ot">&lt;-</span> <span class="fu">logknots</span>(<span class="dv">30</span>, <span class="at">nk =</span> <span class="dv">3</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>exposure_knots <span class="ot">&lt;-</span> <span class="fu">quantile</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>temp,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.75</span>, <span class="fl">0.90</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>cb_temp <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>temp,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">30</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">knots =</span> exposure_knots),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">knots =</span> lag_knots)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p><code>logknots()</code> places more lag knots near lag 0, where
+      associations often change more rapidly. This helper reproduces
+      older log-spaced defaults; current <code>crossbasis()</code> does
+      not apply that old default automatically.</p>
+      </section>
+      </section>
+      <section id="example-a-a-linear-dlm-for-ozone"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">6. Example A — a linear DLM for ozone</h1>
+      <p>This first model keeps the exposure-response linear and lets
+      the lag-response be smooth. It answers: relative to ozone 0, how
+      is the association for a given ozone level distributed across lags
+      0–10?</p>
+      <div class="sourceCode" id="cb8"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cb_o3_linear <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>o3,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;lin&quot;</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">knots =</span> <span class="fu">logknots</span>(<span class="dv">10</span>, <span class="dv">3</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cb_o3_linear)</span></code></pre></div>
+      <p>Fit a quasi-Poisson time-series regression:</p>
+      <div class="sourceCode" id="cb9"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_o3_linear <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  death <span class="sc">~</span> cb_o3_linear <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ns</span>(temp, <span class="at">df =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ns</span>(time, <span class="at">df =</span> <span class="dv">7</span> <span class="sc">*</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    dow,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> chicagoNMMAPS</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_o3_linear)</span></code></pre></div>
+      <p>Here <code>ns(time, 7 * 14)</code> uses seven degrees of
+      freedom per year for long-term and seasonal pattern, and
+      <code>dow</code> adjusts for day of week. The same-day temperature
+      spline keeps this example focused on DLM mechanics; it is not a
+      universal confounding strategy. A real protocol must predefine
+      weather, seasonality, holidays, epidemics, trends, and other
+      context-specific controls.</p>
+      <p>Generate predictions at explicit ozone values:</p>
+      <div class="sourceCode" id="cb10"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pred_o3_linear <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  cb_o3_linear,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  fit_o3_linear,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">at =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">60</span>, <span class="at">by =</span> <span class="dv">5</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">0</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumul =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  pred_o3_linear,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;slices&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">var =</span> <span class="dv">50</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Lag (days)&quot;</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Relative risk&quot;</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Lag-response at ozone = 50 versus 0&quot;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>pred_o3_linear<span class="sc">$</span>allRRfit[<span class="st">&quot;50&quot;</span>]</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">low =</span> pred_o3_linear<span class="sc">$</span>allRRlow[<span class="st">&quot;50&quot;</span>],</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">high =</span> pred_o3_linear<span class="sc">$</span>allRRhigh[<span class="st">&quot;50&quot;</span>]</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p><code>matRRfit</code> contains lag-specific relative risks.
+      <code>allRRfit</code> contains the overall cumulative association
+      across the complete lag interval. <code>cumRRfit</code> is created
+      because <code>cumul = TRUE</code> and traces the incremental
+      cumulative association through lag.</p>
+      </section>
+      <section id="example-b-reconstruct-the-papers-threshold-model"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">7. Example B — reconstruct the paper’s
+      threshold model</h1>
+      <p>The paper’s ozone example models no linear increase below 40.3
+      and a linear increase above that threshold, with separate lag
+      coefficients. The current package manual demonstrates this as a
+      seasonal analysis.</p>
+      <section id="keep-summer-segments-independent"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Keep summer segments independent</h2>
+      <p>Subsetting to June–September creates a gap between one summer
+      and the next. <code>group = year</code> prevents the cross-basis
+      from carrying a December-to-June lag history across that gap.</p>
+      <div class="sourceCode" id="cb11"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chicago_summer <span class="ot">&lt;-</span> <span class="fu">subset</span>(chicagoNMMAPS, month <span class="sc">&gt;</span> <span class="dv">5</span> <span class="sc">&amp;</span> month <span class="sc">&lt;</span> <span class="dv">10</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>cb_o3_threshold <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  chicago_summer<span class="sc">$</span>o3,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">5</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;thr&quot;</span>, <span class="at">thr =</span> <span class="fl">40.3</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;integer&quot;</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> chicago_summer<span class="sc">$</span>year</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>cb_temp_threshold <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  chicago_summer<span class="sc">$</span>temp,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;thr&quot;</span>, <span class="at">thr =</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">25</span>)),</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;strata&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">6</span>)),</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> chicago_summer<span class="sc">$</span>year</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The ozone predictor basis is a high-threshold function by
+      default when one threshold is supplied. The temperature basis has
+      low and high linear pieces around 15 and 25. The lag bases are
+      deliberately interpretable: one ozone parameter per lag and three
+      temperature lag strata.</p>
+      <div class="sourceCode" id="cb12"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_paper_style <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  death <span class="sc">~</span> cb_o3_threshold <span class="sc">+</span> cb_temp_threshold <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ns</span>(doy, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span> <span class="fu">ns</span>(time, <span class="at">df =</span> <span class="dv">3</span>) <span class="sc">+</span> dow,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> chicago_summer</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>pred_o3_threshold <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  cb_o3_threshold,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  fit_paper_style,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">at =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">65</span>, <span class="fl">40.3</span>, <span class="fl">50.3</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>pred_o3_threshold<span class="sc">$</span>allRRfit[<span class="st">&quot;50.3&quot;</span>]</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">low =</span> pred_o3_threshold<span class="sc">$</span>allRRlow[<span class="st">&quot;50.3&quot;</span>],</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">high =</span> pred_o3_threshold<span class="sc">$</span>allRRhigh[<span class="st">&quot;50.3&quot;</span>]</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>)[<span class="dv">1</span>, ]</span></code></pre></div>
+      <p>In the validation run for this guide, the overall relative risk
+      at 50.3 versus the threshold reference was about 1.0473. Treat
+      that number as a reproducibility check, not a new scientific
+      result.</p>
+      <div class="sourceCode" id="cb13"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  pred_o3_threshold,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;slices&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">var =</span> <span class="fl">50.3</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;bars&quot;</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci.level =</span> <span class="fl">0.80</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;p&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Lag (days)&quot;</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Relative risk&quot;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  pred_o3_threshold,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;overall&quot;</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Ozone&quot;</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Overall cumulative relative risk&quot;</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      </section>
+      </section>
+      <section id="example-c-a-non-linear-temperature-dlnm"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">8. Example C — a non-linear temperature
+      DLNM</h1>
+      <p>Now let both dimensions be non-linear. This follows the spirit
+      of the paper’s 30-day temperature example while using current
+      syntax and moving centering to prediction.</p>
+      <div class="sourceCode" id="cb14"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cb_temp_nonlinear <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>temp,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">30</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;bs&quot;</span>, <span class="at">degree =</span> <span class="dv">3</span>, <span class="at">df =</span> <span class="dv">6</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">5</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cb_temp_nonlinear)</span></code></pre></div>
+      <p>Six predictor-basis columns crossed with five lag-basis columns
+      produce 30 DLNM coefficients. The full regression also estimates
+      the intercept, 98 time-spline coefficients, and day-of-week
+      contrasts.</p>
+      <div class="sourceCode" id="cb15"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit_temp_nonlinear <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  death <span class="sc">~</span> cb_temp_nonlinear <span class="sc">+</span> <span class="fu">ns</span>(time, <span class="at">df =</span> <span class="dv">7</span> <span class="sc">*</span> <span class="dv">14</span>) <span class="sc">+</span> dow,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> chicagoNMMAPS</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>pred_temp_nonlinear <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  cb_temp_nonlinear,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  fit_temp_nonlinear,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">at =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">33</span>, <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">25</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumul =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Every contrast is relative to 25°C. Centering changes the
+      comparison and presentation, not the fitted coefficients. Select
+      the reference because it is scientifically meaningful and
+      sufficiently supported by the data—not because it makes the graph
+      attractive.</p>
+      </section>
+      <section id="prediction-objects-and-four-essential-plots"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">9. Prediction objects and four essential
+      plots</h1>
+      <section id="inspect-before-plotting" class="level2 unnumbered">
+      <h2 class="unnumbered">Inspect before plotting</h2>
+      <div class="sourceCode" id="cb16"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pred_temp_nonlinear)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(pred_temp_nonlinear<span class="sc">$</span>predvar)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(pred_temp_nonlinear<span class="sc">$</span>matRRfit)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred_temp_nonlinear<span class="sc">$</span>allRRfit)</span></code></pre></div>
+      <p>Important components include:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Component</th>
+      <th>Interpretation</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>predvar</code></td>
+      <td>Exposure values at which predictions were made.</td>
+      </tr>
+      <tr>
+      <td><code>matfit</code>, <code>matse</code></td>
+      <td>Linear-predictor association and standard error for each
+      exposure-lag cell.</td>
+      </tr>
+      <tr>
+      <td><code>matRRfit</code>, <code>matRRlow</code>,
+      <code>matRRhigh</code></td>
+      <td>Exponentiated lag-specific estimates and intervals for a
+      log-link model.</td>
+      </tr>
+      <tr>
+      <td><code>allfit</code>, <code>allse</code></td>
+      <td>Overall cumulative association on the link scale.</td>
+      </tr>
+      <tr>
+      <td><code>allRRfit</code>, <code>allRRlow</code>,
+      <code>allRRhigh</code></td>
+      <td>Overall cumulative relative risk and interval.</td>
+      </tr>
+      <tr>
+      <td><code>cumRRfit</code> and interval matrices</td>
+      <td>Incremental cumulative results when
+      <code>cumul = TRUE</code>.</td>
+      </tr>
+      </tbody>
+      </table>
+      </section>
+      <section id="surface-and-contour" class="level2 unnumbered">
+      <h2 class="unnumbered">Surface and contour</h2>
+      <div class="sourceCode" id="cb17"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;3d&quot;</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta =</span> <span class="dv">210</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">phi =</span> <span class="dv">30</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Temperature (°C)&quot;</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Lag (days)&quot;</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">zlab =</span> <span class="st">&quot;Relative risk&quot;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;contour&quot;</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Temperature (°C)&quot;</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Lag (days)&quot;</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The 3-D surface communicates the complete model but is
+      angle-dependent. The contour is usually easier to compare and
+      publish. Neither replaces one-dimensional summaries with
+      uncertainty.</p>
+      </section>
+      <section id="slices-in-two-directions" class="level2 unnumbered">
+      <h2 class="unnumbered">Slices in two directions</h2>
+      <div class="sourceCode" id="cb18"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lag-response curves at selected temperatures</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;slices&quot;</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">var =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">33</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Lag (days)&quot;</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Relative risk&quot;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Exposure-response curves at selected lags</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;slices&quot;</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">21</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Temperature (°C)&quot;</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Relative risk&quot;</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Values supplied to <code>var</code> must be present in
+      <code>predvar</code>; values supplied to <code>lag</code> must be
+      on the predicted lag grid. If both are supplied, their lengths
+      must match because the method plots paired slices.</p>
+      </section>
+      <section id="overall-cumulative-association"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Overall cumulative association</h2>
+      <div class="sourceCode" id="cb19"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;overall&quot;</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Temperature (°C)&quot;</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Overall cumulative relative risk&quot;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  pred_temp_nonlinear,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;slices&quot;</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">var =</span> <span class="dv">33</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumul =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Lag through which effects are accumulated&quot;</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Incremental cumulative relative risk&quot;</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Do not call a lag-specific RR a cumulative RR. The former is
+      one cell or slice of the surface; the latter sums contributions
+      across a defined lag interval on the linear-predictor scale before
+      exponentiation.</p>
+      </section>
+      </section>
+      <section id="reduce-a-fitted-dlnm-with-crossreduce"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">10. Reduce a fitted DLNM with
+      crossreduce()</h1>
+      <p><code>crossreduce()</code> re-expresses a two-dimensional fit
+      as a lower-dimensional basis with modified coefficients and
+      covariance matrix. It is useful for meta-analysis, compact
+      reporting, and extracting a single scientifically targeted
+      curve.</p>
+      <div class="sourceCode" id="cb20"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>reduced_overall <span class="ot">&lt;-</span> <span class="fu">crossreduce</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  cb_temp_nonlinear,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  fit_temp_nonlinear,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;overall&quot;</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">25</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>reduced_lag7 <span class="ot">&lt;-</span> <span class="fu">crossreduce</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  cb_temp_nonlinear,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  fit_temp_nonlinear,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;lag&quot;</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="dv">7</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">25</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>reduced_at33 <span class="ot">&lt;-</span> <span class="fu">crossreduce</span>(</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  cb_temp_nonlinear,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  fit_temp_nonlinear,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;var&quot;</span>,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="dv">33</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">25</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Reduction</th>
+      <th>Result</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>type = "overall"</code></td>
+      <td>Cumulative exposure-response curve across the lag window.</td>
+      </tr>
+      <tr>
+      <td><code>type = "lag", value = 7</code></td>
+      <td>Exposure-response curve at lag 7.</td>
+      </tr>
+      <tr>
+      <td><code>type = "var", value = 33</code></td>
+      <td>Lag-response curve at 33°C.</td>
+      </tr>
+      </tbody>
+      </table>
+      <div class="sourceCode" id="cb21"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(reduced_overall, <span class="at">xlab =</span> <span class="st">&quot;Temperature&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Relative risk&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(reduced_overall)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vcov</span>(reduced_overall)</span></code></pre></div>
+      <p>Reduction is not a refit and does not repair a poorly specified
+      model. It is a linear transformation of the original fitted
+      coefficients and their covariance.</p>
+      </section>
+      <section id="missing-values-gaps-groups-and-exposure-histories"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">11. Missing values, gaps, groups, and
+      exposure histories</h1>
+      <section id="missing-exposure-values-propagate-forward"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Missing exposure values propagate
+      forward</h2>
+      <p>With vector input and a maximum lag <code>L</code>, an
+      unavailable exposure at time <code>t</code> affects basis rows
+      that require it, potentially through <code>t + L</code>. Quantify
+      this before fitting:</p>
+      <div class="sourceCode" id="cb22"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cb_pm10 <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>pm10,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;lin&quot;</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">4</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(chicagoNMMAPS<span class="sc">$</span>pm10))</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">complete.cases</span>(cb_pm10))</span></code></pre></div>
+      <p>Do not fix this by deleting dates first. Options include a
+      prespecified imputation model, a justified shorter lag, a complete
+      subperiod that still preserves daily spacing, or a design that
+      explicitly represents exposure histories.</p>
+      </section>
+      <section id="independent-series-with-group"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Independent series with group</h2>
+      <p>Use <code>group</code> for several complete, ordered series
+      stacked in one vector—for example, multiple cities or separated
+      seasonal segments. Lag histories reset at each group boundary.</p>
+      <div class="sourceCode" id="cb23"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cb_grouped <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>exposure,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">7</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;lin&quot;</span>),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">3</span>),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> data<span class="sc">$</span>city</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>Rows within each group still need to be consecutive and
+      correctly ordered. <code>group</code> does not repair an irregular
+      calendar.</p>
+      </section>
+      <section id="matrix-input-beyond-regular-time-series"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Matrix input beyond regular time
+      series</h2>
+      <p><code>x</code> can be a matrix whose rows are subjects or
+      events and whose columns are complete exposure histories over the
+      lag interval. This supports nested case-control, longitudinal, and
+      trial settings.</p>
+      <div class="sourceCode" id="cb24"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Six columns represent lags 0, 1, ..., 5 for each observation.</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>X_history <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">0</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">15</span>, <span class="dv">15</span>,  <span class="dv">5</span>, <span class="dv">0</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>, <span class="dv">0</span>,  <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">0</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">3</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>cb_history <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  X_history,</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;lin&quot;</span>),</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">3</span>)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p>The outcome model must then match the study design; the
+      cross-basis does not choose the correct likelihood for you.</p>
+      </section>
+      </section>
+      <section id="diagnostics-and-sensitivity-analysis"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">12. Diagnostics and sensitivity
+      analysis</h1>
+      <section
+      id="diagnose-the-complete-regression-not-just-the-surface"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">Diagnose the complete regression, not just
+      the surface</h2>
+      <div class="sourceCode" id="cb25"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quasi-Poisson dispersion estimate</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>dispersion <span class="ot">&lt;-</span> <span class="fu">sum</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">residuals</span>(fit_temp_nonlinear, <span class="at">type =</span> <span class="st">&quot;pearson&quot;</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">/</span> <span class="fu">df.residual</span>(fit_temp_nonlinear)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>dispersion</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Residual autocorrelation</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">residuals</span>(fit_temp_nonlinear, <span class="at">type =</span> <span class="st">&quot;pearson&quot;</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.action =</span> na.pass</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Rank and condition checks</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fit_temp_nonlinear)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">columns =</span> <span class="fu">ncol</span>(X), <span class="at">rank =</span> <span class="fu">qr</span>(X)<span class="sc">$</span>rank)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="fu">kappa</span>(<span class="fu">crossprod</span>(X))</span></code></pre></div>
+      <p>Inspect residual time patterns, autocorrelation, leverage,
+      overdispersion, boundary behavior, the distribution of
+      observations across the exposure-lag grid, and whether important
+      confounders have credible functional forms.</p>
+      </section>
+      <section id="a-disciplined-sensitivity-grid"
+      class="level2 unnumbered">
+      <h2 class="unnumbered">A disciplined sensitivity grid</h2>
+      <p>Vary one design decision at a time and compare target
+      summaries, not only surface appearance.</p>
+      <div class="sourceCode" id="cb26"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>specifications <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_lag =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">30</span>, <span class="dv">40</span>),</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure_df =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag_df =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">KEEP.OUT.ATTRS =</span> <span class="cn">FALSE</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># For each row:</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. rebuild crossbasis();</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. refit the same confounder model;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. predict at identical exposure values and reference;</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. compare selected cumulative RRs, uncertainty, and residual checks.</span></span></code></pre></div>
+      <p>Quasi-Poisson models do not provide an ordinary
+      maximum-likelihood AIC. Do not use <code>AIC()</code> mechanically
+      as the sole model-selection rule. Scientific plausibility,
+      pre-specification, effective complexity, uncertainty, and
+      diagnostic stability all matter.</p>
+      </section>
+      </section>
+      <section id="advanced-option-penalized-dlnms"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">13. Advanced option — penalized DLNMs</h1>
+      <p>Penalized models start with richer marginal bases and estimate
+      smoothness using penalties. This can reduce the need to
+      hand-select every degree of freedom, although the lag range, upper
+      basis dimensions, confounders, and penalty structure still require
+      judgment.</p>
+      <p>The external method is explicit and works with the familiar
+      cross-basis:</p>
+      <div class="sourceCode" id="cb27"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cb_temp_penalized <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  chicagoNMMAPS<span class="sc">$</span>temp,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">30</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ps&quot;</span>, <span class="at">df =</span> <span class="dv">8</span>),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ps&quot;</span>, <span class="at">df =</span> <span class="dv">8</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>penalty_temp <span class="ot">&lt;-</span> <span class="fu">cbPen</span>(cb_temp_penalized)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>fit_temp_penalized <span class="ot">&lt;-</span> mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  death <span class="sc">~</span> cb_temp_penalized <span class="sc">+</span> <span class="fu">s</span>(time, <span class="at">k =</span> <span class="dv">100</span>) <span class="sc">+</span> dow,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> chicagoNMMAPS,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">paraPen =</span> <span class="fu">list</span>(<span class="at">cb_temp_penalized =</span> penalty_temp),</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;REML&quot;</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>pred_temp_penalized <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  cb_temp_penalized,</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  fit_temp_penalized,</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">at =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">33</span>, <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> <span class="dv">25</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+      <p><code>dlnm</code> also provides an internal <code>mgcv</code>
+      smooth constructor used as <code>s(X, L, bs = "cb")</code>. It
+      requires explicit matrices of exposure histories <code>X</code>
+      and corresponding lags <code>L</code>; it is not a drop-in
+      replacement that accepts the original vector. Consult the
+      penalized vignette before using that route.</p>
+      </section>
+      <section id="migrating-the-2011-paper-code"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">14. Migrating the 2011 paper code</h1>
+      <p>The paper remains conceptually current, but its package calls
+      predate the modern list-based API.</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>2011 style</th>
+      <th>Current style</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><code>maxlag = 30</code></td>
+      <td><code>lag = 30</code></td>
+      </tr>
+      <tr>
+      <td><code>vartype = "bs"</code>, <code>vardf = 6</code></td>
+      <td><code>argvar = list(fun = "bs", df = 6)</code></td>
+      </tr>
+      <tr>
+      <td><code>lagtype = "ns"</code>, <code>lagdf = 5</code></td>
+      <td><code>arglag = list(fun = "ns", df = 5)</code></td>
+      </tr>
+      <tr>
+      <td><code>vartype = "hthr"</code>,
+      <code>varknots = 40.3</code></td>
+      <td><code>argvar = list(fun = "thr", thr = 40.3)</code></td>
+      </tr>
+      <tr>
+      <td><code>lagtype = "strata"</code>,
+      <code>lagknots = c(2, 6)</code></td>
+      <td><code>arglag = list(fun = "strata", breaks = c(2, 6))</code></td>
+      </tr>
+      <tr>
+      <td><code>cenvalue = 25</code> inside
+      <code>crossbasis()</code></td>
+      <td><code>cen = 25</code> in <code>crosspred()</code> or
+      <code>crossreduce()</code></td>
+      </tr>
+      </tbody>
+      </table>
+      <p>An old call such as this should be read, not copied
+      literally:</p>
+      <div class="sourceCode" id="cb28"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Historical syntax from the paper — do not run with dlnm 2.4.10</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># basis.temp &lt;- crossbasis(</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   temp, vartype = &quot;bs&quot;, vardf = 6,</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   cenvalue = 25, lagdf = 5, maxlag = 30</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code></pre></div>
+      <p>Its current equivalent is:</p>
+      <div class="sourceCode" id="cb29"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>basis_temp <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  temp,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">30</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;bs&quot;</span>, <span class="at">degree =</span> <span class="dv">3</span>, <span class="at">df =</span> <span class="dv">6</span>),</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">5</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>pred_temp <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(basis_temp, fitted_model, <span class="at">cen =</span> <span class="dv">25</span>)</span></code></pre></div>
+      <p>Since dlnm 2.2.0, centering belongs at the prediction/reduction
+      stage. Keeping it there makes clear that the reference value
+      defines a contrast and does not alter model fitting.</p>
+      </section>
+      <section id="interpretation-checklist-and-common-mistakes"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">15. Interpretation checklist and common
+      mistakes</h1>
+      <p>Before reporting a DLNM result, answer each question
+      explicitly:</p>
+      <ol type="1">
+      <li>What population, time unit, outcome family, and link were
+      used?</li>
+      <li>Is the exposure series complete, ordered, and equally
+      spaced?</li>
+      <li>Why is the maximum lag scientifically adequate?</li>
+      <li>What functions, df, knots, and intercept rules define both
+      basis dimensions?</li>
+      <li>What exposure value is the reference, and is it supported by
+      the data?</li>
+      <li>Is the reported result lag-specific, incremental cumulative,
+      or overall cumulative?</li>
+      <li>Which temporal and time-varying confounders were adjusted, and
+      how?</li>
+      <li>How many rows were lost because of missing exposure
+      histories?</li>
+      <li>Are estimates at exposure extremes supported by enough
+      observations?</li>
+      <li>Are the principal conclusions stable under prespecified
+      alternatives?</li>
+      </ol>
+      <section id="common-mistakes" class="level2 unnumbered">
+      <h2 class="unnumbered">Common mistakes</h2>
+      <ul>
+      <li><strong>Deleting dates before building the basis:</strong>
+      corrupts lag spacing.</li>
+      <li><strong>Putting an intercept in <code>argvar</code>:</strong>
+      creates non-identifiability.</li>
+      <li><strong>Using <code>cen</code> in
+      <code>crossbasis()</code>:</strong> relies on obsolete
+      behavior.</li>
+      <li><strong>Calling <code>crosspred()</code> with a reconstructed
+      basis:</strong> coefficient names or attributes may not match the
+      fit.</li>
+      <li><strong>Overfitting both dimensions:</strong> creates a large,
+      unstable tensor product.</li>
+      <li><strong>Treating the prettiest surface as the
+      conclusion:</strong> 3-D perspective can hide uncertainty and
+      sparse support.</li>
+      <li><strong>Reading association as causation:</strong> DLNM
+      controls functional form, not study-design bias.</li>
+      <li><strong>Ignoring harvesting or displacement:</strong> short
+      positive and later negative associations may offset in the
+      cumulative estimate.</li>
+      <li><strong>Comparing curves with different references:</strong>
+      relative risks are not directly comparable until centering is
+      aligned.</li>
+      </ul>
+      </section>
+      </section>
+      <section id="a-compact-reusable-analysis-skeleton"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">16. A compact reusable analysis
+      skeleton</h1>
+      <div class="sourceCode" id="cb30"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dlnm)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splines)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Audit time and missingness</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="sc">!</span><span class="fu">is.unsorted</span>(dat<span class="sc">$</span>date))</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">diff</span>(dat<span class="sc">$</span>date) <span class="sc">==</span> <span class="dv">1</span>))</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(dat[<span class="fu">c</span>(<span class="st">&quot;outcome&quot;</span>, <span class="st">&quot;exposure&quot;</span>, <span class="st">&quot;date&quot;</span>)]))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Define the basis once</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>cb_exposure <span class="ot">&lt;-</span> <span class="fu">crossbasis</span>(</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>exposure,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="dv">30</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">argvar =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">df =</span> <span class="dv">5</span>),</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">arglag =</span> <span class="fu">list</span>(<span class="at">fun =</span> <span class="st">&quot;ns&quot;</span>, <span class="at">knots =</span> <span class="fu">logknots</span>(<span class="dv">30</span>, <span class="dv">3</span>))</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cb_exposure)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Fit a prespecified outcome model</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  outcome <span class="sc">~</span> cb_exposure <span class="sc">+</span> <span class="fu">ns</span>(time, <span class="at">df =</span> <span class="dv">7</span> <span class="sc">*</span> years) <span class="sc">+</span> day_of_week,</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">quasipoisson</span>(),</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Predict explicit contrasts</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">crosspred</span>(</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  cb_exposure,</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  fit,</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">at =</span> prediction_grid,</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">cen =</span> reference_value,</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumul =</span> <span class="cn">TRUE</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Report complementary views</span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred, <span class="st">&quot;contour&quot;</span>)</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred, <span class="st">&quot;overall&quot;</span>)</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pred, <span class="st">&quot;slices&quot;</span>, <span class="at">var =</span> selected_exposure, <span class="at">ci =</span> <span class="st">&quot;lines&quot;</span>)</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Save compact estimates and provenance</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>overall <span class="ot">&lt;-</span> <span class="fu">crossreduce</span>(cb_exposure, fit, <span class="at">type =</span> <span class="st">&quot;overall&quot;</span>, <span class="at">cen =</span> reference_value)</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+      <p>Treat <code>lag</code>, <code>argvar</code>,
+      <code>arglag</code>, the confounder formula, prediction grid,
+      reference, and target contrasts as analysis inputs worthy of
+      version control—not as incidental plotting options.</p>
+      </section>
+      <section id="sources-and-further-reading"
+      class="level1 unnumbered">
+      <h1 class="unnumbered">17. Sources and further reading</h1>
+      <ul>
+      <li>Gasparrini A. (2011). <a
+      href="https://www.jstatsoft.org/article/view/v043i08/0">Distributed
+      Lag Linear and Non-Linear Models in R: The Package dlnm</a>.
+      <em>Journal of Statistical Software</em>, 43(8), 1–20. DOI:
+      10.18637/jss.v043.i08.</li>
+      <li><a
+      href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3191524/">PubMed
+      Central full text of the 2011 paper</a>.</li>
+      <li><a href="https://cran.r-project.org/package=dlnm">Current dlnm
+      CRAN package page</a>.</li>
+      <li><a
+      href="https://gasparrini.r-universe.dev/dlnm/doc/manual.html">Current
+      dlnm reference manual</a>.</li>
+      <li><a href="https://github.com/gasparrini/dlnm">Official dlnm
+      source repository and vignette pointers</a>.</li>
+      </ul>
+      <p>The paper is the conceptual starting point. For executable
+      work, use the current manual and installed vignettes:</p>
+      <div class="sourceCode" id="cb31"><pre
+      class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;dlnmOverview&quot;</span>, <span class="at">package =</span> <span class="st">&quot;dlnm&quot;</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="at">package =</span> <span class="st">&quot;dlnm&quot;</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">help</span>(<span class="at">package =</span> <span class="st">&quot;dlnm&quot;</span>)</span></code></pre></div>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">dlnm package guide · Source available as R
+Markdown · MooseWeb3 · R Notes · 2026-08-11</footer>
+  <script>
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('guide-theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('guide-theme', root.dataset.theme);
+  });
+  const progress = document.querySelector('.progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, {passive: true});
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sections = tocLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    tocLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + visible.target.id);
+    });
+  }, {rootMargin: '-15% 0px -75% 0px'});
+  sections.forEach((section) => observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

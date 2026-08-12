@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · This tutorial is a set of personal learning and practice notes." />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>MooseWeb3 | Practical Biostatistics with R: From Study Design to Survival Analysis</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MooseWeb3 | Practical Biostatistics with R: From Study
+Design to Survival Analysis</h1>
+<p class="author">MooseWeb3 · This tutorial is a set of personal
+learning and practice notes.</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#how-to-use-this-guide" id="toc-how-to-use-this-guide">How
+to Use This Guide</a>
+<ul>
+<li><a href="#learning-goals" id="toc-learning-goals">Learning
+Goals</a></li>
+</ul></li>
+<li><a href="#start-with-the-question-variables-and-data-dictionary" id="toc-start-with-the-question-variables-and-data-dictionary">1. Start
+With the Question, Variables, and Data Dictionary</a>
+<ul>
+<li><a href="#five-questions-to-answer-first" id="toc-five-questions-to-answer-first">1.1 Five Questions to Answer
+First</a></li>
+<li><a href="#create-the-teaching-data" id="toc-create-the-teaching-data">1.2 Create the Teaching Data</a></li>
+</ul></li>
+<li><a href="#study-design-determines-what-you-can-claim" id="toc-study-design-determines-what-you-can-claim">2. Study Design
+Determines What You Can Claim</a>
+<ul>
+<li><a href="#randomized-and-observational-studies" id="toc-randomized-and-observational-studies">2.1 Randomized and
+Observational Studies</a></li>
+<li><a href="#stratified-randomization" id="toc-stratified-randomization">2.2 Stratified Randomization</a></li>
+<li><a href="#identifying-confounding" id="toc-identifying-confounding">2.3 Identifying Confounding</a></li>
+</ul></li>
+<li><a href="#data-quality-and-descriptive-statistics" id="toc-data-quality-and-descriptive-statistics">3. Data Quality and
+Descriptive Statistics</a>
+<ul>
+<li><a href="#a-reusable-data-check" id="toc-a-reusable-data-check">3.1
+A Reusable Data Check</a></li>
+<li><a href="#match-the-plot-to-the-question" id="toc-match-the-plot-to-the-question">3.2 Match the Plot to the
+Question</a></li>
+</ul></li>
+<li><a href="#probability-bayes-rule-and-diagnostic-testing" id="toc-probability-bayes-rule-and-diagnostic-testing">4. Probability,
+Bayes’ Rule, and Diagnostic Testing</a>
+<ul>
+<li><a href="#from-sensitivity-and-specificity-to-ppv" id="toc-from-sensitivity-and-specificity-to-ppv">4.1 From Sensitivity
+and Specificity to PPV</a></li>
+<li><a href="#explain-with-natural-frequencies" id="toc-explain-with-natural-frequencies">4.2 Explain With Natural
+Frequencies</a></li>
+</ul></li>
+<li><a href="#binomial-and-normal-models-then-the-clt" id="toc-binomial-and-normal-models-then-the-clt">5. Binomial and Normal
+Models, Then the CLT</a>
+<ul>
+<li><a href="#when-the-binomial-model-applies" id="toc-when-the-binomial-model-applies">5.1 When the Binomial Model
+Applies</a></li>
+<li><a href="#normal-probabilities-and-percentiles" id="toc-normal-probabilities-and-percentiles">5.2 Normal Probabilities
+and Percentiles</a></li>
+<li><a href="#simulate-the-central-limit-theorem" id="toc-simulate-the-central-limit-theorem">5.3 Simulate the Central
+Limit Theorem</a></li>
+</ul></li>
+<li><a href="#hypothesis-tests-confidence-intervals-and-one-sample-inference" id="toc-hypothesis-tests-confidence-intervals-and-one-sample-inference">6.
+Hypothesis Tests, Confidence Intervals, and One-Sample Inference</a>
+<ul>
+<li><a href="#interpret-the-p-value-correctly" id="toc-interpret-the-p-value-correctly">6.1 Interpret the p-Value
+Correctly</a></li>
+<li><a href="#one-proportion-exact-binomial-inference" id="toc-one-proportion-exact-binomial-inference">6.2 One Proportion:
+Exact Binomial Inference</a></li>
+<li><a href="#one-mean-one-sample-t-inference" id="toc-one-mean-one-sample-t-inference">6.3 One Mean: One-Sample t
+Inference</a></li>
+</ul></li>
+<li><a href="#comparing-two-groups-continuous-outcomes" id="toc-comparing-two-groups-continuous-outcomes">7. Comparing Two
+Groups: Continuous Outcomes</a>
+<ul>
+<li><a href="#use-welch-t-by-default" id="toc-use-welch-t-by-default">7.1 Use Welch t by Default</a></li>
+<li><a href="#standardized-effect-size" id="toc-standardized-effect-size">7.2 Standardized Effect Size</a></li>
+<li><a href="#paired-designs" id="toc-paired-designs">7.3 Paired
+Designs</a></li>
+<li><a href="#permutation-test" id="toc-permutation-test">7.4
+Permutation Test</a></li>
+</ul></li>
+<li><a href="#comparing-two-groups-categorical-outcomes" id="toc-comparing-two-groups-categorical-outcomes">8. Comparing Two
+Groups: Categorical Outcomes</a>
+<ul>
+<li><a href="#build-and-test-a-2x2-table" id="toc-build-and-test-a-2x2-table">8.1 Build and Test a 2x2
+Table</a></li>
+<li><a href="#risk-difference-relative-risk-and-odds-ratio" id="toc-risk-difference-relative-risk-and-odds-ratio">8.2 Risk
+Difference, Relative Risk, and Odds Ratio</a></li>
+<li><a href="#paired-binary-outcomes" id="toc-paired-binary-outcomes">8.3 Paired Binary Outcomes</a></li>
+</ul></li>
+<li><a href="#correlation-regression-and-the-causal-boundary" id="toc-correlation-regression-and-the-causal-boundary">9. Correlation,
+Regression, and the Causal Boundary</a>
+<ul>
+<li><a href="#plot-before-calculating-correlation" id="toc-plot-before-calculating-correlation">9.1 Plot Before Calculating
+Correlation</a></li>
+<li><a href="#linear-regression-and-adjustment" id="toc-linear-regression-and-adjustment">9.2 Linear Regression and
+Adjustment</a></li>
+<li><a href="#regression-to-the-mean" id="toc-regression-to-the-mean">9.3 Regression to the Mean</a></li>
+</ul></li>
+<li><a href="#transformations-outliers-and-rank-methods" id="toc-transformations-outliers-and-rank-methods">10. Transformations,
+Outliers, and Rank Methods</a>
+<ul>
+<li><a href="#skewed-length-of-stay-data" id="toc-skewed-length-of-stay-data">10.1 Skewed Length-of-Stay
+Data</a></li>
+<li><a href="#do-not-delete-outliers-mechanically" id="toc-do-not-delete-outliers-mechanically">10.2 Do Not Delete Outliers
+Mechanically</a></li>
+</ul></li>
+<li><a href="#anova-post-hoc-comparisons-and-multiplicity" id="toc-anova-post-hoc-comparisons-and-multiplicity">11. ANOVA, Post-Hoc
+Comparisons, and Multiplicity</a>
+<ul>
+<li><a href="#overall-comparison-of-three-or-more-groups" id="toc-overall-comparison-of-three-or-more-groups">11.1 Overall
+Comparison of Three or More Groups</a></li>
+<li><a href="#tukey-post-hoc-comparisons" id="toc-tukey-post-hoc-comparisons">11.2 Tukey Post-Hoc
+Comparisons</a></li>
+<li><a href="#bonferroni-holm-and-fdr" id="toc-bonferroni-holm-and-fdr">11.3 Bonferroni, Holm, and FDR</a></li>
+</ul></li>
+<li><a href="#power-sample-size-and-visualizing-uncertainty" id="toc-power-sample-size-and-visualizing-uncertainty">12. Power, Sample
+Size, and Visualizing Uncertainty</a>
+<ul>
+<li><a href="#sample-size-for-two-independent-means" id="toc-sample-size-for-two-independent-means">12.1 Sample Size for Two
+Independent Means</a></li>
+<li><a href="#power-is-not-a-post-study-rescue" id="toc-power-is-not-a-post-study-rescue">12.2 Power Is Not a Post-Study
+Rescue</a></li>
+<li><a href="#display-estimates-and-intervals" id="toc-display-estimates-and-intervals">12.3 Display Estimates and
+Intervals</a></li>
+</ul></li>
+<li><a href="#survival-analysis-preserve-time-and-censoring" id="toc-survival-analysis-preserve-time-and-censoring">13. Survival
+Analysis: Preserve Time and Censoring</a>
+<ul>
+<li><a href="#survival-object-and-kaplan-meier-curves" id="toc-survival-object-and-kaplan-meier-curves">13.1 Survival Object
+and Kaplan-Meier Curves</a></li>
+<li><a href="#log-rank-test" id="toc-log-rank-test">13.2 Log-Rank
+Test</a></li>
+</ul></li>
+<li><a href="#end-to-end-case-from-question-to-report" id="toc-end-to-end-case-from-question-to-report">14. End-to-End Case:
+From Question to Report</a>
+<ul>
+<li><a href="#prespecify-the-plan" id="toc-prespecify-the-plan">14.1
+Prespecify the Plan</a></li>
+<li><a href="#run-the-main-analyses" id="toc-run-the-main-analyses">14.2
+Run the Main Analyses</a></li>
+<li><a href="#diagnostics-and-sensitivity-analysis" id="toc-diagnostics-and-sensitivity-analysis">14.3 Diagnostics and
+Sensitivity Analysis</a></li>
+<li><a href="#reporting-template" id="toc-reporting-template">14.4
+Reporting Template</a></li>
+</ul></li>
+<li><a href="#method-selection-quick-reference" id="toc-method-selection-quick-reference">15. Method Selection Quick
+Reference</a></li>
+<li><a href="#final-analysis-checklist" id="toc-final-analysis-checklist">16. Final Analysis Checklist</a></li>
+<li><a href="#exercises-and-next-steps" id="toc-exercises-and-next-steps">17. Exercises and Next Steps</a></li>
+</ul>
+</nav>
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--ink:#172033;--muted:#667085;--line:#dfe7f1;--navy:#0a1020;--primary:#6d5dfc;--primary-dark:#5144d8;--cyan:#19c3d2;--green:#20a36a;--amber:#f2a93b;--code:#0d1424;--shadow:0 18px 55px rgba(31,43,71,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}
+body{max-width:none;margin:0;padding:0 24px 72px;color:var(--ink);background:radial-gradient(circle at 86% 5%,rgba(109,93,252,.11),transparent 25rem),radial-gradient(circle at 10% 20%,rgba(25,195,210,.08),transparent 22rem),var(--bg);font:17px/1.78 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary-dark);text-underline-offset:3px}::selection{color:#fff;background:var(--primary)}
+.mw3-progress{position:fixed;z-index:1200;inset:0 auto auto 0;width:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--primary))}
+.mw3-topbar{position:fixed;z-index:1100;inset:0 0 auto;height:72px;display:flex;align-items:center;gap:20px;padding:0 max(24px,calc((100vw - 1420px)/2));color:#fff;background:rgba(10,16,32,.95);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 8px 30px rgba(10,16,32,.18);backdrop-filter:blur(16px)}
+.mw3-brand{display:inline-flex;flex-shrink:0;align-items:center;gap:10px;color:#fff;font-weight:850;font-size:19px;text-decoration:none}.mw3-brand:hover{color:#fff}.mw3-logo{display:grid;place-items:center;width:38px;height:38px;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--primary));border-radius:11px;font-size:12px;box-shadow:0 7px 20px rgba(109,93,252,.36)}.mw3-sub{color:#9faac0;font-size:11px;font-weight:750;letter-spacing:.13em}.mw3-spacer{flex:1}
+.mw3-langs{display:flex;flex-shrink:0;gap:5px}.mw3-langs a{padding:7px 11px;color:#b9c3d6;border-radius:9px;font-size:14px;font-weight:750;text-decoration:none}.mw3-langs a:hover,.mw3-langs a[aria-current="page"]{color:#fff;background:rgba(255,255,255,.11)}.mw3-menu{display:none;padding:8px 11px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:9px;cursor:pointer}.mw3-skip{position:fixed;z-index:1300;top:8px;left:12px;padding:8px 12px;color:#fff;background:var(--primary);border-radius:8px;transform:translateY(-160%)}.mw3-skip:focus{transform:translateY(0)}
+#title-block-header{max-width:940px;margin:112px auto 30px;padding:clamp(30px,5vw,54px);color:#fff;text-align:left;background:linear-gradient(125deg,rgba(109,93,252,.97),rgba(36,61,118,.98));border-radius:26px;border:1px solid rgba(255,255,255,.15);box-shadow:0 24px 70px rgba(39,47,100,.22)}
+#title-block-header::before{content:"MOOSEWEB3 · BIOSTATISTICS WITH R";display:inline-block;margin-bottom:16px;padding:7px 11px;color:#dffcff;background:rgba(9,18,45,.2);border:1px solid rgba(255,255,255,.2);border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.12em}#title-block-header .title{margin:0 0 14px;color:#fff;font-size:clamp(32px,5vw,50px);line-height:1.14;letter-spacing:-.035em}#title-block-header .author,#title-block-header .date{margin:4px 0 0;color:#dce4ff}
+#TOC{position:fixed;z-index:900;top:96px;left:max(18px,calc(50vw - 607px));width:245px;max-height:calc(100vh - 122px);padding:18px 15px 20px;overflow-y:auto;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(31,43,71,.08);backdrop-filter:blur(12px);scrollbar-width:thin}#TOC ul{margin:0;padding:0;list-style:none}#TOC ul ul{margin:5px 0 7px 9px;padding-left:10px;border-left:1px solid #e4e9f2}#TOC a{display:block;padding:5px 7px;color:#59647a;border-radius:7px;font-size:13px;line-height:1.35;text-decoration:none}#TOC>ul>li>a{color:#28344e;font-weight:750}#TOC a:hover{color:var(--primary-dark);background:#f0efff}
+#mw3-content{max-width:940px;margin:0 auto;padding:18px clamp(24px,4vw,58px) 64px;background:var(--surface);border:1px solid rgba(223,231,241,.9);border-radius:24px;box-shadow:var(--shadow)}
+h1,h2,h3{color:#17254a;scroll-margin-top:92px}h1{margin:3.1rem 0 1.15rem;padding-bottom:.65rem;border-bottom:1px solid var(--line);font-size:clamp(27px,3vw,36px);line-height:1.3;letter-spacing:-.025em}#mw3-content>h1:first-of-type{margin-top:1.4rem}h2{margin:2.25rem 0 .75rem;font-size:24px}h3{margin:1.8rem 0 .6rem;font-size:20px}p,li{color:#344054}
+code{padding:.12em .36em;color:#5b3fd0;background:#f0efff;border-radius:5px;font:.9em "Cascadia Code","SFMono-Regular",Consolas,monospace}.mw3-code-shell{position:relative;margin:1.15rem 0 1.5rem;background:#0d1424!important;border:1px solid #202b42;border-radius:14px;box-shadow:0 12px 28px rgba(13,20,36,.13);overflow:hidden;color:#dfe7f5!important}.mw3-code-shell pre{margin:0;padding:22px 20px;overflow-x:auto;color:#dfe7f5!important;background:transparent!important;border:0;font-size:14px;line-height:1.65}.mw3-code-shell pre code,.mw3-code-shell code,.mw3-code-shell code span{padding:0;color:#dfe7f5;background:transparent!important}.mw3-code-shell code span.kw,.mw3-code-shell code span.cf{color:#c792ea!important}.mw3-code-shell code span.fu,.mw3-code-shell code span.bu{color:#82aaff!important}.mw3-code-shell code span.st,.mw3-code-shell code span.ss{color:#c3e88d!important}.mw3-code-shell code span.dv,.mw3-code-shell code span.fl{color:#f78c6c!important}.mw3-code-shell code span.co{color:#91a0bc!important;font-style:italic}.mw3-code-shell code span.op{color:#89ddff!important}.mw3-copy{position:absolute;z-index:2;top:10px;right:10px;padding:6px 9px;color:#cbd5e7;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;font:700 12px/1.2 inherit;cursor:pointer;opacity:0}.mw3-code-shell:hover .mw3-copy,.mw3-copy:focus{opacity:1}
+table{width:100%;margin:1.25rem 0 1.7rem;border-spacing:0;border-collapse:separate;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}thead{color:#263553;background:#f2f5fa}th,td{padding:.68rem .82rem;border:0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}table code{white-space:nowrap}
+blockquote,.note,.warning,.success{margin:1.35rem 0;padding:1rem 1.15rem;border-radius:10px}blockquote,.note{background:linear-gradient(90deg,#edfaff,#f7fbff);border:1px solid #cbeef4;border-left:5px solid var(--cyan)}.warning{background:#fff8eb;border:1px solid #f4dfb1;border-left:5px solid var(--amber)}.success{background:#effaf5;border:1px solid #cbeedc;border-left:5px solid var(--green)}.formula{padding:.9rem 1rem;overflow-x:auto;color:#273454;background:#f7f8fc;border:1px solid var(--line);border-radius:10px;text-align:center}.steps{counter-reset:step;list-style:none;padding-left:0}.steps>li{position:relative;margin:.8rem 0;padding:.8rem 1rem .8rem 3.4rem;background:#fafbff;border:1px solid var(--line);border-radius:10px}.steps>li::before{counter-increment:step;content:counter(step);position:absolute;left:1rem;top:.75rem;display:grid;place-items:center;width:1.7rem;height:1.7rem;color:#fff;background:var(--primary);border-radius:50%;font-weight:800}
+.mw3-top{position:fixed;z-index:950;right:24px;bottom:24px;width:44px;height:44px;color:#fff;background:var(--navy);border:0;border-radius:13px;box-shadow:0 10px 28px rgba(10,16,32,.24);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.mw3-top.is-visible{opacity:1;transform:translateY(0);pointer-events:auto}button:focus-visible,a:focus-visible{outline:3px solid rgba(25,195,210,.75);outline-offset:3px}
+@media(min-width:1241px){#title-block-header,#mw3-content{margin-left:max(291px,calc(50vw - 334px));margin-right:0}}@media(max-width:1240px){#TOC{top:82px;left:14px;width:min(310px,calc(100vw - 28px));max-height:calc(100vh - 96px);transform:translateX(-120%);transition:transform .24s ease}body.mw3-toc-open #TOC{transform:translateX(0)}.mw3-menu{display:inline-flex}}@media(max-width:700px){body{padding:0 12px 48px;font-size:16px}.mw3-topbar{height:64px;padding:0 14px;gap:9px}.mw3-logo{width:34px;height:34px}.mw3-sub{display:none}.mw3-langs a{padding:6px 8px;font-size:13px}#title-block-header{margin:88px 0 18px;padding:27px 23px;border-radius:20px}#title-block-header .title{font-size:30px}#mw3-content{padding:14px 20px 46px;border-radius:18px}h1{font-size:27px}h2{font-size:22px}table{display:block;overflow-x:auto;white-space:nowrap}.mw3-copy{opacity:1}}@media print{body{padding:0;background:#fff}.mw3-topbar,.mw3-progress,.mw3-top,#TOC,.mw3-copy{display:none!important}#title-block-header,#mw3-content{max-width:none;margin:0;box-shadow:none}#mw3-content{border:0}}
+</style>
+<h1 id="how-to-use-this-guide">How to Use This Guide</h1>
+<p>This standalone learning guide follows an applied biostatistics
+workflow: define the research question and design, describe the data,
+choose a probability model and inferential method, and report effect
+sizes, uncertainty, and limitations. Examples use R and rely mostly on
+base functions; survival analysis uses the recommended
+<code>survival</code> package.</p>
+<p>Code is displayed but not executed while the HTML is generated. Copy
+it into RStudio, Positron, or an R console to run it. All example data
+are simulated for teaching and must not be used for clinical
+decisions.</p>
+<blockquote>
+<p>The central skill is not “use a t-test whenever the outcome is
+continuous.” It is making the question, sampling process, variable
+types, observational unit, analysis, and strength of the conclusion
+agree.</p>
+</blockquote>
+<h2 id="learning-goals">Learning Goals</h2>
+<p>After completing this guide, you should be able to:</p>
+<ul>
+<li>Identify the population, sample, exposure, outcome, and
+observational unit;</li>
+<li>Distinguish randomized trials, prospective, retrospective, and
+cross-sectional studies;</li>
+<li>Select summaries and inferential methods for categorical,
+continuous, and survival outcomes;</li>
+<li>Explain p-values, confidence intervals, effect sizes, power, and
+multiplicity correctly;</li>
+<li>Complete common biostatistical analyses in R and write reviewable
+conclusions;</li>
+<li>Recognize when transformations, rank methods, exact tests, or
+survival methods are needed.</li>
+</ul>
+<div class="warning">
+<p>This guide supports learning and general analysis; it does not
+replace protocol review. Medical, clinical, safety-critical, and other
+high-impact work should have its sampling, missingness, confounding,
+model assumptions, and reporting reviewed by a qualified
+statistician.</p>
+</div>
+<h1 id="start-with-the-question-variables-and-data-dictionary">1. Start
+With the Question, Variables, and Data Dictionary</h1>
+<h2 id="five-questions-to-answer-first">1.1 Five Questions to Answer
+First</h2>
+<ol class="steps">
+<li>
+<strong>What are the population and sample?</strong> Who should the
+conclusion cover, and who was actually measured?
+</li>
+<li>
+<strong>What is the observational unit?</strong> Does a row represent a
+patient, visit, eye, lesion, or measurement?
+</li>
+<li>
+<strong>How are exposure and outcome measured?</strong> Are they
+categorical, continuous, counts, or event times?
+</li>
+<li>
+<strong>Are observations independent?</strong> Before/after
+measurements, two eyes, and family members are usually correlated.
+</li>
+<li>
+<strong>Is the goal description, association, prediction, or
+causation?</strong> Each goal supports a different strength of
+conclusion.
+</li>
+</ol>
+<h2 id="create-the-teaching-data">1.2 Create the Teaching Data</h2>
+<p>The following data simulate 120 participants in a two-group
+intervention. Each row is one participant; <code>group</code> is
+assignment, <code>baseline</code> and <code>week8</code> are continuous
+outcomes, and <code>event</code> is an adverse event.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4120</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">120</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>trial <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">id       =</span> <span class="fu">seq_len</span>(n),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">site     =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;North&quot;</span>, <span class="st">&quot;South&quot;</span>, <span class="st">&quot;West&quot;</span>), n, <span class="cn">TRUE</span>)),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">group    =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>)),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">age      =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">56</span>, <span class="at">sd =</span> <span class="dv">12</span>)),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex      =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;Female&quot;</span>, <span class="st">&quot;Male&quot;</span>), n, <span class="cn">TRUE</span>)),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">baseline =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">142</span>, <span class="at">sd =</span> <span class="dv">16</span>), <span class="dv">1</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>trial<span class="sc">$</span>week8 <span class="ot">&lt;-</span> <span class="fu">round</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  trial<span class="sc">$</span>baseline <span class="sc">-</span> <span class="fu">ifelse</span>(trial<span class="sc">$</span>group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>, <span class="dv">9</span>, <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">8</span>), <span class="dv">1</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>trial<span class="sc">$</span>change <span class="ot">&lt;-</span> trial<span class="sc">$</span>week8 <span class="sc">-</span> trial<span class="sc">$</span>baseline</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>trial<span class="sc">$</span>event  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(trial<span class="sc">$</span>group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>, <span class="fl">0.15</span>, <span class="fl">0.27</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(trial)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(trial)</span></code></pre></div>
+<p>Maintain a data dictionary as part of the analysis:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Unit/coding</th>
+<th>Analysis role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>Identifier</td>
+<td>1 to 120</td>
+<td>Detect repeated records; not a continuous predictor</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td>Nominal</td>
+<td>Control/Treatment</td>
+<td>Primary exposure</td>
+</tr>
+<tr>
+<td><code>baseline</code>, <code>week8</code></td>
+<td>Continuous</td>
+<td>mmHg</td>
+<td>Baseline and follow-up outcome</td>
+</tr>
+<tr>
+<td><code>change</code></td>
+<td>Continuous</td>
+<td>week8 - baseline</td>
+<td>Negative values indicate reduction</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td>Binary</td>
+<td>0=no, 1=yes</td>
+<td>Safety outcome</td>
+</tr>
+<tr>
+<td><code>site</code></td>
+<td>Nominal</td>
+<td>Three centers</td>
+<td>Stratification/potential center effect</td>
+</tr>
+</tbody>
+</table>
+<h1 id="study-design-determines-what-you-can-claim">2. Study Design
+Determines What You Can Claim</h1>
+<h2 id="randomized-and-observational-studies">2.1 Randomized and
+Observational Studies</h2>
+<p>Random sampling and random assignment solve different problems.
+Random sampling supports generalization; random assignment primarily
+supports group comparability and causal inference. When exposure comes
+from behavior or clinical decisions, confounding may explain an observed
+difference.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Design</th>
+<th>Time direction</th>
+<th>Typical effect measure</th>
+<th>Major threats</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Randomized controlled trial</td>
+<td>Exposure then outcome</td>
+<td>Risk difference, relative risk, mean difference</td>
+<td>Attrition, nonadherence, failed allocation concealment</td>
+</tr>
+<tr>
+<td>Prospective cohort</td>
+<td>Exposure to outcome</td>
+<td>Risk, risk ratio, incidence rate</td>
+<td>Confounding, loss to follow-up</td>
+</tr>
+<tr>
+<td>Retrospective case-control</td>
+<td>Outcome back to exposure</td>
+<td>Odds ratio</td>
+<td>Selection and recall bias</td>
+</tr>
+<tr>
+<td>Cross-sectional</td>
+<td>Simultaneous measurement</td>
+<td>Prevalence, prevalence odds ratio</td>
+<td>Unclear temporality, survivor bias</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stratified-randomization">2.2 Stratified Randomization</h2>
+<p>If site may affect the outcome, randomize within each site. This code
+only illustrates allocation; a real trial also requires a prespecified,
+concealed, auditable random sequence.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>enrollment <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">site =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;North&quot;</span>, <span class="st">&quot;South&quot;</span>, <span class="st">&quot;West&quot;</span>), <span class="at">each =</span> <span class="dv">10</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>enrollment<span class="sc">$</span>assignment <span class="ot">&lt;-</span> <span class="fu">ave</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  enrollment<span class="sc">$</span>id,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  enrollment<span class="sc">$</span>site,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>), <span class="at">length.out =</span> <span class="fu">length</span>(x)))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(enrollment, <span class="fu">table</span>(site, assignment))</span></code></pre></div>
+<h2 id="identifying-confounding">2.3 Identifying Confounding</h2>
+<p>If age affects both treatment selection and outcome, a crude group
+comparison may mistake an age effect for a treatment effect.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare baseline distributions, not only baseline p-values</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(age <span class="sc">~</span> group, trial, <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x)))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(baseline <span class="sc">~</span> group, trial, <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x)))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Descriptive standardized mean difference for a continuous variable</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>smd <span class="ot">&lt;-</span> <span class="cf">function</span>(x, g) {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  lev <span class="ot">&lt;-</span> <span class="fu">levels</span>(<span class="fu">droplevels</span>(g))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> x[g <span class="sc">==</span> lev[<span class="dv">1</span>]]; x2 <span class="ot">&lt;-</span> x[g <span class="sc">==</span> lev[<span class="dv">2</span>]]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">mean</span>(x2) <span class="sc">-</span> <span class="fu">mean</span>(x1)) <span class="sc">/</span> <span class="fu">sqrt</span>((<span class="fu">var</span>(x1) <span class="sc">+</span> <span class="fu">var</span>(x2)) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">smd</span>(trial<span class="sc">$</span>age, trial<span class="sc">$</span>group)</span></code></pre></div>
+<p>In randomized trials, baseline tables describe the sample and help
+detect data problems; a list of significance tests does not determine
+whether randomization “worked.” In observational studies, confounders
+should be selected from causal knowledge before analysis, not from
+stepwise regression or p &lt; 0.05 filters.</p>
+<h1 id="data-quality-and-descriptive-statistics">3. Data Quality and
+Descriptive Statistics</h1>
+<p>Descriptive statistics make structure in raw data visible. Check
+ranges, missingness, duplicates, distributions, and group counts before
+any test.</p>
+<h2 id="a-reusable-data-check">3.1 A Reusable Data Check</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dimensions, types, duplicate IDs, and missing values</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(trial)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(trial)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(trial<span class="sc">$</span>id))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(trial))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Conventional and robust summaries</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(trial[<span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;baseline&quot;</span>, <span class="st">&quot;week8&quot;</span>, <span class="st">&quot;change&quot;</span>)])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(change <span class="sc">~</span> group, trial, <span class="cf">function</span>(x) {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">n =</span> <span class="fu">length</span>(x), <span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(x), <span class="at">IQR =</span> <span class="fu">IQR</span>(x), <span class="at">min =</span> <span class="fu">min</span>(x), <span class="at">max =</span> <span class="fu">max</span>(x))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical results require explicit denominators</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>event_table <span class="ot">&lt;-</span> <span class="fu">with</span>(trial, <span class="fu">table</span>(group, event))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>event_table</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(event_table, <span class="at">margin =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>Means and standard deviations suit roughly symmetric distributions;
+medians and IQRs resist skew and outliers. Report counts and percentages
+for categorical outcomes, and state the denominator.</p>
+<h2 id="match-the-plot-to-the-question">3.2 Match the Plot to the
+Question</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(trial<span class="sc">$</span>change, <span class="at">breaks =</span> <span class="st">&quot;FD&quot;</span>, <span class="at">col =</span> <span class="st">&quot;#c9c3ff&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Change distribution&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Week 8 - baseline&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(change <span class="sc">~</span> group, <span class="at">data =</span> trial, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;#d8f5f7&quot;</span>, <span class="st">&quot;#dcd8ff&quot;</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;Change&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Group&quot;</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stripchart</span>(change <span class="sc">~</span> group, <span class="at">data =</span> trial, <span class="at">vertical =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">&quot;jitter&quot;</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">&quot;#17203366&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span></code></pre></div>
+<ul>
+<li>A histogram asks how one continuous variable is distributed;</li>
+<li>A boxplot plus raw points compares location, spread, and unusual
+observations;</li>
+<li>A scatterplot relates two continuous variables;</li>
+<li>A bar chart displays categorical counts or proportions and normally
+starts at zero.</li>
+</ul>
+<div class="warning">
+<p>Do not hide the observed distribution behind mean-plus-standard-error
+bars. Show individual observations when the sample is small, and
+distinguish standard deviation (individual variability) from standard
+error (precision of an estimate).</p>
+</div>
+<h1 id="probability-bayes-rule-and-diagnostic-testing">4. Probability,
+Bayes’ Rule, and Diagnostic Testing</h1>
+<p>Addition, complement, and multiplication rules break down event
+probabilities. Total probability and Bayes’ rule then combine
+sensitivity, specificity, and prevalence into post-test
+probabilities.</p>
+<h2 id="from-sensitivity-and-specificity-to-ppv">4.1 From Sensitivity
+and Specificity to PPV</h2>
+<p>Suppose disease prevalence is 2%, sensitivity is 90%, and specificity
+is 95%. A patient and clinician want the probability of disease after a
+positive result.</p>
+<div class="formula">
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo>∣</mo><mi>+</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac displaystyle="true"><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>+</mi><mo>∣</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>+</mi><mo>∣</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>+</mi><mo>∣</mo><msup><mi>D</mi><mi>c</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>D</mi><mi>c</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">P(D\mid +)=\dfrac{P(+\mid D)P(D)}{P(+\mid D)P(D)+P(+\mid D^c)P(D^c)}</annotation></semantics></math></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>prevalence  <span class="ot">&lt;-</span> <span class="fl">0.02</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sensitivity <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>specificity <span class="ot">&lt;-</span> <span class="fl">0.95</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>p_positive <span class="ot">&lt;-</span> sensitivity <span class="sc">*</span> prevalence <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span> <span class="sc">-</span> specificity) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prevalence)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ppv <span class="ot">&lt;-</span> sensitivity <span class="sc">*</span> prevalence <span class="sc">/</span> p_positive</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>npv <span class="ot">&lt;-</span> specificity <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prevalence) <span class="sc">/</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ((<span class="dv">1</span> <span class="sc">-</span> sensitivity) <span class="sc">*</span> prevalence <span class="sc">+</span> specificity <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> prevalence))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">PPV =</span> ppv, <span class="at">NPV =</span> npv)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Approximately PPV = 0.269 and NPV = 0.998</span></span></code></pre></div>
+<p>Despite apparently strong sensitivity and specificity, PPV is only
+about 27% in this low-prevalence setting. Screening positives often need
+confirmation, and predictive values cannot be transferred to a
+population with a different prevalence without recalculation.</p>
+<h2 id="explain-with-natural-frequencies">4.2 Explain With Natural
+Frequencies</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>diseased     <span class="ot">&lt;-</span> N <span class="sc">*</span> prevalence</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>not_diseased <span class="ot">&lt;-</span> N <span class="sc">-</span> diseased</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>true_positive  <span class="ot">&lt;-</span> diseased <span class="sc">*</span> sensitivity</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>false_negative <span class="ot">&lt;-</span> diseased <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> sensitivity)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>false_positive <span class="ot">&lt;-</span> not_diseased <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> specificity)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>true_negative  <span class="ot">&lt;-</span> not_diseased <span class="sc">*</span> specificity</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span>(<span class="fu">c</span>(true_positive, false_negative,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>         false_positive, true_negative),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">Status =</span> <span class="fu">c</span>(<span class="st">&quot;Disease&quot;</span>, <span class="st">&quot;No disease&quot;</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Test =</span> <span class="fu">c</span>(<span class="st">&quot;Positive&quot;</span>, <span class="st">&quot;Negative&quot;</span>)))</span></code></pre></div>
+<p>Natural frequencies make the result tangible: about 180 true
+positives coexist with about 490 false positives.</p>
+<h1 id="binomial-and-normal-models-then-the-clt">5. Binomial and Normal
+Models, Then the CLT</h1>
+<h2 id="when-the-binomial-model-applies">5.1 When the Binomial Model
+Applies</h2>
+<p>The binomial distribution needs a fixed number of trials, two
+outcomes per trial, a common success probability, and independent
+trials. For 20 independent patients with response probability 0.30:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exactly 8 responses</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">8</span>, <span class="at">size =</span> <span class="dv">20</span>, <span class="at">prob =</span> <span class="fl">0.30</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># At least 8 responses</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="dv">7</span>, <span class="at">size =</span> <span class="dv">20</span>, <span class="at">prob =</span> <span class="fl">0.30</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 10,000 repetitions of the study</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">10000</span>, <span class="at">size =</span> <span class="dv">20</span>, <span class="at">prob =</span> <span class="fl">0.30</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x <span class="sc">&gt;=</span> <span class="dv">8</span>)</span></code></pre></div>
+<p>When family members share exposure, or success probabilities vary
+substantially, independence or equal probability may fail and a simple
+binomial variance may understate uncertainty.</p>
+<h2 id="normal-probabilities-and-percentiles">5.2 Normal Probabilities
+and Percentiles</h2>
+<p>The normal distribution can approximate symmetric measurements and
+many sampling distributions.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Suppose systolic BP is approximately N(130, 15^2)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># P(BP &gt; 160)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">160</span>, <span class="at">mean =</span> <span class="dv">130</span>, <span class="at">sd =</span> <span class="dv">15</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 95th percentile</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fl">0.95</span>, <span class="at">mean =</span> <span class="dv">130</span>, <span class="at">sd =</span> <span class="dv">15</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Central 95% interval</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">mean =</span> <span class="dv">130</span>, <span class="at">sd =</span> <span class="dv">15</span>)</span></code></pre></div>
+<p>A bell-shaped sample histogram does not prove population normality.
+The useful question is how sensitive the selected method is to skew,
+outliers, and sample size.</p>
+<h2 id="simulate-the-central-limit-theorem">5.3 Simulate the Central
+Limit Theorem</h2>
+<p>The central limit theorem explains why, under suitable conditions,
+sample means become approximately normal as n increases even when the
+data are skewed. Their standard error is about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mi>/</mi><msqrt><mi>n</mi></msqrt></mrow><annotation encoding="application/x-tex">\sigma/\sqrt{n}</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sample_means <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">B =</span> <span class="dv">10000</span>) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>)))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>m5  <span class="ot">&lt;-</span> <span class="fu">sample_means</span>(<span class="dv">5</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>m50 <span class="ot">&lt;-</span> <span class="fu">sample_means</span>(<span class="dv">50</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(m5, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">main =</span> <span class="st">&quot;n = 5&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Sample mean&quot;</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(m50, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">main =</span> <span class="st">&quot;n = 50&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Sample mean&quot;</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sd_n5 =</span> <span class="fu">sd</span>(m5), <span class="at">sd_n50 =</span> <span class="fu">sd</span>(m50),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">theory_n5 =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">5</span>), <span class="at">theory_n50 =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">50</span>))</span></code></pre></div>
+<p>The CLT concerns the estimator across repeated samples. It does not
+make raw observations normal and cannot repair dependence or severe
+selection bias.</p>
+<h1 id="hypothesis-tests-confidence-intervals-and-one-sample-inference">6.
+Hypothesis Tests, Confidence Intervals, and One-Sample Inference</h1>
+<h2 id="interpret-the-p-value-correctly">6.1 Interpret the p-Value
+Correctly</h2>
+<p>Hypothesis tests and confidence intervals belong together. A p-value
+is the probability of the observed result or something more extreme
+under the null and model assumptions. It is not the probability that the
+null is true and is not an effect size.</p>
+<p>A useful conclusion contains at least:</p>
+<pre class="text"><code>estimate + 95% confidence interval + effect size + test statistic + p-value + sample size</code></pre>
+<h2 id="one-proportion-exact-binomial-inference">6.2 One Proportion:
+Exact Binomial Inference</h2>
+<p>Suppose a new remote follow-up program enrolls 57 participants and 44
+complete all 12 weeks. Test whether the population completion proportion
+differs from the historical benchmark of 0.70:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">binom.test</span>(<span class="at">x =</span> <span class="dv">44</span>, <span class="at">n =</span> <span class="dv">57</span>, <span class="at">p =</span> <span class="fl">0.70</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">alternative =</span> <span class="st">&quot;two.sided&quot;</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>exact</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>exact<span class="sc">$</span>estimate   <span class="co"># Sample proportion 44/57</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>exact<span class="sc">$</span>conf.int   <span class="co"># Clopper-Pearson exact interval</span></span></code></pre></div>
+<p>Prefer an exact method with a small sample or very few
+successes/failures. A normal approximation for proportion inference
+needs sufficiently large expected counts:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(<span class="at">x =</span> <span class="dv">44</span>, <span class="at">n =</span> <span class="dv">57</span>, <span class="at">p =</span> <span class="fl">0.70</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>The methods need not return identical p-values or intervals because
+they use different approximations and interval constructions.</p>
+<h2 id="one-mean-one-sample-t-inference">6.3 One Mean: One-Sample t
+Inference</h2>
+<p>When the population SD is unknown, use the sample standard deviation
+and a t distribution to account for the additional uncertainty.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ldl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">111</span>, <span class="dv">124</span>, <span class="dv">129</span>, <span class="dv">118</span>, <span class="dv">137</span>, <span class="dv">121</span>, <span class="dv">116</span>, <span class="dv">132</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>         <span class="dv">128</span>, <span class="dv">135</span>, <span class="dv">119</span>, <span class="dv">126</span>, <span class="dv">130</span>, <span class="dv">123</span>, <span class="dv">117</span>, <span class="dv">134</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">t.test</span>(ldl, <span class="at">mu =</span> <span class="dv">130</span>, <span class="at">alternative =</span> <span class="st">&quot;two.sided&quot;</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">n =</span> <span class="fu">length</span>(ldl), <span class="at">mean =</span> <span class="fu">mean</span>(ldl), <span class="at">sd =</span> <span class="fu">sd</span>(ldl),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">sd</span>(ldl) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(ldl)))</span></code></pre></div>
+<p>The one-sample t procedure needs independent observations and a
+meaningful continuous scale; a small sample should not contain severe
+skew or extreme outliers. Repeated observations from one participant are
+not separate independent people.</p>
+<h1 id="comparing-two-groups-continuous-outcomes">7. Comparing Two
+Groups: Continuous Outcomes</h1>
+<p>Two-sample continuous-outcome analysis must distinguish independent
+from paired samples and choose permutation or t procedures that match
+the design.</p>
+<h2 id="use-welch-t-by-default">7.1 Use Welch t by Default</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Treatment - Control; more negative change means a larger reduction</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(trial, <span class="fu">t.test</span>(change[group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>],</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                   change[group <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">var.equal =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalent formula interface</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(change <span class="sc">~</span> group, <span class="at">data =</span> trial, <span class="at">var.equal =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Welch’s method does not force equal variances and is usually safer
+than the pooled-variance t-test. Report group sizes, means, SDs, the
+mean difference, and its 95% interval.</p>
+<h2 id="standardized-effect-size">7.2 Standardized Effect Size</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">subset</span>(trial, group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>)<span class="sc">$</span>change</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">subset</span>(trial, group <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>)<span class="sc">$</span>change</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(((<span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">var</span>(x) <span class="sc">+</span> (<span class="fu">length</span>(y) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">var</span>(y)) <span class="sc">/</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>           (<span class="fu">length</span>(x) <span class="sc">+</span> <span class="fu">length</span>(y) <span class="sc">-</span> <span class="dv">2</span>))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>cohen_d <span class="ot">&lt;-</span> (<span class="fu">mean</span>(x) <span class="sc">-</span> <span class="fu">mean</span>(y)) <span class="sc">/</span> sp</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Small-sample bias correction for Hedges&#39; g</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">length</span>(x) <span class="sc">+</span> <span class="fu">length</span>(y) <span class="sc">-</span> <span class="dv">2</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>J  <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="dv">3</span> <span class="sc">/</span> (<span class="dv">4</span> <span class="sc">*</span> df <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>hedges_g <span class="ot">&lt;-</span> J <span class="sc">*</span> cohen_d</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">cohen_d =</span> cohen_d, <span class="at">hedges_g =</span> hedges_g)</span></code></pre></div>
+<p>Standardization helps comparisons across scales, but the difference
+in the original clinical unit is usually easier to interpret.</p>
+<h2 id="paired-designs">7.3 Paired Designs</h2>
+<p>Baseline and follow-up from the same person must remain paired by
+ID:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(trial<span class="sc">$</span>week8, trial<span class="sc">$</span>baseline, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalent to a one-sample test of the within-person difference</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(trial<span class="sc">$</span>week8 <span class="sc">-</span> trial<span class="sc">$</span>baseline, <span class="at">mu =</span> <span class="dv">0</span>)</span></code></pre></div>
+<p>Treating paired observations as independent discards within-person
+information and produces an incorrect standard error.</p>
+<h2 id="permutation-test">7.4 Permutation Test</h2>
+<p>Under exchangeability, random label permutations generate a null
+distribution:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>observed <span class="ot">&lt;-</span> <span class="fu">with</span>(trial,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(change[group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>]) <span class="sc">-</span> <span class="fu">mean</span>(change[group <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>]))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>null_diff <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, {</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  permuted_group <span class="ot">&lt;-</span> <span class="fu">sample</span>(trial<span class="sc">$</span>group)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(trial<span class="sc">$</span>change[permuted_group <span class="sc">==</span> <span class="st">&quot;Treatment&quot;</span>]) <span class="sc">-</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(trial<span class="sc">$</span>change[permuted_group <span class="sc">==</span> <span class="st">&quot;Control&quot;</span>])</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(null_diff) <span class="sc">&gt;=</span> <span class="fu">abs</span>(observed))</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">observed_difference =</span> observed, <span class="at">permutation_p =</span> p_perm)</span></code></pre></div>
+<p>A permutation test is not assumption-free. Paired, stratified,
+clustered, or unequal-probability designs require permutations that
+preserve the design.</p>
+<h1 id="comparing-two-groups-categorical-outcomes">8. Comparing Two
+Groups: Categorical Outcomes</h1>
+<p>Categorical outcomes commonly use Fisher’s exact and chi-square
+tests. The same table has different interpretations in prospective,
+retrospective, and cross-sectional studies, and a complete analysis must
+report effect measures rather than only p-values.</p>
+<h2 id="build-and-test-a-2x2-table">8.1 Build and Test a 2x2 Table</h2>
+<p>Suppose 18 of 120 treatment participants and 34 of 118 controls
+experience an event:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">102</span>,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                <span class="dv">34</span>,  <span class="dv">84</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">dimnames =</span> <span class="fu">list</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">Group =</span> <span class="fu">c</span>(<span class="st">&quot;Treatment&quot;</span>, <span class="st">&quot;Control&quot;</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">Outcome =</span> <span class="fu">c</span>(<span class="st">&quot;Event&quot;</span>, <span class="st">&quot;No event&quot;</span>)))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>tab</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(tab)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab, <span class="at">correct =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>expected</span></code></pre></div>
+<p>Prefer Fisher’s exact test for small expected counts. Chi-square
+approximation is usually adequate in larger tables. Both address
+independence between group and outcome.</p>
+<h2 id="risk-difference-relative-risk-and-odds-ratio">8.2 Risk
+Difference, Relative Risk, and Odds Ratio</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>risk_t <span class="ot">&lt;-</span> tab[<span class="st">&quot;Treatment&quot;</span>, <span class="st">&quot;Event&quot;</span>] <span class="sc">/</span> <span class="fu">sum</span>(tab[<span class="st">&quot;Treatment&quot;</span>, ])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>risk_c <span class="ot">&lt;-</span> tab[<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Event&quot;</span>]   <span class="sc">/</span> <span class="fu">sum</span>(tab[<span class="st">&quot;Control&quot;</span>, ])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>risk_difference <span class="ot">&lt;-</span> risk_t <span class="sc">-</span> risk_c</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>relative_risk   <span class="ot">&lt;-</span> risk_t <span class="sc">/</span> risk_c</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>odds_ratio      <span class="ot">&lt;-</span> (tab[<span class="dv">1</span>, <span class="dv">1</span>] <span class="sc">*</span> tab[<span class="dv">2</span>, <span class="dv">2</span>]) <span class="sc">/</span> (tab[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">*</span> tab[<span class="dv">2</span>, <span class="dv">1</span>])</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">risk_treatment =</span> risk_t,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk_control =</span> risk_c,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk_difference =</span> risk_difference,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">relative_risk =</span> relative_risk,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">odds_ratio =</span> odds_ratio)</span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Meaning</th>
+<th>Practical question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Risk difference (RD)</td>
+<td>Subtraction of group risks</td>
+<td>How many events change per 100 treated people?</td>
+</tr>
+<tr>
+<td>Relative risk (RR)</td>
+<td>Ratio of group risks</td>
+<td>How many times the control risk is the treatment risk?</td>
+</tr>
+<tr>
+<td>Odds ratio (OR)</td>
+<td>Ratio of group odds</td>
+<td>Natural measure for case-control studies and logistic
+regression</td>
+</tr>
+</tbody>
+</table>
+<p>For common outcomes, the OR is farther from 1 than the RR and should
+not be mislabeled. A case-control sampling table normally cannot
+estimate population risks or the RD directly, although it can estimate
+an OR.</p>
+<h2 id="paired-binary-outcomes">8.3 Paired Binary Outcomes</h2>
+<p>Before/after binary status from the same participant requires
+McNemar’s test; only discordant pairs provide evidence of change.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>paired_tab <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">18</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">7</span>, <span class="dv">30</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">Before =</span> <span class="fu">c</span>(<span class="st">&quot;Positive&quot;</span>, <span class="st">&quot;Negative&quot;</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">After  =</span> <span class="fu">c</span>(<span class="st">&quot;Positive&quot;</span>, <span class="st">&quot;Negative&quot;</span>)))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mcnemar.test</span>(paired_tab, <span class="at">correct =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<h1 id="correlation-regression-and-the-causal-boundary">9. Correlation,
+Regression, and the Causal Boundary</h1>
+<p>Scatterplots and correlation coefficients describe continuous
+relationships. Regression goes further by expressing how the average
+outcome changes with a predictor.</p>
+<h2 id="plot-before-calculating-correlation">9.1 Plot Before Calculating
+Correlation</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(trial<span class="sc">$</span>baseline, trial<span class="sc">$</span>week8,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;#5144d866&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Baseline&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Week 8&quot;</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(week8 <span class="sc">~</span> baseline, <span class="at">data =</span> trial), <span class="at">col =</span> <span class="st">&quot;#19a7b5&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(trial<span class="sc">$</span>baseline, trial<span class="sc">$</span>week8, <span class="at">method =</span> <span class="st">&quot;pearson&quot;</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(trial<span class="sc">$</span>baseline, trial<span class="sc">$</span>week8, <span class="at">method =</span> <span class="st">&quot;spearman&quot;</span>, <span class="at">exact =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Pearson correlation describes linear association; Spearman
+correlation describes monotonic association. Both can change with
+restricted ranges, outliers, mixed subgroups, and measurement error. An
+ecological correlation between groups does not automatically apply to
+individuals.</p>
+<h2 id="linear-regression-and-adjustment">9.2 Linear Regression and
+Adjustment</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(week8 <span class="sc">~</span> baseline <span class="sc">+</span> group <span class="sc">+</span> age <span class="sc">+</span> site, <span class="at">data =</span> trial)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(fit)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic diagnostics for linearity, variance, influence, and residual shape</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span></code></pre></div>
+<p>With Control as the reference group, <code>groupTreatment</code>
+estimates the adjusted difference in mean week-8 outcome at the same
+baseline value, age, and site. Whether it is causal depends on
+allocation, missingness, and model specification, not on whether p &lt;
+0.05.</p>
+<h2 id="regression-to-the-mean">9.3 Regression to the Mean</h2>
+<p>People selected for an extreme baseline value often move closer to
+the population mean on remeasurement, even without treatment.
+Measurement error and natural fluctuation cause this
+regression-to-the-mean pattern. Selecting extreme patients and comparing
+them before and after treatment does not by itself establish efficacy; a
+randomized or otherwise appropriate comparison group is crucial.</p>
+<h1 id="transformations-outliers-and-rank-methods">10. Transformations,
+Outliers, and Rank Methods</h1>
+<p>Means are sensitive to skew and extreme observations. Transformations
+change the analysis scale, while rank-based methods reduce the numerical
+influence of extremes by using order information.</p>
+<h2 id="skewed-length-of-stay-data">10.1 Skewed Length-of-Stay Data</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>los_control <span class="ot">&lt;-</span> <span class="fu">rlnorm</span>(<span class="dv">35</span>, <span class="at">meanlog =</span> <span class="fu">log</span>(<span class="dv">6</span>), <span class="at">sdlog =</span> <span class="fl">0.55</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>los_treat   <span class="ot">&lt;-</span> <span class="fu">rlnorm</span>(<span class="dv">38</span>, <span class="at">meanlog =</span> <span class="fu">log</span>(<span class="fl">4.8</span>), <span class="at">sdlog =</span> <span class="fl">0.50</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(los_control, los_treat, <span class="at">names =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;Length of stay&quot;</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(<span class="fu">log</span>(los_control), <span class="fu">log</span>(los_treat),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">names =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>), <span class="at">ylab =</span> <span class="st">&quot;log(length of stay)&quot;</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Welch t on the raw scale, t on the log scale, and rank-sum test</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(los_treat, los_control)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(<span class="fu">log</span>(los_treat), <span class="fu">log</span>(los_control))</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(los_treat, los_control, <span class="at">exact =</span> <span class="cn">FALSE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Exponentiating a mean difference on the log scale yields a
+geometric-mean ratio:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>log_fit <span class="ot">&lt;-</span> <span class="fu">t.test</span>(<span class="fu">log</span>(los_treat), <span class="fu">log</span>(los_control))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">c</span>(<span class="at">ratio =</span> <span class="fu">mean</span>(<span class="fu">log</span>(los_treat)) <span class="sc">-</span> <span class="fu">mean</span>(<span class="fu">log</span>(los_control)),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>      log_fit<span class="sc">$</span>conf.int))</span></code></pre></div>
+<h2 id="do-not-delete-outliers-mechanically">10.2 Do Not Delete Outliers
+Mechanically</h2>
+<p>When an unusual value appears, check data entry, units, duplicate
+records, measurement failure, prespecified exclusions, and whether it
+represents a real but uncommon patient. Present the primary analysis
+plus justified sensitivity analyses, and document every decision.</p>
+<div class="note">
+<p>The Mann-Whitney/Wilcoxon rank-sum test generally compares
+distributional location, not universally “the medians.” A median-shift
+interpretation is most defensible when group distributions have similar
+shapes.</p>
+</div>
+<h1 id="anova-post-hoc-comparisons-and-multiplicity">11. ANOVA, Post-Hoc
+Comparisons, and Multiplicity</h1>
+<h2 id="overall-comparison-of-three-or-more-groups">11.1 Overall
+Comparison of Three or More Groups</h2>
+<p>ANOVA partitions total variability into between- and within-group
+components. Its overall F test asks whether at least one mean differs,
+not which means differ.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">27</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>multi <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Dose A&quot;</span>, <span class="st">&quot;Dose B&quot;</span>), <span class="at">each =</span> <span class="dv">30</span>)),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">70</span>, <span class="dv">9</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">75</span>, <span class="dv">9</span>),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">80</span>, <span class="dv">10</span>))</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(outcome <span class="sc">~</span> group, multi,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="at">n =</span> <span class="fu">length</span>(x), <span class="at">mean =</span> <span class="fu">mean</span>(x), <span class="at">sd =</span> <span class="fu">sd</span>(x)))</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>fit_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(outcome <span class="sc">~</span> group, <span class="at">data =</span> multi)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_aov)</span></code></pre></div>
+<p>The assumptions primarily concern residuals: independent
+observations, approximately normal within-group errors, and a reasonable
+variance structure. Large samples do not erase clustering or repeated
+measures in the design.</p>
+<h2 id="tukey-post-hoc-comparisons">11.2 Tukey Post-Hoc Comparisons</h2>
+<p>Pairwise conclusions still need multiplicity control after an overall
+test.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(fit_aov, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Nonparametric overall test; pairwise follow-up also needs adjustment</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kruskal.test</span>(outcome <span class="sc">~</span> group, <span class="at">data =</span> multi)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pairwise.wilcox.test</span>(multi<span class="sc">$</span>outcome, multi<span class="sc">$</span>group,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">p.adjust.method =</span> <span class="st">&quot;holm&quot;</span>, <span class="at">exact =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<h2 id="bonferroni-holm-and-fdr">11.3 Bonferroni, Holm, and FDR</h2>
+<p>Multiple-comparison procedures distinguish family-wise error control
+from false discovery rate control. Confirmatory studies usually
+emphasize strong family-wise control; exploratory high-dimensional
+screening may use FDR.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>raw_p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.008</span>, <span class="fl">0.018</span>, <span class="fl">0.041</span>, <span class="fl">0.19</span>, <span class="fl">0.61</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">raw =</span> raw_p,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bonferroni =</span> <span class="fu">p.adjust</span>(raw_p, <span class="at">method =</span> <span class="st">&quot;bonferroni&quot;</span>),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">holm =</span> <span class="fu">p.adjust</span>(raw_p, <span class="at">method =</span> <span class="st">&quot;holm&quot;</span>),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">BH_FDR =</span> <span class="fu">p.adjust</span>(raw_p, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Do not report only the findings that remain significant. Define the
+test family, state how many tests were run and which correction was
+used, and report estimates and intervals for all primary effects.</p>
+<h1 id="power-sample-size-and-visualizing-uncertainty">12. Power, Sample
+Size, and Visualizing Uncertainty</h1>
+<p>Prospective power analysis connects effect size, sample size,
+significance level, and probability of detecting the planned effect.</p>
+<h2 id="sample-size-for-two-independent-means">12.1 Sample Size for Two
+Independent Means</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Two-sided alpha=.05, power=.90, standardized difference d=.40</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.40</span>, <span class="at">sd =</span> <span class="dv">1</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.90</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">type =</span> <span class="st">&quot;two.sample&quot;</span>, <span class="at">alternative =</span> <span class="st">&quot;two.sided&quot;</span>)</span></code></pre></div>
+<p>Prefer a clinically meaningful difference and a credible SD
+estimate:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">12</span>,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.90</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">type =</span> <span class="st">&quot;two.sample&quot;</span>)</span></code></pre></div>
+<p>The returned <code>n</code> is the analyzable sample per group. If
+123 per group are needed and retention is expected to be 90%, recruit
+<code>ceiling(123 / 0.90)</code> per group.</p>
+<h2 id="power-is-not-a-post-study-rescue">12.2 Power Is Not a Post-Study
+Rescue</h2>
+<p>Putting the observed effect back into a power formula after the study
+largely restates the p-value. Report the effect estimate and confidence
+interval instead, and ask whether the interval excludes effects that
+would matter clinically.</p>
+<h2 id="display-estimates-and-intervals">12.3 Display Estimates and
+Intervals</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>group_summary <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">split</span>(trial<span class="sc">$</span>change, trial<span class="sc">$</span>group), <span class="cf">function</span>(x) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">mean</span>(x); se <span class="ot">&lt;-</span> <span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(x))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">mean =</span> m, <span class="at">lower =</span> m <span class="sc">-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> se,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> m <span class="sc">+</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> se)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dotchart</span>(group_summary[, <span class="st">&quot;mean&quot;</span>], <span class="at">labels =</span> <span class="fu">rownames</span>(group_summary),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlim =</span> <span class="fu">range</span>(group_summary[, <span class="fu">c</span>(<span class="st">&quot;lower&quot;</span>, <span class="st">&quot;upper&quot;</span>)]),</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab =</span> <span class="st">&quot;Mean change with 95% CI&quot;</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(group_summary[, <span class="st">&quot;lower&quot;</span>], <span class="fu">seq_len</span>(<span class="fu">nrow</span>(group_summary)),</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>         group_summary[, <span class="st">&quot;upper&quot;</span>], <span class="fu">seq_len</span>(<span class="fu">nrow</span>(group_summary)))</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">&quot;grey50&quot;</span>)</span></code></pre></div>
+<h1 id="survival-analysis-preserve-time-and-censoring">13. Survival
+Analysis: Preserve Time and Censoring</h1>
+<p>Survival analysis handles time until an event. A participant without
+an observed event during follow-up is not simply missing; they are
+right-censored, meaning their true event time exceeds their last
+observed time.</p>
+<h2 id="survival-object-and-kaplan-meier-curves">13.1 Survival Object
+and Kaplan-Meier Curves</h2>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;survival&quot;)  # If it is not installed</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>surv_dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time   =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">22</span>, <span class="dv">24</span>, <span class="dv">30</span>, <span class="dv">31</span>, <span class="dv">36</span>, <span class="dv">40</span>, <span class="dv">44</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>             <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">19</span>, <span class="dv">23</span>, <span class="dv">27</span>, <span class="dv">32</span>, <span class="dv">35</span>, <span class="dv">38</span>, <span class="dv">42</span>, <span class="dv">46</span>, <span class="dv">48</span>),</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">status =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>             <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">group  =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>), <span class="at">each =</span> <span class="dv">12</span>))</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> group, <span class="at">data =</span> surv_dat)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(km)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(km, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;#5144d8&quot;</span>, <span class="st">&quot;#19a7b5&quot;</span>), <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Follow-up time&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Estimated survival probability&quot;</span>,</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">mark.time =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">legend =</span> <span class="fu">levels</span>(surv_dat<span class="sc">$</span>group),</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;#5144d8&quot;</span>, <span class="st">&quot;#19a7b5&quot;</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p>Tick marks on a curve identify censoring. Report numbers at risk at
+important times because a curve tail based on only a few participants is
+unstable.</p>
+<h2 id="log-rank-test">13.2 Log-Rank Test</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>lr <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> group, <span class="at">data =</span> surv_dat)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>lr</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(lr<span class="sc">$</span>chisq, <span class="at">df =</span> <span class="fu">length</span>(lr<span class="sc">$</span>n) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>p_value</span></code></pre></div>
+<p>The log-rank test compares survival experience over follow-up. It
+gives evidence of a difference but not an effect magnitude. If a Cox
+model is used to report a hazard ratio, check the proportional-hazards
+assumption and discuss assumptions such as independent censoring.</p>
+<div class="warning">
+<p>Treating every censored participant as “no event” in an ordinary
+proportion test discards follow-up time and can bias the analysis.
+Analyzing the average time among event cases only is also incorrect.</p>
+</div>
+<h1 id="end-to-end-case-from-question-to-report">14. End-to-End Case:
+From Question to Report</h1>
+<p>Objective: assess whether treatment reduces week-8 blood pressure
+more than control and compare adverse-event risk.</p>
+<h2 id="prespecify-the-plan">14.1 Prespecify the Plan</h2>
+<pre class="text"><code>Population: adults with hypertension who meet eligibility criteria
+Primary outcome: week-8 systolic BP (mmHg)
+Primary effect: adjusted Treatment - Control mean difference
+Safety outcome: at least one adverse event by week 8
+Primary model: week8 ~ baseline + group + site
+Safety analysis: risk difference, relative risk, Fisher&#39;s exact test
+Missingness: describe counts and reasons; set the primary method before results are seen</code></pre>
+<h2 id="run-the-main-analyses">14.2 Run the Main Analyses</h2>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Describe the sample</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(trial, <span class="fu">table</span>(group, site))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(<span class="fu">cbind</span>(baseline, week8, change) <span class="sc">~</span> group, trial, mean)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Baseline-adjusted continuous outcome</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>primary <span class="ot">&lt;-</span> <span class="fu">lm</span>(week8 <span class="sc">~</span> baseline <span class="sc">+</span> group <span class="sc">+</span> site, <span class="at">data =</span> trial)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(primary)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(primary, <span class="st">&quot;groupTreatment&quot;</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Safety outcome table</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>safety <span class="ot">&lt;-</span> <span class="fu">with</span>(trial, <span class="fu">table</span>(group, event))</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>safety</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(safety)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(safety, <span class="dv">1</span>)[, <span class="st">&quot;1&quot;</span>]</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">risk_difference =</span> risk[<span class="st">&quot;Treatment&quot;</span>] <span class="sc">-</span> risk[<span class="st">&quot;Control&quot;</span>],</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">relative_risk =</span> risk[<span class="st">&quot;Treatment&quot;</span>] <span class="sc">/</span> risk[<span class="st">&quot;Control&quot;</span>])</span></code></pre></div>
+<h2 id="diagnostics-and-sensitivity-analysis">14.3 Diagnostics and
+Sensitivity Analysis</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals and influential observations</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)); <span class="fu">plot</span>(primary); <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Unadjusted Welch test of change as a sensitivity analysis</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(change <span class="sc">~</span> group, <span class="at">data =</span> trial)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Missing-data overview</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(trial[<span class="fu">c</span>(<span class="st">&quot;baseline&quot;</span>, <span class="st">&quot;week8&quot;</span>, <span class="st">&quot;group&quot;</span>, <span class="st">&quot;site&quot;</span>, <span class="st">&quot;event&quot;</span>)]))</span></code></pre></div>
+<h2 id="reporting-template">14.4 Reporting Template</h2>
+<pre class="text"><code>N participants were included: n=... treatment and n=... control.
+After adjustment for baseline value and site, mean week-8 systolic BP was
+... mmHg lower in the treatment group (95% CI [..., ...]; p=...).
+Model diagnostics showed/did not show ... .
+
+Adverse-event risk was ...% in treatment and ...% in control; the risk
+difference was ... percentage points and the relative risk was ... .
+Fisher&#39;s exact p=... . The safety interval was wide, so ... cannot be excluded.</code></pre>
+<p>State that these are simulated data. A real study must also follow
+its protocol for adherence, attrition, protocol deviations, multiple
+sites, and prespecified analysis populations.</p>
+<h1 id="method-selection-quick-reference">15. Method Selection Quick
+Reference</h1>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Research question</th>
+<th>Data structure</th>
+<th>Common method</th>
+<th>Report together</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Does one proportion equal a target?</td>
+<td>One binary sample</td>
+<td><code>binom.test</code> / <code>prop.test</code></td>
+<td>Proportion, numerator/denominator, interval</td>
+</tr>
+<tr>
+<td>Does one mean equal a target?</td>
+<td>One continuous sample</td>
+<td>One-sample <code>t.test</code></td>
+<td>Mean, SD, difference, interval</td>
+</tr>
+<tr>
+<td>Do two independent means differ?</td>
+<td>Continuous outcome</td>
+<td>Welch <code>t.test</code></td>
+<td>Group summaries, difference, interval</td>
+</tr>
+<tr>
+<td>Did the same people change?</td>
+<td>Paired continuous</td>
+<td>Paired t / Wilcoxon</td>
+<td>Within-person differences, pair count, interval</td>
+</tr>
+<tr>
+<td>Are group and binary outcome associated?</td>
+<td>2x2 table</td>
+<td>Chi-square / Fisher</td>
+<td>RD, RR/OR, interval</td>
+</tr>
+<tr>
+<td>Are two continuous variables related?</td>
+<td>Independent pairs</td>
+<td>Pearson/Spearman, regression</td>
+<td>Scatterplot, r/slope, interval</td>
+</tr>
+<tr>
+<td>Do 3+ means differ?</td>
+<td>Independent continuous</td>
+<td>ANOVA + Tukey</td>
+<td>Overall test, adjusted comparisons</td>
+</tr>
+<tr>
+<td>Are many hypotheses tested?</td>
+<td>Multiple p-values</td>
+<td>Holm / BH FDR</td>
+<td>Test family, raw and adjusted p-values</td>
+</tr>
+<tr>
+<td>Do event times differ by group?</td>
+<td>Time + status</td>
+<td>Kaplan-Meier, log-rank</td>
+<td>Risk sets, censoring, curves/effect</td>
+</tr>
+</tbody>
+</table>
+<h1 id="final-analysis-checklist">16. Final Analysis Checklist</h1>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>Question, population, observational
+unit, exposure, and outcome are explicit;</label></li>
+<li><label><input type="checkbox"></input>The design supports the causal or
+associational language used;</label></li>
+<li><label><input type="checkbox"></input>IDs, units, ranges, duplicates, and
+missingness were checked;</label></li>
+<li><label><input type="checkbox"></input>Independent, paired, repeated, and
+clustered observations were not confused;</label></li>
+<li><label><input type="checkbox"></input>Raw distributions were shown before
+modeling;</label></li>
+<li><label><input type="checkbox"></input>Group sample sizes, effect
+estimates, and 95% confidence intervals are reported;</label></li>
+<li><label><input type="checkbox"></input>No p-value is interpreted as the
+probability that the null is true;</label></li>
+<li><label><input type="checkbox"></input>The test family and multiplicity
+correction are stated;</label></li>
+<li><label><input type="checkbox"></input>Outlier decisions and sensitivity
+analyses are traceable;</label></li>
+<li><label><input type="checkbox"></input>Survival outcomes retain both time
+and censoring information;</label></li>
+<li><label><input type="checkbox"></input>Code, random seed, software version,
+and analysis data are reproducible;</label></li>
+<li><label><input type="checkbox"></input>Conclusions stay within the sample,
+design, and uncertainty.</label></li>
+</ul>
+<h1 id="exercises-and-next-steps">17. Exercises and Next Steps</h1>
+<ol type="1">
+<li>Change diagnostic-test prevalence to 20%; recompute PPV/NPV and
+explain the change;</li>
+<li>Repeat the CLT simulation across sample sizes and compare empirical
+to theoretical SE;</li>
+<li>Compare <code>binom.test</code> and <code>prop.test</code> intervals
+for the remote follow-up completion data;</li>
+<li>For <code>trial</code>, calculate the mean difference, Hedges’ g,
+and permutation p-value;</li>
+<li>Calculate and explain RD, RR, and OR for the 2x2 table;</li>
+<li>Add an extreme length of stay and compare t and rank-sum
+results;</li>
+<li>Complete ANOVA, Tukey, and Holm-adjusted pairwise t-tests for the
+three groups;</li>
+<li>Change censoring indicators and observe the Kaplan-Meier curve and
+risk sets;</li>
+<li>Sketch exposure, confounder, and outcome relationships for a
+prospective cohort and write a defensible conclusion;</li>
+<li>Use the Section 14 template to write a short abstract emphasizing
+estimates, intervals, and limitations.</li>
+</ol>
+<p>Statistical competence is not memorizing more functions. It is
+building a reviewable chain from design and data through assumptions,
+estimates, tests, and interpretation.</p>
+<script>
+(function(){
+  "use strict";
+  const d=document,b=d.body;if(!b||d.querySelector(".mw3-topbar"))return;
+  const zh=(d.documentElement.lang||"").toLowerCase().startsWith("zh"),s=d.currentScript,t=d.getElementById("TOC");
+  const p=d.createElement("div");p.className="mw3-progress";p.setAttribute("aria-hidden","true");
+  const skip=d.createElement("a");skip.className="mw3-skip";skip.href="#mw3-content";skip.textContent=zh?"跳到正文":"Skip to content";
+  const h=d.createElement("header");h.className="mw3-topbar";h.innerHTML=`<a class="mw3-brand" href="#title-block-header"><span class="mw3-logo">MW3</span><span>MooseWeb3</span><span class="mw3-sub">BIOSTATISTICS</span></a><span class="mw3-spacer"></span><nav class="mw3-langs" aria-label="${zh?"语言选择":"Language selector"}"><a href="biostatistics_guide_zh.html" aria-current="${zh?"page":"false"}">中文</a><a href="biostatistics_guide_en.html" aria-current="${zh?"false":"page"}">EN</a></nav><button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">${zh?"目录":"Contents"}</button>`;
+  b.prepend(p,skip,h);
+  const m=d.createElement("main");m.id="mw3-content";m.tabIndex=-1;
+  if(t&&s){let n=t.nextSibling;while(n&&n!==s){const next=n.nextSibling;m.appendChild(n);n=next;}b.insertBefore(m,s);}
+  d.querySelectorAll("pre").forEach(pre=>{let shell=pre.parentElement;if(!shell||!shell.classList.contains("sourceCode")){shell=d.createElement("div");pre.parentNode.insertBefore(shell,pre);shell.appendChild(pre);}shell.classList.add("mw3-code-shell");const btn=d.createElement("button");btn.className="mw3-copy";btn.type="button";btn.textContent=zh?"复制":"Copy";btn.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(pre.innerText);btn.textContent=zh?"已复制":"Copied";setTimeout(()=>btn.textContent=zh?"复制":"Copy",1300);}catch(e){btn.textContent=zh?"复制失败":"Copy failed";}});shell.appendChild(btn);});
+  const top=d.createElement("button");top.className="mw3-top";top.type="button";top.textContent="↑";top.setAttribute("aria-label",zh?"返回顶部":"Back to top");top.onclick=()=>scrollTo({top:0,behavior:"smooth"});b.appendChild(top);
+  const menu=h.querySelector(".mw3-menu");if(menu&&t){menu.onclick=()=>{const open=b.classList.toggle("mw3-toc-open");menu.setAttribute("aria-expanded",String(open));};t.onclick=e=>{if(e.target.closest("a")){b.classList.remove("mw3-toc-open");menu.setAttribute("aria-expanded","false");}};}
+  const update=()=>{const max=d.documentElement.scrollHeight-innerHeight;p.style.width=`${max>0?Math.min(scrollY/max,1)*100:0}%`;top.classList.toggle("is-visible",scrollY>560);};update();addEventListener("scroll",update,{passive:true});addEventListener("resize",update);
+})();
+</script>
+<script>document.querySelectorAll('a[href$="_zh.html"]').forEach(link => link.remove());</script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

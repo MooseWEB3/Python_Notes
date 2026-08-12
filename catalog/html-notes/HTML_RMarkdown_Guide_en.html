@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="MooseWeb3 · Practical HTML Learning Guide" />
+
+<meta name="date" content="2026-08-12" />
+
+<title>MooseWeb3 | Using R Markdown to Build HTML: A Complete Guide</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">:root {
+--mw3-bg: #f4f7fb;
+--mw3-surface: #ffffff;
+--mw3-surface-soft: #f8faff;
+--mw3-ink: #172033;
+--mw3-muted: #667085;
+--mw3-line: #dfe7f1;
+--mw3-navy: #0a1020;
+--mw3-primary: #6d5dfc;
+--mw3-primary-dark: #5144d8;
+--mw3-cyan: #19c3d2;
+--mw3-green: #20a36a;
+--mw3-amber: #e38a19;
+--mw3-code: #0d1424;
+--mw3-radius: 18px;
+--mw3-shadow: 0 18px 55px rgba(31, 43, 71, .10);
+}
+* { box-sizing: border-box; }
+html {
+scroll-behavior: smooth;
+background: var(--mw3-bg);
+}
+body {
+max-width: none;
+margin: 0;
+padding: 0 24px 72px;
+color: var(--mw3-ink);
+background:
+radial-gradient(circle at 85% 4%, rgba(109, 93, 252, .10), transparent 24rem),
+radial-gradient(circle at 12% 18%, rgba(25, 195, 210, .08), transparent 22rem),
+var(--mw3-bg);
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+"Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+font-size: 17px;
+line-height: 1.78;
+-webkit-font-smoothing: antialiased;
+}
+a {
+color: var(--mw3-primary-dark);
+text-underline-offset: 3px;
+}
+a:hover { color: var(--mw3-primary); }
+::selection { color: #fff; background: var(--mw3-primary); }
+.mw3-progress {
+position: fixed;
+z-index: 1200;
+top: 0;
+left: 0;
+width: 0;
+height: 3px;
+background: linear-gradient(90deg, var(--mw3-cyan), var(--mw3-primary));
+box-shadow: 0 0 12px rgba(25, 195, 210, .8);
+}
+.mw3-topbar {
+position: fixed;
+z-index: 1100;
+top: 0;
+right: 0;
+left: 0;
+height: 72px;
+display: flex;
+align-items: center;
+gap: 22px;
+padding: 0 max(24px, calc((100vw - 1420px) / 2));
+color: #fff;
+background: rgba(10, 16, 32, .94);
+border-bottom: 1px solid rgba(255, 255, 255, .10);
+box-shadow: 0 8px 30px rgba(10, 16, 32, .18);
+backdrop-filter: blur(16px);
+}
+.mw3-skip {
+position: fixed;
+z-index: 1300;
+top: 8px;
+left: 12px;
+padding: 8px 12px;
+color: #fff;
+background: var(--mw3-primary);
+border-radius: 8px;
+transform: translateY(-150%);
+}
+.mw3-skip:focus { transform: translateY(0); }
+.mw3-brand {
+display: inline-flex;
+flex-shrink: 0;
+align-items: center;
+gap: 11px;
+color: #fff;
+font-size: 19px;
+font-weight: 800;
+letter-spacing: -.02em;
+text-decoration: none;
+}
+.mw3-brand:hover { color: #fff; }
+.mw3-logo {
+display: grid;
+place-items: center;
+width: 38px;
+height: 38px;
+color: #fff;
+background: linear-gradient(135deg, var(--mw3-cyan), var(--mw3-primary));
+border-radius: 11px;
+box-shadow: 0 7px 20px rgba(109, 93, 252, .36);
+font-size: 12px;
+letter-spacing: .02em;
+}
+.mw3-brand-sub {
+color: #9faac0;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: .13em;
+}
+.mw3-spacer { flex: 1; }
+.mw3-langs {
+display: flex;
+flex-shrink: 0;
+align-items: center;
+gap: 5px;
+}
+.mw3-langs a {
+padding: 7px 11px;
+color: #b9c3d6;
+border-radius: 9px;
+font-size: 14px;
+font-weight: 700;
+text-decoration: none;
+}
+.mw3-langs a:hover,
+.mw3-langs a[aria-current="page"] {
+color: #fff;
+background: rgba(255, 255, 255, .11);
+}
+.mw3-language-tag {
+padding: 7px 11px;
+color: #fff;
+background: rgba(255, 255, 255, .11);
+border-radius: 9px;
+font-size: 14px;
+font-weight: 700;
+}
+.mw3-menu {
+display: none;
+padding: 8px 11px;
+color: #fff;
+background: rgba(255, 255, 255, .10);
+border: 1px solid rgba(255, 255, 255, .14);
+border-radius: 9px;
+cursor: pointer;
+}
+#title-block-header {
+position: relative;
+max-width: 940px;
+margin: 112px auto 30px;
+padding: clamp(28px, 5vw, 54px);
+overflow: hidden;
+color: #fff;
+text-align: left;
+background:
+radial-gradient(circle at 88% 5%, rgba(25, 195, 210, .25), transparent 17rem),
+linear-gradient(125deg, rgba(109, 93, 252, .97), rgba(36, 61, 118, .98)),
+var(--mw3-navy);
+border: 1px solid rgba(255, 255, 255, .15);
+border-radius: 26px;
+box-shadow: 0 24px 70px rgba(39, 47, 100, .22);
+}
+#title-block-header::before {
+content: "MOOSEWEB3 · HTML NOTES";
+display: inline-block;
+margin-bottom: 16px;
+padding: 7px 11px;
+color: #dffcff;
+background: rgba(9, 18, 45, .20);
+border: 1px solid rgba(255, 255, 255, .19);
+border-radius: 999px;
+font-size: 11px;
+font-weight: 800;
+letter-spacing: .13em;
+}
+#title-block-header .title {
+max-width: 820px;
+margin: 0 0 14px;
+color: #fff;
+font-size: clamp(32px, 5vw, 52px);
+line-height: 1.14;
+letter-spacing: -.035em;
+}
+#title-block-header .author,
+#title-block-header .date {
+margin: 4px 0 0;
+color: #dce4ff;
+}
+#TOC {
+position: fixed;
+z-index: 900;
+top: 96px;
+left: max(18px, calc(50vw - 607px));
+width: 245px;
+max-height: calc(100vh - 122px);
+padding: 18px 15px 20px;
+overflow-y: auto;
+overscroll-behavior: contain;
+background: rgba(255, 255, 255, .92);
+border: 1px solid var(--mw3-line);
+border-radius: 16px;
+box-shadow: 0 14px 40px rgba(31, 43, 71, .08);
+backdrop-filter: blur(12px);
+scrollbar-width: thin;
+}
+#TOC h2,
+#TOC #toc-title {
+margin: 0 0 12px;
+padding: 0 6px 10px;
+color: #17254a;
+border-bottom: 1px solid var(--mw3-line);
+font-size: 22px;
+line-height: 1.3;
+}
+#TOC > ul { margin: 0; padding: 0; }
+#TOC ul { list-style: none; }
+#TOC ul ul {
+margin: 5px 0 7px 9px;
+padding-left: 10px;
+border-left: 1px solid #e4e9f2;
+}
+#TOC li { margin: 2px 0; }
+#TOC a {
+display: block;
+padding: 5px 7px;
+color: #59647a;
+border-radius: 7px;
+font-size: 13px;
+line-height: 1.35;
+text-decoration: none;
+}
+#TOC > ul > li > a {
+color: #28344e;
+font-weight: 750;
+}
+#TOC a:hover,
+#TOC a.is-active {
+color: var(--mw3-primary-dark);
+background: #f0efff;
+}
+#mw3-content {
+max-width: 940px;
+margin: 0 auto;
+padding: 18px clamp(24px, 4vw, 58px) 64px;
+background: var(--mw3-surface);
+border: 1px solid rgba(223, 231, 241, .9);
+border-radius: 24px;
+box-shadow: var(--mw3-shadow);
+}
+h1,
+h2,
+h3 {
+color: #17254a;
+scroll-margin-top: 92px;
+}
+h1 {
+margin: 3.1rem 0 1.15rem;
+padding-bottom: .65rem;
+border-bottom: 1px solid var(--mw3-line);
+font-size: clamp(27px, 3vw, 36px);
+line-height: 1.3;
+letter-spacing: -.025em;
+}
+#mw3-content > h1:first-of-type { margin-top: 1.4rem; }
+h2 { margin: 2.25rem 0 .75rem; font-size: 24px; line-height: 1.35; }
+h3 { margin: 1.8rem 0 .6rem; font-size: 20px; }
+p, li { color: #344054; }
+strong { color: #1f2b45; }
+code {
+padding: .12em .36em;
+color: #5b3fd0;
+background: #f0efff;
+border-radius: 5px;
+font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+font-size: .9em;
+}
+kbd {
+display: inline-block;
+padding: .12em .42em;
+color: #fff;
+background: var(--mw3-navy);
+border: 1px solid #303b51;
+border-radius: 5px;
+box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .16);
+font: .82em/1.5 "Cascadia Code", Consolas, monospace;
+}
+.mw3-code-shell {
+position: relative;
+margin: 1.15rem 0 1.5rem;
+overflow: hidden;
+color: #dfe7f5 !important;
+background: var(--mw3-code) !important;
+border: 1px solid #202b42;
+border-radius: 14px;
+box-shadow: 0 12px 28px rgba(13, 20, 36, .13);
+}
+.mw3-code-shell pre {
+margin: 0;
+padding: 22px 20px;
+overflow-x: auto;
+color: #dfe7f5 !important;
+background: transparent !important;
+border: 0;
+font-size: 14px;
+line-height: 1.65;
+scrollbar-color: #53627e transparent;
+}
+.mw3-code-shell pre code {
+padding: 0;
+color: inherit !important;
+background: transparent !important;
+border-radius: 0;
+}
+.mw3-code-shell code span { background-color: transparent !important; }
+.mw3-code-shell code span.kw,
+.mw3-code-shell code span.cf { color: #c792ea !important; }
+.mw3-code-shell code span.im,
+.mw3-code-shell code span.bu,
+.mw3-code-shell code span.fu { color: #82aaff !important; }
+.mw3-code-shell code span.dt,
+.mw3-code-shell code span.va { color: #f07178 !important; }
+.mw3-code-shell code span.st,
+.mw3-code-shell code span.ss { color: #c3e88d !important; }
+.mw3-code-shell code span.dv,
+.mw3-code-shell code span.bn,
+.mw3-code-shell code span.fl { color: #f78c6c !important; }
+.mw3-code-shell code span.co { color: #91a0bc !important; font-style: italic; }
+.mw3-code-shell code span.op { color: #89ddff !important; }
+.mw3-code-shell code span.at { color: #ffcb6b !important; }
+.mw3-copy {
+position: absolute;
+z-index: 2;
+top: 10px;
+right: 10px;
+padding: 6px 9px;
+color: #cbd5e7;
+background: rgba(255, 255, 255, .08);
+border: 1px solid rgba(255, 255, 255, .12);
+border-radius: 7px;
+font: 700 12px/1.2 inherit;
+cursor: pointer;
+opacity: 0;
+transition: opacity .2s, background .2s;
+}
+.mw3-code-shell:hover .mw3-copy,
+.mw3-copy:focus { opacity: 1; }
+.mw3-copy:hover { color: #fff; background: rgba(255, 255, 255, .16); }
+table {
+display: table;
+width: 100%;
+margin: 1.25rem 0 1.7rem;
+overflow: hidden;
+border-spacing: 0;
+border-collapse: separate;
+border: 1px solid var(--mw3-line);
+border-radius: 12px;
+font-size: 15px;
+}
+caption {
+margin-bottom: .55rem;
+color: var(--mw3-muted);
+font-weight: 700;
+text-align: left;
+}
+thead { color: #263553; background: #f2f5fa; }
+th,
+td {
+padding: .68rem .82rem;
+border: 0;
+border-bottom: 1px solid var(--mw3-line);
+text-align: left;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #fafbff; }
+table code { white-space: nowrap; }
+blockquote,
+.callout,
+.result-box {
+margin: 1.35rem 0;
+padding: 1rem 1.15rem;
+background: linear-gradient(90deg, #edfaff, #f7fbff);
+border: 1px solid #cbeef4;
+border-left: 5px solid var(--mw3-cyan);
+border-radius: 10px;
+}
+blockquote p,
+.callout p,
+.result-box p { margin: 0; }
+.callout {
+background: linear-gradient(90deg, #f2f0ff, #faf9ff);
+border-color: #dcd7ff;
+border-left-color: var(--mw3-primary);
+}
+.warning-box {
+background: #fff8eb;
+border-color: #f4ddb5;
+border-left-color: var(--mw3-amber);
+}
+.result-box h4 { margin: 0 0 .45rem; color: #17254a; }
+details {
+margin: 1.25rem 0;
+padding: .9rem 1rem;
+background: var(--mw3-surface-soft);
+border: 1px solid var(--mw3-line);
+border-radius: 10px;
+}
+summary {
+color: #28344e;
+font-weight: 750;
+cursor: pointer;
+}
+img,
+svg { max-width: 100%; height: auto; }
+.figure,
+.plotly,
+.html-widget {
+max-width: 100%;
+margin: 1.5rem auto;
+}
+.brand-footer {
+margin-top: 3rem;
+padding-top: 1.2rem;
+color: var(--mw3-muted);
+border-top: 1px solid var(--mw3-line);
+text-align: center;
+font-size: .9rem;
+}
+.mw3-top {
+position: fixed;
+z-index: 950;
+right: 24px;
+bottom: 24px;
+width: 44px;
+height: 44px;
+color: #fff;
+background: var(--mw3-navy);
+border: 0;
+border-radius: 13px;
+box-shadow: 0 10px 28px rgba(10, 16, 32, .24);
+cursor: pointer;
+opacity: 0;
+transform: translateY(10px);
+pointer-events: none;
+transition: opacity .2s, transform .2s;
+}
+.mw3-top.is-visible {
+opacity: 1;
+transform: translateY(0);
+pointer-events: auto;
+}
+button:focus-visible,
+a:focus-visible {
+outline: 3px solid rgba(25, 195, 210, .75);
+outline-offset: 3px;
+}
+@media (min-width: 1241px) {
+#title-block-header,
+#mw3-content {
+margin-right: 0;
+margin-left: max(291px, calc(50vw - 334px));
+}
+}
+@media (max-width: 1240px) {
+#TOC {
+top: 82px;
+left: 14px;
+width: min(310px, calc(100vw - 28px));
+max-height: calc(100vh - 96px);
+transform: translateX(-120%);
+transition: transform .24s ease;
+}
+body.mw3-toc-open #TOC { transform: translateX(0); }
+.mw3-menu { display: inline-flex; }
+}
+@media (max-width: 700px) {
+body { padding: 0 12px 48px; font-size: 16px; }
+.mw3-topbar { height: 64px; padding: 0 14px; gap: 10px; }
+.mw3-logo { width: 34px; height: 34px; }
+.mw3-brand-sub { display: none; }
+.mw3-langs a { padding: 6px 8px; font-size: 13px; }
+#title-block-header { margin: 88px 0 18px; padding: 27px 23px; border-radius: 20px; }
+#title-block-header .title { font-size: 31px; }
+#mw3-content { padding: 14px 20px 46px; border-radius: 18px; }
+h1 { font-size: 27px; }
+h2 { font-size: 22px; }
+table { display: block; overflow-x: auto; white-space: nowrap; }
+.mw3-copy { opacity: 1; }
+.mw3-top { right: 14px; bottom: 14px; }
+}
+@media print {
+body { padding: 0; background: #fff; }
+.mw3-topbar,
+.mw3-progress,
+.mw3-top,
+#TOC,
+.mw3-copy { display: none !important; }
+#title-block-header,
+#mw3-content { max-width: none; margin: 0; box-shadow: none; }
+#mw3-content { border: 0; }
+h1, h2, h3 { break-after: avoid; }
+pre, table, blockquote { break-inside: avoid; }
+}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">MooseWeb3 | Using R Markdown to Build HTML:
+A Complete Guide</h1>
+<h4 class="author">MooseWeb3 · Practical HTML Learning Guide</h4>
+<h4 class="date">2026-08-12</h4>
+
+
+<div id="TOC">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#learning-objectives" id="toc-learning-objectives">Learning
+objectives</a></li>
+<li><a href="#html-markdown-and-r-markdown" id="toc-html-markdown-and-r-markdown">1. HTML, Markdown, and R
+Markdown</a>
+<ul>
+<li><a href="#what-is-html" id="toc-what-is-html">1.1 What is
+HTML?</a></li>
+<li><a href="#what-is-markdown" id="toc-what-is-markdown">1.2 What is
+Markdown?</a></li>
+<li><a href="#what-is-r-markdown" id="toc-what-is-r-markdown">1.3 What
+is R Markdown?</a></li>
+</ul></li>
+<li><a href="#set-up-your-environment" id="toc-set-up-your-environment">2. Set up your environment</a>
+<ul>
+<li><a href="#install-the-software" id="toc-install-the-software">2.1
+Install the software</a></li>
+<li><a href="#recommended-project-structure" id="toc-recommended-project-structure">2.2 Recommended project
+structure</a></li>
+</ul></li>
+<li><a href="#anatomy-of-an-r-markdown-file" id="toc-anatomy-of-an-r-markdown-file">3. Anatomy of an R Markdown
+file</a>
+<ul>
+<li><a href="#the-yaml-header" id="toc-the-yaml-header">3.1 The YAML
+header</a></li>
+<li><a href="#body-text-and-headings" id="toc-body-text-and-headings">3.2 Body text and headings</a></li>
+</ul></li>
+<li><a href="#essential-markdown-syntax" id="toc-essential-markdown-syntax">4. Essential Markdown syntax</a>
+<ul>
+<li><a href="#text-formatting" id="toc-text-formatting">4.1 Text
+formatting</a></li>
+<li><a href="#lists" id="toc-lists">4.2 Lists</a></li>
+<li><a href="#links-and-images" id="toc-links-and-images">4.3 Links and
+images</a></li>
+<li><a href="#markdown-tables" id="toc-markdown-tables">4.4 Markdown
+tables</a></li>
+</ul></li>
+<li><a href="#r-code-and-dynamic-output" id="toc-r-code-and-dynamic-output">5. R code and dynamic output</a>
+<ul>
+<li><a href="#code-chunks" id="toc-code-chunks">5.1 Code chunks</a></li>
+<li><a href="#common-chunk-options" id="toc-common-chunk-options">5.2
+Common chunk options</a></li>
+<li><a href="#inline-r-code" id="toc-inline-r-code">5.3 Inline R
+code</a></li>
+<li><a href="#generate-tables-with-r" id="toc-generate-tables-with-r">5.4 Generate tables with R</a></li>
+</ul></li>
+<li><a href="#use-raw-html-in-r-markdown" id="toc-use-raw-html-in-r-markdown">6. Use raw HTML in R Markdown</a>
+<ul>
+<li><a href="#collapsible-content" id="toc-collapsible-content">6.1
+Collapsible content</a></li>
+<li><a href="#html-entities-and-special-characters" id="toc-html-entities-and-special-characters">6.2 HTML entities and
+special characters</a></li>
+<li><a href="#add-css" id="toc-add-css">6.3 Add CSS</a></li>
+</ul></li>
+<li><a href="#three-ways-to-generate-html" id="toc-three-ways-to-generate-html">7. Three ways to generate HTML</a>
+<ul>
+<li><a href="#click-knit-in-rstudio" id="toc-click-knit-in-rstudio">7.1
+Click Knit in RStudio</a></li>
+<li><a href="#render-from-the-r-console" id="toc-render-from-the-r-console">7.2 Render from the R
+Console</a></li>
+<li><a href="#render-from-a-system-terminal" id="toc-render-from-a-system-terminal">7.3 Render from a system
+terminal</a></li>
+</ul></li>
+<li><a href="#self-contained-html-and-external-assets" id="toc-self-contained-html-and-external-assets">8. Self-contained HTML
+and external assets</a></li>
+<li><a href="#parameterized-reports" id="toc-parameterized-reports">9.
+Parameterized reports</a></li>
+<li><a href="#interactive-html-content" id="toc-interactive-html-content">10. Interactive HTML content</a></li>
+<li><a href="#build-a-multi-page-html-site" id="toc-build-a-multi-page-html-site">11. Build a multi-page HTML
+site</a></li>
+<li><a href="#common-errors-and-solutions" id="toc-common-errors-and-solutions">12. Common errors and solutions</a>
+<ul>
+<li><a href="#yaml-parsing-errors" id="toc-yaml-parsing-errors">12.1
+YAML parsing errors</a></li>
+<li><a href="#missing-files-or-images" id="toc-missing-files-or-images">12.2 Missing files or images</a></li>
+<li><a href="#missing-functions-or-packages" id="toc-missing-functions-or-packages">12.3 Missing functions or
+packages</a></li>
+<li><a href="#encoding-problems" id="toc-encoding-problems">12.4
+Encoding problems</a></li>
+<li><a href="#code-works-in-the-console-but-knit-fails" id="toc-code-works-in-the-console-but-knit-fails">12.5 Code works in the
+Console but Knit fails</a></li>
+<li><a href="#find-the-failing-chunk" id="toc-find-the-failing-chunk">12.6 Find the failing chunk</a></li>
+</ul></li>
+<li><a href="#complete-copyable-template" id="toc-complete-copyable-template">13. Complete copyable
+template</a></li>
+<li><a href="#pre-render-checklist" id="toc-pre-render-checklist">14.
+Pre-render checklist</a></li>
+<li><a href="#where-to-go-next" id="toc-where-to-go-next">15. Where to
+go next</a></li>
+</ul>
+</div>
+
+<div id="learning-objectives" class="section level1">
+<h1>Learning objectives</h1>
+<p>This file is both a tutorial and a working R Markdown example that
+can be rendered directly to HTML. By the end, you will be able to:</p>
+<ul>
+<li>understand how <code>.Rmd</code>, Markdown, HTML, CSS, R, knitr, and
+Pandoc work together;</li>
+<li>create a web report with navigation, numbered sections, code, plots,
+tables, and raw HTML;</li>
+<li>generate an <code>.html</code> file from RStudio, an R command, or a
+system terminal;</li>
+<li>control code visibility, resource embedding, and page styling;</li>
+<li>troubleshoot encoding, image paths, missing packages, and rendering
+failures.</li>
+</ul>
+<div class="callout">
+<p><strong>Fastest path:</strong> Install R and RStudio, run
+<code>install.packages(“rmarkdown”)</code> in R, open this file, and
+click <kbd>Knit</kbd>. R Markdown will create
+<code>HTML_RMarkdown_Guide_en.html</code> in the same directory.</p>
+</div>
+</div>
+<div id="html-markdown-and-r-markdown" class="section level1">
+<h1>1. HTML, Markdown, and R Markdown</h1>
+<div id="what-is-html" class="section level2">
+<h2>1.1 What is HTML?</h2>
+<p>HTML (HyperText Markup Language) describes the <strong>structure and
+meaning</strong> of a web page. A browser reads HTML elements and
+displays them as headings, paragraphs, links, images, tables, and other
+content.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="dt">&lt;!doctype</span> html<span class="dt">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="ot"> lang</span><span class="op">=</span><span class="st">&quot;en&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">meta</span><span class="ot"> charset</span><span class="op">=</span><span class="st">&quot;utf-8&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>My page<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">h1</span><span class="dt">&gt;</span>Hello, HTML!<span class="dt">&lt;/</span><span class="kw">h1</span><span class="dt">&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>This is a paragraph.<span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;https://www.r-project.org/&quot;</span><span class="dt">&gt;</span>Visit the R Project<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Common HTML elements include:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Element</th>
+<th align="left">Purpose</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>&lt;h1&gt;</code>—<code>&lt;h6&gt;</code></td>
+<td align="left">Six heading levels</td>
+<td align="left"><code>&lt;h2&gt;Methods&lt;/h2&gt;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>&lt;p&gt;</code></td>
+<td align="left">Paragraph</td>
+<td align="left"><code>&lt;p&gt;Body text&lt;/p&gt;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>&lt;a&gt;</code></td>
+<td align="left">Link</td>
+<td align="left"><code>&lt;a href=&quot;...&quot;&gt;Link text&lt;/a&gt;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>&lt;img&gt;</code></td>
+<td align="left">Image</td>
+<td align="left"><code>&lt;img src=&quot;plot.png&quot; alt=&quot;A plot&quot;&gt;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code></td>
+<td align="left">Unordered/ordered list</td>
+<td align="left"><code>&lt;ul&gt;&lt;li&gt;Item&lt;/li&gt;&lt;/ul&gt;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>&lt;table&gt;</code></td>
+<td align="left">Table</td>
+<td align="left"><code>&lt;table&gt;...&lt;/table&gt;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>&lt;div&gt;</code> /
+<code>&lt;span&gt;</code></td>
+<td align="left">Block/inline container</td>
+<td align="left">Often styled with CSS</td>
+</tr>
+<tr class="even">
+<td align="left"><code>&lt;code&gt;</code> /
+<code>&lt;pre&gt;</code></td>
+<td align="left">Inline/preformatted code</td>
+<td align="left">Displays code</td>
+</tr>
+</tbody>
+</table>
+<p>HTML commonly works with two related technologies:
+<strong>CSS</strong> controls presentation, while
+<strong>JavaScript</strong> adds behavior and interaction.</p>
+</div>
+<div id="what-is-markdown" class="section level2">
+<h2>1.2 What is Markdown?</h2>
+<p>Markdown uses lightweight plain-text symbols for common formatting.
+It is generally easier to read and maintain than hand-written HTML. For
+example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu"># Level-one heading</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>This paragraph contains **bold**, *italic*, and <span class="in">`inline code`</span> text.</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="ss">- </span>Apple</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="ss">- </span>Banana</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">[</span><span class="ot">The R Project</span><span class="co">](https://www.r-project.org/)</span></span></code></pre></div>
+</div>
+<div id="what-is-r-markdown" class="section level2">
+<h2>1.3 What is R Markdown?</h2>
+<p>An R Markdown file ends in <code>.Rmd</code> and combines three kinds
+of content:</p>
+<ol style="list-style-type: decimal">
+<li>YAML: document metadata and output settings;</li>
+<li>Markdown/HTML: explanation and page structure;</li>
+<li>R code chunks: analysis that automatically inserts results, tables,
+and plots.</li>
+</ol>
+<p>The rendering pipeline is:</p>
+<pre class="text"><code>.Rmd file
+   │
+   ├─ knitr runs R code and creates Markdown
+   │
+   └─ Pandoc converts Markdown to HTML
+                         │
+                         └─ a browser opens the .html file</code></pre>
+<p>Because code, output, and explanation live in one source file, R
+Markdown is useful for reproducible analysis, course notes, lab reports,
+and data presentations.</p>
+</div>
+</div>
+<div id="set-up-your-environment" class="section level1">
+<h1>2. Set up your environment</h1>
+<div id="install-the-software" class="section level2">
+<h2>2.1 Install the software</h2>
+<p>The recommended setup is:</p>
+<ol style="list-style-type: decimal">
+<li><strong>R</strong>, which runs the code;</li>
+<li><strong>RStudio Desktop</strong>, which provides an editor and a
+Knit button;</li>
+<li>the <strong>rmarkdown package</strong>, which manages the rendering
+pipeline.</li>
+</ol>
+<p>Install the required packages in the R Console:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;rmarkdown&quot;</span>, <span class="st">&quot;knitr&quot;</span>))</span></code></pre></div>
+<p>Check the environment:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>R.version.string</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;rmarkdown&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">pandoc_available</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">pandoc_version</span>()</span></code></pre></div>
+<p>RStudio normally bundles Pandoc, so a separate Pandoc installation is
+usually unnecessary.</p>
+</div>
+<div id="recommended-project-structure" class="section level2">
+<h2>2.2 Recommended project structure</h2>
+<pre class="text"><code>my-report/
+├─ report.Rmd
+├─ data/
+│  └─ observations.csv
+├─ images/
+│  └─ logo.png
+├─ styles.css
+└─ output/</code></pre>
+<p>Resolve paths relative to the <code>.Rmd</code> file or RStudio
+Project. Prefer relative paths with forward slashes, such as
+<code>images/logo.png</code>, so the project remains portable across
+computers.</p>
+</div>
+</div>
+<div id="anatomy-of-an-r-markdown-file" class="section level1">
+<h1>3. Anatomy of an R Markdown file</h1>
+<p>A minimal but complete <code>.Rmd</code> file looks like this:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;My first HTML report&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="an">author:</span><span class="co"> &quot;Your name&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="an">date:</span><span class="co"> &quot;`r Sys.Date()`&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu"># Introduction</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>This is the body text.</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="in">summary(cars)</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="in">```</span></span></code></pre></div>
+<div id="the-yaml-header" class="section level2">
+<h2>3.1 The YAML header</h2>
+<p>YAML is placed between the two <code>---</code> lines at the very top
+of the file. Indentation must use spaces, not tabs. Quote a text value
+if it contains another colon.</p>
+<p>This guide uses a more complete HTML configuration:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">output</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="at">  </span><span class="fu">html_document</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">              # Build a table of contents</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="at">    </span><span class="fu">toc_float</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">        # Keep it visible while scrolling</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="at">    </span><span class="fu">number_sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">  # Number sections automatically</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> flatly</span><span class="co">          # Bootstrap theme</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="at">    </span><span class="fu">highlight</span><span class="kw">:</span><span class="at"> tango</span><span class="co">       # Syntax highlighting style</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="at">    </span><span class="fu">code_folding</span><span class="kw">:</span><span class="at"> show</span><span class="co">     # Make code collapsible; initially open</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="at">    </span><span class="fu">df_print</span><span class="kw">:</span><span class="at"> paged</span><span class="co">        # Paginate data frames</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="at">    </span><span class="fu">self_contained</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">   # Embed common assets in one HTML file</span></span></code></pre></div>
+<p>Other built-in themes include <code>default</code>,
+<code>cerulean</code>, <code>cosmo</code>, <code>darkly</code>,
+<code>journal</code>, <code>readable</code>, <code>sandstone</code>, and
+<code>yeti</code>.</p>
+</div>
+<div id="body-text-and-headings" class="section level2">
+<h2>3.2 Body text and headings</h2>
+<p>Use hash characters for headings. More hashes mean a deeper heading
+level:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu"># Level one</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">## Level two</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">### Level three</span></span></code></pre></div>
+<p>Keep heading levels logically nested. With <code>toc: true</code>,
+headings are added to the table of contents automatically.</p>
+</div>
+</div>
+<div id="essential-markdown-syntax" class="section level1">
+<h1>4. Essential Markdown syntax</h1>
+<div id="text-formatting" class="section level2">
+<h2>4.1 Text formatting</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>**Bold**</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>*Italic*</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>~~Strikethrough~~</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="in">`Inline code`</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="at">&gt; This is a block quotation.</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>Horizontal rule:</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>---</span></code></pre></div>
+<p>Rendered examples: <strong>bold</strong>, <em>italic</em>,
+<del>strikethrough</del>, and <code>inline code</code>.</p>
+</div>
+<div id="lists" class="section level2">
+<h2>4.2 Lists</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ss">- </span>Unordered item</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="ss">  - </span>Nested item</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="ss">- </span>Another item</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="ss">1. </span>First step</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="ss">2. </span>Second step</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="ss">- </span><span class="va">[x]</span> Complete</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> To do</span></code></pre></div>
+</div>
+<div id="links-and-images" class="section level2">
+<h2>4.3 Links and images</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co">[</span><span class="ot">Link text</span><span class="co">](https://example.com)</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="al">![Alternative text](images/chart.png)</span></span></code></pre></div>
+<p>Alternative text should briefly communicate the meaning of an image
+for accessibility. Use an R chunk when you need to control image
+size:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="in">```{r, echo=FALSE, out.width=&quot;70%&quot;, fig.align=&quot;center&quot;}</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="in">knitr::include_graphics(&quot;images/chart.png&quot;)</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="in">```</span></span></code></pre></div>
+</div>
+<div id="markdown-tables" class="section level2">
+<h2>4.4 Markdown tables</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="pp">|</span> Name <span class="pp">|</span> Score <span class="pp">|</span> Status <span class="pp">|</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="pp">|:---|---:|:---:|</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="pp">|</span> Alex <span class="pp">|</span> 92 <span class="pp">|</span> Pass <span class="pp">|</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="pp">|</span> Sam <span class="pp">|</span> 87 <span class="pp">|</span> Pass <span class="pp">|</span></span></code></pre></div>
+<p>Colons control alignment: a left colon aligns left, two colons
+center, and a right colon aligns right.</p>
+</div>
+</div>
+<div id="r-code-and-dynamic-output" class="section level1">
+<h1>5. R code and dynamic output</h1>
+<div id="code-chunks" class="section level2">
+<h2>5.1 Code chunks</h2>
+<p>An R code chunk begins and ends with three backticks.
+<code>{r chunk-name}</code> identifies the language and gives the chunk
+a name.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">21</span>, <span class="dv">24</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">mean =</span> <span class="fu">mean</span>(values),</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">median =</span> <span class="fu">median</span>(values),</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">standard_deviation =</span> <span class="fu">sd</span>(values)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>##               mean             median standard_deviation 
+##          18.000000          18.000000           4.743416</code></pre>
+<p>Every chunk name must be unique. Letters, numbers, hyphens, and
+underscores are the safest characters to use.</p>
+</div>
+<div id="common-chunk-options" class="section level2">
+<h2>5.2 Common chunk options</h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Option</th>
+<th align="left">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>echo=FALSE</code></td>
+<td align="left">Run code but hide its source</td>
+</tr>
+<tr class="even">
+<td align="left"><code>eval=FALSE</code></td>
+<td align="left">Show code without running it</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>include=FALSE</code></td>
+<td align="left">Run code but hide both code and output</td>
+</tr>
+<tr class="even">
+<td align="left"><code>results=&#39;hide&#39;</code></td>
+<td align="left">Show code but hide its text output</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>message=FALSE</code></td>
+<td align="left">Hide package and status messages</td>
+</tr>
+<tr class="even">
+<td align="left"><code>warning=FALSE</code></td>
+<td align="left">Hide warnings; enable them while debugging</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>error=TRUE</code></td>
+<td align="left">Display errors and continue; use cautiously in final
+reports</td>
+</tr>
+<tr class="even">
+<td align="left"><code>fig.width=7</code></td>
+<td align="left">Set plot width in inches</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>fig.height=4</code></td>
+<td align="left">Set plot height in inches</td>
+</tr>
+<tr class="even">
+<td align="left"><code>fig.cap=&#39;Caption&#39;</code></td>
+<td align="left">Add a figure caption</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>cache=TRUE</code></td>
+<td align="left">Cache expensive calculations; rebuild when dependencies
+change</td>
+</tr>
+</tbody>
+</table>
+<p>The following chunk runs and displays a plot without showing its
+source in the HTML:</p>
+<div class="figure" style="text-align: center">
+<img role="img" aria-label="Temperature and mercury vapor pressure" src="data:image/png;base64,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" alt="Temperature and mercury vapor pressure" width="672" />
+<p class="caption">
+Temperature and mercury vapor pressure
+</p>
+</div>
+</div>
+<div id="inline-r-code" class="section level2">
+<h2>5.3 Inline R code</h2>
+<p>Use <code>`r expression`</code> inside a sentence to insert a dynamic
+value. For example, this source:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>The data set contains <span class="in">`r nrow(iris)`</span> rows and <span class="in">`r ncol(iris)`</span> columns.</span></code></pre></div>
+<p>produces: The data set contains 150 rows and 5 columns.</p>
+</div>
+<div id="generate-tables-with-r" class="section level2">
+<h2>5.4 Generate tables with R</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">head</span>(iris, <span class="dv">8</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;The first eight rows of the iris data set&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>The first eight rows of the iris data set</caption>
+<thead>
+<tr class="header">
+<th align="center">Sepal.Length</th>
+<th align="center">Sepal.Width</th>
+<th align="center">Petal.Length</th>
+<th align="center">Petal.Width</th>
+<th align="center">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">5.1</td>
+<td align="center">3.5</td>
+<td align="center">1.4</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">4.9</td>
+<td align="center">3.0</td>
+<td align="center">1.4</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="odd">
+<td align="center">4.7</td>
+<td align="center">3.2</td>
+<td align="center">1.3</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">4.6</td>
+<td align="center">3.1</td>
+<td align="center">1.5</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="odd">
+<td align="center">5.0</td>
+<td align="center">3.6</td>
+<td align="center">1.4</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">5.4</td>
+<td align="center">3.9</td>
+<td align="center">1.7</td>
+<td align="center">0.4</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="odd">
+<td align="center">4.6</td>
+<td align="center">3.4</td>
+<td align="center">1.4</td>
+<td align="center">0.3</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">5.0</td>
+<td align="center">3.4</td>
+<td align="center">1.5</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+</tbody>
+</table>
+<p><code>knitr::kable()</code> is sufficient for lightweight tables.
+Packages such as <code>kableExtra</code>, <code>gt</code>, and
+<code>DT</code> support more advanced styling, but anyone rendering the
+document must also install those dependencies.</p>
+</div>
+</div>
+<div id="use-raw-html-in-r-markdown" class="section level1">
+<h1>6. Use raw HTML in R Markdown</h1>
+<p>When the output format is HTML, raw HTML can be written directly in
+the document body:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;result-box&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">h4</span><span class="dt">&gt;</span>Analysis result<span class="dt">&lt;/</span><span class="kw">h4</span><span class="dt">&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>This area was created with raw HTML.<span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Here is the actual result:</p>
+<div class="result-box">
+<h4>
+Analysis result
+</h4>
+<p>
+This area was created with raw HTML. It can also contain
+<mark>highlighted text</mark> and keyboard hints such as <kbd>Ctrl</kbd>
++ <kbd>S</kbd>.
+</p>
+</div>
+<div id="collapsible-content" class="section level2">
+<h2>6.1 Collapsible content</h2>
+<p><code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> provide
+disclosure behavior without JavaScript:</p>
+<details>
+<summary>
+Click to reveal the note
+</summary>
+<p>Supplementary notes, long code, or an answer can go here.</p>
+</details>
+<p>The source is:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">details</span><span class="dt">&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">summary</span><span class="dt">&gt;</span>Click to reveal the note<span class="dt">&lt;/</span><span class="kw">summary</span><span class="dt">&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>This is the hidden content.</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">details</span><span class="dt">&gt;</span></span></code></pre></div>
+</div>
+<div id="html-entities-and-special-characters" class="section level2">
+<h2>6.2 HTML entities and special characters</h2>
+<p>In raw HTML, <code>&lt;</code>, <code>&gt;</code>, and
+<code>&amp;</code> have special meanings. Write them as
+<code>&amp;lt;</code>, <code>&amp;gt;</code>, and <code>&amp;amp;</code>
+when they should appear literally. Never concatenate untrusted user
+input directly into HTML, because doing so can create cross-site
+scripting (XSS) vulnerabilities.</p>
+</div>
+<div id="add-css" class="section level2">
+<h2>6.3 Add CSS</h2>
+<p>Small amounts of CSS can be placed in a <code>&lt;style&gt;</code>
+element, as this file demonstrates. For larger projects, use an external
+style sheet:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">output</span><span class="kw">:</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="at">  </span><span class="fu">html_document</span><span class="kw">:</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="at">    </span><span class="fu">css</span><span class="kw">:</span><span class="at"> styles.css</span></span></code></pre></div>
+<p>Example <code>styles.css</code>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>body {</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="kw">max-width</span><span class="ch">:</span> <span class="dv">1100</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="kw">margin</span><span class="ch">:</span> <span class="bu">auto</span><span class="op">;</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="kw">font-family</span><span class="ch">:</span> <span class="dv">system-ui</span><span class="op">,</span> <span class="dv">sans-serif</span><span class="op">;</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>}</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>h1<span class="op">,</span> h2<span class="op">,</span> h3 { <span class="kw">color</span><span class="ch">:</span> <span class="cn">#174a7e</span><span class="op">;</span> }</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="fu">.important</span> { <span class="kw">background</span><span class="ch">:</span> <span class="cn">#fff3cd</span><span class="op">;</span> <span class="kw">padding</span><span class="ch">:</span> <span class="dv">1</span><span class="dt">rem</span><span class="op">;</span> }</span></code></pre></div>
+<p>Then use the class in the <code>.Rmd</code> file:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;important&quot;</span><span class="dt">&gt;</span>Important information goes here.<span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="callout warning-box">
+<p><strong>Compatibility note:</strong> Raw HTML and CSS generally apply
+only to HTML output. If the same source must also produce PDF or Word,
+prefer Markdown where possible or provide conditional content for each
+format.</p>
+</div>
+</div>
+</div>
+<div id="three-ways-to-generate-html" class="section level1">
+<h1>7. Three ways to generate HTML</h1>
+<div id="click-knit-in-rstudio" class="section level2">
+<h2>7.1 Click Knit in RStudio</h2>
+<ol style="list-style-type: decimal">
+<li>Open the <code>.Rmd</code> file in RStudio;</li>
+<li>save the file;</li>
+<li>click <strong>Knit</strong> above the editor;</li>
+<li>wait for rendering to finish;</li>
+<li>inspect the result in a browser or the RStudio Viewer. The
+<code>.html</code> file appears beside the source file.</li>
+</ol>
+<p>The usual shortcut is <kbd>Ctrl</kbd> + <kbd>Shift</kbd> +
+<kbd>K</kbd> on Windows/Linux or <kbd>Cmd</kbd> + <kbd>Shift</kbd> +
+<kbd>K</kbd> on macOS.</p>
+</div>
+<div id="render-from-the-r-console" class="section level2">
+<h2>7.2 Render from the R Console</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;HTML_RMarkdown_Guide_en.Rmd&quot;</span>)</span></code></pre></div>
+<p>Specify the output file and directory when needed:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="at">input =</span> <span class="st">&quot;HTML_RMarkdown_Guide_en.Rmd&quot;</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">output_file =</span> <span class="st">&quot;guide-en.html&quot;</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="st">&quot;output&quot;</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>Rendering normally replaces an existing HTML file with the same name.
+Do not maintain long-lived changes by editing the generated HTML; edit
+the <code>.Rmd</code> source and render it again.</p>
+</div>
+<div id="render-from-a-system-terminal" class="section level2">
+<h2>7.3 Render from a system terminal</h2>
+<p>Run this command in the project directory:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">&quot;rmarkdown::render(&#39;HTML_RMarkdown_Guide_en.Rmd&#39;, encoding=&#39;UTF-8&#39;)&quot;</span></span></code></pre></div>
+<p>This method is useful for automation scripts, scheduled jobs, and
+continuous integration systems.</p>
+</div>
+</div>
+<div id="self-contained-html-and-external-assets" class="section level1">
+<h1>8. Self-contained HTML and external assets</h1>
+<p>With <code>self_contained: true</code>, R Markdown attempts to encode
+CSS, JavaScript, and images inside one HTML file. The result is easy to
+send by email or chat, but the file can become large. Remote iframes,
+videos, and some specialized widgets may not be fully embedded.</p>
+<p>With this setting:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">self_contained</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span></code></pre></div>
+<p>R Markdown normally creates a resource directory such as
+<code>report_files/</code>. When publishing or copying the page, keep
+the HTML file and this directory in the same relative locations.</p>
+<p>Practical guidance:</p>
+<ul>
+<li>For one-off sharing and small or medium reports, prefer
+<code>self_contained: true</code>;</li>
+<li>for many images, multi-page sites, or frequent updates, consider
+<code>self_contained: false</code>;</li>
+<li>before publishing, test every relative link and asset path.</li>
+</ul>
+</div>
+<div id="parameterized-reports" class="section level1">
+<h1>9. Parameterized reports</h1>
+<p>Parameters let one template generate reports for different regions,
+dates, or clients. Define parameters in YAML:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Parameterized report&quot;</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="fu">output</span><span class="kw">:</span><span class="at"> html_document</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="at">  </span><span class="fu">region</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;West&quot;</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="at">  </span><span class="fu">report_date</span><span class="kw">:</span><span class="at"> !r Sys.Date()</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<p>Use <code>params</code> in the document body:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="an">Current region:</span><span class="co"> `r params$region`</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>Report date: <span class="in">`r params$report_date`</span></span></code></pre></div>
+<p>Pass new values during rendering:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="st">&quot;report.Rmd&quot;</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">params =</span> <span class="fu">list</span>(<span class="at">region =</span> <span class="st">&quot;North&quot;</span>, <span class="at">report_date =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2026-08-11&quot;</span>)),</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="at">output_file =</span> <span class="st">&quot;report-north.html&quot;</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="interactive-html-content" class="section level1">
+<h1>10. Interactive HTML content</h1>
+<p>HTML reports can contain interactive plots and tables. After
+installing <code>plotly</code>, for example:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;plotly&quot;</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="fu">plot_ly</span>(</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>  <span class="at">data =</span> iris,</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>  <span class="at">x =</span> <span class="sc">~</span>Sepal.Length,</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">~</span>Petal.Length,</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>  <span class="at">color =</span> <span class="sc">~</span>Species,</span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">&quot;scatter&quot;</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;markers&quot;</span></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>Other HTML Widget packages include <code>leaflet</code> for maps,
+<code>DT</code> for interactive tables, and <code>dygraphs</code> for
+time series. These widgets work well in HTML but usually cannot be
+transferred directly to a static PDF or Word document.</p>
+</div>
+<div id="build-a-multi-page-html-site" class="section level1">
+<h1>11. Build a multi-page HTML site</h1>
+<p>For several linked pages, create <code>_site.yml</code> in the
+project root:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;my-notes&quot;</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">output_dir</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;_site&quot;</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;HTML Notes&quot;</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="at">  </span><span class="fu">left</span><span class="kw">:</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Home&quot;</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> index.html</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Guide&quot;</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> guide.html</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="fu">output</span><span class="kw">:</span></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="at">  </span><span class="fu">html_document</span><span class="kw">:</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> flatly</span></span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="at">    </span><span class="fu">css</span><span class="kw">:</span><span class="at"> styles.css</span></span></code></pre></div>
+<p>Create pages such as <code>index.Rmd</code> and
+<code>guide.Rmd</code>, then run:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render_site</span>()</span></code></pre></div>
+<p>The generated site is stored in <code>_site/</code>. Deploy the
+entire <code>_site/</code> directory rather than the <code>.Rmd</code>
+source files.</p>
+</div>
+<div id="common-errors-and-solutions" class="section level1">
+<h1>12. Common errors and solutions</h1>
+<div id="yaml-parsing-errors" class="section level2">
+<h2>12.1 YAML parsing errors</h2>
+<p><strong>Symptom:</strong> The error points near the top of the
+document and may contain
+<code>mapping values are not allowed</code>.</p>
+<p><strong>Check:</strong></p>
+<ul>
+<li>Is there a space after every YAML colon?</li>
+<li>Is indentation consistent?</li>
+<li>Did a tab character slip into the YAML?</li>
+<li>Are titles containing colons, hashes, or special characters
+quoted?</li>
+<li>Are there opening and closing <code>---</code> lines?</li>
+</ul>
+</div>
+<div id="missing-files-or-images" class="section level2">
+<h2>12.2 Missing files or images</h2>
+<p>Inspect the working directory used during rendering:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">getwd</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">file.exists</span>(<span class="st">&quot;images/chart.png&quot;</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">&quot;images&quot;</span>)</span></code></pre></div>
+<p>Avoid absolute paths that only work on your computer, such as
+<code>C:/Users/name/Desktop/...</code>.</p>
+</div>
+<div id="missing-functions-or-packages" class="section level2">
+<h2>12.3 Missing functions or packages</h2>
+<p>If R reports <code>could not find function</code>, check that the
+package is installed and loaded:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;packageName&quot;</span>)  <span class="co"># Install once</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">library</span>(packageName)             <span class="co"># Load in each new session</span></span></code></pre></div>
+<p>Alternatively, use <code>package::function()</code>, as in
+<code>knitr::kable()</code>, without calling <code>library(knitr)</code>
+first.</p>
+</div>
+<div id="encoding-problems" class="section level2">
+<h2>12.4 Encoding problems</h2>
+<ul>
+<li>Save the <code>.Rmd</code> source as UTF-8;</li>
+<li>set an appropriate <code>lang</code> in YAML;</li>
+<li>pass <code>encoding = &quot;UTF-8&quot;</code> while rendering;</li>
+<li>choose system fonts that contain the required characters;</li>
+<li>avoid saving the file in a legacy local encoding.</li>
+</ul>
+<p>HTML uses Unicode by default. Encoding problems often originate in
+the source file, imported CSV data, or fonts rather than in HTML
+itself.</p>
+</div>
+<div id="code-works-in-the-console-but-knit-fails" class="section level2">
+<h2>12.5 Code works in the Console but Knit fails</h2>
+<p>Knit normally runs in a clean R session. Objects created temporarily
+in the Console do not automatically exist there. Put all data imports,
+package loading, and object creation inside the <code>.Rmd</code>, then
+test the chunks from top to bottom.</p>
+</div>
+<div id="find-the-failing-chunk" class="section level2">
+<h2>12.6 Find the failing chunk</h2>
+<p>The rendering log normally names the failing chunk and reports
+progress. To diagnose it:</p>
+<ol style="list-style-type: decimal">
+<li>Give every chunk a unique, descriptive name;</li>
+<li>temporarily enable global warnings and messages;</li>
+<li>run chunks sequentially in a clean session;</li>
+<li>check the files, objects, and packages required by the failing
+chunk;</li>
+<li>fix the cause instead of masking errors with <code>error=TRUE</code>
+in a final report.</li>
+</ol>
+</div>
+</div>
+<div id="complete-copyable-template" class="section level1">
+<h1>13. Complete copyable template</h1>
+<p>The template below depends only on R, rmarkdown, and knitr. Save it
+as <code>report.Rmd</code>:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Example analysis report&quot;</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="an">author:</span><span class="co"> &quot;Your name&quot;</span></span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="an">date:</span><span class="co"> &quot;`r format(Sys.Date(), &#39;%Y-%m-%d&#39;)`&quot;</span></span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a><span class="an">lang:</span><span class="co"> en</span></span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a><span class="an">output:</span></span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a><span class="co">  html_document:</span></span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a><span class="co">    number_sections: true</span></span>
+<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a><span class="co">    theme: flatly</span></span>
+<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a><span class="co">    self_contained: true</span></span>
+<span id="cb36-12"><a href="#cb36-12" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-13"><a href="#cb36-13" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" tabindex="-1"></a><span class="in">```{r template-setup, include=FALSE}</span></span>
+<span id="cb36-15"><a href="#cb36-15" tabindex="-1"></a><span class="in">knitr::opts_chunk$set(</span></span>
+<span id="cb36-16"><a href="#cb36-16" tabindex="-1"></a><span class="in">  echo = TRUE,</span></span>
+<span id="cb36-17"><a href="#cb36-17" tabindex="-1"></a><span class="in">  message = FALSE,</span></span>
+<span id="cb36-18"><a href="#cb36-18" tabindex="-1"></a><span class="in">  warning = FALSE,</span></span>
+<span id="cb36-19"><a href="#cb36-19" tabindex="-1"></a><span class="in">  fig.align = &quot;center&quot;</span></span>
+<span id="cb36-20"><a href="#cb36-20" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb36-21"><a href="#cb36-21" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-22"><a href="#cb36-22" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" tabindex="-1"></a><span class="fu"># Executive summary</span></span>
+<span id="cb36-24"><a href="#cb36-24" tabindex="-1"></a></span>
+<span id="cb36-25"><a href="#cb36-25" tabindex="-1"></a>This report analyzes the built-in <span class="in">`mtcars`</span> data set, which contains <span class="in">`r nrow(mtcars)`</span> records.</span>
+<span id="cb36-26"><a href="#cb36-26" tabindex="-1"></a></span>
+<span id="cb36-27"><a href="#cb36-27" tabindex="-1"></a><span class="fu"># Data overview</span></span>
+<span id="cb36-28"><a href="#cb36-28" tabindex="-1"></a></span>
+<span id="cb36-29"><a href="#cb36-29" tabindex="-1"></a><span class="in">```{r overview}</span></span>
+<span id="cb36-30"><a href="#cb36-30" tabindex="-1"></a><span class="in">summary(mtcars[c(&quot;mpg&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;wt&quot;)])</span></span>
+<span id="cb36-31"><a href="#cb36-31" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-32"><a href="#cb36-32" tabindex="-1"></a></span>
+<span id="cb36-33"><a href="#cb36-33" tabindex="-1"></a><span class="fu"># Plot</span></span>
+<span id="cb36-34"><a href="#cb36-34" tabindex="-1"></a></span>
+<span id="cb36-35"><a href="#cb36-35" tabindex="-1"></a><span class="in">```{r mpg-vs-weight, fig.cap=&quot;Vehicle weight and fuel efficiency&quot;}</span></span>
+<span id="cb36-36"><a href="#cb36-36" tabindex="-1"></a><span class="in">plot(</span></span>
+<span id="cb36-37"><a href="#cb36-37" tabindex="-1"></a><span class="in">  mtcars$wt,</span></span>
+<span id="cb36-38"><a href="#cb36-38" tabindex="-1"></a><span class="in">  mtcars$mpg,</span></span>
+<span id="cb36-39"><a href="#cb36-39" tabindex="-1"></a><span class="in">  pch = 19,</span></span>
+<span id="cb36-40"><a href="#cb36-40" tabindex="-1"></a><span class="in">  col = &quot;steelblue&quot;,</span></span>
+<span id="cb36-41"><a href="#cb36-41" tabindex="-1"></a><span class="in">  xlab = &quot;Weight (1,000 pounds)&quot;,</span></span>
+<span id="cb36-42"><a href="#cb36-42" tabindex="-1"></a><span class="in">  ylab = &quot;Miles per gallon&quot;</span></span>
+<span id="cb36-43"><a href="#cb36-43" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb36-44"><a href="#cb36-44" tabindex="-1"></a><span class="in">abline(lm(mpg ~ wt, data = mtcars), col = &quot;firebrick&quot;, lwd = 2)</span></span>
+<span id="cb36-45"><a href="#cb36-45" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-46"><a href="#cb36-46" tabindex="-1"></a></span>
+<span id="cb36-47"><a href="#cb36-47" tabindex="-1"></a><span class="fu"># Table</span></span>
+<span id="cb36-48"><a href="#cb36-48" tabindex="-1"></a></span>
+<span id="cb36-49"><a href="#cb36-49" tabindex="-1"></a><span class="in">```{r table}</span></span>
+<span id="cb36-50"><a href="#cb36-50" tabindex="-1"></a><span class="in">knitr::kable(</span></span>
+<span id="cb36-51"><a href="#cb36-51" tabindex="-1"></a><span class="in">  head(mtcars[, c(&quot;mpg&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;wt&quot;)]),</span></span>
+<span id="cb36-52"><a href="#cb36-52" tabindex="-1"></a><span class="in">  digits = 2,</span></span>
+<span id="cb36-53"><a href="#cb36-53" tabindex="-1"></a><span class="in">  caption = &quot;Sample data&quot;</span></span>
+<span id="cb36-54"><a href="#cb36-54" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb36-55"><a href="#cb36-55" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-56"><a href="#cb36-56" tabindex="-1"></a></span>
+<span id="cb36-57"><a href="#cb36-57" tabindex="-1"></a><span class="fu"># Conclusion</span></span>
+<span id="cb36-58"><a href="#cb36-58" tabindex="-1"></a></span>
+<span id="cb36-59"><a href="#cb36-59" tabindex="-1"></a>The prose, values, table, and plot are generated from a single source file.</span></code></pre></div>
+</div>
+<div id="pre-render-checklist" class="section level1">
+<h1>14. Pre-render checklist</h1>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>YAML indentation is valid and the
+output is <code>html_document</code>;</label></li>
+<li><label><input type="checkbox"></input>the source file uses UTF-8
+encoding;</label></li>
+<li><label><input type="checkbox"></input>every R package is installed and
+either loaded or called with
+<code>package::function()</code>;</label></li>
+<li><label><input type="checkbox"></input>data and images use portable
+relative paths;</label></li>
+<li><label><input type="checkbox"></input>every chunk runs in order in a clean
+R session;</label></li>
+<li><label><input type="checkbox"></input>no passwords, API keys, or private
+data appear in the source or output;</label></li>
+<li><label><input type="checkbox"></input>plots have useful labels/captions
+and images have alternative text;</label></li>
+<li><label><input type="checkbox"></input>the HTML works in common browsers
+and at different window widths;</label></li>
+<li><label><input type="checkbox"></input>if
+<code>self_contained: false</code>, the resource directory is published
+with the HTML;</label></li>
+<li><label><input type="checkbox"></input>the <code>.Rmd</code> remains the
+source of truth instead of the generated HTML.</label></li>
+</ul>
+</div>
+<div id="where-to-go-next" class="section level1">
+<h1>15. Where to go next</h1>
+<p>After mastering the basics, you can explore:</p>
+<ul>
+<li><code>bookdown</code> for cross-references, figure numbering, and
+long-form documents;</li>
+<li><code>flexdashboard</code> for dashboards;</li>
+<li>Shiny for interactive applications with server-side logic;</li>
+<li>Quarto for newer multi-format documents, websites, and
+presentations;</li>
+<li>Git for versioning <code>.Rmd</code> source files and automation for
+publishing HTML.</li>
+</ul>
+<div class="callout">
+<p><strong>Core principle:</strong> Keep content, code, and
+configuration in the <code>.Rmd</code> source, and treat
+<code>.html</code> as a reproducible output. Re-render after editing the
+source so the analysis and explanation always stay synchronized.</p>
+</div>
+<footer class="brand-footer">
+© 2026 MooseWeb3 · HTML Learning Notes <br><span>This tutorial is a set
+of personal learning and practice notes.</span>
+</footer>
+</div>
+
+<!-- Shared MooseWeb3 behavior embedded into rendered HTML. -->
+<script>
+(function () {
+  "use strict";
+
+  const doc = document;
+  const body = doc.body;
+  if (!body || doc.querySelector(".mw3-topbar")) return;
+
+  const isZh = (doc.documentElement.lang || "").toLowerCase().startsWith("zh");
+  const script = doc.currentScript;
+  const toc = doc.getElementById("TOC");
+
+  let titleBlock = doc.getElementById("title-block-header");
+  if (!titleBlock) {
+    const looseTitle = Array.from(body.children).find(function (element) {
+      return element.matches("h1.title");
+    });
+    if (looseTitle) {
+      titleBlock = doc.createElement("header");
+      titleBlock.id = "title-block-header";
+      body.insertBefore(titleBlock, looseTitle);
+      titleBlock.appendChild(looseTitle);
+
+      let sibling = titleBlock.nextElementSibling;
+      while (sibling && (sibling.matches(".author") || sibling.matches(".date"))) {
+        const next = sibling.nextElementSibling;
+        titleBlock.appendChild(sibling);
+        sibling = next;
+      }
+    }
+  }
+
+  const progress = doc.createElement("div");
+  progress.className = "mw3-progress";
+  progress.setAttribute("aria-hidden", "true");
+
+  const skip = doc.createElement("a");
+  skip.className = "mw3-skip";
+  skip.href = "#mw3-content";
+  skip.textContent = isZh ? "跳到正文" : "Skip to content";
+
+  const topbar = doc.createElement("header");
+  topbar.className = "mw3-topbar";
+  topbar.innerHTML = `
+    <a class="mw3-brand" href="#title-block-header" aria-label="MooseWeb3">
+      <span class="mw3-logo" aria-hidden="true">MW3</span>
+      <span>MooseWeb3</span>
+      <span class="mw3-brand-sub">HTML NOTES</span>
+    </a>
+    <span class="mw3-spacer"></span>
+    <span class="mw3-language-tag" aria-label="${isZh ? "页面语言" : "Page language"}">${isZh ? "中文" : "EN"}</span>
+    <button class="mw3-menu" type="button" aria-controls="TOC" aria-expanded="false">${isZh ? "目录" : "Contents"}</button>
+  `;
+
+  body.prepend(progress, skip, topbar);
+
+  const main = doc.createElement("main");
+  main.id = "mw3-content";
+  main.tabIndex = -1;
+
+  if (toc) {
+    let node = toc.nextSibling;
+    while (node && node !== script) {
+      const next = node.nextSibling;
+      main.appendChild(node);
+      node = next;
+    }
+    if (script && script.parentNode) {
+      script.parentNode.insertBefore(main, script);
+    } else {
+      body.appendChild(main);
+    }
+  }
+
+  doc.querySelectorAll("pre").forEach(function (pre) {
+    if (pre.closest(".mw3-code-shell")) return;
+
+    let shell = pre.parentElement;
+    if (!shell || !shell.classList.contains("sourceCode")) {
+      shell = doc.createElement("div");
+      pre.parentNode.insertBefore(shell, pre);
+      shell.appendChild(pre);
+    }
+    shell.classList.add("mw3-code-shell");
+
+    const button = doc.createElement("button");
+    button.className = "mw3-copy";
+    button.type = "button";
+    button.textContent = isZh ? "复制" : "Copy";
+    button.setAttribute("aria-label", isZh ? "复制代码" : "Copy code");
+    button.addEventListener("click", async function () {
+      const text = pre.innerText;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const area = doc.createElement("textarea");
+          area.value = text;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          body.appendChild(area);
+          area.select();
+          doc.execCommand("copy");
+          area.remove();
+        }
+        button.textContent = isZh ? "已复制" : "Copied";
+        window.setTimeout(function () {
+          button.textContent = isZh ? "复制" : "Copy";
+        }, 1400);
+      } catch (error) {
+        button.textContent = isZh ? "复制失败" : "Copy failed";
+      }
+    });
+    shell.appendChild(button);
+  });
+
+  const topButton = doc.createElement("button");
+  topButton.className = "mw3-top";
+  topButton.type = "button";
+  topButton.textContent = "↑";
+  topButton.setAttribute("aria-label", isZh ? "返回顶部" : "Back to top");
+  topButton.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  body.appendChild(topButton);
+
+  const menu = topbar.querySelector(".mw3-menu");
+  if (menu && toc) {
+    menu.addEventListener("click", function () {
+      const open = body.classList.toggle("mw3-toc-open");
+      menu.setAttribute("aria-expanded", String(open));
+    });
+    toc.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        body.classList.remove("mw3-toc-open");
+        menu.setAttribute("aria-expanded", "false");
+      }
+    });
+    doc.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        body.classList.remove("mw3-toc-open");
+        menu.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  const tocLinks = toc ? Array.from(toc.querySelectorAll("a[href^='#']")) : [];
+  const sections = tocLinks
+    .map(function (link) {
+      const id = decodeURIComponent(link.getAttribute("href").slice(1));
+      return { link: link, section: doc.getElementById(id) };
+    })
+    .filter(function (item) { return item.section; });
+
+  function updateScrollUI() {
+    const max = doc.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    progress.style.width = `${ratio * 100}%`;
+    topButton.classList.toggle("is-visible", window.scrollY > 560);
+
+    let active = null;
+    sections.forEach(function (item) {
+      if (item.section.getBoundingClientRect().top <= 140) active = item;
+    });
+    tocLinks.forEach(function (link) { link.classList.remove("is-active"); });
+    if (active) active.link.classList.add("is-active");
+  }
+
+  body.classList.add("mw3-ready");
+  updateScrollUI();
+  window.addEventListener("scroll", updateScrollUI, { passive: true });
+  window.addEventListener("resize", updateScrollUI);
+})();
+</script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<script src="../hub-link.js"></script>
+</body>
+</html>
