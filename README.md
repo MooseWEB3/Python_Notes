@@ -1,6 +1,6 @@
 # MooseWeb3 Python Notes
 
-> Practical, beginner-friendly Python learning notes delivered as portable, self-contained HTML pages.
+> A cross-repository learning hub for Python, R, statistics, machine learning, HTML, CSS, and JavaScript, delivered as portable HTML pages.
 
 ![Python](https://img.shields.io/badge/Python-Learning-3776AB?logo=python&logoColor=white)
 ![R Markdown](https://img.shields.io/badge/R%20Markdown-Source-276DC3?logo=r&logoColor=white)
@@ -10,6 +10,17 @@
 **README languages:** [English](#english) · [Français](#francais) · [Português](#portugues)
 
 **Learning hub:** [Open the MooseWeb3 Python Notes website](https://mooseweb3.github.io/Python_Notes/)
+
+The website now integrates **28 published guides from six repositories**. Guides from the related repositories are mirrored under `catalog/` so every course has one stable GitHub Pages URL while its original source repository remains linked from the hub.
+
+| Repository | Published guides | Source |
+|---|---:|---|
+| Python Notes | 11 | [MooseWEB3/Python_Notes](https://github.com/MooseWEB3/Python_Notes) |
+| Statistics and Machine Learning | 4 | [MooseWEB3/Statistics-and-Machine-Learning](https://github.com/MooseWEB3/Statistics-and-Machine-Learning) |
+| R Notes | 9 | [MooseWEB3/R_Notes](https://github.com/MooseWEB3/R_Notes) |
+| HTML Notes | 1 | [MooseWEB3/HTML_Notes](https://github.com/MooseWEB3/HTML_Notes) |
+| CSS Notes | 1 | [MooseWEB3/CSS_Notes](https://github.com/MooseWEB3/CSS_Notes) |
+| JavaScript Notes | 2 | [MooseWEB3/Javascript_Notes](https://github.com/MooseWEB3/Javascript_Notes) |
 
 ---
 
@@ -23,7 +34,7 @@
 
 The published tutorials are in **English**. This README is also available in French and Portuguese to make the repository easier to discover and understand.
 
-### Tutorials
+### Python Notes tutorials
 
 | Topic | Guide |
 |---|---|
@@ -38,6 +49,8 @@ The published tutorials are in **English**. This README is also available in Fre
 | Statistical tests with Python | [Open guide](python_statistical_tests_en.html) |
 | Linear and generalized linear regression | [Open guide](python_regression_en.html) |
 | Practical Quarto guide | [Open guide](quarto_guide_en.html) |
+
+The complete website catalog also includes four statistics and machine-learning guides, nine R guides, one HTML guide, one CSS guide, and two JavaScript/web-development guides. Open the [learning hub](https://mooseweb3.github.io/Python_Notes/#course-library) to browse all 28 tutorials by source repository.
 
 ### What is covered
 
@@ -119,6 +132,12 @@ Python_Notes/
 ├── index.html
 ├── README.md
 ├── .gitignore
+├── catalog/
+│   ├── statistics-machine-learning/
+│   ├── r-notes/
+│   ├── html-notes/
+│   ├── css-notes/
+│   └── javascript-notes/
 ├── python_fundamentals_en.html
 ├── python_data_processing_en.html
 ├── dplyr_guide_en.html
@@ -236,6 +255,12 @@ Python_Notes/
 ├── index.html
 ├── README.md
 ├── .gitignore
+├── catalog/
+│   ├── statistics-machine-learning/
+│   ├── r-notes/
+│   ├── html-notes/
+│   ├── css-notes/
+│   └── javascript-notes/
 ├── python_fundamentals_en.html
 ├── python_data_processing_en.html
 ├── dplyr_guide_en.html
@@ -353,6 +378,12 @@ Python_Notes/
 ├── index.html
 ├── README.md
 ├── .gitignore
+├── catalog/
+│   ├── statistics-machine-learning/
+│   ├── r-notes/
+│   ├── html-notes/
+│   ├── css-notes/
+│   └── javascript-notes/
 ├── python_fundamentals_en.html
 ├── python_data_processing_en.html
 ├── dplyr_guide_en.html

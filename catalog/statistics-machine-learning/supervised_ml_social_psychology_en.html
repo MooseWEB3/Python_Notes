@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MooseWeb3 · Learning and practice notes" />
+  <meta name="dcterms.date" content="2026-08-11" />
+  <title>Supervised Machine Learning in Sociology and Psychology</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Supervised Machine Learning in Sociology and
+Psychology</h1>
+<p class="subtitle">A practical, responsible guide with reproducible R
+and Python examples</p>
+<p class="author">MooseWeb3 · Learning and practice notes</p>
+<p class="date">2026-08-11</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#purpose-scope-and-learning-goals" id="toc-purpose-scope-and-learning-goals">1. Purpose, Scope, and
+Learning Goals</a></li>
+<li><a href="#from-a-research-question-to-an-ml-task" id="toc-from-a-research-question-to-an-ml-task">2. From a Research
+Question to an ML Task</a>
+<ul>
+<li><a href="#prediction-is-not-the-same-as-explanation-or-causation" id="toc-prediction-is-not-the-same-as-explanation-or-causation">2.1
+Prediction is not the same as explanation or causation</a></li>
+<li><a href="#common-tasks-in-sociology-and-psychology" id="toc-common-tasks-in-sociology-and-psychology">2.2 Common tasks in
+sociology and psychology</a></li>
+<li><a href="#define-the-prediction-specification-before-modeling" id="toc-define-the-prediction-specification-before-modeling">2.3 Define
+the prediction specification before modeling</a></li>
+</ul></li>
+<li><a href="#data-design-labels-units-and-leakage" id="toc-data-design-labels-units-and-leakage">3. Data Design: Labels,
+Units, and Leakage</a>
+<ul>
+<li><a href="#the-row-must-represent-the-unit-of-prediction" id="toc-the-row-must-represent-the-unit-of-prediction">3.1 The row must
+represent the unit of prediction</a></li>
+<li><a href="#label-quality-sets-a-ceiling" id="toc-label-quality-sets-a-ceiling">3.2 Label quality sets a
+ceiling</a></li>
+<li><a href="#leakage-information-that-would-not-be-available-at-prediction-time" id="toc-leakage-information-that-would-not-be-available-at-prediction-time">3.3
+Leakage: information that would not be available at prediction
+time</a></li>
+</ul></li>
+<li><a href="#models-what-they-learn-and-when-they-help" id="toc-models-what-they-learn-and-when-they-help">4. Models: What They
+Learn and When They Help</a>
+<ul>
+<li><a href="#linear-and-logistic-regression" id="toc-linear-and-logistic-regression">4.1 Linear and logistic
+regression</a></li>
+<li><a href="#regularization" id="toc-regularization">4.2
+Regularization</a></li>
+<li><a href="#trees-forests-and-boosting" id="toc-trees-forests-and-boosting">4.3 Trees, forests, and
+boosting</a></li>
+<li><a href="#support-vector-machines-k-nearest-neighbors-and-neural-networks" id="toc-support-vector-machines-k-nearest-neighbors-and-neural-networks">4.4
+Support-vector machines, k-nearest neighbors, and neural
+networks</a></li>
+</ul></li>
+<li><a href="#evaluation-that-matches-the-use" id="toc-evaluation-that-matches-the-use">5. Evaluation That Matches the
+Use</a>
+<ul>
+<li><a href="#regression-metrics" id="toc-regression-metrics">5.1
+Regression metrics</a></li>
+<li><a href="#classification-metrics" id="toc-classification-metrics">5.2 Classification metrics</a></li>
+<li><a href="#calibration" id="toc-calibration">5.3 Calibration</a></li>
+<li><a href="#uncertainty-and-cross-validation" id="toc-uncertainty-and-cross-validation">5.4 Uncertainty and
+cross-validation</a></li>
+</ul></li>
+<li><a href="#r-case-study-predicting-survey-follow-up-completion" id="toc-r-case-study-predicting-survey-follow-up-completion">6. R Case
+Study: Predicting Survey Follow-up Completion</a>
+<ul>
+<li><a href="#simulate-and-split-the-data" id="toc-simulate-and-split-the-data">6.1 Simulate and split the
+data</a></li>
+<li><a href="#fit-an-interpretable-baseline" id="toc-fit-an-interpretable-baseline">6.2 Fit an interpretable
+baseline</a></li>
+<li><a href="#compute-roc-auc-without-an-extra-package" id="toc-compute-roc-auc-without-an-extra-package">6.3 Compute ROC AUC
+without an extra package</a></li>
+<li><a href="#compare-with-a-small-tree" id="toc-compare-with-a-small-tree">6.4 Compare with a small
+tree</a></li>
+<li><a href="#subgroup-audit" id="toc-subgroup-audit">6.5 Subgroup
+audit</a></li>
+</ul></li>
+<li><a href="#python-case-study-predicting-a-future-symptom-score" id="toc-python-case-study-predicting-a-future-symptom-score">7. Python
+Case Study: Predicting a Future Symptom Score</a>
+<ul>
+<li><a href="#simulate-data-and-create-the-design-matrix" id="toc-simulate-data-and-create-the-design-matrix">7.1 Simulate data
+and create the design matrix</a></li>
+<li><a href="#standardize-using-training-statistics-and-fit-ridge-regression" id="toc-standardize-using-training-statistics-and-fit-ridge-regression">7.2
+Standardize using training statistics and fit ridge regression</a></li>
+<li><a href="#bootstrap-test-performance" id="toc-bootstrap-test-performance">7.3 Bootstrap test
+performance</a></li>
+<li><a href="#standard-scikit-learn-pipeline-optional-extension" id="toc-standard-scikit-learn-pipeline-optional-extension">7.4 Standard
+scikit-learn pipeline (optional extension)</a></li>
+</ul></li>
+<li><a href="#cross-validation-for-clustered-and-longitudinal-data" id="toc-cross-validation-for-clustered-and-longitudinal-data">8.
+Cross-validation for Clustered and Longitudinal Data</a></li>
+<li><a href="#missing-data-sampling-and-survey-design" id="toc-missing-data-sampling-and-survey-design">9. Missing Data,
+Sampling, and Survey Design</a></li>
+<li><a href="#interpretation-without-overclaiming" id="toc-interpretation-without-overclaiming">10. Interpretation Without
+Overclaiming</a>
+<ul>
+<li><a href="#coefficients-and-odds-ratios" id="toc-coefficients-and-odds-ratios">10.1 Coefficients and odds
+ratios</a></li>
+<li><a href="#permutation-importance" id="toc-permutation-importance">10.2 Permutation importance</a></li>
+<li><a href="#partial-dependence-and-individual-explanations" id="toc-partial-dependence-and-individual-explanations">10.3 Partial
+dependence and individual explanations</a></li>
+</ul></li>
+<li><a href="#fairness-ethics-and-governance" id="toc-fairness-ethics-and-governance">11. Fairness, Ethics, and
+Governance</a>
+<ul>
+<li><a href="#a-practical-audit" id="toc-a-practical-audit">11.1 A
+practical audit</a></li>
+<li><a href="#psychology-specific-safeguards" id="toc-psychology-specific-safeguards">11.2 Psychology-specific
+safeguards</a></li>
+<li><a href="#sociology-specific-safeguards" id="toc-sociology-specific-safeguards">11.3 Sociology-specific
+safeguards</a></li>
+</ul></li>
+<li><a href="#reporting-template-and-reproducibility-checklist" id="toc-reporting-template-and-reproducibility-checklist">12. Reporting
+Template and Reproducibility Checklist</a>
+<ul>
+<li><a href="#compact-model-card-template" id="toc-compact-model-card-template">12.1 Compact model-card
+template</a></li>
+<li><a href="#final-checklist" id="toc-final-checklist">12.2 Final
+checklist</a></li>
+</ul></li>
+<li><a href="#exercises" id="toc-exercises">13. Exercises</a></li>
+<li><a href="#further-reading" id="toc-further-reading">14. Further
+Reading</a></li>
+</ul>
+</nav>
+<style>
+:root{--ink:#172033;--muted:#667085;--paper:#fff;--bg:#f3f6fb;--line:#dce4ef;--navy:#10182c;--violet:#6555d9;--cyan:#0ea5b7;--green:#16865c;--amber:#b66a05;--red:#b23b4a;--code:#0d1424;--shadow:0 18px 52px rgba(24,35,61,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}body{max-width:1020px;margin:0 auto;padding:96px 34px 70px;color:var(--ink);background:radial-gradient(circle at 90% 3%,rgba(101,85,217,.10),transparent 25rem),radial-gradient(circle at 5% 18%,rgba(14,165,183,.08),transparent 22rem),var(--bg);font:17px/1.76 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#5143c1;text-underline-offset:3px}.topbar{position:fixed;z-index:1000;inset:0 0 auto;height:68px;display:flex;align-items:center;gap:16px;padding:0 max(22px,calc((100vw - 1160px)/2));color:#fff;background:rgba(16,24,44,.96);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 8px 28px rgba(16,24,44,.18);backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:10px;color:#fff!important;font-weight:850;text-decoration:none}.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));font-size:12px}.tag{color:#aeb9cf;font-size:11px;letter-spacing:.12em}.spacer{flex:1}.langs{display:flex;gap:5px}.langs a{padding:6px 10px;color:#bac5da;border-radius:8px;font-size:14px;font-weight:750;text-decoration:none}.langs a:hover,.langs a.active{color:#fff;background:rgba(255,255,255,.12)}
+#title-block-header{margin:10px 0 24px;padding:clamp(28px,5vw,52px);color:#fff;background:linear-gradient(125deg,#6555d9,#243c76);border-radius:24px;box-shadow:0 24px 62px rgba(39,47,100,.22)}#title-block-header .title{margin:0 0 9px;color:#fff;font-size:clamp(34px,5vw,50px);line-height:1.12;letter-spacing:-.035em}#title-block-header .subtitle{margin:.4rem 0 1rem;color:#e7eaff;font-size:20px}#title-block-header .author,#title-block-header .date{margin:.2rem 0;color:#d8def6}
+#TOC{margin:0 0 28px;padding:20px 24px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);columns:2;column-gap:34px}#TOC>ul{margin:0;padding-left:1.2rem}#TOC ul{break-inside:avoid}#TOC a{text-decoration:none;font-size:14px;line-height:1.4}
+h1,h2,h3{color:#17254a;scroll-margin-top:84px}h1{margin:3.1rem 0 1rem;padding-bottom:.62rem;border-bottom:1px solid var(--line);font-size:34px;letter-spacing:-.025em}h2{margin:2.25rem 0 .72rem;font-size:25px}h3{margin:1.75rem 0 .55rem;font-size:20px}p,li{color:#344054}strong{color:#24324c}
+table{display:block;width:100%;margin:1.2rem 0 1.7rem;overflow-x:auto;border-spacing:0;border-collapse:separate;border:1px solid var(--line);border-radius:12px;font-size:14.5px}thead{background:#eef2f8}th,td{min-width:120px;padding:.68rem .78rem;border:0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbff}
+code{padding:.12em .34em;color:#5740c8;background:#efedff;border-radius:5px;font:.9em "Cascadia Code",Consolas,monospace}div.sourceCode{position:relative;margin:1.1rem 0 1.55rem;overflow:hidden;background:var(--code)!important;border:1px solid #202b42;border-radius:14px;box-shadow:0 12px 28px rgba(13,20,36,.13)}pre.sourceCode{margin:0;padding:22px 20px;overflow-x:auto;background:transparent!important}pre code,pre code span{padding:0;color:#dfe7f5!important;background:transparent!important}pre code span.kw,pre code span.cf{color:#c792ea!important}pre code span.fu{color:#82aaff!important}pre code span.st{color:#c3e88d!important}pre code span.dv,pre code span.fl{color:#f78c6c!important}pre code span.co{color:#91a0bc!important;font-style:italic}.copy{position:absolute;z-index:2;top:10px;right:10px;padding:6px 9px;color:#d4dcec;background:#202b42;border:1px solid #39465f;border-radius:7px;font:700 12px/1.2 inherit;cursor:pointer}
+.callout{margin:1.35rem 0;padding:1rem 1.15rem;border:1px solid;border-left-width:5px;border-radius:11px}.note{background:#edfaff;border-color:#bfe7ed;border-left-color:var(--cyan)}.warning{background:#fff7e8;border-color:#efd8a9;border-left-color:var(--amber)}.ethics{background:#fff0f2;border-color:#edc8ce;border-left-color:var(--red)}.success{background:#edf9f3;border-color:#c4e6d5;border-left-color:var(--green)}.formula{margin:1rem 0;padding:.8rem;overflow-x:auto;text-align:center;background:#f7f8fc;border:1px solid var(--line);border-radius:10px}.checklist li{margin:.35rem 0}.kbd{display:inline-block;padding:.05rem .42rem;border:1px solid #c8d0dc;border-bottom-width:2px;border-radius:5px;background:#fff;font-size:.85em}.backtop{position:fixed;right:22px;bottom:22px;width:44px;height:44px;color:#fff;background:var(--navy);border:0;border-radius:13px;box-shadow:0 10px 26px rgba(16,24,44,.24);cursor:pointer;opacity:0;transition:.2s}.backtop.show{opacity:1}
+@media(max-width:720px){body{padding:84px 14px 50px;font-size:16px}.topbar{height:62px;padding:0 13px}.tag{display:none}.langs a{padding:6px 7px}#title-block-header{padding:27px 22px;border-radius:19px}#title-block-header .title{font-size:31px}#TOC{columns:1;padding:18px 20px}h1{font-size:28px}h2{font-size:22px}.backtop{right:14px;bottom:14px}}@media print{body{max-width:none;padding:0;background:#fff}.topbar,.backtop,.copy{display:none!important}#title-block-header{box-shadow:none}a{color:inherit}}
+</style>
+<div class="topbar">
+<a class="brand" href="#title-block-header"><span class="logo">ML</span><span>MooseWeb3</span><span class="tag">SOCIAL
+&amp; BEHAVIORAL SCIENCE</span></a><span class="spacer"></span>
+<nav class="langs" aria-label="Language selector">
+<a class="active" href="supervised_ml_social_psychology_en.html" aria-current="page">EN</a>
+</nav>
+</div>
+<h1 id="purpose-scope-and-learning-goals">1. Purpose, Scope, and
+Learning Goals</h1>
+<p>Supervised machine learning (ML) learns a mapping from measured
+predictors
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+to an observed label or outcome
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>.
+In sociology, examples include forecasting survey attrition, housing
+instability, or program uptake. In psychology, examples include
+predicting a future symptom score, treatment dropout, or relapse. The
+common thread is that the model learns from cases for which the outcome
+is already known and is evaluated on cases it did not use for
+fitting.</p>
+<p>This guide emphasizes <strong>prediction with social and behavioral
+data</strong>. It does not treat a predictive model as evidence that
+changing a predictor will change the outcome.</p>
+<p>After working through the guide, you should be able to:</p>
+<ul>
+<li>translate a substantive question into a regression or classification
+task;</li>
+<li>build leakage-resistant train/validation/test workflows;</li>
+<li>fit and evaluate interpretable models in R and Python;</li>
+<li>choose metrics that reflect prevalence, costs, and intended
+use;</li>
+<li>distinguish prediction, explanation, measurement, and causal
+inference;</li>
+<li>assess calibration, subgroup performance, uncertainty, and dataset
+shift;</li>
+<li>document a model in a way that a sociologist or psychologist can
+audit.</li>
+</ul>
+<div class="callout ethics">
+<strong>Responsible-use boundary.</strong> The examples use simulated
+data and low-stakes research workflows. Do not use them to diagnose a
+person, deny services, determine custody, make employment or
+criminal-justice decisions, or replace qualified clinical judgment.
+High-impact use requires domain review, validation in the deployment
+population, privacy safeguards, appeal mechanisms, and ongoing
+monitoring.
+</div>
+<h1 id="from-a-research-question-to-an-ml-task">2. From a Research
+Question to an ML Task</h1>
+<h2 id="prediction-is-not-the-same-as-explanation-or-causation">2.1
+Prediction is not the same as explanation or causation</h2>
+<p>Suppose loneliness predicts later depressive symptoms. A model may
+make accurate predictions because loneliness is a proxy for social
+isolation, chronic illness, neighborhood conditions, or earlier
+symptoms. Prediction alone does not identify which mechanism is
+causal.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Typical question</th>
+<th>Appropriate design/analysis</th>
+<th>Defensible conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Description</td>
+<td>How common is severe distress?</td>
+<td>Representative sampling, weighted summaries</td>
+<td>Estimated prevalence in a defined population</td>
+</tr>
+<tr>
+<td>Association</td>
+<td>Which variables co-vary with distress?</td>
+<td>Regression with uncertainty and design-aware SEs</td>
+<td>Conditional association</td>
+</tr>
+<tr>
+<td>Prediction</td>
+<td>Who is likely to have high distress at follow-up?</td>
+<td>Held-out evaluation and calibration</td>
+<td>Expected predictive performance in a target setting</td>
+</tr>
+<tr>
+<td>Causal inference</td>
+<td>Would an intervention reduce distress?</td>
+<td>Randomization or explicit causal identification</td>
+<td>Effect under stated assumptions</td>
+</tr>
+</tbody>
+</table>
+<p>An ML model may support more than one goal, but the estimand,
+validation strategy, and language must match the primary goal.</p>
+<h2 id="common-tasks-in-sociology-and-psychology">2.2 Common tasks in
+sociology and psychology</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Outcome</th>
+<th>Task</th>
+<th>Possible use</th>
+<th>Important risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sociology</td>
+<td>Follow-up survey completion</td>
+<td>Binary classification</td>
+<td>Allocate neutral reminder effort</td>
+<td>Unequal contact or surveillance</td>
+</tr>
+<tr>
+<td>Sociology</td>
+<td>Months until stable employment</td>
+<td>Survival prediction</td>
+<td>Program planning</td>
+<td>Structural disadvantage encoded as individual risk</td>
+</tr>
+<tr>
+<td>Sociology</td>
+<td>Household income next year</td>
+<td>Regression</td>
+<td>Population forecasting</td>
+<td>Skewness, top-coding, survey weights</td>
+</tr>
+<tr>
+<td>Psychology</td>
+<td>Future symptom score</td>
+<td>Regression</td>
+<td>Research stratification</td>
+<td>Scale reliability and regression to the mean</td>
+</tr>
+<tr>
+<td>Psychology</td>
+<td>Treatment dropout</td>
+<td>Binary classification</td>
+<td>Offer optional support</td>
+<td>Stigmatizing labels and self-fulfilling decisions</td>
+</tr>
+<tr>
+<td>Psychology</td>
+<td>Diagnostic category</td>
+<td>Multiclass classification</td>
+<td>Research only unless clinically validated</td>
+<td>Label validity, spectrum bias, clinical harm</td>
+</tr>
+</tbody>
+</table>
+<h2 id="define-the-prediction-specification-before-modeling">2.3 Define
+the prediction specification before modeling</h2>
+<p>Write one sentence with all six elements:</p>
+<blockquote>
+<p>Among <strong>[population]</strong>, use information available by
+<strong>[prediction time]</strong> to predict <strong>[outcome]</strong>
+over <strong>[horizon]</strong>, for <strong>[decision or research
+use]</strong>, evaluated primarily by <strong>[metric]</strong>.</p>
+</blockquote>
+<p>Example: “Among adults enrolled in a longitudinal community survey,
+use baseline information to predict completion of the six-month survey
+so that all participants can be offered appropriately timed reminders;
+evaluate discrimination with ROC AUC and probability accuracy with the
+Brier score.”</p>
+<h1 id="data-design-labels-units-and-leakage">3. Data Design: Labels,
+Units, and Leakage</h1>
+<h2 id="the-row-must-represent-the-unit-of-prediction">3.1 The row must
+represent the unit of prediction</h2>
+<p>If the prediction concerns a person, all measurements from that
+person must remain in the same split. Repeated diary observations,
+therapy sessions, students within schools, twins within families, and
+respondents within neighborhoods violate simple independence.</p>
+<p>Use a <strong>grouped split</strong> for repeated people or clusters,
+a <strong>time split</strong> for future prediction, and a
+<strong>site-held-out split</strong> when transport to a new clinic or
+region is the real goal.</p>
+<h2 id="label-quality-sets-a-ceiling">3.2 Label quality sets a
+ceiling</h2>
+<p>Psychological outcomes are often scale scores or diagnoses with
+measurement error. Sociological outcomes may come from self-report,
+administrative records, or a linkage process that misses particular
+groups. Check:</p>
+<ul>
+<li>operational definition and time window;</li>
+<li>scale reliability and measurement invariance;</li>
+<li>whether the label is observed equally across subgroups;</li>
+<li>missing-by-design and survey routing rules;</li>
+<li>top/bottom coding, heaping, and changes in instruments;</li>
+<li>whether the label is actually a proxy for an institutional
+decision.</li>
+</ul>
+<h2 id="leakage-information-that-would-not-be-available-at-prediction-time">3.3
+Leakage: information that would not be available at prediction time</h2>
+<p>Common leakage examples include using a discharge code to predict
+hospitalization, including post-treatment questionnaire items in a
+baseline model, imputing before splitting, and allowing the same
+participant into both training and test data.</p>
+<p>The safe order is:</p>
+<ol type="1">
+<li>reserve the final test set;</li>
+<li>estimate imputation, scaling, feature selection, and tuning
+<strong>inside training data only</strong>;</li>
+<li>choose the model with validation or cross-validation;</li>
+<li>evaluate once on the untouched test set;</li>
+<li>if the test set guides another change, it has become validation
+data.</li>
+</ol>
+<h1 id="models-what-they-learn-and-when-they-help">4. Models: What They
+Learn and When They Help</h1>
+<h2 id="linear-and-logistic-regression">4.1 Linear and logistic
+regression</h2>
+<p>Linear regression predicts a continuous outcome as a weighted sum of
+features. Logistic regression predicts log-odds:</p>
+<div class="formula">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>β</mi><mi>j</mi></msub><msub><mi>x</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\hat y = \beta_0 + \sum_j \beta_j x_j</annotation></semantics></math>
+    and    
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo>∣</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><mi>X</mi><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><msup><mo stretchy="false" form="postfix">}</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">P(Y=1\mid X)=\{1+\exp[-(\beta_0+X\beta)]\}^{-1}</annotation></semantics></math>
+</div>
+<p>These models are strong baselines: fast, inspectable, and often
+competitive with limited samples. Their apparent simplicity does not
+eliminate assumptions. Nonlinearity, interactions, multicollinearity,
+separation, clustering, and missing-data mechanisms still matter.</p>
+<h2 id="regularization">4.2 Regularization</h2>
+<p>When predictors are numerous or correlated, regularization
+discourages extreme coefficients.</p>
+<ul>
+<li>Ridge
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>2</mn></msub><annotation encoding="application/x-tex">L_2</annotation></semantics></math>)
+shrinks coefficients and usually retains all features.</li>
+<li>Lasso
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>1</mn></msub><annotation encoding="application/x-tex">L_1</annotation></semantics></math>)
+can set coefficients to zero, but selected variables may be
+unstable.</li>
+<li>Elastic net combines both penalties.</li>
+</ul>
+<p>Tune the penalty inside cross-validation. Standardize numerical
+predictors and do not interpret lasso selection as proof that omitted
+constructs are irrelevant.</p>
+<h2 id="trees-forests-and-boosting">4.3 Trees, forests, and
+boosting</h2>
+<p>A decision tree creates if/then partitions. It handles nonlinearities
+and interactions but a deep tree is unstable. Random forests average
+many decorrelated trees. Gradient boosting builds small trees
+sequentially to correct earlier errors.</p>
+<p>Tree ensembles often improve tabular prediction, but “feature
+importance” is not a causal effect. Impurity-based importance can favor
+continuous or high-cardinality variables; held-out permutation
+importance is generally easier to defend.</p>
+<h2 id="support-vector-machines-k-nearest-neighbors-and-neural-networks">4.4
+Support-vector machines, k-nearest neighbors, and neural networks</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method</th>
+<th>Strength</th>
+<th>Limitation in social/behavioral research</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SVM</td>
+<td>Flexible boundaries; effective in high dimensions</td>
+<td>Scaling and tuning are essential; probabilities need
+calibration</td>
+</tr>
+<tr>
+<td>k-NN</td>
+<td>Intuitive local prediction</td>
+<td>Sensitive to scaling, irrelevant dimensions, and sparse regions</td>
+</tr>
+<tr>
+<td>Neural network</td>
+<td>Learns complex representations</td>
+<td>Usually data-hungry; unstable with small samples; difficult to
+audit</td>
+</tr>
+<tr>
+<td>Text model</td>
+<td>Uses interviews or open responses</td>
+<td>Privacy, dialect bias, construct validity, and context collapse</td>
+</tr>
+</tbody>
+</table>
+<p>Start with a meaningful baseline. Complexity is justified only by
+reliable out-of-sample improvement or a clear operational need.</p>
+<h1 id="evaluation-that-matches-the-use">5. Evaluation That Matches the
+Use</h1>
+<h2 id="regression-metrics">5.1 Regression metrics</h2>
+<p>For continuous outcomes with errors
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>i</mi></msub><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">e_i=y_i-\hat y_i</annotation></semantics></math>:</p>
+<div class="formula">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>A</mi><mi>E</mi><mo>=</mo><msup><mi>n</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>∑</mo><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">MAE=n^{-1}\sum|e_i|</annotation></semantics></math>
+  
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>M</mi><mi>S</mi><mi>E</mi><mo>=</mo><msqrt><mrow><msup><mi>n</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>∑</mo><msubsup><mi>e</mi><mi>i</mi><mn>2</mn></msubsup></mrow></msqrt></mrow><annotation encoding="application/x-tex">RMSE=\sqrt{n^{-1}\sum e_i^2}</annotation></semantics></math>
+  
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mo>∑</mo><msubsup><mi>e</mi><mi>i</mi><mn>2</mn></msubsup></mrow><mrow><mo>∑</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mover><mi>y</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">R^2=1-\frac{\sum e_i^2}{\sum(y_i-\bar y)^2}</annotation></semantics></math>
+</div>
+<ul>
+<li>MAE is in the original scale and is relatively robust to large
+errors.</li>
+<li>RMSE penalizes large errors more strongly.</li>
+<li>Test-set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math>
+can be negative; this means the model is worse than predicting the test
+mean.</li>
+<li>Report error relative to a substantively meaningful difference or
+the scale’s measurement error.</li>
+</ul>
+<h2 id="classification-metrics">5.2 Classification metrics</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Question answered</th>
+<th>Caveat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sensitivity/recall</td>
+<td>Of true positive cases, how many were found?</td>
+<td>Does not describe false alerts</td>
+</tr>
+<tr>
+<td>Specificity</td>
+<td>Of true negative cases, how many were rejected?</td>
+<td>Changes with threshold</td>
+</tr>
+<tr>
+<td>Precision/PPV</td>
+<td>Of alerts, how many were positive?</td>
+<td>Strongly depends on prevalence</td>
+</tr>
+<tr>
+<td>ROC AUC</td>
+<td>How often is a random positive ranked above a random negative?</td>
+<td>Can look good when useful precision is poor</td>
+</tr>
+<tr>
+<td>PR AUC</td>
+<td>How well are rare positives retrieved?</td>
+<td>Baseline equals prevalence</td>
+</tr>
+<tr>
+<td>Brier score</td>
+<td>How close are predicted probabilities to outcomes?</td>
+<td>Mixes calibration and resolution</td>
+</tr>
+</tbody>
+</table>
+<p>A threshold is a decision rule, not an intrinsic model property.
+Choose it from the costs and capacity of the intended workflow, then
+report the full confusion matrix.</p>
+<h2 id="calibration">5.3 Calibration</h2>
+<p>A model that assigns probability 0.70 to 100 comparable cases should
+see about 70 events. Inspect calibration-in-the-large, calibration
+slope, and a binned or smooth calibration plot. AUC can remain unchanged
+while calibration deteriorates in a new population.</p>
+<h2 id="uncertainty-and-cross-validation">5.4 Uncertainty and
+cross-validation</h2>
+<p>Use repeated or nested cross-validation when tuning many choices.
+Report the distribution across folds or bootstrap confidence intervals,
+not only the best score. With small samples, performance estimates can
+be much noisier than coefficient p-values suggest.</p>
+<h1 id="r-case-study-predicting-survey-follow-up-completion">6. R Case
+Study: Predicting Survey Follow-up Completion</h1>
+<p>This simulated sociology example predicts six-month survey
+completion. The imagined use is offering flexible, neutral reminders—not
+withholding services. All predictors are available at baseline.</p>
+<h2 id="simulate-and-split-the-data">6.1 Simulate and split the
+data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20260811</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1200</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>survey <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">18</span>, <span class="dv">80</span>)),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">baseline_trust =</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fu">rnorm</span>(n, <span class="fl">5.5</span>, <span class="fl">1.7</span>), <span class="dv">0</span>), <span class="dv">10</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_wave =</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.62</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">moves_last_year =</span> <span class="fu">rpois</span>(n, <span class="fl">0.45</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">contact_modes =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, n, <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">28</span>, .<span class="dv">47</span>, .<span class="dv">25</span>)),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">region =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;Urban&quot;</span>, <span class="st">&quot;Town&quot;</span>, <span class="st">&quot;Rural&quot;</span>), n, <span class="cn">TRUE</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">prob =</span> <span class="fu">c</span>(.<span class="dv">55</span>, .<span class="dv">25</span>, .<span class="dv">20</span>)))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>lp <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">1.1</span> <span class="sc">+</span> <span class="fl">0.018</span> <span class="sc">*</span> (survey<span class="sc">$</span>age <span class="sc">-</span> <span class="dv">45</span>) <span class="sc">+</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.30</span> <span class="sc">*</span> (survey<span class="sc">$</span>baseline_trust <span class="sc">-</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1.05</span> <span class="sc">*</span> survey<span class="sc">$</span>prior_wave <span class="sc">-</span> <span class="fl">0.45</span> <span class="sc">*</span> survey<span class="sc">$</span>moves_last_year <span class="sc">+</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.25</span> <span class="sc">*</span> (survey<span class="sc">$</span>contact_modes <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.25</span> <span class="sc">*</span> (survey<span class="sc">$</span>region <span class="sc">==</span> <span class="st">&quot;Rural&quot;</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>completed <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(lp))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Stratify so both outcome classes are represented in each split.</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">split</span>(<span class="fu">seq_len</span>(n), survey<span class="sc">$</span>completed), <span class="cf">function</span>(ii) {</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample</span>(ii, <span class="fu">floor</span>(<span class="fl">0.75</span> <span class="sc">*</span> <span class="fu">length</span>(ii)))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> survey[train_id, ]</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> survey[<span class="sc">-</span>train_id, ]</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(train<span class="sc">$</span>completed))</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(test<span class="sc">$</span>completed))</span></code></pre></div>
+<h2 id="fit-an-interpretable-baseline">6.2 Fit an interpretable
+baseline</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit_logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  completed <span class="sc">~</span> age <span class="sc">+</span> baseline_trust <span class="sc">+</span> prior_wave <span class="sc">+</span> moves_last_year <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    contact_modes <span class="sc">+</span> region,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train, <span class="at">family =</span> <span class="fu">binomial</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_logit, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(test<span class="sc">$</span>prob <span class="sc">&gt;=</span> <span class="fl">0.50</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>confusion <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">predicted =</span> test<span class="sc">$</span>pred, <span class="at">observed =</span> test<span class="sc">$</span>completed)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>confusion</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>tn <span class="ot">&lt;-</span> confusion[<span class="st">&quot;0&quot;</span>, <span class="st">&quot;0&quot;</span>]; fn <span class="ot">&lt;-</span> confusion[<span class="st">&quot;0&quot;</span>, <span class="st">&quot;1&quot;</span>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>fp <span class="ot">&lt;-</span> confusion[<span class="st">&quot;1&quot;</span>, <span class="st">&quot;0&quot;</span>]; tp <span class="ot">&lt;-</span> confusion[<span class="st">&quot;1&quot;</span>, <span class="st">&quot;1&quot;</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">sensitivity =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fn),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">specificity =</span> tn <span class="sc">/</span> (tn <span class="sc">+</span> fp),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">precision   =</span> tp <span class="sc">/</span> (tp <span class="sc">+</span> fp),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">accuracy    =</span> (tp <span class="sc">+</span> tn) <span class="sc">/</span> <span class="fu">sum</span>(confusion),</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">brier       =</span> <span class="fu">mean</span>((test<span class="sc">$</span>prob <span class="sc">-</span> test<span class="sc">$</span>completed)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h2 id="compute-roc-auc-without-an-extra-package">6.3 Compute ROC AUC
+without an extra package</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rank-sum identity; ties receive average ranks.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>auc_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(y, p) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span>); n0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">sum</span>(<span class="fu">rank</span>(p)[y <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> n1 <span class="sc">*</span> (n1 <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">/</span> (n1 <span class="sc">*</span> n0)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">auc_rank</span>(test<span class="sc">$</span>completed, test<span class="sc">$</span>prob)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple calibration table. Use larger bins when the test set is small.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>bin <span class="ot">&lt;-</span> <span class="fu">cut</span>(test<span class="sc">$</span>prob,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">breaks =</span> <span class="fu">unique</span>(<span class="fu">quantile</span>(test<span class="sc">$</span>prob, <span class="dv">0</span><span class="sc">:</span><span class="dv">5</span> <span class="sc">/</span> <span class="dv">5</span>)),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(<span class="fu">cbind</span>(<span class="at">predicted =</span> prob, <span class="at">observed =</span> completed) <span class="sc">~</span> bin,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> test, <span class="at">FUN =</span> mean)</span></code></pre></div>
+<h2 id="compare-with-a-small-tree">6.4 Compare with a small tree</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)  <span class="co"># Recommended package distributed with R</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fit_tree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">factor</span>(completed) <span class="sc">~</span> age <span class="sc">+</span> baseline_trust <span class="sc">+</span> prior_wave <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    moves_last_year <span class="sc">+</span> contact_modes <span class="sc">+</span> region,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train, <span class="at">method =</span> <span class="st">&quot;class&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">cp =</span> <span class="fl">0.01</span>, <span class="at">minbucket =</span> <span class="dv">35</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>tree_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_tree, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)[, <span class="st">&quot;1&quot;</span>]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">logistic_auc =</span> <span class="fu">auc_rank</span>(test<span class="sc">$</span>completed, test<span class="sc">$</span>prob),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_auc =</span> <span class="fu">auc_rank</span>(test<span class="sc">$</span>completed, tree_prob),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">logistic_brier =</span> <span class="fu">mean</span>((test<span class="sc">$</span>prob <span class="sc">-</span> test<span class="sc">$</span>completed)<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_brier =</span> <span class="fu">mean</span>((tree_prob <span class="sc">-</span> test<span class="sc">$</span>completed)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(fit_tree)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_tree, <span class="at">uniform =</span> <span class="cn">TRUE</span>, <span class="at">margin =</span> .<span class="dv">10</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(fit_tree, <span class="at">use.n =</span> <span class="cn">TRUE</span>, <span class="at">cex =</span> .<span class="dv">75</span>)</span></code></pre></div>
+<p>Do not select the tree’s complexity parameter by test performance. In
+a real analysis, tune <code>cp</code> inside training folds, then
+compare the final selected model once on the test set.</p>
+<h2 id="subgroup-audit">6.5 Subgroup audit</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>group_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> d<span class="sc">$</span>completed; p <span class="ot">&lt;-</span> d<span class="sc">$</span>prob; pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(p <span class="sc">&gt;=</span> .<span class="dv">50</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">n =</span> <span class="fu">nrow</span>(d), <span class="at">prevalence =</span> <span class="fu">mean</span>(y),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensitivity =</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> y <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">specificity =</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> y <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">/</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">brier =</span> <span class="fu">mean</span>((p <span class="sc">-</span> y)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">split</span>(test, test<span class="sc">$</span>region), group_metrics))</span></code></pre></div>
+<p>Differences may reflect sample size, prevalence, measurement, model
+misspecification, or structural conditions. A subgroup table is a
+diagnostic—not a complete fairness analysis and not a command to force
+every metric to equality.</p>
+<h1 id="python-case-study-predicting-a-future-symptom-score">7. Python
+Case Study: Predicting a Future Symptom Score</h1>
+<p>This psychology example predicts a continuous follow-up distress
+score. It uses only NumPy and Pandas so the core example is portable. A
+ridge model is fitted with the closed-form solution.</p>
+<h2 id="simulate-data-and-create-the-design-matrix">7.1 Simulate data
+and create the design matrix</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">20260811</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">900</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>psych <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;baseline_distress&quot;</span>: np.clip(rng.normal(<span class="dv">12</span>, <span class="dv">5</span>, n), <span class="dv">0</span>, <span class="dv">30</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;sleep_hours&quot;</span>: np.clip(rng.normal(<span class="fl">7.0</span>, <span class="fl">1.2</span>, n), <span class="dv">3</span>, <span class="dv">11</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;social_support&quot;</span>: np.clip(rng.normal(<span class="fl">5.5</span>, <span class="fl">1.8</span>, n), <span class="dv">0</span>, <span class="dv">10</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;stress_events&quot;</span>: rng.poisson(<span class="fl">1.7</span>, n),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;therapy&quot;</span>: rng.choice([<span class="st">&quot;none&quot;</span>, <span class="st">&quot;individual&quot;</span>, <span class="st">&quot;group&quot;</span>], n,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                          p<span class="op">=</span>[<span class="fl">0.48</span>, <span class="fl">0.32</span>, <span class="fl">0.20</span>])</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>noise <span class="op">=</span> rng.normal(<span class="dv">0</span>, <span class="fl">3.4</span>, n)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>psych[<span class="st">&quot;followup_distress&quot;</span>] <span class="op">=</span> np.clip(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fl">3.0</span> <span class="op">+</span> <span class="fl">0.66</span> <span class="op">*</span> psych[<span class="st">&quot;baseline_distress&quot;</span>]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> <span class="fl">0.75</span> <span class="op">*</span> (psych[<span class="st">&quot;sleep_hours&quot;</span>] <span class="op">-</span> <span class="dv">7</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> <span class="fl">0.55</span> <span class="op">*</span> psych[<span class="st">&quot;social_support&quot;</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="fl">0.85</span> <span class="op">*</span> psych[<span class="st">&quot;stress_events&quot;</span>]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> <span class="fl">1.1</span> <span class="op">*</span> (psych[<span class="st">&quot;therapy&quot;</span>] <span class="op">==</span> <span class="st">&quot;individual&quot;</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> <span class="fl">0.6</span> <span class="op">*</span> (psych[<span class="st">&quot;therapy&quot;</span>] <span class="op">==</span> <span class="st">&quot;group&quot;</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> noise, <span class="dv">0</span>, <span class="dv">30</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Split before estimating any preprocessing values.</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>test_index <span class="op">=</span> rng.choice(psych.index, size<span class="op">=</span><span class="bu">round</span>(<span class="fl">0.25</span> <span class="op">*</span> n), replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> psych.drop(index<span class="op">=</span>test_index).copy()</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> psych.loc[test_index].copy()</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">&quot;baseline_distress&quot;</span>, <span class="st">&quot;sleep_hours&quot;</span>, <span class="st">&quot;social_support&quot;</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;stress_events&quot;</span>, <span class="st">&quot;therapy&quot;</span>]</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>X_train_df <span class="op">=</span> pd.get_dummies(train[features], drop_first<span class="op">=</span><span class="va">True</span>, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>X_test_df <span class="op">=</span> pd.get_dummies(test[features], drop_first<span class="op">=</span><span class="va">True</span>, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>X_test_df <span class="op">=</span> X_test_df.reindex(columns<span class="op">=</span>X_train_df.columns, fill_value<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div>
+<h2 id="standardize-using-training-statistics-and-fit-ridge-regression">7.2
+Standardize using training statistics and fit ridge regression</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>numeric <span class="op">=</span> [<span class="st">&quot;baseline_distress&quot;</span>, <span class="st">&quot;sleep_hours&quot;</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">&quot;social_support&quot;</span>, <span class="st">&quot;stress_events&quot;</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas 3.x rejects writing standardized floats into an integer column.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>X_train_df[numeric] <span class="op">=</span> X_train_df[numeric].astype(<span class="bu">float</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X_test_df[numeric] <span class="op">=</span> X_test_df[numeric].astype(<span class="bu">float</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> X_train_df[numeric].mean()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>sd <span class="op">=</span> X_train_df[numeric].std(ddof<span class="op">=</span><span class="dv">0</span>).replace(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>X_train_df.loc[:, numeric] <span class="op">=</span> (X_train_df[numeric] <span class="op">-</span> mu) <span class="op">/</span> sd</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>X_test_df.loc[:, numeric] <span class="op">=</span> (X_test_df[numeric] <span class="op">-</span> mu) <span class="op">/</span> sd</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> np.column_stack([np.ones(<span class="bu">len</span>(X_train_df)), X_train_df.to_numpy()])</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> np.column_stack([np.ones(<span class="bu">len</span>(X_test_df)), X_test_df.to_numpy()])</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">&quot;followup_distress&quot;</span>].to_numpy()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test[<span class="st">&quot;followup_distress&quot;</span>].to_numpy()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">8.0</span>  <span class="co"># Tune within the training set in a real analysis.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>penalty <span class="op">=</span> np.eye(X_train.shape[<span class="dv">1</span>])</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>penalty[<span class="dv">0</span>, <span class="dv">0</span>] <span class="op">=</span> <span class="fl">0.0</span>  <span class="co"># Do not penalize the intercept.</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> np.linalg.solve(X_train.T <span class="op">@</span> X_train <span class="op">+</span> alpha <span class="op">*</span> penalty,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                       X_train.T <span class="op">@</span> y_train)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> X_test <span class="op">@</span> beta</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>mae <span class="op">=</span> np.mean(np.<span class="bu">abs</span>(y_test <span class="op">-</span> pred))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(np.mean((y_test <span class="op">-</span> pred) <span class="op">**</span> <span class="dv">2</span>))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> np.<span class="bu">sum</span>((y_test <span class="op">-</span> pred) <span class="op">**</span> <span class="dv">2</span>) <span class="op">/</span> np.<span class="bu">sum</span>((y_test <span class="op">-</span> y_test.mean()) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>({<span class="st">&quot;MAE&quot;</span>: <span class="bu">round</span>(mae, <span class="dv">3</span>), <span class="st">&quot;RMSE&quot;</span>: <span class="bu">round</span>(rmse, <span class="dv">3</span>), <span class="st">&quot;R2&quot;</span>: <span class="bu">round</span>(r2, <span class="dv">3</span>)})</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> pd.Series(beta[<span class="dv">1</span>:], index<span class="op">=</span>X_train_df.columns).sort_values()</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coef)</span></code></pre></div>
+<p>The coefficients for standardized numeric features describe change
+per training-set SD, conditional on other included features. They remain
+associational. Dummy-variable coefficients compare categories with the
+omitted reference group.</p>
+<h2 id="bootstrap-test-performance">7.3 Bootstrap test performance</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regression_metrics(y, yhat):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        np.mean(np.<span class="bu">abs</span>(y <span class="op">-</span> yhat)),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        np.sqrt(np.mean((y <span class="op">-</span> yhat) <span class="op">**</span> <span class="dv">2</span>)),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span> <span class="op">-</span> np.<span class="bu">sum</span>((y <span class="op">-</span> yhat) <span class="op">**</span> <span class="dv">2</span>) <span class="op">/</span> np.<span class="bu">sum</span>((y <span class="op">-</span> y.mean()) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>boot <span class="op">=</span> []</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    ii <span class="op">=</span> rng.integers(<span class="dv">0</span>, <span class="bu">len</span>(y_test), <span class="bu">len</span>(y_test))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    boot.append(regression_metrics(y_test[ii], pred[ii]))</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>boot <span class="op">=</span> np.asarray(boot)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>interval <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;estimate&quot;</span>: regression_metrics(y_test, pred),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;lower_95&quot;</span>: np.quantile(boot, <span class="fl">0.025</span>, axis<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;upper_95&quot;</span>: np.quantile(boot, <span class="fl">0.975</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>[<span class="st">&quot;MAE&quot;</span>, <span class="st">&quot;RMSE&quot;</span>, <span class="st">&quot;R2&quot;</span>])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(interval.<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div>
+<p>The ordinary bootstrap treats test cases as independent. Use cluster
+bootstrap resampling when participants are nested in therapists,
+schools, households, or sites.</p>
+<h2 id="standard-scikit-learn-pipeline-optional-extension">7.4 Standard
+scikit-learn pipeline (optional extension)</h2>
+<p>Install <code>scikit-learn</code> in the environment first. The
+pipeline keeps imputation, scaling, encoding, and model fitting inside
+each training fold.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> GridSearchCV, KFold</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OneHotEncoder, StandardScaler</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> [<span class="st">&quot;baseline_distress&quot;</span>, <span class="st">&quot;sleep_hours&quot;</span>, <span class="st">&quot;social_support&quot;</span>, <span class="st">&quot;stress_events&quot;</span>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>cat_cols <span class="op">=</span> [<span class="st">&quot;therapy&quot;</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>numeric_pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;impute&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>)),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;scale&quot;</span>, StandardScaler())</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>categorical_pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;impute&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>)),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;onehot&quot;</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">&quot;ignore&quot;</span>))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>prep <span class="op">=</span> ColumnTransformer([</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;num&quot;</span>, numeric_pipe, num_cols),</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;cat&quot;</span>, categorical_pipe, cat_cols)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Pipeline([(<span class="st">&quot;prep&quot;</span>, prep), (<span class="st">&quot;ridge&quot;</span>, Ridge())])</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>search <span class="op">=</span> GridSearchCV(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    model, {<span class="st">&quot;ridge__alpha&quot;</span>: np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">13</span>)},</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    scoring<span class="op">=</span><span class="st">&quot;neg_mean_absolute_error&quot;</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>KFold(<span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">20260811</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>search.fit(train[features], y_train)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>final_prediction <span class="op">=</span> search.predict(test[features])</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(search.best_params_)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(regression_metrics(y_test, final_prediction))</span></code></pre></div>
+<h1 id="cross-validation-for-clustered-and-longitudinal-data">8.
+Cross-validation for Clustered and Longitudinal Data</h1>
+<p>Random K-fold cross-validation answers “can the model predict another
+exchangeable row?” That is often the wrong question.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Deployment question</th>
+<th>Validation design</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New observation from a known participant</td>
+<td>Time-ordered within-person evaluation</td>
+</tr>
+<tr>
+<td>Entirely new participant</td>
+<td>Group folds by participant ID</td>
+</tr>
+<tr>
+<td>New school, therapist, family, or neighborhood</td>
+<td>Group folds by cluster</td>
+</tr>
+<tr>
+<td>Future cohort after a policy change</td>
+<td>Train on earlier time; test on later time</td>
+</tr>
+<tr>
+<td>New clinic or country</td>
+<td>Leave-one-site-out or external validation</td>
+</tr>
+</tbody>
+</table>
+<p>For nested cross-validation, the outer folds estimate generalization
+and the inner folds tune hyperparameters. Every preprocessing decision
+that learns from data belongs inside the inner loop.</p>
+<h1 id="missing-data-sampling-and-survey-design">9. Missing Data,
+Sampling, and Survey Design</h1>
+<p>Missingness is not merely a software inconvenience. “Prefer not to
+answer,” skipped sensitive questions, device failure, attrition, and
+planned questionnaire forms can carry different information.</p>
+<ul>
+<li>Describe missingness by variable, wave, outcome, and relevant
+subgroup.</li>
+<li>Fit imputation only on training folds and carry it forward to
+validation data.</li>
+<li>Add missingness indicators only with a substantive rationale.</li>
+<li>Compare complete-case and principled multiple-imputation analyses
+when inference is also a goal.</li>
+<li>If estimating population performance from a complex survey, consider
+sampling weights, strata, and clusters.</li>
+<li>Distinguish <strong>training weights</strong> that change the
+learned model from <strong>evaluation weights</strong> that define the
+target population.</li>
+</ul>
+<p>An ML pipeline does not automatically make survey weights irrelevant.
+The correct approach depends on whether the target is finite-population
+description, prediction for sampled participants, or prediction for a
+policy-defined population.</p>
+<h1 id="interpretation-without-overclaiming">10. Interpretation Without
+Overclaiming</h1>
+<h2 id="coefficients-and-odds-ratios">10.1 Coefficients and odds
+ratios</h2>
+<p>Exponentiating a logistic coefficient produces a conditional odds
+ratio for a one-unit predictor change, given the model specification. It
+is not a risk ratio, causal effect, or necessarily a useful measure of
+predictive contribution.</p>
+<h2 id="permutation-importance">10.2 Permutation importance</h2>
+<p>On untouched validation data, shuffle one feature and measure the
+loss in performance. A large drop means the fitted model relied on that
+feature in this dataset. Correlated predictors can share or mask
+importance, so repeat permutations and show uncertainty.</p>
+<h2 id="partial-dependence-and-individual-explanations">10.3 Partial
+dependence and individual explanations</h2>
+<p>Partial dependence averages model predictions over hypothetical
+feature values; it can extrapolate to implausible combinations.
+Individual explanation tools describe the fitted model locally, not the
+person’s psychological mechanism. Use plain-language sensitivity checks
+and representative cases alongside any SHAP-style visualization.</p>
+<div class="callout warning">
+<strong>Do not remove a protected attribute and declare
+fairness.</strong> Neighborhood, language, income, disability-related
+measures, or institutional history can act as proxies. Sometimes a
+protected attribute is needed to measure disparate performance even when
+it is not used for prediction.
+</div>
+<h1 id="fairness-ethics-and-governance">11. Fairness, Ethics, and
+Governance</h1>
+<h2 id="a-practical-audit">11.1 A practical audit</h2>
+<ol type="1">
+<li>Define who benefits, who bears errors, and who can contest a
+result.</li>
+<li>Document consent, lawful purpose, retention, access, and linkage
+risk.</li>
+<li>Examine label validity and missingness across groups.</li>
+<li>Report group sample sizes, prevalence, calibration, sensitivity,
+specificity, PPV, and uncertainty.</li>
+<li>Test plausible threshold policies rather than choosing one
+silently.</li>
+<li>Conduct external and temporal validation.</li>
+<li>Monitor drift, overrides, unexpected uses, and downstream
+outcomes.</li>
+<li>Establish a stop rule and a route to human review.</li>
+</ol>
+<p>Fairness metrics can conflict when base rates differ. The correct
+response is not to pick the most favorable number; it is to connect
+metrics to harms, rights, and the institutional context.</p>
+<h2 id="psychology-specific-safeguards">11.2 Psychology-specific
+safeguards</h2>
+<ul>
+<li>A scale is not automatically a diagnosis.</li>
+<li>Clinical utility requires more than statistical significance or
+AUC.</li>
+<li>Consider spectrum bias, comorbidity, medication, treatment access,
+and referral pathways.</li>
+<li>Validate translations and measurement invariance across
+language/cultural groups.</li>
+<li>Avoid alarming probability displays without a support pathway.</li>
+</ul>
+<h2 id="sociology-specific-safeguards">11.3 Sociology-specific
+safeguards</h2>
+<ul>
+<li>Structural inequality can appear as individual “risk.”</li>
+<li>Administrative labels often reflect enforcement and access, not only
+behavior.</li>
+<li>Predictive parity does not repair an unjust allocation rule.</li>
+<li>Community participation and qualitative evidence can expose harms
+invisible in a metric table.</li>
+</ul>
+<h1 id="reporting-template-and-reproducibility-checklist">12. Reporting
+Template and Reproducibility Checklist</h1>
+<h2 id="compact-model-card-template">12.1 Compact model-card
+template</h2>
+<pre class="text"><code>Purpose and prohibited uses:
+Population, setting, and prediction time:
+Outcome definition and horizon:
+Sampling frame and observation unit:
+Training/validation/test dates and sizes:
+Predictors and their availability time:
+Missing-data and preprocessing steps:
+Candidate models and tuning procedure:
+Primary and secondary metrics with uncertainty:
+Calibration and threshold selection:
+Subgroup and external validation results:
+Known limitations, drift risks, and monitoring plan:
+Human review, appeal, and model owner:
+Software versions, seed, and data/code location:</code></pre>
+<h2 id="final-checklist">12.2 Final checklist</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>The prediction sentence specifies
+population, time, outcome, horizon, use, and metric.</label></li>
+<li><label><input type="checkbox"></input>The observational unit and clusters
+are explicit.</label></li>
+<li><label><input type="checkbox"></input>No feature occurs after the
+prediction time.</label></li>
+<li><label><input type="checkbox"></input>The final test set was untouched
+during preprocessing and tuning.</label></li>
+<li><label><input type="checkbox"></input>A simple, substantively meaningful
+baseline is reported.</label></li>
+<li><label><input type="checkbox"></input>Discrimination and calibration are
+both assessed.</label></li>
+<li><label><input type="checkbox"></input>Threshold choice is tied to costs,
+capacity, and rights.</label></li>
+<li><label><input type="checkbox"></input>Performance uncertainty and subgroup
+sample sizes are shown.</label></li>
+<li><label><input type="checkbox"></input>Claims distinguish prediction,
+association, and causation.</label></li>
+<li><label><input type="checkbox"></input>Sensitive attributes, proxies,
+privacy, and label validity were reviewed.</label></li>
+<li><label><input type="checkbox"></input>External/temporal validation and
+monitoring are proportionate to impact.</label></li>
+<li><label><input type="checkbox"></input>Code, seeds, package versions, and
+data provenance are recorded.</label></li>
+</ul>
+<h1 id="exercises">13. Exercises</h1>
+<ol type="1">
+<li>Change completion prevalence in the R simulation. Compare accuracy,
+PPV, ROC AUC, and Brier score.</li>
+<li>Choose thresholds of 0.30, 0.50, and 0.70. Explain who receives
+additional reminders and which errors increase.</li>
+<li>Add a participant ID with three rows per person. Show why a row-wise
+split leaks information, then implement a grouped split.</li>
+<li>In Python, tune ridge <code>alpha</code> using five folds inside the
+training data. Plot or tabulate validation MAE against
+<code>alpha</code>.</li>
+<li>Add nonlinear effects of sleep and baseline distress. Compare a
+linear model with a tree while keeping the same test set.</li>
+<li>Introduce 20% missingness related to stress. Compare complete-case
+analysis with training-fold median imputation.</li>
+<li>Create a subgroup with a shifted outcome mechanism and inspect group
+calibration.</li>
+<li>Write two conclusions for the same model: one valid predictive
+conclusion and one invalid causal conclusion. Explain the
+difference.</li>
+<li>Draft a model card for a treatment-dropout support tool, including a
+prohibited-use section.</li>
+</ol>
+<h1 id="further-reading">14. Further Reading</h1>
+<ul>
+<li>James, Witten, Hastie, Tibshirani, and Taylor, <em>An Introduction
+to Statistical Learning</em>.</li>
+<li>Kuhn and Johnson, <em>Applied Predictive Modeling</em>.</li>
+<li>Steyerberg, <em>Clinical Prediction Models</em> (useful for
+validation and calibration concepts).</li>
+<li>Hernán and Robins, <em>Causal Inference: What If</em> (for
+separating prediction from causal questions).</li>
+<li>American Psychological Association, <em>Standards for Educational
+and Psychological Testing</em>.</li>
+<li>TRIPOD and PROBAST guidance for transparent prediction-model
+reporting and risk-of-bias assessment.</li>
+</ul>
+<div class="callout success">
+<strong>Core principle:</strong> a useful model is not merely the one
+with the highest score. It is the one whose outcome, validation design,
+uncertainty, limitations, and intended action form a defensible chain.
+</div>
+<script>
+(function(){const zh=false;document.querySelectorAll('div.sourceCode').forEach(function(box){const b=document.createElement('button');b.className='copy';b.type='button';b.textContent='Copy';b.onclick=async function(){try{await navigator.clipboard.writeText(box.querySelector('pre').innerText);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1200)}catch(e){b.textContent='Copy failed'}};box.appendChild(b)});const t=document.createElement('button');t.className='backtop';t.type='button';t.textContent='↑';t.setAttribute('aria-label','Back to top');t.onclick=()=>scrollTo({top:0,behavior:'smooth'});document.body.appendChild(t);addEventListener('scroll',()=>t.classList.toggle('show',scrollY>600),{passive:true})})();
+</script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

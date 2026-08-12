@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>High-Dimensional Regression Modeling: From Principles to Reproducible Analysis</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · High-Dimensional Regression</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · PENALIZED REGRESSION · HTML</span>
+    <h1>High-Dimensional Regression Modeling: From Principles to Reproducible Analysis</h1>
+    <p>A practical guide to regularization, model validation, variable selection, inference, and structured sparsity</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">R</span><span class="badge">High-dimensional regression</span><span class="badge">glmnet</span><span class="badge">ncvreg</span><span class="badge">Reproducible workflow</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#1-what-this-guide-is-for">1. What this guide is for</a></li>
+<li class="toc-level-1"><a href="#2-create-a-reproducible-environment">2. Create a reproducible environment</a></li>
+<li class="toc-level-2"><a href="#2-1-minimal-package-set">2.1 Minimal package set</a></li>
+<li class="toc-level-2"><a href="#2-2-fix-randomness-and-record-the-environment">2.2 Fix randomness and record the environment</a></li>
+<li class="toc-level-1"><a href="#3-start-with-a-controlled-high-dimensional-simulation">3. Start with a controlled high-dimensional simulation</a></li>
+<li class="toc-level-1"><a href="#4-large-scale-univariate-testing-fwer-fdr-and-local-fdr">4. Large-scale univariate testing: FWER, FDR, and local FDR</a></li>
+<li class="toc-level-2"><a href="#4-1-choose-the-error-target-first">4.1 Choose the error target first</a></li>
+<li class="toc-level-2"><a href="#4-2-a-simplified-local-fdr-estimate">4.2 A simplified local-FDR estimate</a></li>
+<li class="toc-level-1"><a href="#5-ridge-a-stable-baseline-for-correlated-predictors-and-prediction">5. Ridge: a stable baseline for correlated predictors and prediction</a></li>
+<li class="toc-level-1"><a href="#6-lasso-sparse-selection-soft-thresholding-and-coordinate-descent">6. Lasso: sparse selection, soft thresholding, and coordinate descent</a></li>
+<li class="toc-level-1"><a href="#7-cross-validation-tune-lambda-and-assess-honestly">7. Cross-validation: tune lambda and assess honestly</a></li>
+<li class="toc-level-2"><a href="#7-1-use-one-metric-function">7.1 Use one metric function</a></li>
+<li class="toc-level-2"><a href="#7-2-nested-cross-validation-skeleton">7.2 Nested cross-validation skeleton</a></li>
+<li class="toc-level-1"><a href="#8-adaptive-lasso-mcp-and-scad-reducing-large-signal-bias">8. Adaptive Lasso, MCP, and SCAD: reducing large-signal bias</a></li>
+<li class="toc-level-2"><a href="#8-1-adaptive-lasso">8.1 Adaptive Lasso</a></li>
+<li class="toc-level-2"><a href="#8-2-mcp-and-scad">8.2 MCP and SCAD</a></li>
+<li class="toc-level-1"><a href="#9-elastic-net-stabilize-correlated-predictors">9. Elastic Net: stabilize correlated predictors</a></li>
+<li class="toc-level-1"><a href="#10-compare-sparsity-and-stability-not-only-prediction-error">10. Compare sparsity and stability, not only prediction error</a></li>
+<li class="toc-level-1"><a href="#11-inference-after-variable-selection">11. Inference after variable selection</a></li>
+<li class="toc-level-2"><a href="#11-1-simple-sample-splitting">11.1 Simple sample splitting</a></li>
+<li class="toc-level-2"><a href="#11-2-an-mfdr-path">11.2 An mFDR path</a></li>
+<li class="toc-level-2"><a href="#11-3-knockoff-filtering">11.3 Knockoff filtering</a></li>
+<li class="toc-level-1"><a href="#12-binary-outcomes-and-other-likelihoods">12. Binary outcomes and other likelihoods</a></li>
+<li class="toc-level-2"><a href="#12-1-penalized-logistic-regression">12.1 Penalized logistic regression</a></li>
+<li class="toc-level-2"><a href="#12-2-multinomial-cox-and-robust-regression">12.2 Multinomial, Cox, and robust regression</a></li>
+<li class="toc-level-1"><a href="#13-group-lasso-and-bi-level-selection">13. Group Lasso and bi-level selection</a></li>
+<li class="toc-level-1"><a href="#14-interactions-and-hierarchy">14. Interactions and hierarchy</a></li>
+<li class="toc-level-1"><a href="#15-fusion-trend-filtering-and-ordered-structure">15. Fusion, trend filtering, and ordered structure</a></li>
+<li class="toc-level-1"><a href="#16-splines-sparse-pca-and-graphical-models">16. Splines, sparse PCA, and graphical models</a></li>
+<li class="toc-level-2"><a href="#16-1-expand-spline-bases-then-select-groups">16.1 Expand spline bases, then select groups</a></li>
+<li class="toc-level-2"><a href="#16-2-sparse-pca-and-graphical-lasso">16.2 Sparse PCA and graphical lasso</a></li>
+<li class="toc-level-1"><a href="#17-end-to-end-project-template">17. End-to-end project template</a></li>
+<li class="toc-level-1"><a href="#18-suggested-learning-path-and-completion-checklist">18. Suggested learning path and completion checklist</a></li>
+<li class="toc-level-1"><a href="#19-acknowledgments">19. Acknowledgments</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML was built offline from the canonical Rmd beside it. To avoid automatically starting long simulations, downloads, or optional package installs, examples are shown without execution; every R block was syntax-parsed and can be run section by section.</div><h1 id="1-what-this-guide-is-for">1. What this guide is for</h1>
+<p>This guide is a complete, standalone workflow for high-dimensional modeling: determine whether the problem is multiple testing, prediction, variable selection, or inference; choose a penalty, validation design, and metric; then report stability and uncertainty. Every concept, warning, and code example needed by the tutorial is included on the page, with no dependency on external lecture notes, course scripts, or a textbook file.</p>
+<p>Examples are not executed automatically so the page does not install optional packages or start long simulations. Copy one section at a time into a clean R session and adapt parameters to the structure of your data.</p>
+<p>After working through the guide, you should be able to:</p>
+<ul><li>explain why ordinary least squares becomes unstable when <span class="math-inline">p</span> approaches or exceeds <span class="math-inline">n</span>;</li><li>compare Ridge, Lasso, Elastic Net, MCP, and SCAD under the same data split;</li><li>distinguish training error, cross-validation error, independent test error, and post-selection inference;</li><li>choose suitable penalties for binary, survival, grouped, interaction, and ordered data;</li><li>organize data auditing, tuning, independent assessment, stability analysis, and reporting into a reproducible workflow.</li></ul>
+<blockquote><p>The most important habit is to separate model selection from model assessment. Selecting variables on all observations and then reporting ordinary <code>lm()</code> p-values on those same observations is not valid post-selection inference.</p></blockquote>
+<h1 id="2-create-a-reproducible-environment">2. Create a reproducible environment</h1>
+<h2 id="2-1-minimal-package-set">2.1 Minimal package set</h2>
+<p>The main modeling path usually needs only <code>glmnet</code>, <code>ncvreg</code>, <code>grpreg</code>, and the course helper package <code>hdrm</code>. Install specialized packages only when you reach the relevant section.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">cran_packages &lt;- c(
+  &quot;glmnet&quot;, &quot;ncvreg&quot;, &quot;grpreg&quot;, &quot;ggplot2&quot;, &quot;data.table&quot;,
+  &quot;PRROC&quot;, &quot;knockoff&quot;, &quot;genlasso&quot;, &quot;survival&quot;
+)
+
+missing &lt;- cran_packages[
+  !vapply(cran_packages, requireNamespace, logical(1), quietly = TRUE)
+]
+if (length(missing)) {
+  install.packages(missing)
+}</code></pre></div>
+<p><code>hdrm</code> is hosted on GitHub and supplies course data, plotting functions, and packaged examples.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">if (!requireNamespace(&quot;hdrm&quot;, quietly = TRUE)) {
+  if (!requireNamespace(&quot;remotes&quot;, quietly = TRUE)) {
+    install.packages(&quot;remotes&quot;)
+  }
+  remotes::install_github(&quot;pbreheny/hdrm&quot;)
+}</code></pre></div>
+<p>Packages such as <code>limma</code> and <code>Rgraphviz</code> come from Bioconductor and are needed only for specific lectures.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE)) {
+  install.packages(&quot;BiocManager&quot;)
+}
+BiocManager::install(c(&quot;limma&quot;, &quot;Rgraphviz&quot;), ask = FALSE, update = FALSE)</code></pre></div>
+<h2 id="2-2-fix-randomness-and-record-the-environment">2.2 Fix randomness and record the environment</h2>
+<p>Cross-validation, resampling, and simulation all depend on random numbers. A seed is only the beginning: save fold assignments, test indices, and software versions as well.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(7240)
+options(stringsAsFactors = FALSE)
+
+analysis_meta &lt;- list(
+  generated_at = Sys.time(),
+  r_version = R.version.string,
+  seed = 7240,
+  session = sessionInfo()
+)
+
+dir.create(&quot;artifacts&quot;, showWarnings = FALSE)
+saveRDS(analysis_meta, &quot;artifacts/session-info.rds&quot;)</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Object to save</th><th>Why</th><th>Suggested file</th></tr></thead><tbody><tr><td>Train/test indices</td><td>Prevent a new random split from changing the story</td><td><code>split.rds</code></td></tr><tr><td>CV fold IDs</td><td>Ensure fair model comparisons</td><td><code>foldid.rds</code></td></tr><tr><td>Fitted path objects</td><td>Preserve the complete lambda path</td><td><code>fit-*.rds</code></td></tr><tr><td>Metric table</td><td>Support auditing and selection</td><td><code>metrics.csv</code></td></tr><tr><td><code>sessionInfo()</code></td><td>Record R and package versions</td><td><code>session-info.rds</code></td></tr></tbody></table></div>
+<h1 id="3-start-with-a-controlled-high-dimensional-simulation">3. Start with a controlled high-dimensional simulation</h1>
+<p>Real data do not reveal which variables are true signals. Validate the workflow on a simulation before applying it to course data. The function below creates an AR(1)-correlated design with only the first <code>s</code> coefficients active.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">simulate_hd &lt;- function(n = 160, p = 500, s = 12,
+                        rho = 0.45, sigma = 1) {
+  stopifnot(n &gt; 10, p &gt;= s, s &gt;= 1, abs(rho) &lt; 1)
+  X &lt;- matrix(0, nrow = n, ncol = p)
+  X[, 1] &lt;- rnorm(n)
+  for (j in 2:p) {
+    X[, j] &lt;- rho * X[, j - 1] + sqrt(1 - rho^2) * rnorm(n)
+  }
+  X &lt;- scale(X)
+  beta &lt;- numeric(p)
+  beta[seq_len(s)] &lt;- rep(c(1.5, -1.25, 0.9), length.out = s)
+  y &lt;- drop(X %*% beta + rnorm(n, sd = sigma))
+  colnames(X) &lt;- sprintf(&quot;X%03d&quot;, seq_len(p))
+  list(X = X, y = y, beta = beta, active = seq_len(s))
+}
+
+dat &lt;- simulate_hd()
+c(n = nrow(dat$X), p = ncol(dat$X), signals = length(dat$active))</code></pre></div>
+<p>Create an independent test set and make every candidate model use the same training observations and CV folds.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(7240)
+test_id &lt;- sample(seq_len(nrow(dat$X)), size = floor(0.25 * nrow(dat$X)))
+train_id &lt;- setdiff(seq_len(nrow(dat$X)), test_id)
+
+x_train &lt;- dat$X[train_id, , drop = FALSE]
+y_train &lt;- dat$y[train_id]
+x_test &lt;- dat$X[test_id, , drop = FALSE]
+y_test &lt;- dat$y[test_id]
+
+set.seed(7241)
+foldid &lt;- sample(rep(seq_len(10), length.out = length(y_train)))
+saveRDS(list(train = train_id, test = test_id, foldid = foldid),
+        &quot;artifacts/split.rds&quot;)</code></pre></div>
+<p>Check basic data integrity before fitting anything.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">quality_check &lt;- c(
+  missing_x = sum(!is.finite(x_train)),
+  missing_y = sum(!is.finite(y_train)),
+  zero_variance = sum(apply(x_train, 2, sd) == 0),
+  duplicated_columns = sum(duplicated(as.data.frame(x_train))),
+  p_over_n = ncol(x_train) / nrow(x_train)
+)
+quality_check</code></pre></div>
+<h1 id="4-large-scale-univariate-testing-fwer-fdr-and-local-fdr">4. Large-scale univariate testing: FWER, FDR, and local FDR</h1>
+<p>Large-scale testing begins by deciding whether to control the probability of any false positive or the false proportion among discoveries. Holm, Bonferroni, and Westfall-Young primarily control FWER; Benjamini-Hochberg controls FDR; local FDR gives an item-level posterior null probability. Empirical-Bayes methods can also stabilize variance estimates by sharing information across features.</p>
+<h2 id="4-1-choose-the-error-target-first">4.1 Choose the error target first</h2>
+<div class="table-wrap"><table><thead><tr><th>Method</th><th>Controls</th><th>Best suited to</th><th>Cost</th></tr></thead><tbody><tr><td>Bonferroni/Holm</td><td>Probability of at least one false positive, FWER</td><td>Confirmatory work with expensive errors</td><td>Often conservative</td></tr><tr><td>BH</td><td>Expected false proportion among discoveries, FDR</td><td>Exploratory genomics and large screens</td><td>Dependence conditions matter</td></tr><tr><td>Westfall-Young</td><td>FWER while exploiting dependence</td><td>Correlated tests with valid permutations</td><td>Computationally expensive</td></tr><tr><td>Local FDR</td><td>Posterior null probability for each observation</td><td>Ranking individual findings</td><td>Requires a mixture-density estimate</td></tr></tbody></table></div>
+<p>A runnable simulation:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(4102)
+m &lt;- 3200
+signal_id &lt;- sample(seq_len(m), size = 140)
+is_signal &lt;- seq_len(m) %in% signal_id
+effect &lt;- numeric(m)
+effect[signal_id] &lt;- sample(c(-3.4, -2.8, 2.8, 3.4),
+                            length(signal_id), replace = TRUE)
+z &lt;- rnorm(m, mean = effect, sd = 1)
+p_value &lt;- 2 * pnorm(-abs(z))
+
+discoveries &lt;- data.frame(
+  raw = p_value &lt; 0.05,
+  holm = p.adjust(p_value, method = &quot;holm&quot;) &lt; 0.05,
+  bh_05 = p.adjust(p_value, method = &quot;BH&quot;) &lt; 0.05,
+  bh_10 = p.adjust(p_value, method = &quot;BH&quot;) &lt; 0.10
+)
+colSums(discoveries)</code></pre></div>
+<p>Use the known simulation truth to calculate realized FDP and power. A real project does not provide <code>is_signal</code>; this calculation is for method validation only.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">score_discoveries &lt;- function(selected, truth) {
+  selected &lt;- as.logical(selected)
+  truth &lt;- as.logical(truth)
+  c(
+    selected = sum(selected),
+    false_discoveries = sum(selected &amp; !truth),
+    fdp = sum(selected &amp; !truth) / max(sum(selected), 1),
+    power = sum(selected &amp; truth) / max(sum(truth), 1)
+  )
+}
+
+rbind(
+  Holm = score_discoveries(discoveries$holm, is_signal),
+  BH_10 = score_discoveries(discoveries$bh_10, is_signal)
+)</code></pre></div>
+<h2 id="4-2-a-simplified-local-fdr-estimate">4.2 A simplified local-FDR estimate</h2>
+<p>The central local-FDR idea is to estimate the marginal density <span class="math-inline">f(z)</span> and evaluate <span class="math-inline">\pi_0 f_0(z)/f(z)</span>. The next block is a simplified teaching implementation; for formal work, prefer a validated empirical-Bayes implementation such as <code>fdrtool</code>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">local_null_probability &lt;- function(statistic, pi0 = 0.95,
+                                   null_mean = 0, null_sd = 1) {
+  marginal &lt;- density(statistic, bw = &quot;SJ&quot;, n = 4096)
+  marginal_at_z &lt;- approxfun(
+    marginal$x, marginal$y,
+    yleft = marginal$y[1], yright = tail(marginal$y, 1)
+  )
+  null_component &lt;- pi0 * dnorm(statistic, null_mean, null_sd)
+  estimate &lt;- null_component /
+    pmax(marginal_at_z(statistic), sqrt(.Machine$double.eps))
+  pmin(1, pmax(0, estimate))
+}
+
+lfdr &lt;- local_null_probability(z, pi0 = 0.95)
+head(data.frame(z = z, p = p_value, lfdr = lfdr)[order(lfdr), ], 10)</code></pre></div>
+<h1 id="5-ridge-a-stable-baseline-for-correlated-predictors-and-prediction">5. Ridge: a stable baseline for correlated predictors and prediction</h1>
+<p>When two or more predictors are nearly collinear, OLS coefficients can become unstable. Ridge adds an <span class="math-inline">L_2</span> penalty and usually does not produce exact zero coefficients, making it a strong baseline when many predictors may have small effects or prediction is the primary goal.</p>
+<div class="math-display">\hat\beta^{ridge}(\lambda)=\arg\min_\beta\left\{\frac{1}{2n}\lVert y-X\beta\rVert_2^2+\lambda\lVert\beta\rVert_2^2\right\}</div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">if (!requireNamespace(&quot;glmnet&quot;, quietly = TRUE)) {
+  stop(&quot;Install glmnet before running this section&quot;)
+}
+
+ridge_cv &lt;- glmnet::cv.glmnet(
+  x_train, y_train,
+  alpha = 0,
+  foldid = foldid,
+  standardize = TRUE,
+  type.measure = &quot;mse&quot;
+)
+
+ridge_pred &lt;- drop(predict(ridge_cv, x_test, s = &quot;lambda.min&quot;))
+ridge_rmse &lt;- sqrt(mean((y_test - ridge_pred)^2))
+ridge_rmse</code></pre></div>
+<p>The small collinearity example mirrors the lecture directly.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(2718)
+n_pair &lt;- 64
+latent_factor &lt;- rnorm(n_pair)
+predictor_a &lt;- latent_factor + rnorm(n_pair, sd = 0.06)
+predictor_b &lt;- 0.9 * latent_factor + rnorm(n_pair, sd = 0.08)
+response_pair &lt;- 2.5 + 0.7 * predictor_a +
+  1.1 * predictor_b + rnorm(n_pair, sd = 0.7)
+
+coef(lm(response_pair ~ predictor_a + predictor_b))
+
+x_pair &lt;- cbind(predictor_a, predictor_b)
+ridge_pair &lt;- glmnet::glmnet(
+  x_pair, response_pair,
+  alpha = 0, lambda = c(0.35, 0.12), standardize = TRUE
+)
+drop(coef(ridge_pair))</code></pre></div>
+<h1 id="6-lasso-sparse-selection-soft-thresholding-and-coordinate-descent">6. Lasso: sparse selection, soft thresholding, and coordinate descent</h1>
+<p>Lasso adds an <span class="math-inline">L_1</span> penalty, allowing coefficients to become exactly zero. KKT conditions characterize the optimum, soft thresholding explains coefficient updates under an orthogonal design, and coordinate descent efficiently calculates the full regularization path.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">soft_threshold &lt;- function(z, lambda) {
+  sign(z) * pmax(abs(z) - lambda, 0)
+}
+
+z_grid &lt;- seq(-3, 3, length.out = 13)
+data.frame(
+  z = z_grid,
+  soft_0_5 = soft_threshold(z_grid, 0.5),
+  soft_1_0 = soft_threshold(z_grid, 1.0)
+)</code></pre></div>
+<p>Save the complete fitted path rather than only the final coefficient vector.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">lasso_cv &lt;- glmnet::cv.glmnet(
+  x_train, y_train,
+  alpha = 1,
+  foldid = foldid,
+  standardize = TRUE,
+  type.measure = &quot;mse&quot;,
+  keep = TRUE
+)
+
+lasso_beta_min &lt;- drop(coef(lasso_cv, s = &quot;lambda.min&quot;))
+lasso_beta_1se &lt;- drop(coef(lasso_cv, s = &quot;lambda.1se&quot;))
+c(
+  selected_min = sum(lasso_beta_min[-1] != 0),
+  selected_1se = sum(lasso_beta_1se[-1] != 0)
+)</code></pre></div>
+<p><code>lambda.min</code> minimizes estimated CV error. <code>lambda.1se</code> uses more shrinkage while remaining within one standard error of the minimum, usually producing a smaller and more stable model.</p>
+<h1 id="7-cross-validation-tune-lambda-and-assess-honestly">7. Cross-validation: tune lambda and assess honestly</h1>
+<p>Effective degrees of freedom, information criteria, and cross-validation answer different questions. Tuning by CV does not by itself provide an independent generalization estimate. If the same CV result chooses the model and supports the performance claim, optimism can remain.</p>
+<h2 id="7-1-use-one-metric-function">7.1 Use one metric function</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">regression_metrics &lt;- function(observed, predicted) {
+  residual &lt;- observed - predicted
+  c(
+    RMSE = sqrt(mean(residual^2)),
+    MAE = mean(abs(residual)),
+    R2 = 1 - sum(residual^2) / sum((observed - mean(observed))^2)
+  )
+}
+
+lasso_pred_min &lt;- drop(predict(lasso_cv, x_test, s = &quot;lambda.min&quot;))
+lasso_pred_1se &lt;- drop(predict(lasso_cv, x_test, s = &quot;lambda.1se&quot;))
+
+rbind(
+  Ridge = regression_metrics(y_test, ridge_pred),
+  Lasso_min = regression_metrics(y_test, lasso_pred_min),
+  Lasso_1se = regression_metrics(y_test, lasso_pred_1se)
+)</code></pre></div>
+<h2 id="7-2-nested-cross-validation-skeleton">7.2 Nested cross-validation skeleton</h2>
+<p>When the sample is too small for a fixed test set, use outer CV for performance and inner CV for lambda selection.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">nested_cv_glmnet &lt;- function(X, y, outer_k = 5, inner_k = 5, alpha = 1,
+                             seed = 7240) {
+  set.seed(seed)
+  outer_fold &lt;- sample(rep(seq_len(outer_k), length.out = length(y)))
+  prediction &lt;- rep(NA_real_, length(y))
+  chosen_lambda &lt;- numeric(outer_k)
+
+  for (k in seq_len(outer_k)) {
+    assessment &lt;- outer_fold == k
+    analysis &lt;- !assessment
+    set.seed(seed + k)
+    inner_fold &lt;- sample(rep(seq_len(inner_k), length.out = sum(analysis)))
+    fit &lt;- glmnet::cv.glmnet(
+      X[analysis, , drop = FALSE], y[analysis],
+      alpha = alpha, foldid = inner_fold, standardize = TRUE
+    )
+    chosen_lambda[k] &lt;- fit$lambda.min
+    prediction[assessment] &lt;- drop(predict(
+      fit, X[assessment, , drop = FALSE], s = &quot;lambda.min&quot;
+    ))
+  }
+
+  list(
+    prediction = prediction,
+    lambda = chosen_lambda,
+    metrics = regression_metrics(y, prediction)
+  )
+}</code></pre></div>
+<h1 id="8-adaptive-lasso-mcp-and-scad-reducing-large-signal-bias">8. Adaptive Lasso, MCP, and SCAD: reducing large-signal bias</h1>
+<p>Lasso, Adaptive Lasso, MCP, and SCAD have different thresholding rules and solution paths. A frequently missed point is that Adaptive Lasso weights are estimated from data, so the entire two-stage procedure belongs inside cross-validation.</p>
+<h2 id="8-1-adaptive-lasso">8.1 Adaptive Lasso</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">initial &lt;- glmnet::cv.glmnet(
+  x_train, y_train, alpha = 0,
+  foldid = foldid, standardize = TRUE
+)
+initial_beta &lt;- abs(drop(coef(initial, s = &quot;lambda.min&quot;))[-1])
+penalty_weight &lt;- 1 / pmax(initial_beta, 1e-4)
+
+adaptive_cv &lt;- glmnet::cv.glmnet(
+  x_train, y_train,
+  alpha = 1,
+  penalty.factor = penalty_weight,
+  foldid = foldid,
+  standardize = TRUE
+)</code></pre></div>
+<p>This code is useful for demonstration. In formal assessment, re-estimate <code>initial_beta</code> inside each training fold; otherwise validation information leaks into the weights.</p>
+<h2 id="8-2-mcp-and-scad">8.2 MCP and SCAD</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">if (!requireNamespace(&quot;ncvreg&quot;, quietly = TRUE)) {
+  stop(&quot;Install ncvreg before running this section&quot;)
+}
+
+mcp_cv &lt;- ncvreg::cv.ncvreg(
+  x_train, y_train,
+  penalty = &quot;MCP&quot;, gamma = 3,
+  fold = foldid, seed = 7240
+)
+
+scad_cv &lt;- ncvreg::cv.ncvreg(
+  x_train, y_train,
+  penalty = &quot;SCAD&quot;, gamma = 3.7,
+  fold = foldid, seed = 7240
+)</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Penalty</th><th>Main advantage</th><th>Main risk</th><th>Good starting use</th></tr></thead><tbody><tr><td>Lasso</td><td>Convex, fast, mature implementations</td><td>Large-signal bias, unstable correlated choices</td><td>Default sparse baseline</td></tr><tr><td>Adaptive Lasso</td><td>Penalizes important variables less</td><td>Weight-estimation leakage</td><td>Reliable initial estimate</td></tr><tr><td>MCP</td><td>Less bias for large coefficients</td><td>Nonconvex; gamma and local convexity matter</td><td>Sparse, reasonably strong signals</td></tr><tr><td>SCAD</td><td>Sparse near zero, little shrinkage far away</td><td>Nonconvex and more complex to tune</td><td>Selection plus interpretation</td></tr></tbody></table></div>
+<h1 id="9-elastic-net-stabilize-correlated-predictors">9. Elastic Net: stabilize correlated predictors</h1>
+<p>Elastic Net adds an <span class="math-inline">L_2</span> component to Lasso and often retains correlated groups more stably. Average absolute correlation, cumulative PCA variance, and effective rank help identify strong dependence or low-rank structure in the design matrix.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">alpha_grid &lt;- c(0, 0.25, 0.5, 0.75, 1)
+enet_fits &lt;- lapply(alpha_grid, function(a) {
+  glmnet::cv.glmnet(
+    x_train, y_train,
+    alpha = a,
+    foldid = foldid,
+    standardize = TRUE,
+    type.measure = &quot;mse&quot;
+  )
+})
+
+enet_table &lt;- do.call(rbind, lapply(seq_along(enet_fits), function(i) {
+  fit &lt;- enet_fits[[i]]
+  pred &lt;- drop(predict(fit, x_test, s = &quot;lambda.min&quot;))
+  beta &lt;- drop(coef(fit, s = &quot;lambda.min&quot;))[-1]
+  data.frame(
+    alpha = alpha_grid[i],
+    lambda = fit$lambda.min,
+    selected = sum(beta != 0),
+    RMSE = regression_metrics(y_test, pred)[&quot;RMSE&quot;]
+  )
+}))
+enet_table</code></pre></div>
+<p>If several alpha values have practically indistinguishable outer-CV or test performance, favor the simpler and more stable choice that matches the scientific structure instead of optimizing the third decimal place.</p>
+<h1 id="10-compare-sparsity-and-stability-not-only-prediction-error">10. Compare sparsity and stability, not only prediction error</h1>
+<p>High-dimensional models can have similar RMSE but select very different variables. Repeated half-samples can estimate how often each variable is selected, which is more informative than one Lasso nonzero list.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">stability_selection &lt;- function(X, y, lambda, B = 100, fraction = 0.5,
+                                seed = 7240) {
+  set.seed(seed)
+  p &lt;- ncol(X)
+  selected &lt;- matrix(FALSE, nrow = B, ncol = p)
+  for (b in seq_len(B)) {
+    id &lt;- sample(seq_len(nrow(X)), size = floor(fraction * nrow(X)))
+    fit &lt;- glmnet::glmnet(
+      X[id, , drop = FALSE], y[id],
+      alpha = 1, lambda = lambda, standardize = TRUE
+    )
+    selected[b, ] &lt;- drop(coef(fit))[-1] != 0
+  }
+  probability &lt;- colMeans(selected)
+  names(probability) &lt;- colnames(X)
+  sort(probability, decreasing = TRUE)
+}
+
+selection_probability &lt;- stability_selection(
+  x_train, y_train, lambda = lasso_cv$lambda.1se, B = 50
+)
+head(selection_probability, 15)</code></pre></div>
+<p>Report at least:</p>
+<ul><li>outer-CV or independent-test prediction error;</li><li>final number of nonzero coefficients;</li><li>resampling selection probabilities;</li><li>Jaccard similarity of selected sets across folds or seeds;</li><li>improvement over a simple baseline such as the mean, clinical variables, or Ridge.</li></ul>
+<h1 id="11-inference-after-variable-selection">11. Inference after variable selection</h1>
+<p>Marginal FDR, semi-penalized tests, sample splitting, bootstrap, and selective inference answer different questions. Before choosing a method, state whether the target is prediction, discovery control, a pre-specified effect, or an interval conditional on the selection event.</p>
+<div class="table-wrap"><table><thead><tr><th>Objective</th><th>Candidate method</th><th>Interpretation</th></tr></thead><tbody><tr><td>Prediction</td><td>CV or test error</td><td>Accuracy for new observations</td></tr><tr><td>Variable discovery</td><td>mFDR, knockoffs, stability selection</td><td>Error rate among selected variables</td></tr><tr><td>Pre-specified coefficient</td><td>Semi-penalized or debiased method</td><td>Target effect after high-dimensional nuisance adjustment</td></tr><tr><td>Post-selection interval</td><td>Selective inference</td><td>Inference conditional on the selection event</td></tr><tr><td>Transparent exploration</td><td>Sample splitting</td><td>Select on one part, use ordinary inference on another</td></tr></tbody></table></div>
+<h2 id="11-1-simple-sample-splitting">11.1 Simple sample splitting</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(900)
+selection_id &lt;- sample(seq_len(nrow(x_train)), floor(nrow(x_train) / 2))
+inference_id &lt;- setdiff(seq_len(nrow(x_train)), selection_id)
+
+select_fit &lt;- glmnet::cv.glmnet(
+  x_train[selection_id, , drop = FALSE], y_train[selection_id],
+  alpha = 1, standardize = TRUE
+)
+selected &lt;- which(drop(coef(select_fit, s = &quot;lambda.1se&quot;))[-1] != 0)
+
+if (length(selected) &gt; 0 &amp;&amp; length(selected) &lt; length(inference_id) - 2) {
+  infer_data &lt;- data.frame(
+    y = y_train[inference_id],
+    x_train[inference_id, selected, drop = FALSE]
+  )
+  inference_fit &lt;- lm(y ~ ., data = infer_data)
+  inference_table &lt;- coef(summary(inference_fit))
+}</code></pre></div>
+<p>Splitting sacrifices efficiency but has a transparent logic. If splits are repeated and p-values aggregated, pre-specify the aggregation rule rather than reporting the most favorable split.</p>
+<h2 id="11-2-an-mfdr-path">11.2 An mFDR path</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">lasso_path_ncv &lt;- ncvreg::ncvreg(x_train, y_train, penalty = &quot;lasso&quot;)
+mfdr_path &lt;- ncvreg::mfdr(lasso_path_ncv)
+
+mfdr_summary &lt;- data.frame(
+  lambda = lasso_path_ncv$lambda,
+  expected_false = mfdr_path$EF,
+  marginal_fdr = mfdr_path$mFDR
+)
+head(mfdr_summary)</code></pre></div>
+<h2 id="11-3-knockoff-filtering">11.3 Knockoff filtering</h2>
+<p>The knockoff filter compares how early original and constructed knockoff variables enter a regularization path. Fixed-X knockoffs commonly need sufficient sample dimension; model-X or second-order constructions instead depend on estimating the distribution or covariance of <span class="math-inline">X</span>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">if (requireNamespace(&quot;knockoff&quot;, quietly = TRUE) &amp;&amp;
+    nrow(x_train) &gt;= 2 * ncol(x_train)) {
+  knockoff_result &lt;- knockoff::knockoff.filter(
+    x_train,
+    y_train,
+    fdr = 0.10,
+    knockoffs = function(x) knockoff::create.fixed(x, method = &quot;equi&quot;),
+    statistic = knockoff::stat.glmnet_lambdasmax
+  )
+  knockoff_result$selected
+}</code></pre></div>
+<h1 id="12-binary-outcomes-and-other-likelihoods">12. Binary outcomes and other likelihoods</h1>
+<p>A serious evaluation mistake in penalized logistic regression is drawing ROC or precision-recall curves from in-sample linear predictors and treating them as generalization estimates. Use out-of-fold predictions or a held-out test set.</p>
+<h2 id="12-1-penalized-logistic-regression">12.1 Penalized logistic regression</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(301)
+binary_dat &lt;- simulate_hd(n = 220, p = 300, s = 8, sigma = 1)
+linear_predictor &lt;- drop(binary_dat$X %*% binary_dat$beta) / 3
+y_binary &lt;- rbinom(length(linear_predictor), 1, plogis(linear_predictor))
+
+test_binary &lt;- sample(seq_along(y_binary), 55)
+train_binary &lt;- setdiff(seq_along(y_binary), test_binary)
+fold_binary &lt;- sample(rep(1:10, length.out = length(train_binary)))
+
+logit_cv &lt;- glmnet::cv.glmnet(
+  binary_dat$X[train_binary, ], y_binary[train_binary],
+  family = &quot;binomial&quot;, alpha = 1,
+  foldid = fold_binary, type.measure = &quot;deviance&quot;
+)
+probability &lt;- drop(predict(
+  logit_cv, binary_dat$X[test_binary, ],
+  s = &quot;lambda.min&quot;, type = &quot;response&quot;
+))</code></pre></div>
+<p>Compute rank-based AUC without an extra dependency and report probability-sensitive metrics as well.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">binary_metrics &lt;- function(y, probability) {
+  probability &lt;- pmin(pmax(probability, 1e-8), 1 - 1e-8)
+  n1 &lt;- sum(y == 1)
+  n0 &lt;- sum(y == 0)
+  auc &lt;- (sum(rank(probability)[y == 1]) - n1 * (n1 + 1) / 2) / (n1 * n0)
+  c(
+    AUC = auc,
+    LogLoss = -mean(y * log(probability) + (1 - y) * log(1 - probability)),
+    Brier = mean((y - probability)^2)
+  )
+}
+binary_metrics(y_binary[test_binary], probability)</code></pre></div>
+<h2 id="12-2-multinomial-cox-and-robust-regression">12.2 Multinomial, Cox, and robust regression</h2>
+<p>Multinomial, Cox, and robust regression use different loss functions, but the principles of regularization, fold management, and independent assessment remain the same.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r"># Multiclass: y_multiclass should be a factor
+# fit_multi &lt;- glmnet::cv.glmnet(X, y_multiclass, family = &quot;multinomial&quot;)
+
+# Cox: keep prespecified clinical variables unpenalized with penalty.factor = 0
+# surv_y &lt;- survival::Surv(time, status)
+# fit_cox &lt;- glmnet::cv.glmnet(
+#   X, surv_y, family = &quot;cox&quot;, penalty.factor = penalty_weight
+# )
+
+# For high-dimensional Huber regression, see hqreg::cv.hqreg(X, y)</code></pre></div>
+<h1 id="13-group-lasso-and-bi-level-selection">13. Group Lasso and bi-level selection</h1>
+<p>When several columns jointly represent one scientific object, column-wise Lasso can produce incomplete and hard-to-interpret selections. Group Lasso selects or removes complete groups, while bi-level penalties go further when both group-level and within-group sparsity are desired.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(804)
+n_group &lt;- 168
+groups &lt;- rep(seq_len(16), each = 4)
+X_group &lt;- matrix(rnorm(n_group * length(groups)), nrow = n_group)
+beta_group &lt;- numeric(length(groups))
+active_groups &lt;- c(3, 9, 14)
+beta_group[groups == active_groups[1]] &lt;- c(1.0, 0.7, 0.4, 0.2)
+beta_group[groups == active_groups[2]] &lt;- c(-0.9, -0.6, -0.3, -0.1)
+beta_group[groups == active_groups[3]] &lt;- c(0.8, 0.5, 0.3, 0.2)
+y_group &lt;- drop(X_group %*% beta_group + rnorm(n_group, sd = 1.2))
+
+fold_group &lt;- sample(rep(1:5, length.out = n_group))
+group_cv &lt;- grpreg::cv.grpreg(
+  X_group, y_group,
+  group = groups,
+  penalty = &quot;grLasso&quot;,
+  fold = fold_group
+)
+
+selected_groups &lt;- predict(
+  group_cv, lambda = group_cv$lambda.min, type = &quot;groups&quot;
+)
+selected_groups</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Data structure</th><th>Group definition</th><th>Good starting point</th></tr></thead><tbody><tr><td>Multilevel categorical variable</td><td>All dummy columns for one variable</td><td>Group Lasso</td></tr><tr><td>Spline basis</td><td>All basis columns for one raw variable</td><td>Group MCP/SCAD</td></tr><tr><td>Several SNPs in one gene</td><td>Group SNPs by gene</td><td>Group Lasso or bi-level penalty</td></tr><tr><td>Same feature across tasks</td><td>Group coefficients across outcomes</td><td>Multitask Group Lasso</td></tr><tr><td>Only some variables matter within an active group</td><td>Group and within-group sparsity</td><td>Sparse Group Lasso / GEL</td></tr></tbody></table></div>
+<h1 id="14-interactions-and-hierarchy">14. Interactions and hierarchy</h1>
+<p>Ordinary Lasso on the complete second-order design, <code>glinternet</code>, and <code>sprintr</code> can all screen interactions. With <span class="math-inline">p</span> main effects there are roughly <span class="math-inline">p(p-1)/2</span> pairwise interactions, so memory use and overfitting grow quickly.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(2026)
+n_int &lt;- 144
+p_int &lt;- 18
+X_int &lt;- matrix(rnorm(n_int * p_int), n_int, p_int)
+colnames(X_int) &lt;- paste0(&quot;feature_&quot;, seq_len(p_int))
+y_int &lt;- 0.8 * X_int[, 2] - 0.6 * X_int[, 6] +
+  1.3 * X_int[, 2] * X_int[, 5] + rnorm(n_int, sd = 0.9)
+
+expanded &lt;- model.matrix(~ (.)^2, data = as.data.frame(X_int))[, -1]
+dim(expanded)
+
+interaction_cv &lt;- glmnet::cv.glmnet(expanded, y_int, alpha = 1)
+interaction_beta &lt;- drop(coef(interaction_cv, s = &quot;lambda.1se&quot;))[-1]
+head(sort(abs(interaction_beta), decreasing = TRUE), 15)</code></pre></div>
+<p>Strong hierarchy requires both main effects whenever interaction <span class="math-inline">X_jX_k</span> is selected. Ordinary Lasso does not guarantee this. Use <code>glinternet</code>, <code>hierNet</code>, or another explicitly hierarchical method when scientific interpretation requires hierarchy.</p>
+<h1 id="15-fusion-trend-filtering-and-ordered-structure">15. Fusion, trend filtering, and ordered structure</h1>
+<p>Fusion methods put the belief that neighboring coefficients should be similar directly into the penalty. Fused Lasso applies an <span class="math-inline">L_1</span> penalty to first differences and is useful for copy-number data, ordered time signals, images, and spatial sequences.</p>
+<div class="math-display">\frac{1}{2}\lVert y-\theta\rVert_2^2 + \lambda_1\sum_j|\theta_j| + \lambda_2\sum_{j=2}^p|\theta_j-\theta_{j-1}|</div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(991)
+segment_level &lt;- c(0, 1.2, -0.7, -0.7, 0.5)
+segment_length &lt;- c(24, 34, 18, 27, 31)
+truth &lt;- rep(segment_level, times = segment_length)
+signal &lt;- truth + rt(length(truth), df = 8) * 0.32
+
+if (requireNamespace(&quot;genlasso&quot;, quietly = TRUE)) {
+  trend_fit &lt;- genlasso::trendfilter(signal, ord = 0)
+  theta_small &lt;- coef(trend_fit, lambda = 0.5)$beta
+  theta_large &lt;- coef(trend_fit, lambda = 2)$beta
+}</code></pre></div>
+<p>Larger lambda gives fewer change points and smoother segments. Tune it with blocked or deployment-faithful validation; randomly shuffling ordered observations can create an unrealistically easy task.</p>
+<h1 id="16-splines-sparse-pca-and-graphical-models">16. Splines, sparse PCA, and graphical models</h1>
+<p>The same regularization ideas extend to nonlinear functions, dimension reduction, and precision matrices. These are not unrelated tricks: each controls high-dimensional freedom by imposing sparsity or structure.</p>
+<h2 id="16-1-expand-spline-bases-then-select-groups">16.1 Expand spline bases, then select groups</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">set.seed(61)
+n_spline &lt;- 180
+x_raw &lt;- matrix(runif(n_spline * 8, -2, 2), n_spline, 8)
+y_spline &lt;- sin(x_raw[, 1]) + 0.6 * x_raw[, 3]^2 + rnorm(n_spline, sd = 0.5)
+
+basis_list &lt;- lapply(seq_len(ncol(x_raw)), function(j) {
+  splines::ns(x_raw[, j], df = 4)
+})
+X_spline &lt;- do.call(cbind, basis_list)
+spline_group &lt;- rep(seq_len(ncol(x_raw)), each = 4)
+
+spline_cv &lt;- grpreg::cv.grpreg(
+  X_spline, y_spline,
+  group = spline_group,
+  penalty = &quot;grMCP&quot;
+)</code></pre></div>
+<h2 id="16-2-sparse-pca-and-graphical-lasso">16.2 Sparse PCA and graphical lasso</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r"># Sparse PCA: each component uses only a small set of original variables
+# spca_fit &lt;- sparsepca::spca(scale(X), k = 5, alpha = 0.05)
+# scores &lt;- scale(X) %*% spca_fit$loadings
+
+# Graphical lasso: L1-penalize the precision matrix; nonzeros are conditional edges
+# covariance &lt;- cov(scale(X))
+# graph_fit &lt;- glasso::glasso(covariance, rho = 0.1)
+# precision &lt;- graph_fit$wi</code></pre></div>
+<h1 id="17-end-to-end-project-template">17. End-to-end project template</h1>
+<p>The following order works for most high-dimensional regression projects. Each step creates an auditable object instead of preserving only the final figure.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">project_plan &lt;- list(
+  question = &quot;Predict the outcome and identify stable candidate features&quot;,
+  unit_of_analysis = &quot;one independent subject per row&quot;,
+  primary_metric = &quot;outer-CV RMSE&quot;,
+  secondary_metrics = c(&quot;MAE&quot;, &quot;R2&quot;, &quot;model size&quot;, &quot;selection stability&quot;),
+  candidate_models = c(&quot;ridge&quot;, &quot;lasso&quot;, &quot;elastic net&quot;, &quot;MCP&quot;),
+  inference_target = &quot;exploratory variable discovery&quot;,
+  fdr_target = 0.10
+)
+saveRDS(project_plan, &quot;artifacts/analysis-plan.rds&quot;)</code></pre></div>
+<p>Collect candidates in one comparison table so the metric does not change after looking at results.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">model_results &lt;- data.frame(
+  model = c(&quot;Ridge&quot;, &quot;Lasso-min&quot;, &quot;Lasso-1se&quot;),
+  RMSE = c(
+    regression_metrics(y_test, ridge_pred)[&quot;RMSE&quot;],
+    regression_metrics(y_test, lasso_pred_min)[&quot;RMSE&quot;],
+    regression_metrics(y_test, lasso_pred_1se)[&quot;RMSE&quot;]
+  ),
+  selected = c(
+    ncol(x_train),
+    sum(lasso_beta_min[-1] != 0),
+    sum(lasso_beta_1se[-1] != 0)
+  )
+)
+write.csv(model_results, &quot;artifacts/model-comparison.csv&quot;, row.names = FALSE)
+model_results</code></pre></div>
+<p>A final report should answer five questions:</p>
+<ol><li>What are the sample, outcome, candidate predictors, and independent unit?</li><li>Was every preprocessing step estimated only on training data or inside each fold?</li><li>How were lambda, alpha, gamma, groups, and thresholds chosen?</li><li>Does generalization error come from an independent test set or outer CV?</li><li>Are nonzero variables predictive features, stable discoveries, or effects with valid uncertainty quantification?</li></ol>
+<h1 id="18-suggested-learning-path-and-completion-checklist">18. Suggested learning path and completion checklist</h1>
+<p>For the fastest route to practical competence, work through:</p>
+<ol><li>Use the Section 3 simulation to understand <span class="math-inline">p&gt;n</span>, collinearity, and sparse truth;</li><li>Compare Ridge, Lasso, nonconvex penalties, and Elastic Net in Sections 5-9;</li><li>Use nested CV in Section 7 to build an honest performance estimate;</li><li>Use Sections 10-11 to separate selection stability, discovery control, and valid inference;</li><li>Choose among the classification, grouped, interaction, ordered, and nonlinear models in Sections 12-16 according to the data structure;</li><li>Organize a complete analysis with the project template in Section 17.</li></ol>
+<div class="table-wrap"><table><thead><tr><th>Completion criterion</th><th>Minimum requirement</th></tr></thead><tbody><tr><td>Data audit</td><td>Missingness, zero variance, duplicates, <span class="math-inline">p/n</span>, and group/time structure recorded</td></tr><tr><td>Leakage prevention</td><td>Preprocessing, screening, and weight estimation occur inside training folds</td></tr><tr><td>Fair comparison</td><td>All candidates share the same outer split and fold IDs</td></tr><tr><td>Performance report</td><td>At least one independent or outer-CV metric with uncertainty</td></tr><tr><td>Stability</td><td>Report model size and resampling selection probabilities</td></tr><tr><td>Inference language</td><td>Distinguish predictors, discoveries, and inferential effects</td></tr><tr><td>Reproducibility</td><td>Save indices, folds, fits, metrics, and <code>sessionInfo()</code></td></tr></tbody></table></div>
+<blockquote><p>The key to high-dimensional modeling is not reproducing one figure. It is connecting the objective, penalty, validation design, and inferential claim into one leakage-resistant, interpretable, and reproducible workflow.</p></blockquote>
+<h1 id="19-acknowledgments">19. Acknowledgments</h1>
+<p>Special thanks to <strong>Patrick Breheny</strong> and <strong>Jian Huang</strong>, authors of <em>High-Dimensional Regression Modeling</em>. Their systematic and lucid treatment of high-dimensional data, penalized regression, variable selection, statistical inference, and structured sparsity provided important inspiration for the learning path and organization of this tutorial.</p>
+<p>This tutorial is a set of personal learning and practice notes. Its examples, code, and workflows have been redesigned to help readers apply high-dimensional regression methods in reproducible data analyses. We gratefully acknowledge the authors' scholarly and educational contributions.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+<script src="../hub-link.js"></script>
+</body>
+</html>

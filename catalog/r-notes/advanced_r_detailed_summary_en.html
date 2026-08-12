@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc · MooseWeb3 Advanced R guide">
+  <meta name="description" content="A chapter-by-chapter guide to the
+mental models, techniques, trade-offs, and practical lessons in Advanced
+R.">
+  <title>Advanced R (2nd Edition): A Detailed, Practical Summary</title>
+  <style>
+  :root {
+    --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+    --text: #172033; --muted: #61708a; --line: #dbe3ee;
+    --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+    --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+  }
+  html[data-theme="dark"] {
+    --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+    --text: #e7eef8; --muted: #9babc2; --line: #283750;
+    --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+    --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.72;
+  }
+  html[lang^="zh"] body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Inter, ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.82;
+  }
+  a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+  .progress {
+    position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 15; display: flex; align-items: center;
+    justify-content: space-between; min-height: 58px; padding: 0 4vw;
+    background: color-mix(in srgb, var(--surface) 91%, transparent);
+    border-bottom: 1px solid var(--line); backdrop-filter: blur(16px);
+  }
+  .brand { font-weight: 750; letter-spacing: -.02em; }
+  .actions { display: flex; align-items: center; gap: .6rem; }
+  .button {
+    display: inline-flex; align-items: center; border: 1px solid var(--line);
+    border-radius: 999px; padding: .38rem .75rem; color: var(--text);
+    background: var(--surface); font: inherit; font-size: .86rem;
+    text-decoration: none; cursor: pointer;
+  }
+  .button:hover { border-color: var(--accent); }
+  .hero {
+    padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%),
+      linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: .8rem; font-size: .78rem;
+    letter-spacing: .14em; text-transform: uppercase; opacity: .82;
+  }
+  .hero h1 {
+    max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+    line-height: 1.04; letter-spacing: -.045em;
+  }
+  html[lang^="zh"] .hero h1 { letter-spacing: -.025em; line-height: 1.12; }
+  .hero p {
+    max-width: 780px; margin: 1.25rem 0 0;
+    font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9;
+  }
+  .hero .personal-note {
+    width: fit-content; max-width: 100%; margin-top: .9rem; padding: .4rem .72rem;
+    border: 1px solid rgba(255,255,255,.38); border-radius: 8px;
+    background: rgba(255,255,255,.12); font-size: .9rem; font-weight: 650; opacity: 1;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+  .badge {
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem;
+  }
+  .shell {
+    display: grid; grid-template-columns: 260px minmax(0, 820px);
+    gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .toc {
+    position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px);
+    overflow: auto; padding-right: 1rem; scrollbar-width: thin;
+  }
+  .toc > h2 {
+    margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted);
+  }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc ul ul { padding-left: .85rem; font-size: .88rem; }
+  .toc li { margin: .22rem 0; }
+  .toc a {
+    display: block; padding: .22rem .5rem; border-left: 2px solid transparent;
+    color: var(--muted); text-decoration: none; line-height: 1.35;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+  .content { min-width: 0; }
+  .notice {
+    margin: 0 0 2rem; padding: 1rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+    border-left: 4px solid var(--accent); border-radius: 10px;
+    background: var(--surface-2); color: var(--muted); font-size: .92rem;
+  }
+  .content h1, .content h2, .content h3 {
+    scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em;
+  }
+  html[lang^="zh"] .content h1,
+  html[lang^="zh"] .content h2,
+  html[lang^="zh"] .content h3 { line-height: 1.35; letter-spacing: -.015em; }
+  .content h1 {
+    margin: 3.5rem 0 1rem; padding-top: .4rem;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line);
+  }
+  .content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+  .content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+  .content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+  .content p, .content li { color: var(--text); }
+  .content ul, .content ol { padding-left: 1.4rem; }
+  .content li { margin: .3rem 0; }
+  blockquote {
+    margin: 1.5rem 0; padding: .25rem 1.15rem;
+    border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0;
+    background: var(--surface-2);
+  }
+  blockquote p { color: var(--muted) !important; }
+  table {
+    width: 100%; margin: 1.4rem 0; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 12px;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--surface); box-shadow: var(--shadow); font-size: .94rem;
+  }
+  th, td {
+    padding: .72rem .85rem; border: 0; border-bottom: 1px solid var(--line);
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    padding: .12em .34em; border-radius: 5px; background: var(--surface-2);
+    color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  div.sourceCode, pre {
+    margin: 1.3rem 0; overflow: auto; border: 1px solid #263247;
+    border-radius: 12px; background: var(--code); box-shadow: var(--shadow);
+  }
+  pre { padding: 1rem 1.1rem; tab-size: 2; }
+  div.sourceCode pre { margin: 0; border: 0; box-shadow: none; }
+  pre code {
+    padding: 0; color: var(--code-text); background: transparent;
+    font-size: .88rem; white-space: pre;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .footer {
+    padding: 2rem; border-top: 1px solid var(--line); color: var(--muted);
+    background: var(--surface); text-align: center; font-size: .88rem;
+  }
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+    .toc {
+      position: static; max-height: 320px; padding: 1rem;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+    }
+    .hero { padding: 4rem 1.2rem 3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+    .topbar { padding: 0 1rem; }
+    table { display: block; max-width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 520px) {
+    .brand { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .button { padding: .32rem .6rem; font-size: .8rem; }
+  }
+  @media print {
+    .topbar, .toc, .progress { display: none !important; }
+    .hero { padding: 2rem; background: white; color: black; }
+    .shell { display: block; max-width: none; padding: 1rem; }
+    table, div.sourceCode, pre { box-shadow: none; break-inside: avoid; }
+    a { color: black; }
+  }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Advanced R</div>
+    <div class="actions">
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · PROGRAMMING · STUDY GUIDE</span>
+    <h1>Advanced R (2nd Edition): A Detailed, Practical Summary</h1>
+    <p>Mental models, techniques, trade-offs, and practical lessons
+across all 25 chapters</p>
+    <p class="personal-note">This tutorial is a set of personal learning
+and practice notes.</p>
+    <div class="badges">
+      <span class="badge">MooseWeb3</span>
+      <span class="badge">Advanced R</span>
+      <span class="badge">R Markdown</span>
+      <span class="badge">25 Chapters</span>
+      <span class="badge">Self-contained HTML</span>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+      <li><a href="#about-this-guide" id="toc-about-this-guide">About
+      this guide</a>
+      <ul>
+      <li><a href="#the-book-in-one-conceptual-map"
+      id="toc-the-book-in-one-conceptual-map">The book in one conceptual
+      map</a></li>
+      <li><a href="#suggested-reading-routes"
+      id="toc-suggested-reading-routes">Suggested reading
+      routes</a></li>
+      </ul></li>
+      <li><a href="#part-i-foundations" id="toc-part-i-foundations">Part
+      I — Foundations</a>
+      <ul>
+      <li><a href="#introduction" id="toc-introduction">1.
+      Introduction</a></li>
+      <li><a href="#names-and-values" id="toc-names-and-values">2. Names
+      and values</a></li>
+      <li><a href="#vectors" id="toc-vectors">3. Vectors</a></li>
+      <li><a href="#subsetting" id="toc-subsetting">4.
+      Subsetting</a></li>
+      <li><a href="#control-flow" id="toc-control-flow">5. Control
+      flow</a></li>
+      <li><a href="#functions" id="toc-functions">6. Functions</a></li>
+      <li><a href="#environments" id="toc-environments">7.
+      Environments</a></li>
+      <li><a href="#conditions" id="toc-conditions">8.
+      Conditions</a></li>
+      </ul></li>
+      <li><a href="#part-ii-functional-programming"
+      id="toc-part-ii-functional-programming">Part II — Functional
+      programming</a>
+      <ul>
+      <li><a href="#functionals" id="toc-functionals">9.
+      Functionals</a></li>
+      <li><a href="#function-factories" id="toc-function-factories">10.
+      Function factories</a></li>
+      <li><a href="#function-operators" id="toc-function-operators">11.
+      Function operators</a></li>
+      </ul></li>
+      <li><a href="#part-iii-object-oriented-programming"
+      id="toc-part-iii-object-oriented-programming">Part III —
+      Object-oriented programming</a>
+      <ul>
+      <li><a href="#base-types" id="toc-base-types">12. Base
+      types</a></li>
+      <li><a href="#s3" id="toc-s3">13. S3</a></li>
+      <li><a href="#r6" id="toc-r6">14. R6</a></li>
+      <li><a href="#s4" id="toc-s4">15. S4</a></li>
+      <li><a href="#oo-trade-offs" id="toc-oo-trade-offs">16. OO
+      trade-offs</a></li>
+      </ul></li>
+      <li><a href="#part-iv-metaprogramming"
+      id="toc-part-iv-metaprogramming">Part IV — Metaprogramming</a>
+      <ul>
+      <li><a href="#the-big-picture" id="toc-the-big-picture">17. The
+      big picture</a></li>
+      <li><a href="#expressions" id="toc-expressions">18.
+      Expressions</a></li>
+      <li><a href="#quasiquotation" id="toc-quasiquotation">19.
+      Quasiquotation</a></li>
+      <li><a href="#evaluation" id="toc-evaluation">20.
+      Evaluation</a></li>
+      <li><a href="#translating-r-code" id="toc-translating-r-code">21.
+      Translating R code</a></li>
+      </ul></li>
+      <li><a href="#part-v-techniques" id="toc-part-v-techniques">Part V
+      — Techniques</a>
+      <ul>
+      <li><a href="#debugging" id="toc-debugging">22. Debugging</a></li>
+      <li><a href="#measuring-performance"
+      id="toc-measuring-performance">23. Measuring performance</a></li>
+      <li><a href="#improving-performance"
+      id="toc-improving-performance">24. Improving performance</a></li>
+      <li><a href="#rewriting-r-code-in-c"
+      id="toc-rewriting-r-code-in-c">25. Rewriting R code in
+      C++</a></li>
+      </ul></li>
+      <li><a href="#cross-chapter-synthesis"
+      id="toc-cross-chapter-synthesis">Cross-chapter synthesis</a>
+      <ul>
+      <li><a href="#five-mental-models-to-retain"
+      id="toc-five-mental-models-to-retain">Five mental models to
+      retain</a></li>
+      <li><a href="#important-contrasts"
+      id="toc-important-contrasts">Important contrasts</a></li>
+      <li><a href="#a-practical-checklist-for-advanced-r-code"
+      id="toc-a-practical-checklist-for-advanced-r-code">A practical
+      checklist for advanced R code</a></li>
+      </ul></li>
+      <li><a href="#glossary" id="toc-glossary">Glossary</a></li>
+      <li><a href="#source-and-scope-note"
+      id="toc-source-and-scope-note">Source and scope note</a></li>
+      <li><a href="#acknowledgements-and-license"
+      id="toc-acknowledgements-and-license">Acknowledgements and
+      license</a></li>
+      </ul>
+    </nav>
+    <main class="content">
+      <div class="notice">This self-contained study guide follows all 25
+chapters. Use the table of contents to navigate, and consult the linked
+official chapters whenever exact behavior or full examples matter.</div>
+      <h1 class="unnumbered" id="about-this-guide">About this guide</h1>
+      <p>This is an original, explanatory summary of the online second
+      edition of <a href="https://adv-r.hadley.nz/">Advanced R</a> by
+      Hadley Wickham. It follows all 25 numbered chapters and emphasizes
+      the mental models that make advanced R code predictable. It is a
+      study guide, not a replacement for the book: examples, exercises,
+      diagrams, historical detail, and edge cases are intentionally
+      compressed. The official book is the authority when exact behavior
+      matters.</p>
+      <p>The book is about R as a programming language. Its central
+      promise is that many of R’s apparent oddities become coherent once
+      you understand names and values, vector structure, lexical
+      scoping, environments, lazy evaluation, functional programming,
+      object systems, metaprogramming, and measurement-led optimization.
+      The official site identifies this as the second edition and
+      publishes the source under a Creative Commons BY-NC-SA license,
+      with code under the MIT license.</p>
+      <h2 class="unnumbered" id="the-book-in-one-conceptual-map">The
+      book in one conceptual map</h2>
+      <table>
+      <colgroup>
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Part</th>
+      <th>Core question</th>
+      <th>Main outcome</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Foundations, Chapters 2–8</td>
+      <td>What are R objects, and how does evaluation actually
+      proceed?</td>
+      <td>Predict data structure behavior, scope, copying, calls, and
+      errors.</td>
+      </tr>
+      <tr>
+      <td>Functional programming, Chapters 9–11</td>
+      <td>How can functions organize repeated computation?</td>
+      <td>Replace incidental control flow with reusable functionals,
+      factories, and operators.</td>
+      </tr>
+      <tr>
+      <td>Object-oriented programming, Chapters 12–16</td>
+      <td>How does R attach behavior to data?</td>
+      <td>Choose and use S3, R6, or S4 deliberately.</td>
+      </tr>
+      <tr>
+      <td>Metaprogramming, Chapters 17–21</td>
+      <td>How can R code inspect, construct, and evaluate other R
+      code?</td>
+      <td>Build reliable non-standard interfaces and small
+      domain-specific languages.</td>
+      </tr>
+      <tr>
+      <td>Techniques, Chapters 22–25</td>
+      <td>How do we diagnose correctness and performance problems?</td>
+      <td>Debug systematically, profile before optimizing, and cross
+      into C++ only when justified.</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>The parts form a dependency chain. Environments explain
+      closures; closures enable function factories; expressions plus
+      environments explain quosures; names and values explain
+      performance; and the call stack connects environments, conditions,
+      debugging, and profiling.</p>
+      <h2 class="unnumbered" id="suggested-reading-routes">Suggested
+      reading routes</h2>
+      <ul>
+      <li>For dependable everyday R: Chapters 2–8, then 22–24.</li>
+      <li>For package and API design: Chapters 6–16, with special
+      attention to conditions and S3.</li>
+      <li>For tidy-evaluation programming: Chapters 7 and 17–21 in
+      order.</li>
+      <li>For performance work: Chapters 2, 23, 24, and only then
+      25.</li>
+      <li>For readers from Java, Python, or C++: do not skip
+      copy-on-modify, lexical scoping, functional OOP, or lazy
+      arguments; these are where R differs most.</li>
+      </ul>
+      <h1 id="part-i-foundations">Part I — Foundations</h1>
+      <h2 id="introduction">1. Introduction</h2>
+      <p><a href="https://adv-r.hadley.nz/introduction.html">Official
+      chapter</a></p>
+      <p>The opening chapter defines the audience and the method. The
+      intended reader already writes functions and uses packages, but
+      wants to understand why R behaves as it does. The goal is not data
+      analysis instruction or package-development procedure. Instead, it
+      is a language-level vocabulary broad enough to investigate
+      unfamiliar problems.</p>
+      <p>R is presented as unusually well suited to data science:
+      vectors and missing values are built in, functions are
+      first-class, metaprogramming is powerful, and links to C, C++, and
+      Fortran are mature. The same history also creates friction. Base R
+      and contributed packages contain decades of accumulated
+      conventions, performance varies widely, and non-standard
+      evaluation can trade transparency for convenience.</p>
+      <p>Two meta-skills guide the whole book. First, read source code
+      to develop taste and to replace guesses with evidence. Second, use
+      a scientific mindset: form a hypothesis about behavior, construct
+      a minimal experiment, observe the result, and update the model. A
+      good reproducible example is therefore not only a way to ask for
+      help; it is a debugging and learning instrument.</p>
+      <p><strong>Practical takeaway.</strong> Advanced R programming is
+      less about memorizing tricks than about constructing testable
+      mental models of the language.</p>
+      <h2 id="names-and-values">2. Names and values</h2>
+      <p><a href="https://adv-r.hadley.nz/names-values.html">Official
+      chapter</a></p>
+      <p>The crucial distinction is between a name and the value to
+      which it is bound. Assignment does not put an object “inside” a
+      variable. It creates or changes a binding. Multiple names may
+      refer to the same value, a value may contain references to other
+      values, and an object can be examined through its memory address.
+      This graph-based view corrects misleading box metaphors.</p>
+      <p>R generally follows copy-on-modify semantics. If two names
+      refer to the same vector and one apparent copy is modified, R
+      usually creates a new value so the other binding is unchanged.
+      This makes functional reasoning easier: calling a function
+      normally does not mutate the caller’s ordinary vectors. Copies are
+      not necessarily created at assignment time, so sharing can save
+      memory until modification. The tracing tools in lobstr and
+      <strong>tracemem()</strong> reveal when copies actually
+      happen.</p>
+      <p>Lists and data frames complicate size intuition because they
+      can share components. A list holding the same large vector three
+      times does not necessarily own three independent vectors.
+      <strong>lobstr::obj_size()</strong> accounts for sharing more
+      faithfully than simply adding reported component sizes. Character
+      strings may also be pooled internally.</p>
+      <p>Two cases permit modification in place. Environments always
+      have reference semantics. Some unshared values can also be
+      modified without a defensive copy as an implementation
+      optimization, although user code should reason from copy-on-modify
+      rather than depend on it. Garbage collection eventually reclaims
+      values that are no longer reachable; manual collection is rarely a
+      design solution.</p>
+      <p><strong>Common traps</strong></p>
+      <ul>
+      <li>Equating assignment with immediate copying.</li>
+      <li>Measuring a shared object as if every reference were a
+      complete duplicate.</li>
+      <li>Repeatedly growing a vector in a loop, which may trigger many
+      allocations and copies.</li>
+      <li>Assuming an environment behaves like a copied list.</li>
+      </ul>
+      <p><strong>Practical takeaway.</strong> Think in bindings and
+      object graphs. This predicts both mutation behavior and memory
+      cost.</p>
+      <h2 id="vectors">3. Vectors</h2>
+      <p><a href="https://adv-r.hadley.nz/vectors-chap.html">Official
+      chapter</a></p>
+      <p>Vectors are R’s fundamental data structures. Atomic vectors
+      require one element type; lists can hold arbitrary objects. The
+      common atomic types are logical, integer, double, and character,
+      with complex and raw used less often. <strong>NULL</strong>
+      behaves as a general zero-length value even though it is not a
+      vector.</p>
+      <p>Coercion is central. Combining atomic values chooses a common
+      type, broadly moving from logical through integer and double to
+      character. Missing values are typed: logical <strong>NA</strong>,
+      integer <strong>NA_integer_</strong>, real
+      <strong>NA_real_</strong>, and character
+      <strong>NA_character_</strong> are not interchangeable in every
+      context. <strong>NaN</strong> is a special missing double, while
+      <strong>NULL</strong> usually represents absence rather than an
+      unknown element.</p>
+      <p>Attributes attach metadata to a vector. Names label elements;
+      dimensions turn a vector into a matrix or array; class activates
+      S3 behavior. Many familiar structures are therefore vectors plus
+      attributes:</p>
+      <ul>
+      <li>factors are integer vectors with levels and class;</li>
+      <li>dates and date-times store numeric values with temporal
+      classes;</li>
+      <li>matrices and arrays are atomic vectors with dimensions;</li>
+      <li>data frames are equal-length lists with rectangular
+      attributes;</li>
+      <li>tibbles refine data-frame behavior, especially printing,
+      names, and subsetting.</li>
+      </ul>
+      <p>Lists make recursive and heterogeneous structures possible. A
+      matrix must have one atomic type, while a data frame can assign a
+      different type to each column. A list may itself carry dimensions,
+      and a data-frame column can even be a matrix when dimensions
+      agree. This reveals that R’s type system is compositional rather
+      than a collection of unrelated containers.</p>
+      <p><strong>Practical takeaway.</strong> To understand an
+      unfamiliar R object, inspect its base type, length, attributes,
+      and recursive components separately.</p>
+      <h2 id="subsetting">4. Subsetting</h2>
+      <p><a href="https://adv-r.hadley.nz/subsetting.html">Official
+      chapter</a></p>
+      <p>Subsetting combines a small number of operators with many index
+      types. With <strong>[</strong>, positive integers select
+      positions, negative integers exclude positions, logical vectors
+      select where true and may recycle, character vectors match names,
+      zero selects nothing, and missing indices return missing values.
+      Mixing positive and negative indices is invalid except for
+      zeros.</p>
+      <p>The three operators communicate different intent:</p>
+      <ul>
+      <li><strong>[</strong> selects zero or more elements and usually
+      preserves the container.</li>
+      <li><strong>[[</strong> extracts exactly one component and usually
+      simplifies.</li>
+      <li><strong>$</strong> is convenient interactive extraction by a
+      literal name, but is unsuitable when the name is stored in a
+      variable and may permit partial matching in some settings.</li>
+      </ul>
+      <p>For matrices and arrays, one index can treat the object as a
+      vector, multiple indices address dimensions, and an integer matrix
+      can specify coordinate rows. Simplification can unexpectedly drop
+      a one-row or one-column matrix to a vector; <strong>drop =
+      FALSE</strong> preserves dimensions. Data frames combine list and
+      matrix behavior, so the result depends on whether one or two
+      dimensions are supplied.</p>
+      <p>Subassignment uses the same indexing language on the left side
+      of assignment. It can replace selected values, add list
+      components, or remove list/data-frame components by assigning
+      <strong>NULL</strong>. Because indexing is vectorized, it supports
+      powerful patterns: matching and lookup tables, random sampling,
+      ordering, Boolean algebra, relabeling with named vectors, and
+      selecting complete cases.</p>
+      <p><strong>Common traps</strong></p>
+      <ul>
+      <li>Confusing a one-element list with the element inside it.</li>
+      <li>Relying on automatic dimension dropping.</li>
+      <li>Using <strong>$</strong> in programmable code.</li>
+      <li>Forgetting that duplicated indices can duplicate output.</li>
+      </ul>
+      <p><strong>Practical takeaway.</strong> Choose the operator by the
+      desired output shape, then choose the index by the desired
+      selection rule.</p>
+      <h2 id="control-flow">5. Control flow</h2>
+      <p><a href="https://adv-r.hadley.nz/control-flow.html">Official
+      chapter</a></p>
+      <p>R’s primary control-flow tools are choices and loops.
+      <strong>if</strong> expects a single, non-missing logical value
+      and is itself an expression that returns a value. It is not
+      vectorized. <strong>ifelse()</strong> is vectorized but can coerce
+      types or discard attributes, so typed vectorized alternatives may
+      be safer. <strong>switch()</strong> provides compact character or
+      numeric dispatch, although fall-through and unmatched cases
+      deserve care.</p>
+      <p>The canonical loop is <strong>for</strong>, which iterates over
+      elements of a vector or list. Robust loops preallocate output, use
+      <strong>seq_along()</strong> rather than fragile 1:length
+      patterns, and keep the loop variable’s behavior in mind.
+      <strong>while</strong> is appropriate when the number of
+      iterations is unknown but a condition is clear;
+      <strong>repeat</strong> is the most general and relies on
+      <strong>break</strong>. <strong>next</strong> skips to the
+      following iteration.</p>
+      <p>The chapter’s deeper lesson is to select the most specific
+      control structure. Specific constructs convey intent and reduce
+      states a reader must consider. A functional may be clearer than a
+      loop when it describes the output pattern, but a direct loop is
+      preferable to forcing a problem into an unsuitable
+      abstraction.</p>
+      <p><strong>Practical takeaway.</strong> Control flow is not
+      inherently un-R-like. Clarity comes from explicit conditions,
+      preallocation, and the narrowest construct that matches the
+      task.</p>
+      <h2 id="functions">6. Functions</h2>
+      <p><a href="https://adv-r.hadley.nz/functions.html">Official
+      chapter</a></p>
+      <p>An R closure has three components: formals, body, and enclosing
+      environment. Functions are ordinary first-class objects: they can
+      be stored, passed as arguments, returned, and created dynamically.
+      Primitive functions are the important exception; they are
+      implemented in C and do not expose the same R-level
+      components.</p>
+      <p>Lexical scoping explains how names are resolved. Name masking
+      means the most local binding wins. Functions look for free
+      variables in their enclosing environment, not in the environment
+      from which they were called. A fresh execution environment is
+      created for every call. These rules make closures predictable and
+      enable functions to retain state or configuration.</p>
+      <p>Arguments are promises: an expression plus an environment,
+      evaluated only if and when needed, with the result cached after
+      the first evaluation. Lazy evaluation enables useful idioms and
+      default arguments that refer to other arguments, but it can retain
+      large environments or delay errors. <strong>force()</strong> is
+      important when a factory must capture the current value rather
+      than a later promise.</p>
+      <p>The special <strong>…</strong> argument forwards variable
+      inputs but weakens automatic checking; functions should document
+      what is forwarded and validate important names. Calls may exit
+      explicitly with <strong>return()</strong>, implicitly through the
+      final expression, or abnormally through a condition.
+      <strong>on.exit()</strong> registers cleanup that should run
+      regardless of how the function exits.</p>
+      <p>R syntax disguises ordinary calls. Infix operators, replacement
+      functions, subsetting, braces, and control-flow constructs can
+      often be examined in prefix form. Recognizing this uniformity is
+      essential preparation for metaprogramming.</p>
+      <p><strong>Practical takeaway.</strong> A function’s behavior is
+      determined by code, promises, and environments together—not by its
+      body alone.</p>
+      <h2 id="environments">7. Environments</h2>
+      <p><a href="https://adv-r.hadley.nz/environments.html">Official
+      chapter</a></p>
+      <p>An environment maps unique names to values, is unordered, has a
+      parent environment, and is modified in place. Those properties
+      distinguish it from a named list. Parent links form chains used
+      for lexical lookup; the empty environment is the only environment
+      without a parent.</p>
+      <p>Several environment roles must be kept distinct:</p>
+      <ul>
+      <li>the enclosing environment is captured when a function is
+      created;</li>
+      <li>the execution environment is created when that function
+      runs;</li>
+      <li>the caller environment is where the call originated;</li>
+      <li>package and namespace environments control exported and
+      internal bindings.</li>
+      </ul>
+      <p>The call stack is a chain of active execution contexts, not the
+      same thing as the chain of enclosing parents. This distinction
+      explains why a function can find lexical variables in one
+      direction while debugging tools report calls in another. It also
+      clarifies the difference between <strong>&lt;-</strong>, which
+      normally binds locally, and <strong>&lt;&lt;-</strong>, which
+      searches parent environments and modifies the first existing
+      binding.</p>
+      <p>Because environments have reference semantics and fast name
+      lookup, they are useful for mutable state, caches, lookup tables,
+      and avoiding copies. These benefits come with aliasing risk: two
+      consumers may share and mutate the same state. Environments should
+      therefore be introduced deliberately, with a controlled
+      interface.</p>
+      <p><strong>Practical takeaway.</strong> Draw the environment
+      graph. Most scoping puzzles disappear when enclosing, execution,
+      caller, and parent relationships are labeled explicitly.</p>
+      <h2 id="conditions">8. Conditions</h2>
+      <p><a href="https://adv-r.hadley.nz/conditions.html">Official
+      chapter</a></p>
+      <p>R’s condition system separates signaling from handling. A
+      function author signals a message, warning, or error; a caller
+      decides whether to display, muffle, record, recover from, or
+      transform it. This is richer than a simple exception mechanism and
+      supports non-local control flow.</p>
+      <p>Messages report progress or diagnostics; warnings indicate a
+      suspicious result that can still be returned; errors abort the
+      current computation. Simple helpers such as
+      <strong>suppressMessages()</strong>,
+      <strong>suppressWarnings()</strong>, and <strong>try()</strong>
+      handle common cases. The deeper tools are:</p>
+      <ul>
+      <li><strong>tryCatch()</strong>, whose exiting handlers take
+      control after the stack has unwound to the handler;</li>
+      <li><strong>withCallingHandlers()</strong>, whose calling handlers
+      run in the signaling context and are especially useful for logging
+      or muffling messages and warnings.</li>
+      </ul>
+      <p>Structured custom conditions carry machine-readable fields and
+      a class. Downstream code can then handle a semantic error class
+      instead of parsing human-readable text. This produces stable APIs:
+      the message may improve without breaking handlers. Restarts extend
+      the design by advertising recovery strategies separately from
+      handlers that select one.</p>
+      <p>Defensive APIs should validate inputs close to the boundary,
+      write informative messages, preserve the original cause when
+      translating errors, and catch only the conditions they can
+      genuinely recover from. Catch-all handling can hide bugs and leave
+      invalid results.</p>
+      <p><strong>Practical takeaway.</strong> Conditions are part of an
+      API. Signal structured facts; let callers choose policy.</p>
+      <h1 id="part-ii-functional-programming">Part II — Functional
+      programming</h1>
+      <h2 id="functionals">9. Functionals</h2>
+      <p><a href="https://adv-r.hadley.nz/functionals.html">Official
+      chapter</a></p>
+      <p>A functional takes a function as input and returns a
+      vector-like result. The important benefit over a generic loop is
+      semantic: a particular functional tells the reader what shape of
+      iteration is intended. The purrr family provides a regular
+      vocabulary.</p>
+      <p><strong>map()</strong> returns a list, while typed variants
+      such as <strong>map_lgl()</strong>, <strong>map_int()</strong>,
+      <strong>map_dbl()</strong>, and <strong>map_chr()</strong> assert
+      an output type. Multi-input mapping uses <strong>map2()</strong>
+      or <strong>pmap()</strong>; side-effect variants use
+      <strong>walk()</strong>; indexed variants expose names or
+      positions. Anonymous functions and compact extraction shortcuts
+      make the mapping function concise, but explicit functions remain
+      preferable when logic is nontrivial.</p>
+      <p>Functionals compose. A data pipeline can first map, then
+      transpose, filter, or simplify. <strong>reduce()</strong> combines
+      elements pairwise into one accumulated result;
+      <strong>accumulate()</strong> retains intermediate states.
+      Predicate functionals such as <strong>keep()</strong>,
+      <strong>discard()</strong>, <strong>some()</strong>,
+      <strong>every()</strong>, and position finders organize tests that
+      return one logical value.</p>
+      <p>The book also situates base functionals: the apply family,
+      mathematical functionals such as integration and optimization, and
+      tools that operate on functions or groups. The advice is
+      pragmatic: if no functional naturally matches a loop, keep the
+      loop or create a well-named abstraction only after repetition
+      reveals a stable pattern.</p>
+      <p><strong>Practical takeaway.</strong> Use functionals to make
+      the contract of iteration—input arity, output type, and side
+      effects—visible in the function name.</p>
+      <h2 id="function-factories">10. Function factories</h2>
+      <p><a
+      href="https://adv-r.hadley.nz/function-factories.html">Official
+      chapter</a></p>
+      <p>A function factory is a function that returns a function. It
+      works because functions are first-class, capture their enclosing
+      environment, and create a fresh execution environment per call.
+      The manufactured function retains bindings created during the
+      factory call; this is a closure in action.</p>
+      <p>Factories parameterize behavior. A power factory can create
+      square and cube functions; a transformation factory can package
+      constants; a statistical factory can create an objective function
+      for a particular dataset. A closure can also retain mutable state
+      across calls by modifying a binding in its enclosing environment.
+      This “function memory” should be used cautiously because hidden
+      state affects reproducibility.</p>
+      <p>Promises create a classic trap when factories are produced
+      inside iteration: every manufactured function may capture a
+      delayed loop binding rather than the intended value. Forcing
+      arguments at factory time stabilizes the closure. The enclosing
+      environment may also keep large, unnecessary objects alive, so
+      memory-sensitive factories should capture only what they need.</p>
+      <p>Factories rarely reduce total complexity. Their value is to
+      partition complexity, create families of related functions, and
+      prepare reusable behavior for functionals or plotting/statistical
+      interfaces.</p>
+      <p><strong>Practical takeaway.</strong> A factory packages code
+      together with a private configuration environment; force what must
+      be fixed and avoid accidental retained state.</p>
+      <h2 id="function-operators">11. Function operators</h2>
+      <p><a
+      href="https://adv-r.hadley.nz/function-operators.html">Official
+      chapter</a></p>
+      <p>A function operator accepts one or more functions and returns a
+      new function. It is therefore a specialized factory, similar to a
+      Python decorator. Operators modify cross-cutting behavior without
+      rewriting the underlying computation.</p>
+      <p>Two important examples show the range:</p>
+      <ul>
+      <li><strong>purrr::safely()</strong> converts failure into data by
+      returning separate result and error components, allowing a mapping
+      operation to continue.</li>
+      <li><strong>memoise::memoise()</strong> caches outputs by inputs,
+      exchanging memory and cache-management complexity for speed when
+      repeated calls are expensive and deterministic.</li>
+      </ul>
+      <p>Custom operators can add logging, retries, timing, throttling,
+      validation, or default arguments. Correct wrappers should forward
+      <strong>…</strong>, preserve the important calling contract, force
+      captured function arguments when necessary, and make side effects
+      explicit. Caching is unsafe when output depends on time, random
+      state, files, network state, options, or other hidden inputs
+      unless those dependencies are part of the key or invalidation
+      policy.</p>
+      <p>Operators pair naturally with functionals because behavior can
+      be transformed once and then applied repeatedly. In an ordinary
+      loop, an extra wrapper may add indirection without enough
+      benefit.</p>
+      <p><strong>Practical takeaway.</strong> Function operators
+      modularize policies around a computation; use them when the policy
+      is reusable and the altered semantics are clear.</p>
+      <h1 id="part-iii-object-oriented-programming">Part III —
+      Object-oriented programming</h1>
+      <h2 id="base-types">12. Base types</h2>
+      <p><a href="https://adv-r.hadley.nz/base-types.html">Official
+      chapter</a></p>
+      <p>R uses the word “object” in two senses. Everything manipulated
+      by R is a base object, but only some values participate in an
+      object-oriented system. An OO object carries class information; a
+      base object may have only an implicit class used by dispatch.
+      <strong>typeof()</strong> reports the underlying implementation
+      type, while <strong>class()</strong> can blur explicit and
+      implicit class behavior.</p>
+      <p>The limited set of base types includes atomic vectors, lists,
+      functions, environments, language objects, external pointers, weak
+      references, and several internal categories. They do not form an
+      extensible OO system: behavior by base type is largely implemented
+      through C-level branching, and ordinary users cannot add new
+      fundamental types. In contrast, S3, S4, and R6 are user-extensible
+      systems built on top of base objects.</p>
+      <p>This distinction prevents category errors. A data frame has
+      base type list but explicit S3 class data.frame. A matrix is an
+      atomic vector with dimensions and an implicit class. A function
+      can be an object in the general sense without being an S3
+      instance.</p>
+      <p><strong>Practical takeaway.</strong> Ask two separate
+      questions: “What is this value made of?” and “Which OO system, if
+      any, controls its behavior?”</p>
+      <h2 id="s3">13. S3</h2>
+      <p><a href="https://adv-r.hadley.nz/s3.html">Official
+      chapter</a></p>
+      <p>S3 is R’s simplest and most widely used object system. It is
+      functional OOP: methods belong to generic functions, and dispatch
+      typically examines the class of the first argument. An S3 object
+      is a base value with a class attribute; a generic usually calls
+      <strong>UseMethod()</strong>; a method conventionally has the name
+      generic.class.</p>
+      <p>The system is informal, so disciplined construction matters. A
+      robust class usually provides:</p>
+      <ol type="1">
+      <li>a low-level constructor that creates the expected base
+      representation and attributes;</li>
+      <li>a validator that checks invariants and reports useful
+      failures;</li>
+      <li>a user-facing helper that performs friendly coercion and
+      supplies defaults.</li>
+      </ol>
+      <p>This separation makes internal creation fast while keeping
+      public creation safe.</p>
+      <p>S3 objects commonly follow four styles: vector classes,
+      record-like classes, data-frame subclasses, and scalar objects.
+      Their methods should preserve a coherent representation and
+      respect existing vector semantics where appropriate. Inheritance
+      is a class vector searched from left to right, and
+      <strong>NextMethod()</strong> delegates to the next applicable
+      method. A class intended for subclassing must expose and preserve
+      invariants carefully.</p>
+      <p>Dispatch has important refinements. Internal and group generics
+      cover operators and mathematical families; some operations need
+      double dispatch because both operands matter. Base types also
+      supply implicit classes. Tools such as sloop reveal the candidate
+      chain and selected method, which is invaluable when behavior
+      appears mysterious.</p>
+      <p>S3’s flexibility is both its strength and risk. It provides
+      concise, idiomatic APIs and easy interoperability, but misspelled
+      classes, malformed objects, or inconsistent methods may fail late.
+      The book recommends S3 by default, supplemented by conventions and
+      modern vector infrastructure such as vctrs.</p>
+      <p><strong>Practical takeaway.</strong> S3 is minimal dispatch
+      plus strong social conventions. Invest in constructors,
+      validators, helpers, and predictable methods.</p>
+      <h2 id="r6">14. R6</h2>
+      <p><a href="https://adv-r.hadley.nz/r6.html">Official
+      chapter</a></p>
+      <p>R6 provides encapsulated OOP: methods belong to objects and are
+      invoked through the object. R6 instances are environments, so
+      fields are mutated in place and shared references observe the
+      change. This feels familiar to programmers from mainstream OO
+      languages but differs from idiomatic copy-on-modify R.</p>
+      <p>An R6 class generator defines public fields and methods.
+      <strong>$new()</strong> creates an instance,
+      <strong>initialize()</strong> establishes valid initial state, and
+      a print method can provide a concise representation. Methods
+      access the current instance through <strong>self</strong>. Private
+      fields and methods hide implementation details; active bindings
+      look like fields but run functions when read or written, enabling
+      validation or computed properties.</p>
+      <p>Reference semantics have design consequences:</p>
+      <ul>
+      <li>ordinary assignment aliases the same object rather than
+      copying it;</li>
+      <li>cloning must be explicit, and deep cloning requires special
+      care for nested R6 objects;</li>
+      <li>mutable default fields can accidentally be shared;</li>
+      <li>external resources opened during initialization may need
+      finalizers for cleanup.</li>
+      </ul>
+      <p>R6 is appropriate for entities whose identity and evolving
+      state are fundamental: caches, simulations, connections, GUI
+      components, or resource managers. For ordinary data analysis
+      values, its stateful API can surprise R users and complicate
+      reproducibility, testing, and parallel work.</p>
+      <p><strong>Practical takeaway.</strong> Choose R6 when reference
+      identity is part of the problem, not merely because its syntax is
+      familiar.</p>
+      <h2 id="s4">15. S4</h2>
+      <p><a href="https://adv-r.hadley.nz/s4.html">Official
+      chapter</a></p>
+      <p>S4 is formal functional OOP. Classes, generics, and methods are
+      explicitly registered. Classes declare named slots and their
+      permitted classes; validity functions enforce cross-slot
+      invariants. Generics and methods are created with specialized
+      registration functions, and accessor functions should usually
+      shield users from direct slot manipulation.</p>
+      <p>S4 supports multiple inheritance and multiple dispatch. A
+      method signature may depend on several arguments, which is
+      powerful for mathematical and scientific systems where
+      combinations of types determine behavior. The same power makes
+      dispatch more complex: inheritance distance, ties, virtual
+      classes, and ambiguous candidates must be considered.</p>
+      <p>The formal metadata enables better introspection and earlier
+      validation than S3, but increases verbosity and requires more
+      design before code is usable. S4 works well for large, coordinated
+      ecosystems with complex networks of related types; Bioconductor
+      and the Matrix package are canonical examples. Mixing S3 and S4 is
+      possible but requires explicit understanding of how classes and
+      generics are registered.</p>
+      <p><strong>Practical takeaway.</strong> S4 trades convenience for
+      enforceable structure. It pays off when a team and domain need
+      shared, complex type contracts.</p>
+      <h2 id="oo-trade-offs">16. OO trade-offs</h2>
+      <p><a href="https://adv-r.hadley.nz/oo-tradeoffs.html">Official
+      chapter</a></p>
+      <p>No R object system dominates every problem. The recommended
+      default is S3 because it is simple, pervasive, and idiomatic. S4
+      is an elaboration of the same functional paradigm: more formal,
+      more verbose, and more capable of encoding a large type graph. Its
+      up-front cost becomes valuable in large teams and tightly
+      integrated domains.</p>
+      <p>R6 represents a more fundamental choice between functional and
+      encapsulated OOP. In functional OOP, generic operations are easy
+      to extend for new object classes and data usually follows
+      copy-on-modify. In encapsulated OOP, an object owns its methods
+      and mutable state. R6 offers natural state and identity; S3 offers
+      transparent values, familiar vector behavior, and easier reasoning
+      about side effects.</p>
+      <p>Choose based on the API and lifecycle:</p>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Need</th>
+      <th>Likely fit</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Lightweight, idiomatic value class</td>
+      <td>S3</td>
+      </tr>
+      <tr>
+      <td>Extensible generic operations across packages</td>
+      <td>S3, or S4 when formal coordination is needed</td>
+      </tr>
+      <tr>
+      <td>Large formal class graph and multiple dispatch</td>
+      <td>S4</td>
+      </tr>
+      <tr>
+      <td>Stateful entity, external resource, or identity</td>
+      <td>R6</td>
+      </tr>
+      <tr>
+      <td>Simple record with no polymorphic behavior</td>
+      <td>No OO system may be necessary</td>
+      </tr>
+      </tbody>
+      </table>
+      <p><strong>Practical takeaway.</strong> Start from the semantics
+      users need—value, generic, validation, state, identity—not from
+      preferred syntax.</p>
+      <h1 id="part-iv-metaprogramming">Part IV — Metaprogramming</h1>
+      <h2 id="the-big-picture">17. The big picture</h2>
+      <p><a
+      href="https://adv-r.hadley.nz/meta-big-picture.html">Official
+      chapter</a></p>
+      <p>Metaprogramming treats code as data. R can capture an
+      unevaluated expression, inspect its tree, construct a modified
+      expression, and evaluate it in a chosen environment. The chapter
+      introduces these pieces as one pipeline rather than isolated
+      tricks.</p>
+      <p>An expression represents code but not necessarily the lexical
+      context needed to interpret its names. Evaluation always happens
+      in an environment. A custom environment can therefore redefine the
+      meaning of symbols and calls, creating a domain-specific language.
+      A data mask extends lookup so column names behave like variables.
+      A quosure pairs an expression with its originating environment,
+      preserving user intent when code travels across function
+      boundaries.</p>
+      <p>The conceptual sequence is:</p>
+      <ol type="1">
+      <li>capture code without running it;</li>
+      <li>recognize calls, symbols, and constants as a tree;</li>
+      <li>inject programmatically generated pieces;</li>
+      <li>evaluate in a deliberate environment or data mask;</li>
+      <li>retain the expression’s environment when lexical meaning
+      matters.</li>
+      </ol>
+      <p>These abilities produce elegant data-analysis interfaces, but
+      they also create ambiguity and hidden behavior. Metaprogramming
+      should remove repetitive syntax around a stable idea, not obscure
+      ordinary computation.</p>
+      <p><strong>Practical takeaway.</strong> Reliable metaprogramming
+      always tracks two artifacts together: the expression and the
+      environment in which its names should mean something.</p>
+      <h2 id="expressions">18. Expressions</h2>
+      <p><a href="https://adv-r.hadley.nz/expressions.html">Official
+      chapter</a></p>
+      <p>An expression captures the structure of an operation without
+      performing it. R code forms an abstract syntax tree. The core
+      nodes are constants, symbols, and calls; calls are recursive
+      objects whose first element identifies the function or operator
+      and whose remaining elements are arguments.</p>
+      <p>Surface syntax can conceal tree structure. Operator precedence,
+      parentheses, assignments, formulas, indexing, control flow, and
+      function definitions all parse into hierarchical calls or related
+      language objects. Tools such as <strong>lobstr::ast()</strong> and
+      expression predicates make that structure visible. Parsing
+      converts text into expressions; deparsing attempts the reverse but
+      is not always a perfect round trip for formatting.</p>
+      <p>Because calls are list-like, metaprograms can inspect and
+      modify them. Recursive walkers handle a node, recurse into child
+      calls, and combine results. This supports code analysis, symbol
+      replacement, dependency discovery, and translation. Robust walkers
+      distinguish leaves from calls, preserve names and missing
+      arguments, and define how to treat special structures such as
+      pairlists and expression vectors.</p>
+      <p><strong>Common traps</strong></p>
+      <ul>
+      <li>Confusing an expression vector with one call expression.</li>
+      <li>Assuming printed code preserves all source formatting.</li>
+      <li>Manipulating strings when the task is structural.</li>
+      <li>Recursing without a clear base case or without respecting
+      missing arguments.</li>
+      </ul>
+      <p><strong>Practical takeaway.</strong> Work on syntax trees when
+      meaning depends on code structure; use text only when the problem
+      is genuinely textual.</p>
+      <h2 id="quasiquotation">19. Quasiquotation</h2>
+      <p><a href="https://adv-r.hadley.nz/quasiquotation.html">Official
+      chapter</a></p>
+      <p>Quotation captures code; unquotation selectively evaluates part
+      of captured code; together they form quasiquotation. This lets a
+      function combine code written by its author with expressions or
+      values supplied by its caller.</p>
+      <p>There is an important distinction between capturing code
+      written directly by the developer and capturing a promise supplied
+      as a function argument. rlang provides separate tools for these
+      contexts. Injection then operates at two scales: one expression
+      can be inserted into another, and a list of expressions can be
+      spliced into an argument list. Dynamic dots extend splicing to
+      ordinary argument collection, while a special name-definition
+      operator supports programmatically generated argument names.</p>
+      <p>Base R has related quoting tools, but conventions vary.
+      Functions may disable quoting through explicit formulas, character
+      arguments, or standard-evaluation variants. Tidy-evaluation tools
+      aim to make the capture/inject pattern systematic.</p>
+      <p>Quasiquotation is most useful for code generation, wrappers,
+      and concise DSLs. It also carries risks: double evaluation,
+      accidentally capturing the wrong environment, silently accepting
+      duplicate names, and injecting user input into an unsafe context.
+      Good APIs document which arguments are data, which are
+      expressions, and when evaluation occurs.</p>
+      <p><strong>Practical takeaway.</strong> Quasiquotation is template
+      construction for syntax trees. Mark the holes explicitly and be
+      precise about what fills each hole.</p>
+      <h2 id="evaluation">20. Evaluation</h2>
+      <p><a href="https://adv-r.hadley.nz/evaluation.html">Official
+      chapter</a></p>
+      <p>Evaluation gives meaning to an expression in an environment.
+      The same symbol or call can produce different results under
+      different bindings, which is the basis of both ordinary lexical
+      scope and custom evaluation. Supplying a list or data frame
+      creates a data-oriented lookup layer, with an enclosing
+      environment used for other names.</p>
+      <p>A quosure combines an expression with the environment where it
+      was captured. That pairing prevents a wrapper from evaluating a
+      caller’s expression in the wrapper’s own environment by mistake. A
+      data mask makes columns directly addressable, which is convenient
+      interactively but introduces ambiguity when a column and an
+      environment variable share a name. Data and environment pronouns
+      make the intended lookup explicit.</p>
+      <p>Quasiquotation, quosures, and data masks form tidy evaluation.
+      A typical programmable data-masking function:</p>
+      <ol type="1">
+      <li>captures a user’s argument as a quosure;</li>
+      <li>builds or modifies an expression, injecting captured pieces
+      where needed;</li>
+      <li>evaluates it with the correct data mask and lexical
+      environment.</li>
+      </ol>
+      <p>The chapter also reconstructs base functions from evaluation
+      primitives and examines base non-standard evaluation. Wrapping NSE
+      functions can be brittle because capture may occur at the wrong
+      layer; converting the interface into an explicit
+      capture-and-evaluate pipeline is more reliable.</p>
+      <p><strong>Practical takeaway.</strong> Every evaluation question
+      has three parts: what expression, which data context, and which
+      lexical environment.</p>
+      <h2 id="translating-r-code">21. Translating R code</h2>
+      <p><a href="https://adv-r.hadley.nz/translation.html">Official
+      chapter</a></p>
+      <p>First-class environments, lexical scoping, and syntax-tree
+      manipulation can turn R expressions into another language.
+      dbplyr’s SQL generation is the industrial example; the chapter
+      develops smaller HTML and LaTeX translators to expose the
+      architecture.</p>
+      <p>A translator recursively dispatches on expression type.
+      Constants need escaping and formatting, symbols become
+      target-language identifiers, and calls are mapped to target
+      constructs. An environment can hold translation functions keyed by
+      R function names, making the mapping extensible. Unknown calls
+      need a clear policy: reject them, fall back to a generic
+      translation, or delegate to a parent environment.</p>
+      <p>The HTML DSL demonstrates generating many tag functions and
+      handling attributes, nested content, and escaping. The
+      mathematical translator demonstrates converting arithmetic calls
+      and functions into LaTeX notation while respecting expression
+      structure. Both examples show why an AST is superior to string
+      substitution: nesting and operator meaning remain explicit.</p>
+      <p>Security is inseparable from translation. Text, attributes,
+      identifiers, and generated code must be escaped according to the
+      target language; trusted code and untrusted data need separate
+      paths.</p>
+      <p><strong>Practical takeaway.</strong> A DSL is a small compiler:
+      define a syntax, a translation environment, recursion rules,
+      escaping, and an explicit policy for unsupported input.</p>
+      <h1 id="part-v-techniques">Part V — Techniques</h1>
+      <h2 id="debugging">22. Debugging</h2>
+      <p><a href="https://adv-r.hadley.nz/debugging.html">Official
+      chapter</a></p>
+      <p>Debugging is a process of finding which belief about the
+      program is false. The recommended workflow is systematic:</p>
+      <ol type="1">
+      <li>search the exact but de-personalized error;</li>
+      <li>make the failure reproducible and then minimal;</li>
+      <li>locate the failure using the call stack and controlled
+      experiments;</li>
+      <li>fix it and preserve the case as a regression test.</li>
+      </ol>
+      <p>The call stack shows how execution reached the error.
+      <strong>traceback()</strong> inspects the most recent failed path;
+      modern condition tools and IDE tracebacks can provide richer
+      context. Interactive debugging can pause before or inside a
+      function through browser-based tools, breakpoints, tracing, or
+      recovery options. Within the paused frame, inspect arguments,
+      local bindings, and step through expressions rather than
+      guessing.</p>
+      <p>Non-interactive failures require deliberate instrumentation:
+      save input and session information, improve structured logs,
+      configure error recovery, or reproduce the job locally. Not every
+      bug is an error—warnings, messages, unexpected slowness, crashes,
+      and silent wrong answers need different evidence.</p>
+      <p>The strongest prevention strategy is incremental development.
+      Build a large function from small tested pieces, validate
+      assumptions at boundaries, and keep a minimal failing example.
+      Debuggers are valuable, but frequent dependence on deep stepping
+      may signal that the code unit is too large.</p>
+      <p><strong>Practical takeaway.</strong> Reproduction and
+      localization are more valuable than intuition. Turn every
+      confirmed bug into an executable test.</p>
+      <h2 id="measuring-performance">23. Measuring performance</h2>
+      <p><a href="https://adv-r.hadley.nz/perf-measure.html">Official
+      chapter</a></p>
+      <p>Optimization begins with measurement because programmers are
+      poor at guessing bottlenecks. A sampling profiler periodically
+      records the call stack, estimating where elapsed computation
+      accumulates. profvis presents those samples as source-linked
+      timelines and flame graphs. Short functions may not receive enough
+      samples, and stochastic profiles vary, so realistic workloads and
+      repeated observation matter.</p>
+      <p>Profiling answers “where is time spent?” Microbenchmarking
+      answers “which small implementation is faster?” The
+      <strong>bench</strong> package repeatedly evaluates expressions,
+      reports distributions rather than a single time, tracks
+      allocations and garbage collection, and can verify equivalent
+      results. Benchmarks require representative inputs, sufficient run
+      time, warm-up awareness, and control of setup costs.</p>
+      <p>Elapsed time also includes system effects such as file access,
+      network latency, scheduling, and garbage collection.
+      Microbenchmarks can mislead when they remove the context that
+      dominates real workloads. Statistical significance is not the
+      goal; an improvement must be large and stable enough to matter to
+      the user.</p>
+      <p><strong>Practical takeaway.</strong> Profile the real task to
+      find the bottleneck; benchmark isolated alternatives only after
+      the bottleneck is known.</p>
+      <h2 id="improving-performance">24. Improving performance</h2>
+      <p><a href="https://adv-r.hadley.nz/perf-improve.html">Official
+      chapter</a></p>
+      <p>Performance work should have a target and a correctness oracle.
+      Encapsulate each candidate implementation in a function, test it
+      against representative cases, benchmark it, and keep a record of
+      failures as well as successes. Stop when the required performance
+      is achieved.</p>
+      <p>The optimization hierarchy favors high-level changes:</p>
+      <ol type="1">
+      <li>Look for an existing implementation in base R or a mature
+      package.</li>
+      <li>Do less work: filter earlier, cache justified results, avoid
+      repeated computation, or choose a better algorithm.</li>
+      <li>Use vectorized operations, meaning loops already implemented
+      efficiently in C—not merely shorter syntax.</li>
+      <li>Avoid avoidable copies by preallocating, modifying coherent
+      structures, and understanding data-frame/list sharing.</li>
+      <li>Move a proven hot loop to C++ only after R-level options are
+      exhausted.</li>
+      </ol>
+      <p>Vectorization is powerful when a built-in operation matches the
+      task, but chained vector operations may allocate large
+      intermediates. Specialized functions can outperform a visually
+      elegant composition. The chapter’s repeated t-test case study
+      demonstrates that the largest gains come from understanding the
+      mathematics and removing generality, not from local syntax
+      tweaks.</p>
+      <p>Optimization creates maintenance cost. Faster code that changes
+      NA behavior, attributes, numerical stability, or edge cases is
+      incorrect. Tests and representative benchmarks belong beside the
+      optimized implementation.</p>
+      <p><strong>Practical takeaway.</strong> The best speedup often
+      comes from changing the amount or kind of work, not from making
+      the same R statements slightly faster.</p>
+      <h2 id="rewriting-r-code-in-c">25. Rewriting R code in C++</h2>
+      <p><a href="https://adv-r.hadley.nz/rcpp.html">Official
+      chapter</a></p>
+      <p>Rcpp makes small C++ functions callable from R without using
+      the raw C API. It is most valuable for hot loops with
+      inter-iteration dependence, deeply recursive or extremely
+      high-call-count work, and algorithms that benefit from C++
+      standard-library data structures.</p>
+      <p>C++ differs fundamentally from R. Types are declared, scalars
+      and vectors are distinct, indices begin at zero, mutation is
+      common, and bounds or missing-value behavior may be less
+      forgiving. Rcpp supplies vector, matrix, string, list, and
+      data-frame wrappers plus attributes that export functions. Small
+      inline compilation is useful for exploration; source files and
+      package integration are appropriate for maintained code.</p>
+      <p>Missing values demand explicit care. R’s NA representations
+      interact with C++ types and floating-point NaN rules; comparisons
+      that appear natural may be wrong. Integer overflow, recycling,
+      attributes, names, interrupt handling, random-number generation,
+      and exception translation also require attention. The C++ standard
+      library offers maps, sets, queues, algorithms, and iterators, but
+      crossing the R/C++ boundary and copying data has a cost.</p>
+      <p>The safest workflow is:</p>
+      <ol type="1">
+      <li>keep a clear, tested R reference implementation;</li>
+      <li>confirm the function is a real bottleneck;</li>
+      <li>translate only the small critical core;</li>
+      <li>test ordinary and pathological inputs, especially NA and empty
+      data;</li>
+      <li>benchmark the end-to-end task, not only the kernel;</li>
+      <li>place stable native code in a package with documented build
+      requirements.</li>
+      </ol>
+      <p><strong>Practical takeaway.</strong> C++ is the final
+      optimization tool, not the first. A small verified native kernel
+      is usually better than a large rewrite.</p>
+      <h1 id="cross-chapter-synthesis">Cross-chapter synthesis</h1>
+      <h2 id="five-mental-models-to-retain">Five mental models to
+      retain</h2>
+      <ol type="1">
+      <li><strong>Bindings and graphs.</strong> Names point to values;
+      sharing and copy-on-modify explain apparent mutation and
+      memory.</li>
+      <li><strong>Vectors plus attributes.</strong> Much of R’s data
+      model is a small set of vector types composed with metadata.</li>
+      <li><strong>Expressions plus environments.</strong> Code structure
+      says what to do; an environment determines what names mean.</li>
+      <li><strong>Functions as data.</strong> Functionals consume
+      functions, factories produce them, and operators transform
+      them.</li>
+      <li><strong>Evidence before intervention.</strong> Reproducible
+      examples, structured conditions, tests, profiles, and benchmarks
+      precede fixes.</li>
+      </ol>
+      <h2 id="important-contrasts">Important contrasts</h2>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Contrast</th>
+      <th>Why it matters</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><strong>[</strong> versus <strong>[[</strong></td>
+      <td>Preserving a container is different from extracting one
+      component.</td>
+      </tr>
+      <tr>
+      <td>Enclosing environment versus caller environment</td>
+      <td>Lexical lookup and call-stack history follow different
+      relationships.</td>
+      </tr>
+      <tr>
+      <td>Calling handler versus exiting handler</td>
+      <td>One observes a condition where it is signaled; the other takes
+      over after unwinding.</td>
+      </tr>
+      <tr>
+      <td>Functional OOP versus encapsulated OOP</td>
+      <td>Generic operations on values differ from methods on mutable
+      identities.</td>
+      </tr>
+      <tr>
+      <td>Expression versus quosure</td>
+      <td>Syntax alone lacks the lexical environment needed for reliable
+      delayed evaluation.</td>
+      </tr>
+      <tr>
+      <td>Profiling versus benchmarking</td>
+      <td>One locates expensive regions; the other compares candidate
+      implementations.</td>
+      </tr>
+      </tbody>
+      </table>
+      <h2 id="a-practical-checklist-for-advanced-r-code">A practical
+      checklist for advanced R code</h2>
+      <ul>
+      <li>Inspect <strong>typeof()</strong>, attributes, length, and
+      recursive structure before guessing.</li>
+      <li>Decide and document whether an operation preserves or
+      simplifies shape.</li>
+      <li>Treat <strong>…</strong>, non-standard evaluation, mutation,
+      and hidden state as API-level design choices.</li>
+      <li>Give public classes safe constructors and explicit
+      invariants.</li>
+      <li>Signal structured conditions and catch only what can be
+      handled.</li>
+      <li>Preserve user environments when capturing expressions.</li>
+      <li>Keep ordinary data separate from generated code and escape
+      target-language output.</li>
+      <li>Write a correctness test before optimizing.</li>
+      <li>Profile with realistic data, then benchmark alternatives.</li>
+      <li>Use Rcpp for a narrow, proven bottleneck and retain an R
+      reference.</li>
+      </ul>
+      <h1 id="glossary">Glossary</h1>
+      <table>
+      <colgroup>
+      <col style="width: 50%" />
+      <col style="width: 50%" />
+      </colgroup>
+      <thead>
+      <tr>
+      <th>Term</th>
+      <th>Concise meaning</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Binding</td>
+      <td>Association between a name and a value in an environment.</td>
+      </tr>
+      <tr>
+      <td>Copy-on-modify</td>
+      <td>User-level rule that ordinary values behave as though
+      modification creates a copy when needed.</td>
+      </tr>
+      <tr>
+      <td>Closure</td>
+      <td>Function with formals, body, and enclosing environment.</td>
+      </tr>
+      <tr>
+      <td>Promise</td>
+      <td>Lazily evaluated argument: expression plus environment, with
+      cached value after forcing.</td>
+      </tr>
+      <tr>
+      <td>Functional</td>
+      <td>Function that takes a function and returns a vector-like
+      result.</td>
+      </tr>
+      <tr>
+      <td>Function factory</td>
+      <td>Function that returns a function.</td>
+      </tr>
+      <tr>
+      <td>Function operator</td>
+      <td>Function that takes a function and returns a function.</td>
+      </tr>
+      <tr>
+      <td>Generic</td>
+      <td>Function that selects a method based on one or more argument
+      classes.</td>
+      </tr>
+      <tr>
+      <td>Method</td>
+      <td>Class-specific implementation of a generic operation.</td>
+      </tr>
+      <tr>
+      <td>Expression</td>
+      <td>Data structure representing unevaluated code.</td>
+      </tr>
+      <tr>
+      <td>AST</td>
+      <td>Tree representation of the syntactic structure of code.</td>
+      </tr>
+      <tr>
+      <td>Quasiquotation</td>
+      <td>Quotation with selective injection of evaluated
+      components.</td>
+      </tr>
+      <tr>
+      <td>Quosure</td>
+      <td>Expression paired with its lexical environment.</td>
+      </tr>
+      <tr>
+      <td>Data mask</td>
+      <td>Evaluation context that exposes data-frame columns as
+      names.</td>
+      </tr>
+      <tr>
+      <td>Condition</td>
+      <td>Structured signal such as a message, warning, or error.</td>
+      </tr>
+      <tr>
+      <td>Profiler</td>
+      <td>Tool that estimates where program time is spent.</td>
+      </tr>
+      <tr>
+      <td>Microbenchmark</td>
+      <td>Repeated timing of small candidate implementations under
+      controlled inputs.</td>
+      </tr>
+      </tbody>
+      </table>
+      <h1 id="source-and-scope-note">Source and scope note</h1>
+      <p>Primary source: Wickham, Hadley. <a
+      href="https://adv-r.hadley.nz/">Advanced R, 2nd edition</a>,
+      including its <a href="https://github.com/hadley/adv-r">official
+      source repository</a>. Accessed 2026-08-11.</p>
+      <p>This guide paraphrases and reorganizes the book’s concepts for
+      study. It does not reproduce the exercises, diagrams, or full
+      examples. Package interfaces can evolve after publication; consult
+      current R and package documentation before relying on exact
+      signatures or contemporary best practices.</p>
+      <h1 id="acknowledgements-and-license">Acknowledgements and
+      license</h1>
+      <p>Special thanks to <strong>Hadley Wickham</strong>, author of <a
+      href="https://adv-r.hadley.nz/"><em>Advanced R</em>, 2nd
+      edition</a>, for making this rigorous and practical guide to the R
+      language available to the community. This study summary would not
+      exist without the book’s explanations, examples, and open
+      educational contribution.</p>
+      <p>The original book as a whole is licensed under the <a
+      href="https://adv-r.hadley.nz/#license">Creative Commons
+      Attribution-NonCommercial-ShareAlike 4.0 International
+      License</a>, and the code contained in the book is also available
+      under the MIT License. Please consult the official license page
+      and cite the original source when reusing its material or
+      code.</p>
+    </main>
+  </div>
+  <footer class="footer">Advanced R study guide · Source available as R
+Markdown · Original study notes based on Hadley Wickham’s Advanced
+R · 2026-08-11</footer>
+  <script>
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('guide-theme');
+  if (savedTheme) root.dataset.theme = savedTheme;
+  document.querySelector('#theme-toggle').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('guide-theme', root.dataset.theme);
+  });
+  const progress = document.querySelector('.progress');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, {passive: true});
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sections = tocLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    tocLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + visible.target.id);
+    });
+  }, {rootMargin: '-15% 0px -75% 0px'});
+  sections.forEach((section) => observer.observe(section));
+  </script>
+<script src="../hub-link.js"></script>
+</body>
+</html>
