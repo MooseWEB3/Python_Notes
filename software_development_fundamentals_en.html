@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>Software Development Fundamentals</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · Software Development Fundamentals</div>
+    <div class="actions">
+
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>Software Development Fundamentals</h1>
+    <p>From a useful idea to reliable, maintainable software</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">Software Design</span><span class="badge">Git</span><span class="badge">Testing</span><span class="badge">CI/CD</span><span class="badge">Security</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#how-to-use-this-guide">How to use this guide</a></li>
+<li class="toc-level-2"><a href="#learning-goals">Learning goals</a></li>
+<li class="toc-level-1"><a href="#1-software-programs-and-products">1. Software, programs, and products</a></li>
+<li class="toc-level-2"><a href="#1-1-a-program-is-not-automatically-a-software-product">1.1 A program is not automatically a software product</a></li>
+<li class="toc-level-2"><a href="#1-2-the-cost-of-change">1.2 The cost of change</a></li>
+<li class="toc-level-2"><a href="#1-3-constraints-shape-engineering-decisions">1.3 Constraints shape engineering decisions</a></li>
+<li class="toc-level-1"><a href="#2-discover-the-problem-before-designing-the-solution">2. Discover the problem before designing the solution</a></li>
+<li class="toc-level-2"><a href="#2-1-write-a-problem-statement">2.1 Write a problem statement</a></li>
+<li class="toc-level-2"><a href="#2-2-identify-users-and-stakeholders">2.2 Identify users and stakeholders</a></li>
+<li class="toc-level-2"><a href="#2-3-make-assumptions-visible">2.3 Make assumptions visible</a></li>
+<li class="toc-level-1"><a href="#3-requirements-and-acceptance-criteria">3. Requirements and acceptance criteria</a></li>
+<li class="toc-level-2"><a href="#3-1-functional-and-non-functional-requirements">3.1 Functional and non-functional requirements</a></li>
+<li class="toc-level-2"><a href="#3-2-user-stories-are-conversation-starters">3.2 User stories are conversation starters</a></li>
+<li class="toc-level-2"><a href="#3-3-use-testable-acceptance-criteria">3.3 Use testable acceptance criteria</a></li>
+<li class="toc-level-2"><a href="#3-4-control-scope">3.4 Control scope</a></li>
+<li class="toc-level-1"><a href="#4-the-development-lifecycle-and-feedback-loops">4. The development lifecycle and feedback loops</a></li>
+<li class="toc-level-2"><a href="#4-1-a-practical-lifecycle">4.1 A practical lifecycle</a></li>
+<li class="toc-level-2"><a href="#4-2-iterative-and-incremental-are-different">4.2 Iterative and incremental are different</a></li>
+<li class="toc-level-2"><a href="#4-3-choose-process-according-to-risk">4.3 Choose process according to risk</a></li>
+<li class="toc-level-1"><a href="#5-planning-and-decomposing-work">5. Planning and decomposing work</a></li>
+<li class="toc-level-2"><a href="#5-1-slice-vertically">5.1 Slice vertically</a></li>
+<li class="toc-level-2"><a href="#5-2-make-tasks-small-and-verifiable">5.2 Make tasks small and verifiable</a></li>
+<li class="toc-level-2"><a href="#5-3-estimate-uncertainty-not-just-effort">5.3 Estimate uncertainty, not just effort</a></li>
+<li class="toc-level-2"><a href="#5-4-define-done">5.4 Define done</a></li>
+<li class="toc-level-1"><a href="#6-architecture-and-design-basics">6. Architecture and design basics</a></li>
+<li class="toc-level-2"><a href="#6-1-separate-responsibilities">6.1 Separate responsibilities</a></li>
+<li class="toc-level-2"><a href="#6-2-prefer-explicit-interfaces">6.2 Prefer explicit interfaces</a></li>
+<li class="toc-level-2"><a href="#6-3-model-data-and-invariants">6.3 Model data and invariants</a></li>
+<li class="toc-level-2"><a href="#6-4-record-important-decisions">6.4 Record important decisions</a></li>
+<li class="toc-level-2"><a href="#6-5-apply-simple-design-principles-carefully">6.5 Apply simple design principles carefully</a></li>
+<li class="toc-level-1"><a href="#7-implementation-fundamentals">7. Implementation fundamentals</a></li>
+<li class="toc-level-2"><a href="#7-1-names-communicate-intent">7.1 Names communicate intent</a></li>
+<li class="toc-level-2"><a href="#7-2-functions-should-have-a-focused-contract">7.2 Functions should have a focused contract</a></li>
+<li class="toc-level-2"><a href="#7-3-handle-errors-at-the-right-level">7.3 Handle errors at the right level</a></li>
+<li class="toc-level-2"><a href="#7-4-keep-side-effects-at-boundaries">7.4 Keep side effects at boundaries</a></li>
+<li class="toc-level-1"><a href="#8-version-control-with-git">8. Version control with Git</a></li>
+<li class="toc-level-2"><a href="#8-1-the-core-workflow">8.1 The core workflow</a></li>
+<li class="toc-level-2"><a href="#8-2-write-useful-commit-messages">8.2 Write useful commit messages</a></li>
+<li class="toc-level-2"><a href="#8-3-ignore-generated-and-sensitive-files">8.3 Ignore generated and sensitive files</a></li>
+<li class="toc-level-2"><a href="#8-4-pull-requests-are-reviewable-change-proposals">8.4 Pull requests are reviewable change proposals</a></li>
+<li class="toc-level-1"><a href="#9-environments-dependencies-configuration-and-secrets">9. Environments, dependencies, configuration, and secrets</a></li>
+<li class="toc-level-2"><a href="#9-1-isolate-the-environment">9.1 Isolate the environment</a></li>
+<li class="toc-level-2"><a href="#9-2-declare-dependencies">9.2 Declare dependencies</a></li>
+<li class="toc-level-2"><a href="#9-3-separate-configuration-from-code">9.3 Separate configuration from code</a></li>
+<li class="toc-level-2"><a href="#9-4-keep-secrets-out-of-source-control">9.4 Keep secrets out of source control</a></li>
+<li class="toc-level-1"><a href="#10-testing-strategy">10. Testing strategy</a></li>
+<li class="toc-level-2"><a href="#10-1-test-behavior-at-multiple-levels">10.1 Test behavior at multiple levels</a></li>
+<li class="toc-level-2"><a href="#10-2-use-arrange-act-assert">10.2 Use Arrange–Act–Assert</a></li>
+<li class="toc-level-2"><a href="#10-3-cover-boundaries-and-invalid-input">10.3 Cover boundaries and invalid input</a></li>
+<li class="toc-level-2"><a href="#10-4-test-through-public-behavior">10.4 Test through public behavior</a></li>
+<li class="toc-level-2"><a href="#10-5-a-test-must-be-trustworthy">10.5 A test must be trustworthy</a></li>
+<li class="toc-level-1"><a href="#11-debugging-and-observability">11. Debugging and observability</a></li>
+<li class="toc-level-2"><a href="#11-1-debug-with-a-hypothesis">11.1 Debug with a hypothesis</a></li>
+<li class="toc-level-2"><a href="#11-2-preserve-useful-context">11.2 Preserve useful context</a></li>
+<li class="toc-level-2"><a href="#11-3-logs-metrics-and-traces-answer-different-questions">11.3 Logs, metrics, and traces answer different questions</a></li>
+<li class="toc-level-1"><a href="#12-code-quality-refactoring-and-review">12. Code quality, refactoring, and review</a></li>
+<li class="toc-level-2"><a href="#12-1-automate-mechanical-checks">12.1 Automate mechanical checks</a></li>
+<li class="toc-level-2"><a href="#12-2-refactor-without-changing-behavior">12.2 Refactor without changing behavior</a></li>
+<li class="toc-level-2"><a href="#12-3-review-the-right-things">12.3 Review the right things</a></li>
+<li class="toc-level-1"><a href="#13-apis-data-and-compatibility">13. APIs, data, and compatibility</a></li>
+<li class="toc-level-2"><a href="#13-1-treat-interfaces-as-contracts">13.1 Treat interfaces as contracts</a></li>
+<li class="toc-level-2"><a href="#13-2-validate-at-trust-boundaries">13.2 Validate at trust boundaries</a></li>
+<li class="toc-level-2"><a href="#13-3-evolve-data-safely">13.3 Evolve data safely</a></li>
+<li class="toc-level-2"><a href="#13-4-preserve-backward-compatibility-intentionally">13.4 Preserve backward compatibility intentionally</a></li>
+<li class="toc-level-1"><a href="#14-security-and-privacy-fundamentals">14. Security and privacy fundamentals</a></li>
+<li class="toc-level-2"><a href="#14-1-use-a-threat-oriented-mindset">14.1 Use a threat-oriented mindset</a></li>
+<li class="toc-level-2"><a href="#14-2-essential-practices">14.2 Essential practices</a></li>
+<li class="toc-level-2"><a href="#14-3-never-invent-cryptography-or-password-storage">14.3 Never invent cryptography or password storage</a></li>
+<li class="toc-level-2"><a href="#14-4-handle-a-leaked-secret-as-an-incident">14.4 Handle a leaked secret as an incident</a></li>
+<li class="toc-level-1"><a href="#15-continuous-integration-delivery-and-releases">15. Continuous integration, delivery, and releases</a></li>
+<li class="toc-level-2"><a href="#15-1-ci-provides-fast-shared-evidence">15.1 CI provides fast shared evidence</a></li>
+<li class="toc-level-2"><a href="#15-2-continuous-delivery-versus-deployment">15.2 Continuous delivery versus deployment</a></li>
+<li class="toc-level-2"><a href="#15-3-use-semantic-versions-when-they-fit">15.3 Use semantic versions when they fit</a></li>
+<li class="toc-level-2"><a href="#15-4-release-safely">15.4 Release safely</a></li>
+<li class="toc-level-1"><a href="#16-reliability-and-performance">16. Reliability and performance</a></li>
+<li class="toc-level-2"><a href="#16-1-design-for-failure">16.1 Design for failure</a></li>
+<li class="toc-level-2"><a href="#16-2-define-service-objectives">16.2 Define service objectives</a></li>
+<li class="toc-level-2"><a href="#16-3-measure-performance-before-optimizing">16.3 Measure performance before optimizing</a></li>
+<li class="toc-level-2"><a href="#16-4-capacity-and-graceful-degradation">16.4 Capacity and graceful degradation</a></li>
+<li class="toc-level-1"><a href="#17-collaboration-and-documentation">17. Collaboration and documentation</a></li>
+<li class="toc-level-2"><a href="#17-1-communication-is-part-of-the-system">17.1 Communication is part of the system</a></li>
+<li class="toc-level-2"><a href="#17-2-a-useful-readme">17.2 A useful README</a></li>
+<li class="toc-level-2"><a href="#17-3-meetings-should-produce-decisions-or-coordination">17.3 Meetings should produce decisions or coordination</a></li>
+<li class="toc-level-2"><a href="#17-4-learn-from-incidents-without-hiding-accountability">17.4 Learn from incidents without hiding accountability</a></li>
+<li class="toc-level-1"><a href="#18-capstone-a-small-task-application">18. Capstone: a small task application</a></li>
+<li class="toc-level-2"><a href="#18-1-project-layout">18.1 Project layout</a></li>
+<li class="toc-level-2"><a href="#18-2-domain-model">18.2 Domain model</a></li>
+<li class="toc-level-2"><a href="#18-3-repository-and-in-memory-adapter">18.3 Repository and in-memory adapter</a></li>
+<li class="toc-level-2"><a href="#18-4-service-layer">18.4 Service layer</a></li>
+<li class="toc-level-2"><a href="#18-5-tests">18.5 Tests</a></li>
+<li class="toc-level-2"><a href="#18-6-package-configuration">18.6 Package configuration</a></li>
+<li class="toc-level-2"><a href="#18-7-a-safe-implementation-sequence">18.7 A safe implementation sequence</a></li>
+<li class="toc-level-1"><a href="#19-practical-checklists">19. Practical checklists</a></li>
+<li class="toc-level-2"><a href="#before-implementation">Before implementation</a></li>
+<li class="toc-level-2"><a href="#before-opening-a-pull-request">Before opening a pull request</a></li>
+<li class="toc-level-2"><a href="#before-release">Before release</a></li>
+<li class="toc-level-2"><a href="#after-release">After release</a></li>
+<li class="toc-level-1"><a href="#20-common-mistakes-and-better-alternatives">20. Common mistakes and better alternatives</a></li>
+<li class="toc-level-1"><a href="#21-a-30-day-learning-plan">21. A 30-day learning plan</a></li>
+<li class="toc-level-2"><a href="#week-1-fundamentals-and-git">Week 1: fundamentals and Git</a></li>
+<li class="toc-level-2"><a href="#week-2-design-and-testing">Week 2: design and testing</a></li>
+<li class="toc-level-2"><a href="#week-3-delivery-and-operation">Week 3: delivery and operation</a></li>
+<li class="toc-level-2"><a href="#week-4-collaboration-and-improvement">Week 4: collaboration and improvement</a></li>
+<li class="toc-level-1"><a href="#22-exercises">22. Exercises</a></li>
+<li class="toc-level-1"><a href="#23-glossary-and-next-steps">23. Glossary and next steps</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render software_development_fundamentals_en.Rmd</code> for fully executable output.</div><h1 id="how-to-use-this-guide">How to use this guide</h1>
+<p>Software development is the disciplined work of turning a real need into software that people can use, change, operate, and trust. Programming is central, but production software also requires discovery, design, version control, testing, review, deployment, monitoring, security, and teamwork.</p>
+<p>This guide is language-agnostic, with small Python examples because they are easy to read. Follow the chapters in order on a first pass. For each example, ask four questions: What problem does it solve? What assumptions does it make? How could it fail? How would we know it still works after a change?</p>
+<h2 id="learning-goals">Learning goals</h2>
+<p>By the end, you will be able to:</p>
+<ul><li>explain the software development lifecycle and why feedback loops matter;</li><li>turn an ambiguous request into requirements and acceptance criteria;</li><li>split work into small, testable increments;</li><li>design modules, interfaces, data models, and error behavior;</li><li>use Git branches, commits, pull requests, and reviews effectively;</li><li>manage environments, dependencies, configuration, and secrets;</li><li>distinguish unit, integration, end-to-end, and non-functional tests;</li><li>debug with evidence and add useful logs and metrics;</li><li>apply refactoring, review, security, CI/CD, and release practices;</li><li>build a small project with a maintainable structure.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>Core question</th><th>Typical evidence</th></tr></thead><tbody><tr><td>Discovery</td><td>Are we solving the right problem?</td><td>user interviews, problem statement</td></tr><tr><td>Requirements</td><td>What must be true for success?</td><td>acceptance criteria, examples</td></tr><tr><td>Design</td><td>How will responsibilities be divided?</td><td>diagrams, interfaces, ADRs</td></tr><tr><td>Implementation</td><td>Is the change understandable and correct?</td><td>code, tests, review</td></tr><tr><td>Delivery</td><td>Can the change reach users safely?</td><td>CI results, release plan</td></tr><tr><td>Operations</td><td>Does it work in the real world?</td><td>logs, metrics, alerts, feedback</td></tr></tbody></table></div>
+<blockquote><p>The shortest useful definition: software development is programming plus the feedback systems that keep programming aligned with reality.</p></blockquote>
+<h1 id="1-software-programs-and-products">1. Software, programs, and products</h1>
+<h2 id="1-1-a-program-is-not-automatically-a-software-product">1.1 A program is not automatically a software product</h2>
+<p>A program can solve one task on one machine. A software product must continue to work for users, evolve as needs change, and remain operable by a team. Production concerns include compatibility, data migration, access control, failure recovery, documentation, and support.</p>
+<div class="table-wrap"><table><thead><tr><th>One-off script</th><th>Maintained software</th></tr></thead><tbody><tr><td>known input and operator</td><td>many users and unexpected inputs</td></tr><tr><td>manual execution</td><td>repeatable deployment and operation</td></tr><tr><td>author remembers assumptions</td><td>assumptions are documented and tested</td></tr><tr><td>failure can be inspected locally</td><td>failures need logs, alerts, and recovery</td></tr><tr><td>change is occasional</td><td>change is continuous</td></tr></tbody></table></div>
+<h2 id="1-2-the-cost-of-change">1.2 The cost of change</h2>
+<p>Most software cost occurs after the first version. Clear names, small modules, automated tests, reproducible environments, and useful documentation reduce the cost and risk of future changes. These are not decoration; they are economic tools.</p>
+<h2 id="1-3-constraints-shape-engineering-decisions">1.3 Constraints shape engineering decisions</h2>
+<p>A two-person internal dashboard and a global payment system should not use the same process or architecture. Important constraints include users, data sensitivity, traffic, latency, budget, deadline, team skills, regulation, and the cost of failure.</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">Decision quality = technical knowledge + product context + explicit trade-offs</code></pre></div>
+<h1 id="2-discover-the-problem-before-designing-the-solution">2. Discover the problem before designing the solution</h1>
+<h2 id="2-1-write-a-problem-statement">2.1 Write a problem statement</h2>
+<p>A good problem statement names the affected user, the current difficulty, its impact, and the desired outcome without prescribing an implementation too early.</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">Weak:  Build a dashboard with React and five charts.
+
+Better: Support agents spend about 20 minutes each morning combining three
+exports to identify overdue tickets. They need a trustworthy view that reduces
+preparation to under two minutes and shows when the data was last refreshed.</code></pre></div>
+<p>The better version permits multiple solutions and supplies measurable value.</p>
+<h2 id="2-2-identify-users-and-stakeholders">2.2 Identify users and stakeholders</h2>
+<p>Users interact with the system. Stakeholders may fund, operate, secure, regulate, or support it. Ask who benefits, who bears risk, who approves release, who responds to failure, and whose workflow will change.</p>
+<h2 id="2-3-make-assumptions-visible">2.3 Make assumptions visible</h2>
+<p>Maintain an assumption log. Rank each assumption by impact and uncertainty; validate high-impact, high-uncertainty assumptions first.</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">Assumption: Agents can access the source system with one shared service account.
+Risk:       High—security policy may prohibit shared credentials.
+Validation: Ask the identity team before implementation begins.
+Owner:      Mei
+Due:        2026-08-14</code></pre></div>
+<h1 id="3-requirements-and-acceptance-criteria">3. Requirements and acceptance criteria</h1>
+<h2 id="3-1-functional-and-non-functional-requirements">3.1 Functional and non-functional requirements</h2>
+<p>Functional requirements describe behavior. Non-functional requirements describe qualities and constraints such as response time, availability, accessibility, privacy, recovery time, and supported platforms.</p>
+<div class="table-wrap"><table><thead><tr><th>Type</th><th>Example</th></tr></thead><tbody><tr><td>Functional</td><td>A user can reset a password by email</td></tr><tr><td>Performance</td><td>95% of searches complete within 500 ms</td></tr><tr><td>Reliability</td><td>The monthly availability target is 99.9%</td></tr><tr><td>Security</td><td>Sessions expire after 30 minutes of inactivity</td></tr><tr><td>Accessibility</td><td>Keyboard users can complete checkout</td></tr><tr><td>Data</td><td>Audit records are retained for seven years</td></tr></tbody></table></div>
+<h2 id="3-2-user-stories-are-conversation-starters">3.2 User stories are conversation starters</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">As a support agent,
+I want to filter overdue tickets by team,
+so that I can prioritize the morning queue.</code></pre></div>
+<p>A story does not replace details, design, or conversation. Add examples, constraints, out-of-scope notes, and acceptance criteria.</p>
+<h2 id="3-3-use-testable-acceptance-criteria">3.3 Use testable acceptance criteria</h2>
+<p>The Given–When–Then form makes observable behavior explicit.</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">Given tickets from Team North and Team South are overdue,
+When the agent selects Team North,
+Then only overdue Team North tickets appear,
+And the result count and last-refresh time remain visible.</code></pre></div>
+<p>Avoid words such as “fast,” “easy,” or “secure” unless they are tied to a verifiable threshold or standard.</p>
+<h2 id="3-4-control-scope">3.4 Control scope</h2>
+<p>Separate must-have outcomes from possible follow-ups. Define “not in this release.” A smaller complete slice produces more learning than several half-finished features.</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">## In scope
+- Filter overdue tickets by team
+- Show source refresh time
+- Export the filtered view as CSV
+
+## Out of scope
+- Editing tickets
+- Predicting resolution time
+- Mobile-native application</code></pre></div>
+<h1 id="4-the-development-lifecycle-and-feedback-loops">4. The development lifecycle and feedback loops</h1>
+<h2 id="4-1-a-practical-lifecycle">4.1 A practical lifecycle</h2>
+<p>Most teams repeat a loop rather than follow a one-way waterfall:</p>
+<ol><li>Discover the problem and constraints.</li><li>Define a small outcome and acceptance criteria.</li><li>Design the change and identify risks.</li><li>Implement and test locally.</li><li>Review and integrate continuously.</li><li>Deploy safely.</li><li>Observe real behavior and user feedback.</li><li>Learn, adjust, and repeat.</li></ol>
+<h2 id="4-2-iterative-and-incremental-are-different">4.2 Iterative and incremental are different</h2>
+<p>Incremental work adds usable slices. Iterative work improves a solution through feedback. Good delivery usually does both: release a thin usable path, then deepen it.</p>
+<h2 id="4-3-choose-process-according-to-risk">4.3 Choose process according to risk</h2>
+<div class="table-wrap"><table><thead><tr><th>Situation</th><th>Useful approach</th></tr></thead><tbody><tr><td>uncertain user need</td><td>prototype and interview quickly</td></tr><tr><td>risky data migration</td><td>rehearsal, backup, verification, rollback</td></tr><tr><td>safety-critical behavior</td><td>formal review, traceability, stronger validation</td></tr><tr><td>mature routine service</td><td>small changes and automated delivery</td></tr></tbody></table></div>
+<h1 id="5-planning-and-decomposing-work">5. Planning and decomposing work</h1>
+<h2 id="5-1-slice-vertically">5.1 Slice vertically</h2>
+<p>A vertical slice crosses the minimum UI, logic, and data layers needed to produce value. “Create all database tables” is a technical layer; “a user can create one task and see it after refresh” is a vertical slice.</p>
+<h2 id="5-2-make-tasks-small-and-verifiable">5.2 Make tasks small and verifiable</h2>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">## Task: Persist a new task
+
+Outcome:
+A valid task submitted through the service is stored and assigned an ID.
+
+Done when:
+- validation rejects an empty title;
+- repository integration test passes;
+- the public service method is documented;
+- no secret or local database file is committed.</code></pre></div>
+<h2 id="5-3-estimate-uncertainty-not-just-effort">5.3 Estimate uncertainty, not just effort</h2>
+<p>An estimate is a forecast based on current information. State assumptions and use ranges when uncertainty is high. A short investigation, or spike, can answer a focused technical question before the team commits to a design.</p>
+<h2 id="5-4-define-done">5.4 Define done</h2>
+<p>A shared definition of done might require code, automated tests, review, documentation, accessibility checks, security considerations, deployment readiness, and observable behavior. It prevents “coded” from being mistaken for “complete.”</p>
+<h1 id="6-architecture-and-design-basics">6. Architecture and design basics</h1>
+<h2 id="6-1-separate-responsibilities">6.1 Separate responsibilities</h2>
+<p>A maintainable system groups related behavior and minimizes reasons for a module to change. One possible small-service structure is:</p>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">task_app/
+├── domain.py       # Task rules and states
+├── service.py      # Use cases and orchestration
+├── repository.py   # Persistence interface and implementation
+├── api.py          # HTTP or CLI boundary
+└── config.py       # Validated runtime settings</code></pre></div>
+<p>The domain should not know whether the boundary is a web API or command line. The service should not contain raw SQL. Boundaries make changes and tests easier.</p>
+<h2 id="6-2-prefer-explicit-interfaces">6.2 Prefer explicit interfaces</h2>
+<p>An interface describes what a collaborator must do without forcing callers to know how it does it.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Protocol
+
+class TaskRepository(Protocol):
+    def add(self, task: &quot;Task&quot;) -&gt; &quot;Task&quot;: ...
+    def get(self, task_id: int) -&gt; &quot;Task | None&quot;: ...</code></pre></div>
+<p>The same service can use an in-memory repository in tests and a database repository in production.</p>
+<h2 id="6-3-model-data-and-invariants">6.3 Model data and invariants</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Task:
+    id: int | None
+    title: str
+    completed: bool = False
+
+    def __post_init__(self) -&gt; None:
+        clean = self.title.strip()
+        if not clean:
+            raise ValueError(&quot;title cannot be empty&quot;)
+        object.__setattr__(self, &quot;title&quot;, clean)</code></pre></div>
+<p>An invariant is a rule that must always be true. Put important rules near the data they protect, not only in a UI form.</p>
+<h2 id="6-4-record-important-decisions">6.4 Record important decisions</h2>
+<p>An architecture decision record (ADR) captures context and trade-offs.</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown"># ADR-004: Use SQLite for the first local release
+
+Status: Accepted
+
+Context: The application is single-user, offline, and stores fewer than
+100,000 tasks. The team needs transactions and simple backup.
+
+Decision: Use SQLite behind a repository interface.
+
+Consequences: Setup is small and tests are fast. A future multi-user release
+may require PostgreSQL, but service code will not depend on SQLite directly.</code></pre></div>
+<h2 id="6-5-apply-simple-design-principles-carefully">6.5 Apply simple design principles carefully</h2>
+<ul><li>Keep it simple: choose the least complex design that satisfies known needs.</li><li>YAGNI: do not build speculative flexibility without evidence.</li><li>DRY: remove duplicated knowledge, not every similar-looking line.</li><li>High cohesion: keep related behavior together.</li><li>Low coupling: minimize knowledge between modules.</li><li>Dependency inversion: core policy depends on interfaces, not infrastructure details.</li></ul>
+<h1 id="7-implementation-fundamentals">7. Implementation fundamentals</h1>
+<h2 id="7-1-names-communicate-intent">7.1 Names communicate intent</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python"># Hard to understand
+def calc(x, y):
+    return x * (1 - y)
+
+# Makes units and purpose visible
+def discounted_price(price_cad: float, discount_rate: float) -&gt; float:
+    return price_cad * (1 - discount_rate)</code></pre></div>
+<p>Choose names from the problem domain. Include units where confusion is costly.</p>
+<h2 id="7-2-functions-should-have-a-focused-contract">7.2 Functions should have a focused contract</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def normalize_email(value: str) -&gt; str:
+    &quot;&quot;&quot;Return a normalized email or raise ValueError.&quot;&quot;&quot;
+    normalized = value.strip().casefold()
+    if normalized.count(&quot;@&quot;) != 1:
+        raise ValueError(&quot;email must contain exactly one @&quot;)
+    return normalized</code></pre></div>
+<p>A useful contract explains inputs, outputs, side effects, and failure behavior. Type hints help tools and readers but do not replace runtime validation at system boundaries.</p>
+<h2 id="7-3-handle-errors-at-the-right-level">7.3 Handle errors at the right level</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class TaskNotFoundError(LookupError):
+    pass
+
+def complete_task(task_id: int, repository: TaskRepository) -&gt; Task:
+    task = repository.get(task_id)
+    if task is None:
+        raise TaskNotFoundError(f&quot;task {task_id} does not exist&quot;)
+    return repository.save_completed(task)</code></pre></div>
+<p>Do not silently catch an error that the current layer cannot resolve. Add context, preserve the cause, and translate technical failures into stable boundary responses.</p>
+<h2 id="7-4-keep-side-effects-at-boundaries">7.4 Keep side effects at boundaries</h2>
+<p>Pure logic is easier to test than code that reads files, calls a network service, reads the clock, and changes global state. Pass dependencies into core logic when practical.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from collections.abc import Callable
+from datetime import datetime
+
+def build_audit_message(action: str, now: Callable[[], datetime]) -&gt; str:
+    return f&quot;{now().isoformat()} {action}&quot;</code></pre></div>
+<h1 id="8-version-control-with-git">8. Version control with Git</h1>
+<h2 id="8-1-the-core-workflow">8.1 The core workflow</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">git status
+git switch -c feature/filter-overdue-tasks
+git add src/task_app/service.py tests/test_service.py
+git diff --cached
+git commit -m &quot;Add overdue task filter&quot;
+git push -u origin feature/filter-overdue-tasks</code></pre></div>
+<p>Inspect the staged diff before committing. A commit should be a coherent change that can be reviewed and, ideally, reverted independently.</p>
+<h2 id="8-2-write-useful-commit-messages">8.2 Write useful commit messages</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">Add overdue task filter
+
+- validate team identifiers at the service boundary
+- preserve stable ordering by due date
+- cover empty and unknown-team cases</code></pre></div>
+<p>The subject explains the outcome in imperative form. The body explains why or highlights non-obvious decisions.</p>
+<h2 id="8-3-ignore-generated-and-sensitive-files">8.3 Ignore generated and sensitive files</h2>
+<div class="code-block"><div class="code-head"><span>gitignore</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-gitignore">.venv/
+__pycache__/
+.pytest_cache/
+.env
+*.sqlite3
+dist/
+build/</code></pre></div>
+<p><code>.gitignore</code> does not remove files already committed, and it is not a security control. If a secret is committed, rotate it and remove it from history according to the repository policy.</p>
+<h2 id="8-4-pull-requests-are-reviewable-change-proposals">8.4 Pull requests are reviewable change proposals</h2>
+<p>A strong pull request is small, explains the user-visible outcome, lists important decisions, includes validation evidence, and calls out risk or migration needs. Review the behavior and design, not only formatting.</p>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown">## Summary
+- add team filtering to overdue tasks
+- preserve due-date order
+
+## Validation
+- unit and repository tests pass
+- keyboard filter interaction checked
+
+## Risk and rollback
+- read-only query change; revert this PR to roll back</code></pre></div>
+<h1 id="9-environments-dependencies-configuration-and-secrets">9. Environments, dependencies, configuration, and secrets</h1>
+<h2 id="9-1-isolate-the-environment">9.1 Isolate the environment</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m venv .venv
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS or Linux
+source .venv/bin/activate
+
+python -m pip install -e &quot;.[dev]&quot;</code></pre></div>
+<p>Isolation prevents project packages from interfering with system Python or other projects.</p>
+<h2 id="9-2-declare-dependencies">9.2 Declare dependencies</h2>
+<div class="code-block"><div class="code-head"><span>toml</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-toml">[project]
+name = &quot;task-app&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = []
+
+[project.optional-dependencies]
+dev = [&quot;pytest&gt;=8,&lt;9&quot;, &quot;ruff&gt;=0.6,&lt;1&quot;]
+
+[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]</code></pre></div>
+<p>Applications usually pin reproducible resolved versions in a lock file. Libraries generally declare compatible ranges and test supported combinations.</p>
+<h2 id="9-3-separate-configuration-from-code">9.3 Separate configuration from code</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import os
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Settings:
+    database_url: str
+    log_level: str = &quot;INFO&quot;
+
+    @classmethod
+    def from_environment(cls) -&gt; &quot;Settings&quot;:
+        url = os.environ.get(&quot;TASK_DATABASE_URL&quot;)
+        if not url:
+            raise RuntimeError(&quot;TASK_DATABASE_URL is required&quot;)
+        return cls(database_url=url, log_level=os.getenv(&quot;LOG_LEVEL&quot;, &quot;INFO&quot;))</code></pre></div>
+<p>Validate configuration at startup so deployment errors fail early and clearly.</p>
+<h2 id="9-4-keep-secrets-out-of-source-control">9.4 Keep secrets out of source control</h2>
+<p>Use the platform's secret manager or protected environment variables. Never place production passwords, API keys, signing keys, or personal tokens in source files, examples, logs, or screenshots.</p>
+<h1 id="10-testing-strategy">10. Testing strategy</h1>
+<h2 id="10-1-test-behavior-at-multiple-levels">10.1 Test behavior at multiple levels</h2>
+<div class="table-wrap"><table><thead><tr><th>Test level</th><th>Focus</th><th>Typical speed</th><th>Common failure found</th></tr></thead><tbody><tr><td>Unit</td><td>one function or object</td><td>very fast</td><td>logic and edge cases</td></tr><tr><td>Integration</td><td>components together</td><td>medium</td><td>database, file, protocol mismatch</td></tr><tr><td>End-to-end</td><td>user workflow</td><td>slower</td><td>wiring and deployment problems</td></tr><tr><td>Contract</td><td>service boundary</td><td>medium</td><td>incompatible request/response changes</td></tr><tr><td>Non-functional</td><td>quality attribute</td><td>varies</td><td>performance, security, accessibility</td></tr></tbody></table></div>
+<p>Prefer many focused unit tests, enough integration tests to cover real boundaries, and a small set of critical end-to-end journeys.</p>
+<h2 id="10-2-use-arrange-act-assert">10.2 Use Arrange–Act–Assert</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def test_task_trims_title() -&gt; None:
+    task = Task(id=None, title=&quot;  write tests  &quot;)
+
+    actual = task.title
+
+    assert actual == &quot;write tests&quot;</code></pre></div>
+<p>Test names should state behavior. Avoid tests that merely repeat the implementation.</p>
+<h2 id="10-3-cover-boundaries-and-invalid-input">10.3 Cover boundaries and invalid input</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import pytest
+
+@pytest.mark.parametrize(&quot;title&quot;, [&quot;&quot;, &quot; &quot;, &quot;\t\n&quot;])
+def test_task_rejects_blank_title(title: str) -&gt; None:
+    with pytest.raises(ValueError, match=&quot;title cannot be empty&quot;):
+        Task(id=None, title=title)</code></pre></div>
+<p>Important cases often live at zero, one, maximum size, missing values, duplicates, time boundaries, and permission boundaries.</p>
+<h2 id="10-4-test-through-public-behavior">10.4 Test through public behavior</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def test_create_task_persists_valid_task() -&gt; None:
+    repository = InMemoryTaskRepository()
+    service = TaskService(repository)
+
+    created = service.create(&quot;Review pull request&quot;)
+
+    assert created.id is not None
+    assert repository.get(created.id) == created</code></pre></div>
+<p>Over-mocking internal calls makes tests fragile. Prefer simple fakes at architectural boundaries and assert observable outcomes.</p>
+<h2 id="10-5-a-test-must-be-trustworthy">10.5 A test must be trustworthy</h2>
+<p>Tests should be deterministic, isolated, readable, fast enough for their level, and able to fail for the right reason. Quarantine is not a permanent solution for flaky tests; find and fix the uncontrolled dependency.</p>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pytest
+python -m pytest tests/test_service.py -q
+python -m pytest --maxfail=1</code></pre></div>
+<h1 id="11-debugging-and-observability">11. Debugging and observability</h1>
+<h2 id="11-1-debug-with-a-hypothesis">11.1 Debug with a hypothesis</h2>
+<p>Use a repeatable method:</p>
+<ol><li>Reproduce the failure with the smallest known input.</li><li>Write down expected and actual behavior.</li><li>Identify the first point where they diverge.</li><li>Form one testable hypothesis.</li><li>Gather evidence with a test, debugger, log, or inspection.</li><li>Fix the cause, not only the symptom.</li><li>Add a regression test.</li></ol>
+<h2 id="11-2-preserve-useful-context">11.2 Preserve useful context</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import logging
+
+logger = logging.getLogger(__name__)
+
+def load_task(task_id: int, repository: TaskRepository) -&gt; Task:
+    try:
+        task = repository.get(task_id)
+    except OSError as exc:
+        logger.exception(&quot;task repository read failed&quot;, extra={&quot;task_id&quot;: task_id})
+        raise RuntimeError(&quot;could not load task&quot;) from exc
+    if task is None:
+        raise TaskNotFoundError(str(task_id))
+    return task</code></pre></div>
+<p>Log identifiers and state needed for diagnosis, but never secrets or unnecessary personal data.</p>
+<h2 id="11-3-logs-metrics-and-traces-answer-different-questions">11.3 Logs, metrics, and traces answer different questions</h2>
+<div class="table-wrap"><table><thead><tr><th>Signal</th><th>Best for</th></tr></thead><tbody><tr><td>Logs</td><td>detailed events and error context</td></tr><tr><td>Metrics</td><td>trends, rates, percentiles, alerting</td></tr><tr><td>Traces</td><td>request flow across services</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">logger.info(
+    &quot;task completed&quot;,
+    extra={&quot;task_id&quot;: task.id, &quot;actor_type&quot;: &quot;user&quot;, &quot;duration_ms&quot;: 18},
+)</code></pre></div>
+<p>Design observability as part of the feature. Ask what an operator will need at 2 a.m. to distinguish user error, dependency failure, and a code defect.</p>
+<h1 id="12-code-quality-refactoring-and-review">12. Code quality, refactoring, and review</h1>
+<h2 id="12-1-automate-mechanical-checks">12.1 Automate mechanical checks</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">ruff check .
+ruff format --check .
+python -m pytest</code></pre></div>
+<p>Formatters, linters, type checkers, and tests make standards repeatable. Human review can then focus on behavior, design, security, and maintainability.</p>
+<h2 id="12-2-refactor-without-changing-behavior">12.2 Refactor without changing behavior</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python"># Before: business rules are hidden in a dense expression.
+def can_close(user, task):
+    return user.active and (user.admin or task.owner_id == user.id) and not task.locked</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python"># After: names explain the policy.
+def can_close_task(user: &quot;User&quot;, task: Task) -&gt; bool:
+    owns_task = task.owner_id == user.id
+    has_permission = user.is_admin or owns_task
+    return user.is_active and has_permission and not task.is_locked</code></pre></div>
+<p>Refactor in small steps with tests passing. Do not combine a broad cleanup and a behavior change unless they cannot be reviewed separately.</p>
+<h2 id="12-3-review-the-right-things">12.3 Review the right things</h2>
+<p>A reviewer should ask:</p>
+<ul><li>Does the change satisfy the acceptance criteria?</li><li>Are important edge cases and failures handled?</li><li>Is the design simpler than plausible alternatives?</li><li>Are data, security, compatibility, and operational risks addressed?</li><li>Do tests prove behavior rather than implementation details?</li><li>Can another maintainer understand the change?</li></ul>
+<p>Review comments should explain impact and invite discussion. Distinguish blocking correctness issues from optional suggestions.</p>
+<h1 id="13-apis-data-and-compatibility">13. APIs, data, and compatibility</h1>
+<h2 id="13-1-treat-interfaces-as-contracts">13.1 Treat interfaces as contracts</h2>
+<div class="code-block"><div class="code-head"><span>json</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-json">{
+  &quot;id&quot;: 42,
+  &quot;title&quot;: &quot;Review pull request&quot;,
+  &quot;completed&quot;: false,
+  &quot;version&quot;: 1
+}</code></pre></div>
+<p>An API contract includes field meaning, types, required values, errors, authorization, idempotency, ordering, pagination, and compatibility policy—not only a URL.</p>
+<h2 id="13-2-validate-at-trust-boundaries">13.2 Validate at trust boundaries</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def parse_page_size(raw: str | None) -&gt; int:
+    if raw is None:
+        return 25
+    try:
+        size = int(raw)
+    except ValueError as exc:
+        raise ValueError(&quot;page size must be an integer&quot;) from exc
+    if not 1 &lt;= size &lt;= 100:
+        raise ValueError(&quot;page size must be between 1 and 100&quot;)
+    return size</code></pre></div>
+<p>Validate requests, file uploads, external service responses, database records crossing versions, and deserialized messages.</p>
+<h2 id="13-3-evolve-data-safely">13.3 Evolve data safely</h2>
+<div class="code-block"><div class="code-head"><span>sql</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-sql">ALTER TABLE tasks ADD COLUMN completed_at TEXT NULL;
+
+CREATE INDEX idx_tasks_completed_at
+ON tasks(completed_at);</code></pre></div>
+<p>For risky migrations, use expand–migrate–contract: add a compatible shape, deploy code that handles both forms, backfill and verify data, then remove the old shape later. Always define backup, rollback, and verification steps.</p>
+<h2 id="13-4-preserve-backward-compatibility-intentionally">13.4 Preserve backward compatibility intentionally</h2>
+<p>Additive changes are often safer than renaming or removing fields, but even additions can break strict clients. Version public contracts when necessary and publish deprecation timelines.</p>
+<h1 id="14-security-and-privacy-fundamentals">14. Security and privacy fundamentals</h1>
+<h2 id="14-1-use-a-threat-oriented-mindset">14.1 Use a threat-oriented mindset</h2>
+<p>Ask what assets matter, who might misuse the system, which entry points exist, what trust boundaries are crossed, and how an incident would be detected and contained.</p>
+<h2 id="14-2-essential-practices">14.2 Essential practices</h2>
+<ul><li>Apply least privilege to users, services, databases, and CI jobs.</li><li>Authenticate identity and authorize every protected action.</li><li>Use parameterized queries; never construct SQL from raw input.</li><li>Escape output for its context and protect against cross-site scripting.</li><li>Protect state-changing web requests against cross-site request forgery.</li><li>Encrypt sensitive data in transit and, where required, at rest.</li><li>Patch dependencies and remove unused ones.</li><li>Rate-limit abuse-prone operations.</li><li>Avoid exposing internal errors to users.</li><li>Collect only necessary personal data and define retention rules.</li></ul>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python"># Parameterized query: values are not interpreted as SQL syntax.
+cursor.execute(
+    &quot;SELECT id, title FROM tasks WHERE owner_id = ?&quot;,
+    (owner_id,),
+)</code></pre></div>
+<h2 id="14-3-never-invent-cryptography-or-password-storage">14.3 Never invent cryptography or password storage</h2>
+<p>Use established platform libraries and current organizational guidance for password hashing, tokens, encryption, and key rotation. Security-sensitive implementation details change; verify them against authoritative, current documentation.</p>
+<h2 id="14-4-handle-a-leaked-secret-as-an-incident">14.4 Handle a leaked secret as an incident</h2>
+<p>Remove public exposure, rotate or revoke the credential, inspect access logs, assess impact, update affected deployments, then clean repository history if policy requires it. Deleting the visible line alone is insufficient.</p>
+<h1 id="15-continuous-integration-delivery-and-releases">15. Continuous integration, delivery, and releases</h1>
+<h2 id="15-1-ci-provides-fast-shared-evidence">15.1 CI provides fast shared evidence</h2>
+<div class="code-block"><div class="code-head"><span>YAML</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-yaml">name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.12&quot;
+      - run: python -m pip install -e &quot;.[dev]&quot;
+      - run: ruff check .
+      - run: python -m pytest</code></pre></div>
+<p>Pin actions and permissions according to current repository security policy. CI should start quickly, report clear failures, and reproduce local quality checks.</p>
+<h2 id="15-2-continuous-delivery-versus-deployment">15.2 Continuous delivery versus deployment</h2>
+<p>Continuous delivery keeps every accepted change releasable but may require a manual production decision. Continuous deployment automatically releases each accepted change. Neither is a substitute for tests, monitoring, or rollback.</p>
+<h2 id="15-3-use-semantic-versions-when-they-fit">15.3 Use semantic versions when they fit</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">MAJOR.MINOR.PATCH
+
+2.0.0  incompatible public change
+1.4.0  backward-compatible capability
+1.4.3  backward-compatible fix</code></pre></div>
+<p>Version policy must define what the team considers a public interface.</p>
+<h2 id="15-4-release-safely">15.4 Release safely</h2>
+<p>Useful techniques include feature flags, canary releases, blue-green deployment, backward-compatible migrations, automated health checks, and one-command rollback. A release plan should name the owner, validation signal, abort threshold, and recovery action.</p>
+<h1 id="16-reliability-and-performance">16. Reliability and performance</h1>
+<h2 id="16-1-design-for-failure">16.1 Design for failure</h2>
+<p>Networks time out, disks fill, processes restart, messages duplicate, and dependencies become slow. Decide which operations may retry, which must be idempotent, and what partial failure means.</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import time
+from collections.abc import Callable
+
+def retry(operation: Callable[[], str], attempts: int = 3) -&gt; str:
+    delay = 0.1
+    for attempt in range(attempts):
+        try:
+            return operation()
+        except TimeoutError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(delay)
+            delay *= 2
+    raise AssertionError(&quot;unreachable&quot;)</code></pre></div>
+<p>Retry only transient failures, use bounded attempts and timeouts, and consider jitter. A retry can amplify an overloaded dependency or repeat a non-idempotent action.</p>
+<h2 id="16-2-define-service-objectives">16.2 Define service objectives</h2>
+<p>An indicator is a measurement, such as successful-request rate. An objective is a target, such as 99.9% successful requests over 30 days. An agreement is an external commitment. Objectives help teams balance reliability and delivery speed.</p>
+<h2 id="16-3-measure-performance-before-optimizing">16.3 Measure performance before optimizing</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from time import perf_counter
+
+started = perf_counter()
+result = build_report(records)
+elapsed_ms = (perf_counter() - started) * 1000
+print(f&quot;build_report took {elapsed_ms:.1f} ms&quot;)</code></pre></div>
+<p>Use representative data and measure latency distributions, throughput, memory, database queries, and external calls. Optimize the proven bottleneck, then measure again.</p>
+<h2 id="16-4-capacity-and-graceful-degradation">16.4 Capacity and graceful degradation</h2>
+<p>Plan expected load, peaks, storage growth, rate limits, and dependency limits. When a non-critical dependency fails, a cached or reduced response may be better than total failure—if the user can see that data may be stale.</p>
+<h1 id="17-collaboration-and-documentation">17. Collaboration and documentation</h1>
+<h2 id="17-1-communication-is-part-of-the-system">17.1 Communication is part of the system</h2>
+<p>Source code captures implementation, not every decision or operational fact. Teams need lightweight, current artifacts: README, setup guide, contribution rules, ADRs, API contracts, runbooks, release notes, and incident reviews.</p>
+<h2 id="17-2-a-useful-readme">17.2 A useful README</h2>
+<div class="code-block"><div class="code-head"><span>Markdown</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-markdown"># Task App
+
+## Purpose
+Manage a personal task list locally.
+
+## Quick start
+1. Create and activate `.venv`.
+2. Run `python -m pip install -e &quot;.[dev]&quot;`.
+3. Run `python -m task_app add &quot;Write tests&quot;`.
+
+## Quality checks
+`ruff check .` and `python -m pytest`
+
+## Architecture
+Domain rules are isolated from CLI and persistence adapters.</code></pre></div>
+<h2 id="17-3-meetings-should-produce-decisions-or-coordination">17.3 Meetings should produce decisions or coordination</h2>
+<p>Use asynchronous updates for information that does not require discussion. For a meeting, state the decision needed, share context before the meeting, record outcomes and owners, and end when the objective is met.</p>
+<h2 id="17-4-learn-from-incidents-without-hiding-accountability">17.4 Learn from incidents without hiding accountability</h2>
+<p>A useful incident review explains impact, timeline, contributing technical and organizational conditions, detection and response, and concrete follow-up owners. Focus on strengthening the system rather than blaming the person closest to the failure.</p>
+<h1 id="18-capstone-a-small-task-application">18. Capstone: a small task application</h1>
+<p>This project demonstrates a domain model, repository boundary, service layer, CLI adapter, tests, configuration, and packaging. It is intentionally small enough to understand in one sitting.</p>
+<h2 id="18-1-project-layout">18.1 Project layout</h2>
+<div class="code-block"><div class="code-head"><span>Text</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-text">task-app/
+├── pyproject.toml
+├── README.md
+├── src/
+│   └── task_app/
+│       ├── __init__.py
+│       ├── domain.py
+│       ├── repository.py
+│       ├── service.py
+│       └── __main__.py
+└── tests/
+    ├── test_domain.py
+    └── test_service.py</code></pre></div>
+<h2 id="18-2-domain-model">18.2 Domain model</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from dataclasses import dataclass, replace
+
+@dataclass(frozen=True)
+class Task:
+    id: int | None
+    title: str
+    completed: bool = False
+
+    def __post_init__(self) -&gt; None:
+        clean = self.title.strip()
+        if not clean:
+            raise ValueError(&quot;title cannot be empty&quot;)
+        object.__setattr__(self, &quot;title&quot;, clean)
+
+    def complete(self) -&gt; &quot;Task&quot;:
+        return replace(self, completed=True)</code></pre></div>
+<h2 id="18-3-repository-and-in-memory-adapter">18.3 Repository and in-memory adapter</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from typing import Protocol
+
+class TaskRepository(Protocol):
+    def add(self, task: Task) -&gt; Task: ...
+    def list_all(self) -&gt; list[Task]: ...
+    def replace(self, task: Task) -&gt; Task: ...
+
+class InMemoryTaskRepository:
+    def __init__(self) -&gt; None:
+        self._items: dict[int, Task] = {}
+        self._next_id = 1
+
+    def add(self, task: Task) -&gt; Task:
+        saved = Task(self._next_id, task.title, task.completed)
+        self._items[self._next_id] = saved
+        self._next_id += 1
+        return saved
+
+    def list_all(self) -&gt; list[Task]:
+        return list(self._items.values())
+
+    def replace(self, task: Task) -&gt; Task:
+        if task.id is None or task.id not in self._items:
+            raise LookupError(&quot;task does not exist&quot;)
+        self._items[task.id] = task
+        return task</code></pre></div>
+<h2 id="18-4-service-layer">18.4 Service layer</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">class TaskService:
+    def __init__(self, repository: TaskRepository) -&gt; None:
+        self._repository = repository
+
+    def create(self, title: str) -&gt; Task:
+        return self._repository.add(Task(id=None, title=title))
+
+    def list_tasks(self, include_completed: bool = True) -&gt; list[Task]:
+        tasks = self._repository.list_all()
+        if include_completed:
+            return tasks
+        return [task for task in tasks if not task.completed]
+
+    def complete(self, task_id: int) -&gt; Task:
+        matches = [task for task in self._repository.list_all() if task.id == task_id]
+        if not matches:
+            raise LookupError(f&quot;task {task_id} does not exist&quot;)
+        return self._repository.replace(matches[0].complete())</code></pre></div>
+<h2 id="18-5-tests">18.5 Tests</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">def test_create_and_complete_task() -&gt; None:
+    repository = InMemoryTaskRepository()
+    service = TaskService(repository)
+
+    created = service.create(&quot;  Ship a small feature  &quot;)
+    completed = service.complete(created.id)
+
+    assert created.title == &quot;Ship a small feature&quot;
+    assert completed.completed is True
+    assert service.list_tasks(include_completed=False) == []</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">import pytest
+
+def test_create_rejects_blank_title() -&gt; None:
+    service = TaskService(InMemoryTaskRepository())
+
+    with pytest.raises(ValueError, match=&quot;title cannot be empty&quot;):
+        service.create(&quot;   &quot;)</code></pre></div>
+<h2 id="18-6-package-configuration">18.6 Package configuration</h2>
+<div class="code-block"><div class="code-head"><span>toml</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-toml">[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[project]
+name = &quot;task-app&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+
+[project.optional-dependencies]
+dev = [&quot;pytest&gt;=8,&lt;9&quot;, &quot;ruff&gt;=0.6,&lt;1&quot;]
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/task_app&quot;]</code></pre></div>
+<h2 id="18-7-a-safe-implementation-sequence">18.7 A safe implementation sequence</h2>
+<ol><li>Write acceptance criteria for create, list, and complete.</li><li>Implement the immutable domain object and its tests.</li><li>Define the repository protocol and in-memory adapter.</li><li>Add service behavior and tests.</li><li>Add a thin CLI boundary.</li><li>Add SQLite behind the same repository interface.</li><li>Add integration tests with a temporary database.</li><li>Add CI, documentation, packaging, and release notes.</li></ol>
+<p>Each step should leave the project usable and tests green.</p>
+<h1 id="19-practical-checklists">19. Practical checklists</h1>
+<h2 id="before-implementation">Before implementation</h2>
+<ul><li>Is the user problem and desired outcome clear?</li><li>Are acceptance criteria observable and testable?</li><li>Are scope, constraints, dependencies, and risks explicit?</li><li>Is there a smaller vertical slice?</li><li>Do data, security, accessibility, and migration need special review?</li></ul>
+<h2 id="before-opening-a-pull-request">Before opening a pull request</h2>
+<ul><li>Does the change do only what the description claims?</li><li>Are names, interfaces, errors, and tests understandable?</li><li>Did you inspect the staged diff for generated files and secrets?</li><li>Do local quality checks pass?</li><li>Are operational, compatibility, and rollback notes included?</li></ul>
+<h2 id="before-release">Before release</h2>
+<ul><li>Did CI pass for the exact commit being released?</li><li>Are configuration and secrets available in the target environment?</li><li>Are migrations backward-compatible and backed up?</li><li>Are health signals, alert thresholds, owner, and rollback ready?</li><li>Is user-facing and operator documentation current?</li></ul>
+<h2 id="after-release">After release</h2>
+<ul><li>Verify critical user journeys and system health.</li><li>Compare key metrics with the baseline.</li><li>Watch errors, latency, saturation, and support feedback.</li><li>Record unexpected behavior and follow-up work.</li><li>Remove temporary flags only after the change is stable.</li></ul>
+<h1 id="20-common-mistakes-and-better-alternatives">20. Common mistakes and better alternatives</h1>
+<div class="table-wrap"><table><thead><tr><th>Mistake</th><th>Why it hurts</th><th>Better alternative</th></tr></thead><tbody><tr><td>Start coding from a vague request</td><td>builds the wrong behavior quickly</td><td>define outcome and examples first</td></tr><tr><td>Large long-lived branch</td><td>integration risk accumulates</td><td>small changes integrated frequently</td></tr><tr><td>Test only the happy path</td><td>real inputs expose boundaries</td><td>test invalid, empty, duplicate, and failure cases</td></tr><tr><td>Catch every exception</td><td>hides defects and corrupts state</td><td>catch only where recovery or translation is possible</td></tr><tr><td>Store secrets in <code>.env</code> and commit it</td><td>credential exposure</td><td>secret manager plus ignored local template</td></tr><tr><td>Optimize from intuition</td><td>complexity without benefit</td><td>profile representative workloads</td></tr><tr><td>Rewrite instead of refactor</td><td>loses working knowledge</td><td>incremental change with characterization tests</td></tr><tr><td>Deploy without observability</td><td>failures remain invisible</td><td>define logs, metrics, alerts, and rollback</td></tr><tr><td>Treat review as style policing</td><td>misses product and design risk</td><td>automate style; review behavior and trade-offs</td></tr></tbody></table></div>
+<h1 id="21-a-30-day-learning-plan">21. A 30-day learning plan</h1>
+<h2 id="week-1-fundamentals-and-git">Week 1: fundamentals and Git</h2>
+<p>Build a command-line program with small functions. Use a virtual environment, meaningful commits, a README, formatting, and linting. Practice reading diffs and reverting a commit.</p>
+<h2 id="week-2-design-and-testing">Week 2: design and testing</h2>
+<p>Separate domain logic from input/output. Add unit tests for normal and boundary cases, an integration test for persistence, and a small ADR for one design decision.</p>
+<h2 id="week-3-delivery-and-operation">Week 3: delivery and operation</h2>
+<p>Add CI, structured logs, configuration validation, a health check, and a release checklist. Practice a failed deployment and rollback in a safe environment.</p>
+<h2 id="week-4-collaboration-and-improvement">Week 4: collaboration and improvement</h2>
+<p>Open small pull requests, review someone else's change, measure one performance path, perform a basic threat review, and write a short retrospective based on evidence.</p>
+<h1 id="22-exercises">22. Exercises</h1>
+<ol><li>Rewrite a vague feature request as a problem statement, user story, three acceptance criteria, and an out-of-scope list.</li><li>Draw the boundary diagram for an application you use. Identify UI, core logic, data storage, and external services.</li><li>Add a due date to the task capstone. Define time-zone rules before coding.</li><li>Replace the in-memory repository with SQLite and add integration tests using a temporary database.</li><li>Introduce a failure, reproduce it with a test, fix it, and document the debugging hypothesis.</li><li>Add a GitHub Actions workflow that runs linting and tests on pull requests.</li><li>Write an ADR comparing two persistence options.</li><li>Threat-model the create-task operation: assets, actors, entry points, abuse cases, controls, and detection.</li><li>Define two service indicators and one objective for a web version of the task app.</li><li>Review a recent project using the pre-implementation, pull request, and release checklists.</li></ol>
+<h1 id="23-glossary-and-next-steps">23. Glossary and next steps</h1>
+<div class="table-wrap"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>API</td><td>a defined interface for software interaction</td></tr><tr><td>CI</td><td>automated integration checks for shared changes</td></tr><tr><td>CD</td><td>keeping changes deployable, or deploying them automatically</td></tr><tr><td>Coupling</td><td>how much one component depends on another's details</td></tr><tr><td>Idempotent</td><td>repeated execution has the same intended effect as once</td></tr><tr><td>Invariant</td><td>a rule that must always remain true</td></tr><tr><td>Migration</td><td>a controlled change to stored data or schema</td></tr><tr><td>Observability</td><td>ability to understand internal state from external signals</td></tr><tr><td>Refactoring</td><td>improving internal structure without changing behavior</td></tr><tr><td>Regression</td><td>previously working behavior that becomes broken</td></tr><tr><td>SLI/SLO</td><td>reliability measurement and its target</td></tr><tr><td>Technical debt</td><td>future cost created by a current technical compromise</td></tr></tbody></table></div>
+<p>The most effective next step is not another large reading list. Choose one small project and practice the full loop: clarify one outcome, implement a vertical slice, test it, review the diff, automate checks, release it safely, observe it, and improve it from evidence.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

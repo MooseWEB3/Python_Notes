@@ -19,7 +19,7 @@
 
 ### About the project
 
-**MooseWeb3 Python Notes** is a collection of practical tutorials for people learning Python, R data tools, text and date-time workflows, object-oriented design, data analysis, statistics, regression, and reproducible publishing. Each guide is available as a standalone HTML file that can be opened directly in a browser—no web server or installation is required for reading.
+**MooseWeb3 Python Notes** is a collection of practical tutorials for people learning Python, R data tools, text and date-time workflows, object-oriented design, software development, data analysis, statistics, regression, and reproducible publishing. Each guide is available as a standalone HTML file that can be opened directly in a browser—no web server or installation is required for reading.
 
 The published tutorials are in **English**. This README is also available in French and Portuguese to make the repository easier to discover and understand.
 
@@ -32,6 +32,7 @@ The published tutorials are in **English**. This README is also available in Fre
 | Text processing with stringr and Python | [Open guide](stringr_guide_en.html) |
 | Date-time handling with lubridate and pandas | [Open guide](lubridate_guide_en.html) |
 | Object-oriented programming in Python | [Open guide](python_oop_en.html) |
+| Software development fundamentals | [Open guide](software_development_fundamentals_en.html) |
 | Statistical tests with Python | [Open guide](python_statistical_tests_en.html) |
 | Linear and generalized linear regression | [Open guide](python_regression_en.html) |
 | Practical Quarto guide | [Open guide](quarto_guide_en.html) |
@@ -44,6 +45,7 @@ The published tutorials are in **English**. This README is also available in Fre
 - stringr text cleaning, detection, extraction, replacement, regular expressions, Unicode handling, validation, and Python equivalents;
 - Date-time parsing, components, calendar arithmetic, time zones, DST, durations, periods, and intervals with lubridate and pandas;
 - Python classes, properties, inheritance, composition, protocols, dataclasses, testing, and maintainable object-oriented design;
+- Software requirements, lifecycle, architecture, Git, testing, debugging, APIs, security, CI/CD, reliability, releases, and collaboration;
 - t-tests, ANOVA, nonparametric tests, chi-square and Fisher tests, correlation, resampling, effect sizes, multiple-testing corrections, and power analysis;
 - Linear regression, generalized linear models, diagnostics, interpretation, and reliable reporting;
 - Quarto fundamentals, project structure, code execution, citations, themes, reproducible reports, and publishing concepts;
@@ -76,6 +78,7 @@ dplyr_guide_en.html
 stringr_guide_en.html
 lubridate_guide_en.html
 python_oop_en.html
+software_development_fundamentals_en.html
 python_statistical_tests_en.html
 python_regression_en.html
 quarto_guide_en.html
@@ -115,6 +118,7 @@ Python_Notes/
 ├── stringr_guide_en.html
 ├── lubridate_guide_en.html
 ├── python_oop_en.html
+├── software_development_fundamentals_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
@@ -138,7 +142,7 @@ These materials are educational. Statistical examples do not replace domain-spec
 
 ### À propos du projet
 
-**MooseWeb3 Python Notes** est une collection de tutoriels pratiques destinée aux personnes qui apprennent Python, les outils de données R, le traitement du texte et des dates, la programmation orientée objet, l’analyse de données, les statistiques, la régression et la publication reproductible. Chaque guide est fourni sous la forme d’un fichier HTML autonome qui peut être ouvert directement dans un navigateur, sans serveur web ni installation pour la lecture.
+**MooseWeb3 Python Notes** est une collection de tutoriels pratiques destinée aux personnes qui apprennent Python, les outils de données R, le traitement du texte et des dates, la programmation orientée objet, le développement logiciel, l’analyse de données, les statistiques, la régression et la publication reproductible. Chaque guide est fourni sous la forme d’un fichier HTML autonome qui peut être ouvert directement dans un navigateur, sans serveur web ni installation pour la lecture.
 
 Les tutoriels publiés sont en **anglais**. Ce README comporte également une version française et une version portugaise afin de rendre le dépôt plus facile à découvrir et à comprendre.
 
@@ -151,6 +155,7 @@ Les tutoriels publiés sont en **anglais**. Ce README comporte également une ve
 | Traitement de texte avec stringr et Python | [Ouvrir le guide](stringr_guide_en.html) |
 | Dates et heures avec lubridate et pandas | [Ouvrir le guide](lubridate_guide_en.html) |
 | Programmation orientée objet en Python | [Ouvrir le guide](python_oop_en.html) |
+| Principes fondamentaux du développement logiciel | [Ouvrir le guide](software_development_fundamentals_en.html) |
 | Tests statistiques avec Python | [Ouvrir le guide](python_statistical_tests_en.html) |
 | Régression linéaire et linéaire généralisée | [Ouvrir le guide](python_regression_en.html) |
 | Guide pratique de Quarto | [Ouvrir le guide](quarto_guide_en.html) |
@@ -163,6 +168,7 @@ Les tutoriels publiés sont en **anglais**. Ce README comporte également une ve
 - Nettoyage, détection, extraction, remplacement, expressions régulières, Unicode et validation de texte avec stringr et Python ;
 - Analyse des dates et heures, calcul calendaire, fuseaux horaires, heure d’été, durées, périodes et intervalles avec lubridate et pandas ;
 - Classes, propriétés, héritage, composition, protocoles, dataclasses, tests et conception orientée objet maintenable en Python ;
+- Exigences logicielles, cycle de vie, architecture, Git, tests, débogage, API, sécurité, CI/CD, fiabilité, versions et collaboration ;
 - Tests t, ANOVA, tests non paramétriques, tests du khi-deux et de Fisher, corrélation, rééchantillonnage, tailles d’effet, corrections pour tests multiples et analyse de puissance ;
 - Régression linéaire, modèles linéaires généralisés, diagnostics, interprétation et communication fiable des résultats ;
 - Principes de Quarto, structure de projet, exécution du code, citations, thèmes et rapports reproductibles ;
@@ -223,6 +229,7 @@ Python_Notes/
 ├── stringr_guide_en.html
 ├── lubridate_guide_en.html
 ├── python_oop_en.html
+├── software_development_fundamentals_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
@@ -246,7 +253,7 @@ Ces ressources sont éducatives. Les exemples statistiques ne remplacent pas une
 
 ### Sobre o projeto
 
-**MooseWeb3 Python Notes** é uma coleção de tutoriais práticos para quem está aprendendo Python, ferramentas de dados em R, fluxos de texto e datas, programação orientada a objetos, análise de dados, estatística, regressão e publicação reprodutível. Cada guia é fornecido como um arquivo HTML independente, que pode ser aberto diretamente no navegador sem servidor web ou instalação para leitura.
+**MooseWeb3 Python Notes** é uma coleção de tutoriais práticos para quem está aprendendo Python, ferramentas de dados em R, fluxos de texto e datas, programação orientada a objetos, desenvolvimento de software, análise de dados, estatística, regressão e publicação reprodutível. Cada guia é fornecido como um arquivo HTML independente, que pode ser aberto diretamente no navegador sem servidor web ou instalação para leitura.
 
 Os tutoriais publicados estão disponíveis em **inglês**. Este README também oferece versões em francês e português para facilitar a descoberta e a compreensão do repositório.
 
@@ -259,6 +266,7 @@ Os tutoriais publicados estão disponíveis em **inglês**. Este README também 
 | Processamento de texto com stringr e Python | [Abrir o guia](stringr_guide_en.html) |
 | Datas e horários com lubridate e pandas | [Abrir o guia](lubridate_guide_en.html) |
 | Programação orientada a objetos em Python | [Abrir o guia](python_oop_en.html) |
+| Fundamentos de desenvolvimento de software | [Abrir o guia](software_development_fundamentals_en.html) |
 | Testes estatísticos com Python | [Abrir o guia](python_statistical_tests_en.html) |
 | Regressão linear e linear generalizada | [Abrir o guia](python_regression_en.html) |
 | Guia prático do Quarto | [Abrir o guia](quarto_guide_en.html) |
@@ -271,6 +279,7 @@ Os tutoriais publicados estão disponíveis em **inglês**. Este README também 
 - Limpeza, detecção, extração, substituição, expressões regulares, Unicode e validação de texto com stringr e Python;
 - Análise de datas e horários, aritmética de calendário, fusos horários, horário de verão, durações, períodos e intervalos com lubridate e pandas;
 - Classes, propriedades, herança, composição, protocolos, dataclasses, testes e design orientado a objetos sustentável em Python;
+- Requisitos de software, ciclo de vida, arquitetura, Git, testes, depuração, APIs, segurança, CI/CD, confiabilidade, lançamentos e colaboração;
 - Testes t, ANOVA, testes não paramétricos, qui-quadrado e Fisher, correlação, reamostragem, tamanhos de efeito, correções para testes múltiplos e análise de poder;
 - Regressão linear, modelos lineares generalizados, diagnósticos, interpretação e comunicação confiável;
 - Fundamentos do Quarto, estrutura de projetos, execução de código, citações, temas e relatórios reprodutíveis;
@@ -331,6 +340,7 @@ Python_Notes/
 ├── stringr_guide_en.html
 ├── lubridate_guide_en.html
 ├── python_oop_en.html
+├── software_development_fundamentals_en.html
 ├── python_statistical_tests_en.html
 ├── python_regression_en.html
 └── quarto_guide_en.html
