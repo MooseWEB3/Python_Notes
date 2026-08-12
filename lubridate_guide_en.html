@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>lubridate Date-Time Handling in R, with Python Comparisons</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · lubridate Guide</div>
+    <div class="actions">
+      <a class="button" href="lubridate_guide_zh.html"></a>
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>lubridate Date-Time Handling in R, with Python Comparisons</h1>
+    <p>From parsing, components, and rounding to time zones, DST, Duration, Period, Interval, and reliable workflows</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">lubridate</span><span class="badge">R</span><span class="badge">pandas</span><span class="badge">Date-Time</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#what-does-this-guide-solve">What does this guide solve?</a></li>
+<li class="toc-level-1"><a href="#installation-versions-and-example-data">Installation, versions, and example data</a></li>
+<li class="toc-level-2"><a href="#r">R</a></li>
+<li class="toc-level-2"><a href="#python">Python</a></li>
+<li class="toc-level-1"><a href="#build-a-mental-model-of-the-object-types">Build a mental model of the object types</a></li>
+<li class="toc-level-1"><a href="#parse-dates-with-ymd-mdy-and-dmy">Parse dates with ymd(), mdy(), and dmy()</a></li>
+<li class="toc-level-1"><a href="#parse-date-times-with-the-ymd_hms-family">Parse date-times with the ymd_hms() family</a></li>
+<li class="toc-level-1"><a href="#mixed-formats-with-parse_date_time">Mixed formats with parse_date_time()</a></li>
+<li class="toc-level-1"><a href="#fast-explicit-parsing-with-parse_date_time2-and-fast_strptime">Fast, explicit parsing with parse_date_time2() and fast_strptime()</a></li>
+<li class="toc-level-1"><a href="#parse-failures-invalid-dates-and-quality-audits">Parse failures, invalid dates, and quality audits</a></li>
+<li class="toc-level-1"><a href="#construct-date-times-from-numeric-components">Construct date-times from numeric components</a></li>
+<li class="toc-level-1"><a href="#unix-excel-and-other-numeric-timestamps">Unix, Excel, and other numeric timestamps</a></li>
+<li class="toc-level-1"><a href="#convert-types-with-as_date-and-as_datetime">Convert types with as_date() and as_datetime()</a></li>
+<li class="toc-level-1"><a href="#format-output-with-format-iso-8601-and-stamp">Format output with format(), ISO 8601, and stamp()</a></li>
+<li class="toc-level-1"><a href="#extract-basic-components">Extract basic components</a></li>
+<li class="toc-level-1"><a href="#weeks-iso-years-quarters-and-fiscal-periods">Weeks, ISO years, quarters, and fiscal periods</a></li>
+<li class="toc-level-1"><a href="#calendar-helpers-leap-years-and-days-in-a-month">Calendar helpers: leap years and days in a month</a></li>
+<li class="toc-level-1"><a href="#modify-components-with-setters-and-update">Modify components with setters and update()</a></li>
+<li class="toc-level-1"><a href="#round-and-bucket-time">Round and bucket time</a></li>
+<li class="toc-level-1"><a href="#duration-exact-seconds">Duration: exact seconds</a></li>
+<li class="toc-level-1"><a href="#period-civil-calendar-time">Period: civil calendar time</a></li>
+<li class="toc-level-1"><a href="#interval-a-span-with-real-endpoints">Interval: a span with real endpoints</a></li>
+<li class="toc-level-1"><a href="#interval-operations-containment-overlap-direction-and-shifting">Interval operations: containment, overlap, direction, and shifting</a></li>
+<li class="toc-level-1"><a href="#which-timespan-should-you-choose">Which timespan should you choose?</a></li>
+<li class="toc-level-1"><a href="#end-of-month-arithmetic-with-m-m--and-rollback">End-of-month arithmetic with %m+%, %m-%, and rollback</a></li>
+<li class="toc-level-1"><a href="#exact-differences-ages-and-time_length">Exact differences, ages, and time_length()</a></li>
+<li class="toc-level-1"><a href="#time-zone-model-instants-and-wall-clock-time">Time-zone model: instants and wall-clock time</a></li>
+<li class="toc-level-1"><a href="#with_tz-versus-force_tz-the-critical-distinction">with_tz() versus force_tz(): the critical distinction</a></li>
+<li class="toc-level-1"><a href="#dst-nonexistent-and-repeated-local-times">DST: nonexistent and repeated local times</a></li>
+<li class="toc-level-1"><a href="#a-different-time-zone-per-row-force_tzs-and-local-time">A different time zone per row: force_tzs() and local time</a></li>
+<li class="toc-level-1"><a href="#parse-derive-and-summarize-inside-dplyr">Parse, derive, and summarize inside dplyr</a></li>
+<li class="toc-level-1"><a href="#date-sequences-and-calendar-grids">Date sequences and calendar grids</a></li>
+<li class="toc-level-1"><a href="#windows-slas-and-deadlines">Windows, SLAs, and deadlines</a></li>
+<li class="toc-level-1"><a href="#temporal-joins-and-valid-at-the-time-data">Temporal joins and “valid at the time” data</a></li>
+<li class="toc-level-1"><a href="#missing-values-typed-na-and-vectorization">Missing values, typed NA, and vectorization</a></li>
+<li class="toc-level-1"><a href="#locale-and-textual-month-or-weekday-names">Locale and textual month or weekday names</a></li>
+<li class="toc-level-1"><a href="#cyclical-time-features-for-modeling">Cyclical time features for modeling</a></li>
+<li class="toc-level-1"><a href="#a-complete-cleaning-workflow">A complete cleaning workflow</a></li>
+<li class="toc-level-1"><a href="#common-mistakes-and-repairs">Common mistakes and repairs</a></li>
+<li class="toc-level-1"><a href="#performance-maintainability-and-testing">Performance, maintainability, and testing</a></li>
+<li class="toc-level-1"><a href="#quick-reference">Quick reference</a></li>
+<li class="toc-level-1"><a href="#exercises">Exercises</a></li>
+<li class="toc-level-1"><a href="#official-references-and-version-note">Official references and version note</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render lubridate_guide_en.Rmd</code> for fully executable output.</div><h1 id="what-does-this-guide-solve">What does this guide solve?</h1>
+<p><code>lubridate</code> is the core date-time package in the tidyverse ecosystem. It makes parsing, component extraction, date arithmetic, time-zone conversion, and interval operations readable. Date-time work nevertheless remains genuinely complex: months differ in length, leap years exist, daylight saving time skips or repeats local clock times, and one instant can be displayed in many time zones.</p>
+<p>This guide explains:</p>
+<ul><li>The inputs, outputs, and object types of lubridate functions;</li><li>The differences among <code>Date</code>, <code>POSIXct</code>, <code>Duration</code>, <code>Period</code>, and <code>Interval</code>;</li><li>A pandas equivalent for each common task;</li><li>Which time-zone operations preserve the instant and which preserve clock fields;</li><li>How to build testable, reproducible time-data workflows inside dplyr pipelines.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>lubridate</th><th>pandas / Python</th></tr></thead><tbody><tr><td>Parse a date</td><td><code>ymd()</code>, <code>mdy()</code>, <code>dmy()</code></td><td><code>pd.to_datetime()</code></td></tr><tr><td>Parse a date-time</td><td><code>ymd_hms()</code>, <code>parse_date_time()</code></td><td><code>pd.to_datetime(format=...)</code></td></tr><tr><td>Extract components</td><td><code>year()</code>, <code>month()</code>, <code>wday()</code></td><td><code>.dt.year</code>, <code>.dt.month</code>, <code>.dt.day_name()</code></td></tr><tr><td>Round or bucket</td><td><code>floor_date()</code>, <code>round_date()</code></td><td><code>.dt.floor()</code>, <code>.dt.round()</code></td></tr><tr><td>Exact elapsed time</td><td><code>Duration</code>, <code>dhours()</code></td><td><code>pd.Timedelta</code></td></tr><tr><td>Calendar-relative time</td><td><code>Period</code>, <code>months()</code>, <code>years()</code></td><td><code>pd.DateOffset</code></td></tr><tr><td>Span with endpoints</td><td><code>Interval</code>, <code>%--%</code></td><td><code>pd.Interval</code> / two timestamp columns</td></tr><tr><td>Convert display zone</td><td><code>with_tz()</code></td><td><code>.tz_convert()</code></td></tr><tr><td>Assign or replace zone</td><td><code>force_tz()</code></td><td><code>.tz_localize()</code></td></tr></tbody></table></div>
+<blockquote><p>Before writing date-time code, decide whether a value is an instant, a local wall-clock reading, an exact number of seconds, or a calendar unit. Choosing the wrong object may produce code that runs while answering the wrong business question.</p></blockquote>
+<h1 id="installation-versions-and-example-data">Installation, versions, and example data</h1>
+<h2 id="r">R</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">install.packages(&quot;lubridate&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">#| label: setup-r
+#| include: false
+
+library(lubridate)
+library(dplyr)
+library(tibble)
+
+options(lubridate.week.start = 1)
+
+events &lt;- tibble(
+  event_id = 1:8,
+  customer = c(&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;, &quot;C&quot;, &quot;C&quot;, &quot;D&quot;, &quot;D&quot;),
+  created_text = c(
+    &quot;2025-01-31 23:30:00&quot;, &quot;2025-02-01 08:15:00&quot;,
+    &quot;2025-03-09 01:30:00&quot;, &quot;2025-03-09 03:30:00&quot;,
+    &quot;2025-06-15 12:05:30&quot;, &quot;2025-09-30 18:45:00&quot;,
+    &quot;2025-11-02 01:15:00&quot;, &quot;2025-12-31 23:59:59&quot;
+  ),
+  closed_text = c(
+    &quot;2025-02-01 00:10:00&quot;, &quot;2025-02-03 10:00:00&quot;,
+    &quot;2025-03-09 04:00:00&quot;, &quot;2025-03-10 09:00:00&quot;,
+    &quot;2025-06-16 16:20:00&quot;, NA,
+    &quot;2025-11-02 02:30:00&quot;, &quot;2026-01-02 11:00:00&quot;
+  ),
+  zone = c(
+    &quot;UTC&quot;, &quot;America/Edmonton&quot;, &quot;America/New_York&quot;, &quot;America/New_York&quot;,
+    &quot;Europe/London&quot;, &quot;Asia/Tokyo&quot;, &quot;America/Edmonton&quot;, &quot;UTC&quot;
+  )
+)
+
+events &lt;- events |&gt;
+  mutate(
+    created_utc = ymd_hms(created_text, tz = &quot;UTC&quot;),
+    closed_utc = ymd_hms(closed_text, tz = &quot;UTC&quot;)
+  )</code></pre></div>
+<h2 id="python">Python</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install pandas numpy</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+import numpy as np
+import pandas as pd
+
+events = pd.DataFrame({
+    &quot;event_id&quot;: range(1, 9),
+    &quot;customer&quot;: [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;, &quot;C&quot;, &quot;C&quot;, &quot;D&quot;, &quot;D&quot;],
+    &quot;created_text&quot;: [
+        &quot;2025-01-31 23:30:00&quot;, &quot;2025-02-01 08:15:00&quot;,
+        &quot;2025-03-09 01:30:00&quot;, &quot;2025-03-09 03:30:00&quot;,
+        &quot;2025-06-15 12:05:30&quot;, &quot;2025-09-30 18:45:00&quot;,
+        &quot;2025-11-02 01:15:00&quot;, &quot;2025-12-31 23:59:59&quot;,
+    ],
+    &quot;closed_text&quot;: [
+        &quot;2025-02-01 00:10:00&quot;, &quot;2025-02-03 10:00:00&quot;,
+        &quot;2025-03-09 04:00:00&quot;, &quot;2025-03-10 09:00:00&quot;,
+        &quot;2025-06-16 16:20:00&quot;, None,
+        &quot;2025-11-02 02:30:00&quot;, &quot;2026-01-02 11:00:00&quot;,
+    ],
+    &quot;zone&quot;: [
+        &quot;UTC&quot;, &quot;America/Edmonton&quot;, &quot;America/New_York&quot;, &quot;America/New_York&quot;,
+        &quot;Europe/London&quot;, &quot;Asia/Tokyo&quot;, &quot;America/Edmonton&quot;, &quot;UTC&quot;,
+    ],
+})
+events[&quot;created_utc&quot;] = pd.to_datetime(events[&quot;created_text&quot;], utc=True)
+events[&quot;closed_utc&quot;] = pd.to_datetime(events[&quot;closed_text&quot;], utc=True)</code></pre></div>
+<p>This guide uses <strong>store in UTC, convert for local display</strong> as its default strategy. If real data contains local times without offsets, you must know the source zone before interpreting them; do not simply assume UTC.</p>
+<h1 id="build-a-mental-model-of-the-object-types">Build a mental model of the object types</h1>
+<p>Base R and lubridate provide several objects that represent different concepts:</p>
+<div class="table-wrap"><table><thead><tr><th>Type</th><th>What it represents</th><th>Storage or anchor</th><th>Typical use</th></tr></thead><tbody><tr><td><code>Date</code></td><td>Calendar date</td><td>Days since 1970-01-01</td><td>Birthday, billing date, civil day</td></tr><tr><td><code>POSIXct</code></td><td>Instant on the timeline</td><td>Seconds since Unix epoch</td><td>Log, transaction, sensor timestamp</td></tr><tr><td><code>POSIXlt</code></td><td>Split date-time list</td><td>Multiple components</td><td>Low-level component work; rarely a table column</td></tr><tr><td><code>difftime</code></td><td>Difference between times</td><td>Numeric value in stated units</td><td>Base R time difference</td></tr><tr><td><code>Duration</code></td><td>Exact seconds</td><td>Fixed seconds</td><td>90 minutes, 24-hour SLA</td></tr><tr><td><code>Period</code></td><td>Civil calendar units</td><td>No fixed second length</td><td>One month, one calendar year, same clock time tomorrow</td></tr><tr><td><code>Interval</code></td><td>Two real instants</td><td>Start and end</td><td>Employment, admission, or session span</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">d &lt;- ymd(&quot;2025-08-11&quot;)
+instant &lt;- ymd_hms(&quot;2025-08-11 14:30:00&quot;, tz = &quot;America/Edmonton&quot;)
+
+class(d)
+class(instant)
+unclass(d)
+unclass(with_tz(instant, &quot;UTC&quot;))
+is.instant(d)
+is.instant(instant)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+d = pd.Timestamp(&quot;2025-08-11&quot;)
+instant = pd.Timestamp(&quot;2025-08-11 14:30:00&quot;, tz=&quot;America/Edmonton&quot;)
+
+type(d)
+instant.tz_convert(&quot;UTC&quot;)
+instant.value                 # Nanoseconds since epoch</code></pre></div>
+<p>A pandas <code>Timestamp</code> covers many of the use cases split between R <code>Date</code> and <code>POSIXct</code>, but timezone-naive and timezone-aware dtypes differ. Python <code>datetime.date</code>, <code>datetime.datetime</code>, and pandas types are not identical either.</p>
+<h1 id="parse-dates-with-ymd-mdy-and-dmy">Parse dates with <code>ymd()</code>, <code>mdy()</code>, and <code>dmy()</code></h1>
+<p>The function name expresses the order of year, month, and day in the input. Separators may vary, but the component order must not be ambiguous.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">ymd(c(&quot;2025-08-11&quot;, &quot;2025/08/12&quot;, &quot;20250813&quot;))
+mdy(c(&quot;08-11-2025&quot;, &quot;Aug 12, 2025&quot;))
+dmy(c(&quot;11/08/2025&quot;, &quot;12 Aug 2025&quot;))
+
+ydm(&quot;2025-31-01&quot;)
+yq(c(&quot;2025 Q1&quot;, &quot;2025-Q4&quot;))
+ym(c(&quot;2025-01&quot;, &quot;2025/12&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.to_datetime(pd.Series([&quot;2025-08-11&quot;, &quot;2025/08/12&quot;, &quot;20250813&quot;]), format=&quot;mixed&quot;)
+pd.to_datetime(pd.Series([&quot;08-11-2025&quot;, &quot;Aug 12, 2025&quot;]), format=&quot;mixed&quot;)
+pd.to_datetime(pd.Series([&quot;11/08/2025&quot;, &quot;12 Aug 2025&quot;]), format=&quot;mixed&quot;, dayfirst=True)
+
+quarters = pd.PeriodIndex([&quot;2025Q1&quot;, &quot;2025Q4&quot;], freq=&quot;Q&quot;)
+months = pd.PeriodIndex([&quot;2025-01&quot;, &quot;2025-12&quot;], freq=&quot;M&quot;)</code></pre></div>
+<p>No parser can determine from <code>01/02/2025</code> alone whether it means January 2 or February 1. Resolve the order from the data contract, source region, or schema; a parsing function cannot solve a definition problem.</p>
+<h1 id="parse-date-times-with-the-ymd_hms-family">Parse date-times with the <code>ymd_hms()</code> family</h1>
+<p>When a date includes hours, minutes, or seconds, append <code>_hms</code>, <code>_hm</code>, or <code>_h</code> to the function name. The <code>tz</code> supplied while parsing controls how the input clock fields are interpreted, not merely how output is printed.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">ymd_hms(&quot;2025-08-11 14:30:45&quot;, tz = &quot;UTC&quot;)
+ymd_hm(&quot;2025-08-11 14:30&quot;, tz = &quot;America/Edmonton&quot;)
+mdy_hms(&quot;08/11/2025 02:30:45 PM&quot;, tz = &quot;America/New_York&quot;)
+dmy_h(&quot;11-08-2025 14&quot;, tz = &quot;Europe/Paris&quot;)
+
+ymd_hms(&quot;2025-08-11T14:30:45.123Z&quot;, quiet = TRUE)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.to_datetime(&quot;2025-08-11 14:30:45&quot;, utc=True)
+pd.Timestamp(&quot;2025-08-11 14:30&quot;).tz_localize(&quot;America/Edmonton&quot;)
+pd.to_datetime(&quot;08/11/2025 02:30:45 PM&quot;, format=&quot;%m/%d/%Y %I:%M:%S %p&quot;).tz_localize(&quot;America/New_York&quot;)
+pd.to_datetime(&quot;2025-08-11T14:30:45.123Z&quot;, utc=True)</code></pre></div>
+<p>In ISO 8601, <code>Z</code> means UTC and an offset such as <code>-06:00</code> states the offset explicitly. Offset-bearing input is safer than abbreviations such as <code>MST</code> or <code>CST</code>, which can be ambiguous.</p>
+<h1 id="mixed-formats-with-parse_date_time">Mixed formats with <code>parse_date_time()</code></h1>
+<p>When a column truly contains a finite set of formats, use <code>orders</code> to state which orders are allowed. <code>truncated</code> accepts timestamps missing trailing components, but broadens the input domain and therefore requires documented defaults.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">mixed &lt;- c(
+  &quot;2025-08-11 14:30:45&quot;,
+  &quot;11/08/2025 14:30&quot;,
+  &quot;Aug 12, 2025 09:15&quot;,
+  &quot;2025-08-13&quot;
+)
+
+parse_date_time(
+  mixed,
+  orders = c(&quot;Ymd HMS&quot;, &quot;dmy HM&quot;, &quot;b d, Y HM&quot;, &quot;Ymd&quot;),
+  tz = &quot;UTC&quot;
+)
+
+parse_date_time(
+  c(&quot;2025-08-11 14:30:45&quot;, &quot;2025-08-11 14:30&quot;, &quot;2025-08-11&quot;),
+  orders = &quot;Ymd HMS&quot;,
+  truncated = 3,
+  tz = &quot;UTC&quot;
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+mixed = pd.Series([
+    &quot;2025-08-11 14:30:45&quot;,
+    &quot;11/08/2025 14:30&quot;,
+    &quot;Aug 12, 2025 09:15&quot;,
+    &quot;2025-08-13&quot;,
+])
+mixed_parsed = pd.to_datetime(mixed, format=&quot;mixed&quot;, dayfirst=True, utc=True)
+
+explicit = pd.concat([
+    pd.to_datetime(mixed.iloc[[0]], format=&quot;%Y-%m-%d %H:%M:%S&quot;, utc=True),
+    pd.to_datetime(mixed.iloc[[1]], format=&quot;%d/%m/%Y %H:%M&quot;, utc=True),
+])</code></pre></div>
+<p>If the exporting system can standardize its output, prefer that over long-term format guessing. The official documentation recommends <code>exact = TRUE</code>, <code>parse_date_time2()</code>, <code>fast_strptime()</code>, or Base R <code>strptime()</code> when format guessing is inappropriate or fails.</p>
+<h1 id="fast-explicit-parsing-with-parse_date_time2-and-fast_strptime">Fast, explicit parsing with <code>parse_date_time2()</code> and <code>fast_strptime()</code></h1>
+<p>For large vectors with fixed numeric formats, the C parsers can be faster. Their supported formats are narrower, and their validity checks around DST differ for non-UTC zones.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- rep(&quot;2025-08-11 14:30:45&quot;, 5)
+
+parse_date_time2(x, orders = &quot;YmdHMS&quot;, tz = &quot;UTC&quot;)
+fast_strptime(x, format = &quot;%Y-%m-%d %H:%M:%S&quot;, tz = &quot;UTC&quot;, lt = FALSE)
+
+guess_formats(c(&quot;2025-08-11&quot;, &quot;2025/08/12&quot;), orders = &quot;ymd&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Series([&quot;2025-08-11 14:30:45&quot;] * 5)
+pd.to_datetime(x, format=&quot;%Y-%m-%d %H:%M:%S&quot;, utc=True, cache=True)</code></pre></div>
+<p>Benchmark with real data. Parsing is usually only one part of a pipeline, and premature optimization can remove valuable error detection.</p>
+<h1 id="parse-failures-invalid-dates-and-quality-audits">Parse failures, invalid dates, and quality audits</h1>
+<p>A parse failure normally returns <code>NA</code> with a warning. Production code should count failures explicitly, retain the source text, and show failed examples rather than hiding the problem with <code>quiet = TRUE</code>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">raw_dates &lt;- c(&quot;2025-02-28&quot;, &quot;2025-02-30&quot;, &quot;not-a-date&quot;, NA)
+parsed_dates &lt;- ymd(raw_dates, quiet = TRUE)
+
+tibble(raw = raw_dates, parsed = parsed_dates) |&gt;
+  mutate(failed = !is.na(raw) &amp; is.na(parsed))
+
+sum(!is.na(raw_dates) &amp; is.na(parsed_dates))
+unique(raw_dates[!is.na(raw_dates) &amp; is.na(parsed_dates)])</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+raw_dates = pd.Series([&quot;2025-02-28&quot;, &quot;2025-02-30&quot;, &quot;not-a-date&quot;, None])
+parsed_dates = pd.to_datetime(raw_dates, errors=&quot;coerce&quot;)
+audit = pd.DataFrame({&quot;raw&quot;: raw_dates, &quot;parsed&quot;: parsed_dates})
+audit[&quot;failed&quot;] = audit[&quot;raw&quot;].notna() &amp; audit[&quot;parsed&quot;].isna()
+audit.loc[audit[&quot;failed&quot;], &quot;raw&quot;].unique()</code></pre></div>
+<p>Never replace a parse failure automatically with the current date. An explicit missing value is safer than a plausible-looking but false timestamp.</p>
+<h1 id="construct-date-times-from-numeric-components">Construct date-times from numeric components</h1>
+<p>When year, month, and day arrive in separate columns, <code>make_date()</code> and <code>make_datetime()</code> are more direct and often faster than concatenating strings. They also make component validation easier.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">make_date(year = 2025, month = 8, day = 11)
+
+make_datetime(
+  year = c(2025, 2025),
+  month = c(8, 12),
+  day = c(11, 31),
+  hour = c(14, 23),
+  min = c(30, 59),
+  sec = c(0, 59),
+  tz = &quot;UTC&quot;
+)
+
+today(tzone = &quot;America/Edmonton&quot;)
+now(tzone = &quot;America/Edmonton&quot;)
+origin</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+parts = pd.DataFrame({
+    &quot;year&quot;: [2025, 2025],
+    &quot;month&quot;: [8, 12],
+    &quot;day&quot;: [11, 31],
+    &quot;hour&quot;: [14, 23],
+    &quot;minute&quot;: [30, 59],
+    &quot;second&quot;: [0, 59],
+})
+made = pd.to_datetime(parts, utc=True)
+today_local = pd.Timestamp.now(tz=&quot;America/Edmonton&quot;).normalize()
+now_local = pd.Timestamp.now(tz=&quot;America/Edmonton&quot;)
+epoch = pd.Timestamp(&quot;1970-01-01&quot;, tz=&quot;UTC&quot;)</code></pre></div>
+<p><code>today()</code> and <code>now()</code> vary with execution time. Tests and reproducible reports should receive a fixed <code>as_of</code> value instead of calling the current clock throughout application code.</p>
+<h1 id="unix-excel-and-other-numeric-timestamps">Unix, Excel, and other numeric timestamps</h1>
+<p>A number does not contain its own unit or origin. Unix values are commonly seconds or milliseconds since 1970-01-01 UTC. Excel dates are usually days from a particular origin, and source systems may use either the 1900 or 1904 date system.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">unix_seconds &lt;- c(0, 1_700_000_000)
+as_datetime(unix_seconds, origin = &quot;1970-01-01&quot;, tz = &quot;UTC&quot;)
+
+unix_milliseconds &lt;- 1_700_000_000_000
+as_datetime(unix_milliseconds / 1000, origin = &quot;1970-01-01&quot;, tz = &quot;UTC&quot;)
+
+excel_serial &lt;- c(1, 45292)
+as_date(excel_serial, origin = &quot;1899-12-30&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.to_datetime(pd.Series([0, 1_700_000_000]), unit=&quot;s&quot;, origin=&quot;unix&quot;, utc=True)
+pd.to_datetime(pd.Series([1_700_000_000_000]), unit=&quot;ms&quot;, origin=&quot;unix&quot;, utc=True)
+pd.to_datetime(pd.Series([1, 45292]), unit=&quot;D&quot;, origin=&quot;1899-12-30&quot;)</code></pre></div>
+<p>Read the data dictionary before choosing <code>unit</code> and <code>origin</code>. Guessing from magnitude can shift dates by decades when seconds, milliseconds, and microseconds are confused.</p>
+<h1 id="convert-types-with-as_date-and-as_datetime">Convert types with <code>as_date()</code> and <code>as_datetime()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 23:30:00&quot;, tz = &quot;America/Edmonton&quot;)
+
+as_date(x)
+as_date(with_tz(x, &quot;Asia/Tokyo&quot;))
+as_datetime(ymd(&quot;2025-08-11&quot;), tz = &quot;UTC&quot;)
+date(x)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 23:30:00&quot;, tz=&quot;America/Edmonton&quot;)
+x.normalize()
+x.tz_convert(&quot;Asia/Tokyo&quot;).normalize()
+pd.Timestamp(&quot;2025-08-11&quot;).tz_localize(&quot;UTC&quot;)
+x.date()</code></pre></div>
+<p>“Extract the date” must state the time zone in which the date is taken. A UTC instant may already be the next day in Tokyo. If a business day is defined in a store's local zone, call <code>with_tz()</code> before <code>as_date()</code>.</p>
+<h1 id="format-output-with-format-iso-8601-and-stamp">Format output with <code>format()</code>, ISO 8601, and <code>stamp()</code></h1>
+<p>Keep date-time objects separate from display strings. Preserve the temporal type for calculations and format only at an output boundary.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 14:30:45&quot;, tz = &quot;America/Edmonton&quot;)
+
+format(x, &quot;%Y-%m-%d %H:%M:%S %Z&quot;)
+format(x, &quot;%Y%m%dT%H%M%S%z&quot;)
+format_ISO8601(x, usetz = TRUE)
+
+formatter &lt;- stamp(&quot;Recorded on Monday, January 01, 2024 at 13:30&quot;)
+formatter(x)
+
+stamp_date(&quot;31/12/1999&quot;)(x)
+stamp_time(&quot;23:59:59&quot;)(x)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 14:30:45&quot;, tz=&quot;America/Edmonton&quot;)
+x.strftime(&quot;%Y-%m-%d %H:%M:%S %Z&quot;)
+x.strftime(&quot;%Y%m%dT%H%M%S%z&quot;)
+x.isoformat()</code></pre></div>
+<p><code>stamp()</code> infers an output format from an example and is convenient interactively. Long-lived APIs, filenames, and data contracts are better served by explicit <code>format()</code> directives or ISO 8601.</p>
+<h1 id="extract-basic-components">Extract basic components</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 14:30:45&quot;, tz = &quot;America/Edmonton&quot;)
+
+year(x)
+month(x)
+month(x, label = TRUE, abbr = FALSE)
+mday(x)
+yday(x)
+wday(x)
+wday(x, label = TRUE, abbr = TRUE, week_start = 1)
+hour(x)
+minute(x)
+second(x)
+am(x)
+pm(x)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 14:30:45&quot;, tz=&quot;America/Edmonton&quot;)
+components = {
+    &quot;year&quot;: x.year,
+    &quot;month&quot;: x.month,
+    &quot;month_name&quot;: x.month_name(),
+    &quot;day&quot;: x.day,
+    &quot;day_of_year&quot;: x.day_of_year,
+    &quot;weekday_monday_zero&quot;: x.day_of_week,
+    &quot;day_name&quot;: x.day_name(),
+    &quot;hour&quot;: x.hour,
+    &quot;minute&quot;: x.minute,
+    &quot;second&quot;: x.second,
+    &quot;is_pm&quot;: x.hour &gt;= 12,
+}</code></pre></div>
+<p>By default, <code>wday()</code> numbers Sunday as 1. With <code>week_start = 1</code>, Monday becomes 1. pandas <code>dayofweek</code> always numbers Monday as 0. Record this convention explicitly when porting code.</p>
+<h1 id="weeks-iso-years-quarters-and-fiscal-periods">Weeks, ISO years, quarters, and fiscal periods</h1>
+<p>Near a year boundary, the year to which a week belongs may differ from the calendar year. ISO weeks start on Monday, and week 1 contains the year's first Thursday.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">boundary &lt;- ymd(c(&quot;2020-12-31&quot;, &quot;2021-01-01&quot;, &quot;2021-01-04&quot;))
+
+tibble(
+  date = boundary,
+  year = year(boundary),
+  week = week(boundary),
+  isoyear = isoyear(boundary),
+  isoweek = isoweek(boundary),
+  epiyear = epiyear(boundary),
+  epiweek = epiweek(boundary),
+  quarter = quarter(boundary),
+  semester = semester(boundary)
+)
+
+quarter(ymd(&quot;2025-08-11&quot;), with_year = TRUE)
+quarter(ymd(&quot;2025-08-11&quot;), fiscal_start = 4)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+boundary = pd.Series(pd.to_datetime([&quot;2020-12-31&quot;, &quot;2021-01-01&quot;, &quot;2021-01-04&quot;]))
+iso = boundary.dt.isocalendar()
+week_table = pd.DataFrame({
+    &quot;date&quot;: boundary,
+    &quot;year&quot;: boundary.dt.year,
+    &quot;iso_year&quot;: iso[&quot;year&quot;],
+    &quot;iso_week&quot;: iso[&quot;week&quot;],
+    &quot;quarter&quot;: boundary.dt.quarter,
+})
+
+fiscal_period = pd.Period(&quot;2025-08-11&quot;, freq=&quot;Q-MAR&quot;)</code></pre></div>
+<p>Do not combine <code>year(date)</code> with <code>isoweek(date)</code> to build a week key. Use <code>isoyear()</code> plus <code>isoweek()</code>. Fiscal-quarter output should also record <code>fiscal_start</code>.</p>
+<h1 id="calendar-helpers-leap-years-and-days-in-a-month">Calendar helpers: leap years and days in a month</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">leap_year(c(2024, 2025, 2100, 2400))
+days_in_month(ymd(c(&quot;2024-02-01&quot;, &quot;2025-02-01&quot;, &quot;2025-04-01&quot;)))
+dst(ymd_hms(c(&quot;2025-01-15 12:00:00&quot;, &quot;2025-07-15 12:00:00&quot;),
+            tz = &quot;America/Edmonton&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+years = pd.Series([2024, 2025, 2100, 2400])
+is_leap = years.map(lambda y: pd.Timestamp(y, 12, 31).is_leap_year)
+month_days = pd.Series(pd.to_datetime([&quot;2024-02-01&quot;, &quot;2025-02-01&quot;, &quot;2025-04-01&quot;])).dt.days_in_month</code></pre></div>
+<p>Divisibility by four is not the whole leap-year rule: century years must also be divisible by 400. Use the library function instead of reimplementing an incomplete rule.</p>
+<h1 id="modify-components-with-setters-and-update">Modify components with setters and <code>update()</code></h1>
+<p>Component setters directly replace one field; <code>update()</code> replaces several at once. These operations change clock fields and may create a new instant. Inspect the result around invalid dates and DST boundaries.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 14:30:45&quot;, tz = &quot;UTC&quot;)
+
+year(x) &lt;- 2026
+month(x) &lt;- 12
+mday(x) &lt;- 20
+hour(x) &lt;- 9
+x
+
+update(x, year = 2027, month = 1, mday = 15, hour = 8, minute = 0)
+date(x) &lt;- ymd(&quot;2028-02-29&quot;)
+x</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 14:30:45&quot;, tz=&quot;UTC&quot;)
+x = x.replace(year=2026, month=12, day=20, hour=9)
+x = x.replace(year=2027, month=1, day=15, hour=8, minute=0)</code></pre></div>
+<p>If the intent is to add one year rather than set the year field to a chosen value, use Period arithmetic. Setters and arithmetic answer different questions.</p>
+<h1 id="round-and-bucket-time">Round and bucket time</h1>
+<p><code>floor_date()</code> rounds down, <code>ceiling_date()</code> rounds up, and <code>round_date()</code> uses the nearest boundary. <code>unit</code> may be a second, minute, hour, day, week, month, quarter, or year, and may be written as <code>&quot;15 minutes&quot;</code>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 14:37:42&quot;, tz = &quot;UTC&quot;)
+
+floor_date(x, &quot;hour&quot;)
+ceiling_date(x, &quot;hour&quot;)
+round_date(x, &quot;hour&quot;)
+floor_date(x, &quot;15 minutes&quot;)
+floor_date(x, &quot;week&quot;, week_start = 1)
+ceiling_date(ymd(&quot;2025-08-01&quot;), &quot;month&quot;, change_on_boundary = FALSE)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 14:37:42&quot;, tz=&quot;UTC&quot;)
+x.floor(&quot;h&quot;)
+x.ceil(&quot;h&quot;)
+x.round(&quot;h&quot;)
+x.floor(&quot;15min&quot;)
+x.to_period(&quot;W-SUN&quot;).start_time.tz_localize(&quot;UTC&quot;)
+x.to_period(&quot;M&quot;).start_time.tz_localize(&quot;UTC&quot;)</code></pre></div>
+<p><code>ceiling_date()</code> has specific boundary behavior for <code>Date</code> objects. If the business interprets a date as the start of an interval, set <code>change_on_boundary</code> explicitly and test the boundary.</p>
+<h1 id="duration-exact-seconds">Duration: exact seconds</h1>
+<p>A Duration always represents fixed seconds. <code>ddays(1)</code> is exactly 86,400 seconds; across DST it may not land at the same clock time tomorrow.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">dminutes(90)
+dhours(24)
+ddays(1)
+dweeks(2)
+duration(3600)
+duration(&quot;2 hours 30 minutes&quot;)
+
+start &lt;- ymd_hms(&quot;2025-03-08 12:00:00&quot;, tz = &quot;America/New_York&quot;)
+start + ddays(1)
+as.numeric(dhours(2), units = &quot;seconds&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Timedelta(minutes=90)
+pd.Timedelta(hours=24)
+pd.Timedelta(days=1)
+pd.Timedelta(&quot;2h 30min&quot;)
+
+start = pd.Timestamp(&quot;2025-03-08 12:00:00&quot;, tz=&quot;America/New_York&quot;)
+start + pd.Timedelta(days=1)
+pd.Timedelta(hours=2).total_seconds()</code></pre></div>
+<p><code>dmonths(1)</code> and <code>dyears(1)</code> use average-length exact durations. They do not mean the same day next month or next year. Use <code>months(1)</code> and <code>years(1)</code> for calendar arithmetic.</p>
+<h1 id="period-civil-calendar-time">Period: civil calendar time</h1>
+<p>A Period expresses years, months, days, hours, minutes, and seconds as calendar units. <code>days(1)</code> means the same wall-clock time on the next day; across DST the elapsed duration may be 23 or 25 hours.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">minutes(90)
+hours(24)
+days(1)
+months(1)
+years(1)
+period(c(&quot;1 year 2 months&quot;, &quot;3 days 4 hours&quot;))
+hms(&quot;02:30:15&quot;)
+hm(&quot;09:45&quot;)
+
+start &lt;- ymd_hms(&quot;2025-03-08 12:00:00&quot;, tz = &quot;America/New_York&quot;)
+start + days(1)
+start + ddays(1)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+start = pd.Timestamp(&quot;2025-03-08 12:00:00&quot;, tz=&quot;America/New_York&quot;)
+start + pd.DateOffset(days=1)
+start + pd.Timedelta(days=1)
+
+one_month = pd.DateOffset(months=1)
+one_year = pd.DateOffset(years=1)</code></pre></div>
+<p>pandas <code>DateOffset</code> is the closest counterpart to a Period, though the classes are not isomorphic. <code>Timedelta</code> expresses exact time; <code>DateOffset</code> expresses calendar-relative operations.</p>
+<h1 id="interval-a-span-with-real-endpoints">Interval: a span with real endpoints</h1>
+<p>An Interval records two instants. It can therefore produce exact seconds or calendar-relative years, months, and days based on real history. Direction follows the order of the endpoints.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">admission &lt;- ymd_hms(&quot;2025-01-31 20:00:00&quot;, tz = &quot;UTC&quot;)
+discharge &lt;- ymd_hms(&quot;2025-03-02 08:30:00&quot;, tz = &quot;UTC&quot;)
+
+stay &lt;- interval(admission, discharge)
+stay2 &lt;- admission %--% discharge
+
+int_start(stay)
+int_end(stay)
+int_length(stay)
+as.duration(stay)
+as.period(stay)
+time_length(stay, &quot;day&quot;)
+time_length(stay, &quot;month&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+admission = pd.Timestamp(&quot;2025-01-31 20:00:00&quot;, tz=&quot;UTC&quot;)
+discharge = pd.Timestamp(&quot;2025-03-02 08:30:00&quot;, tz=&quot;UTC&quot;)
+
+stay = pd.Interval(admission, discharge, closed=&quot;both&quot;)
+elapsed = discharge - admission
+elapsed.total_seconds()
+elapsed / pd.Timedelta(days=1)</code></pre></div>
+<p>pandas <code>Interval</code> needs endpoints that have compatible, comparable types. Business tables more often keep <code>start</code> and <code>end</code> columns and define explicitly whether endpoints form a closed or half-open span.</p>
+<h1 id="interval-operations-containment-overlap-direction-and-shifting">Interval operations: containment, overlap, direction, and shifting</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">window_a &lt;- ymd(&quot;2025-01-01&quot;) %--% ymd(&quot;2025-01-31&quot;)
+window_b &lt;- ymd(&quot;2025-01-20&quot;) %--% ymd(&quot;2025-02-10&quot;)
+window_c &lt;- ymd(&quot;2025-03-01&quot;) %--% ymd(&quot;2025-03-31&quot;)
+
+ymd(&quot;2025-01-15&quot;) %within% window_a
+window_b %within% window_a
+int_overlaps(window_a, window_b)
+int_overlaps(window_a, window_c)
+int_aligns(window_a, ymd(&quot;2024-12-01&quot;) %--% ymd(&quot;2025-01-01&quot;))
+
+int_flip(window_a)
+int_standardize(int_flip(window_a))
+int_shift(window_a, months(1))
+int_diff(ymd(c(&quot;2025-01-01&quot;, &quot;2025-01-05&quot;, &quot;2025-01-20&quot;)))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+window_a = pd.Interval(pd.Timestamp(&quot;2025-01-01&quot;), pd.Timestamp(&quot;2025-01-31&quot;), closed=&quot;both&quot;)
+window_b = pd.Interval(pd.Timestamp(&quot;2025-01-20&quot;), pd.Timestamp(&quot;2025-02-10&quot;), closed=&quot;both&quot;)
+window_c = pd.Interval(pd.Timestamp(&quot;2025-03-01&quot;), pd.Timestamp(&quot;2025-03-31&quot;), closed=&quot;both&quot;)
+
+pd.Timestamp(&quot;2025-01-15&quot;) in window_a
+window_a.overlaps(window_b)
+window_a.overlaps(window_c)
+
+times = pd.Series(pd.to_datetime([&quot;2025-01-01&quot;, &quot;2025-01-05&quot;, &quot;2025-01-20&quot;]))
+times.diff()</code></pre></div>
+<p>Libraries may use different default endpoint closure. Bookings, price validity, and event windows often use half-open <code>[start, end)</code> intervals so adjacent ranges do not double-count their shared boundary. Put the rule in the data contract.</p>
+<h1 id="which-timespan-should-you-choose">Which timespan should you choose?</h1>
+<div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Correct object</th><th>Reason</th></tr></thead><tbody><tr><td>A task must finish within 90 minutes</td><td>Duration</td><td>90 minutes is exactly 5,400 seconds</td></tr><tr><td>Run daily at 09:00 local time</td><td>Period / calendar schedule</td><td>Preserves clock time across DST</td></tr><tr><td>Renew one month after January 31</td><td>Period plus rollback rule</td><td>Months have no fixed second length</td></tr><tr><td>Calculate real employee tenure</td><td>Interval</td><td>Actual start and end dates are known</td></tr><tr><td>Compare two log timestamps</td><td>Duration / difftime</td><td>Requires exact elapsed timeline time</td></tr><tr><td>Test whether hospital stays overlap</td><td>Interval</td><td>Requires real endpoints</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">spring &lt;- ymd_hms(&quot;2025-03-08 12:00:00&quot;, tz = &quot;America/New_York&quot;)
+
+tibble(
+  expression = c(&quot;start + ddays(1)&quot;, &quot;start + days(1)&quot;),
+  result = c(spring + ddays(1), spring + days(1))
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+spring = pd.Timestamp(&quot;2025-03-08 12:00:00&quot;, tz=&quot;America/New_York&quot;)
+span_comparison = pd.Series({
+    &quot;exact_24_hours&quot;: spring + pd.Timedelta(days=1),
+    &quot;next_calendar_day&quot;: spring + pd.DateOffset(days=1),
+})</code></pre></div>
+<h1 id="end-of-month-arithmetic-with-m-m--and-rollback">End-of-month arithmetic with <code>%m+%</code>, <code>%m-%</code>, and rollback</h1>
+<p>Ordinary Period addition returns <code>NA</code> when it creates a nonexistent date. <code>%m+%</code> and <code>%m-%</code> roll back to the final day of the target month, which is useful for end-of-month renewals.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">jan_31 &lt;- ymd(&quot;2025-01-31&quot;)
+
+jan_31 + months(1)
+jan_31 %m+% months(1)
+ymd(&quot;2025-03-31&quot;) %m-% months(1)
+
+add_with_rollback(jan_31, months(1))
+add_with_rollback(jan_31, months(1), roll_to_first = TRUE)
+rollback(ymd(&quot;2025-03-15&quot;))
+rollbackward(ymd(&quot;2025-03-15&quot;), roll_to_first = TRUE)
+rollforward(ymd(&quot;2025-03-15&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+jan_31 = pd.Timestamp(&quot;2025-01-31&quot;)
+jan_31 + pd.DateOffset(months=1)
+jan_31 + pd.offsets.MonthEnd(1)
+
+march_31 = pd.Timestamp(&quot;2025-03-31&quot;)
+march_31 - pd.DateOffset(months=1)
+march_31 + pd.offsets.MonthEnd(0)</code></pre></div>
+<p>Businesses may define “one month after January 31” as the end of February, March 1, or the next month that has day 31. Define the rule before choosing an operator and test days 28, 29, 30, and 31.</p>
+<h1 id="exact-differences-ages-and-time_length">Exact differences, ages, and <code>time_length()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">birth &lt;- ymd(&quot;1990-10-20&quot;)
+as_of &lt;- ymd(&quot;2026-08-11&quot;)
+life &lt;- birth %--% as_of
+
+time_length(life, &quot;year&quot;)
+floor(time_length(life, &quot;year&quot;))
+time_length(life, &quot;month&quot;)
+
+opened &lt;- ymd_hms(&quot;2025-08-11 09:00:00&quot;, tz = &quot;UTC&quot;)
+closed &lt;- ymd_hms(&quot;2025-08-12 12:30:00&quot;, tz = &quot;UTC&quot;)
+difftime(closed, opened, units = &quot;hours&quot;)
+as.duration(opened %--% closed)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+birth = pd.Timestamp(&quot;1990-10-20&quot;)
+as_of = pd.Timestamp(&quot;2026-08-11&quot;)
+age = as_of.year - birth.year - ((as_of.month, as_of.day) &lt; (birth.month, birth.day))
+
+opened = pd.Timestamp(&quot;2025-08-11 09:00:00&quot;, tz=&quot;UTC&quot;)
+closed = pd.Timestamp(&quot;2025-08-12 12:30:00&quot;, tz=&quot;UTC&quot;)
+elapsed_hours = (closed - opened) / pd.Timedelta(hours=1)</code></pre></div>
+<p>Computing age as <code>days / 365.25</code> fails at birthday boundaries. Age is a calendar concept. Determine whether the birthday has occurred, or use <code>time_length(..., &quot;year&quot;)</code> on an anchored Interval.</p>
+<h1 id="time-zone-model-instants-and-wall-clock-time">Time-zone model: instants and wall-clock time</h1>
+<p>A time zone is not a decorative label. A <code>POSIXct</code> value represents an instant on the timeline; its time zone determines how that instant is displayed as local year, month, day, and clock time.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">utc &lt;- ymd_hms(&quot;2025-08-11 20:00:00&quot;, tz = &quot;UTC&quot;)
+
+tibble(
+  zone = c(&quot;UTC&quot;, &quot;America/Edmonton&quot;, &quot;Europe/London&quot;, &quot;Asia/Tokyo&quot;),
+  local = c(
+    with_tz(utc, &quot;UTC&quot;),
+    with_tz(utc, &quot;America/Edmonton&quot;),
+    with_tz(utc, &quot;Europe/London&quot;),
+    with_tz(utc, &quot;Asia/Tokyo&quot;)
+  )
+)
+
+tz(utc)
+Sys.timezone()
+head(OlsonNames())</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+utc = pd.Timestamp(&quot;2025-08-11 20:00:00&quot;, tz=&quot;UTC&quot;)
+local_views = pd.Series({
+    zone: utc.tz_convert(zone)
+    for zone in [&quot;UTC&quot;, &quot;America/Edmonton&quot;, &quot;Europe/London&quot;, &quot;Asia/Tokyo&quot;]
+})</code></pre></div>
+<p>Prefer UTC instants in databases and APIs, with a separate source-zone or location field. A local string alone is not unique during the repeated hour at the end of DST.</p>
+<h1 id="with_tz-versus-force_tz-the-critical-distinction"><code>with_tz()</code> versus <code>force_tz()</code>: the critical distinction</h1>
+<p><code>with_tz()</code> preserves the instant and changes its display. <code>force_tz()</code> preserves the clock fields and therefore creates a different instant. Assignment with <code>tz(x) &lt;- value</code> has the same reinterpretation semantics as <code>force_tz()</code>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd_hms(&quot;2025-08-11 12:00:00&quot;, tz = &quot;UTC&quot;)
+
+converted &lt;- with_tz(x, &quot;America/Edmonton&quot;)
+reinterpreted &lt;- force_tz(x, &quot;America/Edmonton&quot;)
+
+tibble(
+  operation = c(&quot;original&quot;, &quot;with_tz&quot;, &quot;force_tz&quot;),
+  printed = c(x, converted, reinterpreted),
+  unix_seconds = c(as.numeric(x), as.numeric(converted), as.numeric(reinterpreted))
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11 12:00:00&quot;, tz=&quot;UTC&quot;)
+converted = x.tz_convert(&quot;America/Edmonton&quot;)
+reinterpreted = x.tz_localize(None).tz_localize(&quot;America/Edmonton&quot;)
+
+timezone_check = pd.Series({
+    &quot;original_ns&quot;: x.value,
+    &quot;converted_ns&quot;: converted.value,
+    &quot;reinterpreted_ns&quot;: reinterpreted.value,
+})</code></pre></div>
+<p>Rule of thumb: use <code>with_tz()</code> when the instant is correct and you need a local view. Use <code>force_tz()</code> only when a field was mislabeled—perhaps marked UTC even though its clock fields were recorded in Edmonton time.</p>
+<h1 id="dst-nonexistent-and-repeated-local-times">DST: nonexistent and repeated local times</h1>
+<p>The spring transition creates nonexistent clock times; the fall transition repeats a range of clock times. Parsers may return <code>NA</code>, raise an error, or shift automatically, so an ingestion policy must be explicit.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r"># 02:30 does not exist in America/New_York on 2025-03-09.
+gap &lt;- ymd_hms(&quot;2025-03-09 02:30:00&quot;, tz = &quot;America/New_York&quot;, quiet = TRUE)
+gap
+
+before &lt;- ymd_hms(&quot;2025-03-09 01:30:00&quot;, tz = &quot;America/New_York&quot;)
+before + hours(1)
+before + dhours(1)
+
+# Test whether valid instants fall in daylight saving time.
+dst(ymd_hms(c(&quot;2025-01-15 12:00:00&quot;, &quot;2025-07-15 12:00:00&quot;),
+            tz = &quot;America/New_York&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+gap_na = pd.DatetimeIndex([&quot;2025-03-09 02:30:00&quot;]).tz_localize(
+    &quot;America/New_York&quot;, nonexistent=&quot;NaT&quot;
+)
+gap_shifted = pd.DatetimeIndex([&quot;2025-03-09 02:30:00&quot;]).tz_localize(
+    &quot;America/New_York&quot;, nonexistent=&quot;shift_forward&quot;
+)
+
+ambiguous_na = pd.DatetimeIndex([&quot;2025-11-02 01:30:00&quot;]).tz_localize(
+    &quot;America/New_York&quot;, ambiguous=&quot;NaT&quot;
+)</code></pre></div>
+<p>Payroll, transaction, and audit data should preferably include a UTC offset or extra fold/offset information. A repeated local string alone cannot identify which occurrence of 01:30 was intended.</p>
+<h1 id="a-different-time-zone-per-row-force_tzs-and-local-time">A different time zone per row: <code>force_tzs()</code> and local time</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">local_text &lt;- c(&quot;2025-08-11 09:00:00&quot;, &quot;2025-08-11 09:00:00&quot;)
+zones &lt;- c(&quot;America/Edmonton&quot;, &quot;Europe/London&quot;)
+
+naive_utc &lt;- ymd_hms(local_text, tz = &quot;UTC&quot;)
+instants &lt;- force_tzs(naive_utc, tzones = zones, tzone_out = &quot;UTC&quot;)
+instants
+
+local_time(instants, units = &quot;hours&quot;, tz = zones)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+local_text = pd.Series([&quot;2025-08-11 09:00:00&quot;, &quot;2025-08-11 09:00:00&quot;])
+zones = pd.Series([&quot;America/Edmonton&quot;, &quot;Europe/London&quot;])
+instants = pd.Series([
+    pd.Timestamp(value).tz_localize(zone).tz_convert(&quot;UTC&quot;)
+    for value, zone in zip(local_text, zones)
+])
+local_clock = pd.Series([
+    value.tz_convert(zone).time()
+    for value, zone in zip(instants, zones)
+])</code></pre></div>
+<p>A single <code>POSIXct</code> vector has one display-zone attribute. Data with a zone per row is usually stored as UTC plus a <code>zone</code> column, then converted by group or row for display.</p>
+<h1 id="parse-derive-and-summarize-inside-dplyr">Parse, derive, and summarize inside dplyr</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">event_features &lt;- events |&gt;
+  mutate(
+    created_utc = ymd_hms(created_text, tz = &quot;UTC&quot;),
+    closed_utc = ymd_hms(closed_text, tz = &quot;UTC&quot;),
+    created_date = as_date(created_utc),
+    created_month = floor_date(created_utc, &quot;month&quot;),
+    iso_year = isoyear(created_utc),
+    iso_week = isoweek(created_utc),
+    weekday = wday(created_utc, label = TRUE, week_start = 1),
+    resolution_hours = as.numeric(closed_utc - created_utc, units = &quot;hours&quot;)
+  )
+
+monthly_summary &lt;- event_features |&gt;
+  summarise(
+    events = n(),
+    closed = sum(!is.na(closed_utc)),
+    median_hours = median(resolution_hours, na.rm = TRUE),
+    .by = created_month
+  ) |&gt;
+  arrange(created_month)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+event_features = events.assign(
+    created_date=events[&quot;created_utc&quot;].dt.date,
+    created_month=events[&quot;created_utc&quot;].dt.to_period(&quot;M&quot;).dt.to_timestamp().dt.tz_localize(&quot;UTC&quot;),
+    iso_year=events[&quot;created_utc&quot;].dt.isocalendar()[&quot;year&quot;],
+    iso_week=events[&quot;created_utc&quot;].dt.isocalendar()[&quot;week&quot;],
+    weekday=events[&quot;created_utc&quot;].dt.day_name(),
+    resolution_hours=(events[&quot;closed_utc&quot;] - events[&quot;created_utc&quot;]) / pd.Timedelta(hours=1),
+)
+
+monthly_summary = (
+    event_features.groupby(&quot;created_month&quot;, as_index=False)
+    .agg(
+        events=(&quot;event_id&quot;, &quot;size&quot;),
+        closed=(&quot;closed_utc&quot;, &quot;count&quot;),
+        median_hours=(&quot;resolution_hours&quot;, &quot;median&quot;),
+    )
+    .sort_values(&quot;created_month&quot;)
+)</code></pre></div>
+<p><code>.by</code> provides temporary grouping in dplyr; pandas <code>groupby()</code> usually ends after aggregation. Keep month keys used in joins and reports as dates or Periods rather than prematurely formatting them into locale-dependent strings such as “Aug 2025.”</p>
+<h1 id="date-sequences-and-calendar-grids">Date sequences and calendar grids</h1>
+<p>Base R <code>seq()</code> and lubridate Periods create regular date sequences. Business days, trading days, and holidays are not built-in knowledge in lubridate; use a business calendar.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">seq(ymd(&quot;2025-01-01&quot;), ymd(&quot;2025-01-10&quot;), by = &quot;1 day&quot;)
+seq(ymd(&quot;2025-01-01&quot;), ymd(&quot;2025-12-01&quot;), by = &quot;1 month&quot;)
+
+starts &lt;- ymd(&quot;2025-01-31&quot;) %m+% months(0:5)
+tibble(month_start = floor_date(starts, &quot;month&quot;), month_end = ceiling_date(starts, &quot;month&quot;) - days(1))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.date_range(&quot;2025-01-01&quot;, &quot;2025-01-10&quot;, freq=&quot;D&quot;)
+pd.date_range(&quot;2025-01-01&quot;, &quot;2025-12-01&quot;, freq=&quot;MS&quot;)
+
+month_starts = pd.date_range(&quot;2025-01-01&quot;, periods=6, freq=&quot;MS&quot;)
+calendar = pd.DataFrame({
+    &quot;month_start&quot;: month_starts,
+    &quot;month_end&quot;: month_starts + pd.offsets.MonthEnd(0),
+})</code></pre></div>
+<p>Removing weekends is not a complete business calendar. Public holidays, regional rules, and exceptional opening days should come from a versioned calendar table or a dedicated package.</p>
+<h1 id="windows-slas-and-deadlines">Windows, SLAs, and deadlines</h1>
+<p>First decide whether an SLA means exact elapsed time, business time, or calendar-relative time. lubridate handles exact and calendar units, but does not automatically know working hours or holidays.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">cases &lt;- events |&gt;
+  mutate(
+    created = ymd_hms(created_text, tz = &quot;UTC&quot;),
+    closed = ymd_hms(closed_text, tz = &quot;UTC&quot;),
+    deadline_24h = created + dhours(24),
+    deadline_next_day = created + days(1),
+    breached_24h = !is.na(closed) &amp; closed &gt; deadline_24h,
+    age_hours = as.numeric(coalesce(closed, now(tzone = &quot;UTC&quot;)) - created,
+                           units = &quot;hours&quot;)
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+as_of_utc = pd.Timestamp(&quot;2026-08-11 12:00:00&quot;, tz=&quot;UTC&quot;)
+cases = events.assign(
+    deadline_24h=events[&quot;created_utc&quot;] + pd.Timedelta(hours=24),
+    deadline_next_day=events[&quot;created_utc&quot;] + pd.DateOffset(days=1),
+)
+cases[&quot;breached_24h&quot;] = cases[&quot;closed_utc&quot;].notna() &amp; (cases[&quot;closed_utc&quot;] &gt; cases[&quot;deadline_24h&quot;])
+cases[&quot;age_hours&quot;] = (
+    cases[&quot;closed_utc&quot;].fillna(as_of_utc) - cases[&quot;created_utc&quot;]
+) / pd.Timedelta(hours=1)</code></pre></div>
+<p>Use a fixed <code>as_of</code> parameter in reproducible reports so open-case ages do not change between runs. A business-hours SLA requires an explicit holiday calendar and working-hours algorithm.</p>
+<h1 id="temporal-joins-and-valid-at-the-time-data">Temporal joins and “valid at the time” data</h1>
+<p>Prices, organizational assignments, and configurations often have <code>valid_from</code> and <code>valid_to</code> fields. Their matching rule is commonly <code>valid_from &lt;= event_time &lt; valid_to</code>.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">plans &lt;- tibble(
+  plan = c(&quot;basic&quot;, &quot;basic&quot;, &quot;pro&quot;),
+  valid_from = ymd(c(&quot;2025-01-01&quot;, &quot;2025-07-01&quot;, &quot;2025-01-01&quot;)),
+  valid_to = ymd(c(&quot;2025-07-01&quot;, &quot;2026-01-01&quot;, &quot;2026-01-01&quot;)),
+  price = c(10, 12, 25)
+)
+
+subscriptions &lt;- tibble(
+  plan = c(&quot;basic&quot;, &quot;basic&quot;, &quot;pro&quot;),
+  billed_on = ymd(c(&quot;2025-03-15&quot;, &quot;2025-08-15&quot;, &quot;2025-05-01&quot;))
+)
+
+priced &lt;- subscriptions |&gt;
+  left_join(
+    plans,
+    by = join_by(plan, billed_on &gt;= valid_from, billed_on &lt; valid_to),
+    relationship = &quot;many-to-one&quot;
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+plans = pd.DataFrame({
+    &quot;plan&quot;: [&quot;basic&quot;, &quot;basic&quot;, &quot;pro&quot;],
+    &quot;valid_from&quot;: pd.to_datetime([&quot;2025-01-01&quot;, &quot;2025-07-01&quot;, &quot;2025-01-01&quot;]),
+    &quot;valid_to&quot;: pd.to_datetime([&quot;2025-07-01&quot;, &quot;2026-01-01&quot;, &quot;2026-01-01&quot;]),
+    &quot;price&quot;: [10, 12, 25],
+})
+subscriptions = pd.DataFrame({
+    &quot;plan&quot;: [&quot;basic&quot;, &quot;basic&quot;, &quot;pro&quot;],
+    &quot;billed_on&quot;: pd.to_datetime([&quot;2025-03-15&quot;, &quot;2025-08-15&quot;, &quot;2025-05-01&quot;]),
+})
+priced = subscriptions.merge(plans, on=&quot;plan&quot;, how=&quot;left&quot;)
+priced = priced.loc[
+    priced[&quot;billed_on&quot;].ge(priced[&quot;valid_from&quot;])
+    &amp; priced[&quot;billed_on&quot;].lt(priced[&quot;valid_to&quot;])
+]</code></pre></div>
+<p>Before joining, verify that validity ranges do not overlap within an entity and state the half-open boundary. Otherwise one event can match several rows and silently inflate the result.</p>
+<h1 id="missing-values-typed-na-and-vectorization">Missing values, typed NA, and vectorization</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">dates &lt;- c(ymd(&quot;2025-01-01&quot;), NA_Date_, ymd(&quot;2025-03-01&quot;))
+times &lt;- c(ymd_hms(&quot;2025-01-01 12:00:00&quot;, tz = &quot;UTC&quot;), NA_POSIXct_)
+
+is.na(dates)
+coalesce(dates, ymd(&quot;2000-01-01&quot;))
+if_else(is.na(times), ymd_hms(&quot;2000-01-01 00:00:00&quot;, tz = &quot;UTC&quot;), times)
+
+ymd(&quot;2025-01-01&quot;) + days(1:3)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+dates = pd.Series(pd.to_datetime([&quot;2025-01-01&quot;, None, &quot;2025-03-01&quot;]))
+times = pd.Series(pd.to_datetime([&quot;2025-01-01 12:00:00&quot;, None], utc=True))
+
+dates.isna()
+dates.fillna(pd.Timestamp(&quot;2000-01-01&quot;))
+times.fillna(pd.Timestamp(&quot;2000-01-01&quot;, tz=&quot;UTC&quot;))
+pd.Timestamp(&quot;2025-01-01&quot;) + pd.to_timedelta([1, 2, 3], unit=&quot;D&quot;)</code></pre></div>
+<p>R recycles shorter vectors; non-multiple recycling beyond length one may warn or create faulty logic. pandas aligns primarily on index labels. Check lengths, indices, and time-zone dtypes before vectorized operations.</p>
+<h1 id="locale-and-textual-month-or-weekday-names">Locale and textual month or weekday names</h1>
+<p>Parsing or formatting month and weekday names outside English depends on operating-system locale and is therefore less portable across machines.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- ymd(&quot;2025-08-11&quot;)
+
+month(x, label = TRUE, abbr = FALSE, locale = &quot;C&quot;)
+wday(x, label = TRUE, abbr = FALSE, locale = &quot;C&quot;, week_start = 1)
+format(x, &quot;%A, %d %B %Y&quot;, tz = &quot;UTC&quot;)
+
+# Available locale names differ by operating system.
+Sys.getlocale(&quot;LC_TIME&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Timestamp(&quot;2025-08-11&quot;)
+x.month_name()
+x.day_name()
+x.strftime(&quot;%A, %d %B %Y&quot;)</code></pre></div>
+<p>Prefer numeric ISO 8601 for machine interchange. Keep localized text in the presentation layer and test locale availability in the target environment.</p>
+<h1 id="cyclical-time-features-for-modeling">Cyclical time features for modeling</h1>
+<p>Month 12 and month 1 are adjacent, but raw integer encoding treats them as far apart. lubridate <code>cyclic_encoding()</code> or sine/cosine features express cyclical adjacency.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">dates &lt;- seq(ymd(&quot;2025-01-01&quot;), ymd(&quot;2025-12-01&quot;), by = &quot;1 month&quot;)
+
+month_cycle &lt;- cyclic_encoding(dates, periods = &quot;year&quot;, encoders = c(&quot;sin&quot;, &quot;cos&quot;))
+head(month_cycle)
+
+tibble(
+  date = dates,
+  month = month(dates),
+  month_sin = sin(2 * pi * month(dates) / 12),
+  month_cos = cos(2 * pi * month(dates) / 12)
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+dates = pd.Series(pd.date_range(&quot;2025-01-01&quot;, periods=12, freq=&quot;MS&quot;))
+month = dates.dt.month
+cyclic = pd.DataFrame({
+    &quot;date&quot;: dates,
+    &quot;month&quot;: month,
+    &quot;month_sin&quot;: np.sin(2 * np.pi * month / 12),
+    &quot;month_cos&quot;: np.cos(2 * np.pi * month / 12),
+})</code></pre></div>
+<p>Time trend, holiday, lag, and seasonal features must be evaluated relative to the prediction time. A feature derived from after the outcome occurs creates temporal leakage.</p>
+<h1 id="a-complete-cleaning-workflow">A complete cleaning workflow</h1>
+<p>The following pipeline combines parsing, auditing, UTC standardization, feature derivation, and summarization into a testable workflow.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">clean_events &lt;- events |&gt;
+  mutate(
+    created = ymd_hms(created_text, tz = &quot;UTC&quot;, quiet = TRUE),
+    closed = ymd_hms(closed_text, tz = &quot;UTC&quot;, quiet = TRUE),
+    created_failed = !is.na(created_text) &amp; is.na(created),
+    closed_failed = !is.na(closed_text) &amp; is.na(closed),
+    impossible_order = !is.na(closed) &amp; closed &lt; created,
+    month = floor_date(created, &quot;month&quot;),
+    iso_year = isoyear(created),
+    iso_week = isoweek(created),
+    elapsed = as.duration(created %--% closed),
+    elapsed_hours = as.numeric(elapsed, units = &quot;hours&quot;)
+  )
+
+quality_report &lt;- clean_events |&gt;
+  summarise(
+    rows = n(),
+    created_parse_failures = sum(created_failed),
+    closed_parse_failures = sum(closed_failed),
+    reversed_intervals = sum(impossible_order, na.rm = TRUE),
+    missing_closed = sum(is.na(closed))
+  )
+
+report &lt;- clean_events |&gt;
+  filter(!created_failed, !closed_failed, !impossible_order) |&gt;
+  summarise(
+    events = n(),
+    completed = sum(!is.na(closed)),
+    median_hours = median(elapsed_hours, na.rm = TRUE),
+    p90_hours = quantile(elapsed_hours, 0.90, na.rm = TRUE),
+    .by = month
+  ) |&gt;
+  arrange(month)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+clean_events = events.copy()
+clean_events[&quot;created&quot;] = pd.to_datetime(clean_events[&quot;created_text&quot;], errors=&quot;coerce&quot;, utc=True)
+clean_events[&quot;closed&quot;] = pd.to_datetime(clean_events[&quot;closed_text&quot;], errors=&quot;coerce&quot;, utc=True)
+clean_events[&quot;created_failed&quot;] = clean_events[&quot;created_text&quot;].notna() &amp; clean_events[&quot;created&quot;].isna()
+clean_events[&quot;closed_failed&quot;] = clean_events[&quot;closed_text&quot;].notna() &amp; clean_events[&quot;closed&quot;].isna()
+clean_events[&quot;impossible_order&quot;] = clean_events[&quot;closed&quot;].notna() &amp; clean_events[&quot;closed&quot;].lt(clean_events[&quot;created&quot;])
+clean_events[&quot;month&quot;] = clean_events[&quot;created&quot;].dt.to_period(&quot;M&quot;).dt.to_timestamp().dt.tz_localize(&quot;UTC&quot;)
+iso = clean_events[&quot;created&quot;].dt.isocalendar()
+clean_events[&quot;iso_year&quot;] = iso[&quot;year&quot;]
+clean_events[&quot;iso_week&quot;] = iso[&quot;week&quot;]
+clean_events[&quot;elapsed_hours&quot;] = (clean_events[&quot;closed&quot;] - clean_events[&quot;created&quot;]) / pd.Timedelta(hours=1)
+
+quality_report = pd.Series({
+    &quot;rows&quot;: len(clean_events),
+    &quot;created_parse_failures&quot;: clean_events[&quot;created_failed&quot;].sum(),
+    &quot;closed_parse_failures&quot;: clean_events[&quot;closed_failed&quot;].sum(),
+    &quot;reversed_intervals&quot;: clean_events[&quot;impossible_order&quot;].sum(),
+    &quot;missing_closed&quot;: clean_events[&quot;closed&quot;].isna().sum(),
+})
+
+valid = clean_events.loc[
+    ~clean_events[[&quot;created_failed&quot;, &quot;closed_failed&quot;, &quot;impossible_order&quot;]].any(axis=1)
+]
+report = (
+    valid.groupby(&quot;month&quot;, as_index=False)
+    .agg(
+        events=(&quot;event_id&quot;, &quot;size&quot;),
+        completed=(&quot;closed&quot;, &quot;count&quot;),
+        median_hours=(&quot;elapsed_hours&quot;, &quot;median&quot;),
+        p90_hours=(&quot;elapsed_hours&quot;, lambda s: s.quantile(0.90)),
+    )
+    .sort_values(&quot;month&quot;)
+)</code></pre></div>
+<p>Keep quality and business reports separate. Parse failures, reversed intervals, and missing endpoints must not disappear silently inside an aggregate.</p>
+<h1 id="common-mistakes-and-repairs">Common mistakes and repairs</h1>
+<div class="table-wrap"><table><thead><tr><th>Mistake</th><th>Why it is dangerous</th><th>Better approach</th></tr></thead><tbody><tr><td>Sort dates as strings</td><td>Non-ISO strings may not sort chronologically</td><td>Parse to <code>Date</code> or <code>POSIXct</code> first</td></tr><tr><td>Parse ambiguous numeric dates with <code>mdy()</code></td><td>Month and day can swap while remaining valid</td><td>Use the schema and audit examples</td></tr><tr><td>Label local clock readings as UTC</td><td>Every instant shifts</td><td>Parse with the correct <code>tz</code> or repair with <code>force_tz()</code></td></tr><tr><td>Use <code>with_tz()</code> to repair a mislabeled zone</td><td>It preserves the instant and only changes display</td><td>Distinguish conversion from reinterpretation</td></tr><tr><td>Use <code>ddays(1)</code> for the same time tomorrow</td><td>Clock time may change across DST</td><td>Use <code>days(1)</code></td></tr><tr><td>Use <code>days(1)</code> for an exact 24-hour SLA</td><td>Elapsed seconds may not equal 24 hours</td><td>Use <code>dhours(24)</code></td></tr><tr><td>Use <code>dmonths(1)</code> for next-month billing</td><td>It is an average number of seconds</td><td>Use <code>months(1)</code> with an explicit rollback rule</td></tr><tr><td>Combine <code>year()</code> with <code>isoweek()</code></td><td>Boundary weeks receive the wrong key</td><td>Use <code>isoyear()</code> with <code>isoweek()</code></td></tr><tr><td>Delete parse failures immediately</td><td>Hides a data-quality problem</td><td>Keep source text and publish a failure audit</td></tr><tr><td>Format to text too early</td><td>Loses sorting, arithmetic, and time-zone semantics</td><td>Format only for display or export</td></tr><tr><td>Treat weekends as a business calendar</td><td>Ignores holidays and exceptional openings</td><td>Use a versioned business calendar</td></tr><tr><td>Rely on the system default zone</td><td>Results differ across machines</td><td>State <code>tz</code> in parsing, conversion, and tests</td></tr></tbody></table></div>
+<h1 id="performance-maintainability-and-testing">Performance, maintainability, and testing</h1>
+<ol><li>State a format when input is fixed so each batch does not guess again.</li><li>Evaluate <code>parse_date_time2()</code> or <code>fast_strptime()</code> for large vectors, but verify invalid and DST behavior first.</li><li>Standardize internal instants to UTC and keep original text, source zone, and parse status.</li><li>Use temporal types for join and group keys; convert to strings only in the presentation layer.</li><li>Test leap days, month ends, year ends, ISO week 1, DST gaps/folds, and missing values.</li><li>Do not call <code>now()</code> deep inside functions; pass <code>as_of</code> as an argument.</li><li>Record package version, time-zone database, locale, and business-calendar version.</li><li>Prefer vectorization for large tables; when zones differ by row, convert by <code>zone</code> group where possible.</li></ol>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">add_one_billing_month &lt;- function(x) {
+  stopifnot(inherits(x, &quot;Date&quot;))
+  x %m+% months(1)
+}
+
+stopifnot(
+  add_one_billing_month(ymd(&quot;2024-01-31&quot;)) == ymd(&quot;2024-02-29&quot;),
+  add_one_billing_month(ymd(&quot;2025-01-31&quot;)) == ymd(&quot;2025-02-28&quot;),
+  isoyear(ymd(&quot;2021-01-01&quot;)) == 2020
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def add_one_billing_month(value):
+    value = pd.Timestamp(value)
+    return value + pd.DateOffset(months=1)
+
+assert add_one_billing_month(&quot;2024-01-31&quot;) == pd.Timestamp(&quot;2024-02-29&quot;)
+assert add_one_billing_month(&quot;2025-01-31&quot;) == pd.Timestamp(&quot;2025-02-28&quot;)
+assert pd.Timestamp(&quot;2021-01-01&quot;).isocalendar().year == 2020</code></pre></div>
+<h1 id="quick-reference">Quick reference</h1>
+<div class="table-wrap"><table><thead><tr><th>Goal</th><th>lubridate</th><th>pandas / Python</th></tr></thead><tbody><tr><td>Parse year-month-day</td><td><code>ymd()</code>, <code>dmy()</code>, <code>mdy()</code></td><td><code>pd.to_datetime()</code></td></tr><tr><td>Parse date-time</td><td><code>ymd_hms()</code></td><td><code>pd.to_datetime(..., utc=True)</code></td></tr><tr><td>Parse mixed formats</td><td><code>parse_date_time()</code></td><td><code>format=&quot;mixed&quot;</code> or parse by format</td></tr><tr><td>Parse fixed format fast</td><td><code>parse_date_time2()</code></td><td><code>format=...</code>, <code>cache=True</code></td></tr><tr><td>Construct date</td><td><code>make_date()</code></td><td><code>pd.to_datetime(DataFrame)</code></td></tr><tr><td>Current instant</td><td><code>now(tzone=)</code></td><td><code>pd.Timestamp.now(tz=)</code></td></tr><tr><td>Extract date</td><td><code>as_date()</code></td><td><code>.normalize()</code> / <code>.date()</code></td></tr><tr><td>Extract year/month/day</td><td><code>year()</code>, <code>month()</code>, <code>mday()</code></td><td><code>.dt.year</code>, <code>.dt.month</code>, <code>.dt.day</code></td></tr><tr><td>Weekday</td><td><code>wday()</code></td><td><code>.dt.dayofweek</code>, <code>.dt.day_name()</code></td></tr><tr><td>ISO week</td><td><code>isoyear()</code>, <code>isoweek()</code></td><td><code>.dt.isocalendar()</code></td></tr><tr><td>Floor into bucket</td><td><code>floor_date()</code></td><td><code>.dt.floor()</code> / <code>.dt.to_period()</code></td></tr><tr><td>Exact 24 hours</td><td><code>dhours(24)</code></td><td><code>pd.Timedelta(hours=24)</code></td></tr><tr><td>Same clock time next day</td><td><code>days(1)</code></td><td><code>pd.DateOffset(days=1)</code></td></tr><tr><td>Next month with month-end fallback</td><td><code>%m+% months(1)</code></td><td><code>pd.DateOffset(months=1)</code></td></tr><tr><td>Create interval</td><td><code>start %--% end</code></td><td><code>pd.Interval(start, end)</code></td></tr><tr><td>Test overlap</td><td><code>int_overlaps()</code></td><td><code>.overlaps()</code></td></tr><tr><td>Keep instant, change zone</td><td><code>with_tz()</code></td><td><code>.tz_convert()</code></td></tr><tr><td>Keep clock fields, assign zone</td><td><code>force_tz()</code></td><td><code>.tz_localize()</code></td></tr><tr><td>Test DST</td><td><code>dst()</code></td><td>Inspect UTC offset / <code>dst()</code></td></tr><tr><td>ISO output</td><td><code>format_ISO8601()</code></td><td><code>.isoformat()</code></td></tr></tbody></table></div>
+<h1 id="exercises">Exercises</h1>
+<ol><li>Parse a column containing <code>2025-08-11</code>, <code>11/08/2025</code>, and <code>Aug 11, 2025</code>, then publish a parse-failure audit.</li><li>Convert UTC orders to each store's local date and compare sales grouped by UTC day versus store-local day.</li><li>Implement “next billing month” for start dates on the 28th, 29th, 30th, and 31st; state and test every expected result.</li><li>In <code>America/New_York</code>, compare <code>+ days(1)</code> and <code>+ ddays(1)</code> across the spring DST transition.</li><li>Given appointment start and end times, detect overlapping bookings within each room.</li><li>Produce weekly reports with <code>isoyear()</code> plus <code>isoweek()</code> and verify 2020-12-31, 2021-01-01, and 2021-01-04.</li><li>Write a ticket-age function that accepts a fixed <code>as_of</code> argument so tests do not depend on the system clock.</li><li>Build a minimal quality fixture containing the 2024 leap day, a DST gap and fold, missing values, and reversed intervals.</li></ol>
+<h1 id="official-references-and-version-note">Official references and version note</h1>
+<p>This guide was checked against the lubridate 1.9.5 official site and package index. Boundary behavior and deprecations may change between versions, so rerun month-end and DST tests after upgrading.</p>
+<ul><li><a href="https://lubridate.tidyverse.org/" target="_blank" rel="noopener">lubridate official site</a></li><li><a href="https://lubridate.tidyverse.org/reference/index.html" target="_blank" rel="noopener">lubridate package index</a></li><li><a href="https://lubridate.tidyverse.org/articles/lubridate.html" target="_blank" rel="noopener">Official introductory vignette</a></li><li><a href="https://lubridate.tidyverse.org/reference/parse_date_time.html" target="_blank" rel="noopener">Date-time parsing reference</a></li><li><a href="https://lubridate.tidyverse.org/reference/interval.html" target="_blank" rel="noopener">Interval operations</a></li><li><a href="https://lubridate.tidyverse.org/reference/tz.html" target="_blank" rel="noopener">Time-zone getter and setter</a></li><li><a href="https://lubridate.tidyverse.org/reference/with_tz.html" target="_blank" rel="noopener"><code>with_tz()</code></a></li><li><a href="https://pandas.pydata.org/docs/user_guide/timeseries.html" target="_blank" rel="noopener">pandas time-series guide</a></li></ul>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">packageVersion(&quot;lubridate&quot;)
+R.version.string
+Sys.timezone()
+Sys.getlocale(&quot;LC_TIME&quot;)</code></pre></div>
+<p>Reliable date-time code is not about memorizing the most functions. It is about consistently distinguishing instants, wall-clock readings, exact spans, and calendar-relative spans—and turning zones, boundaries, and malformed inputs into explicit, testable rules.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>dplyr Functions with Python Equivalents</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · dplyr Guide</div>
+    <div class="actions">
+      <a class="button" href="dplyr_guide_zh.html"></a>
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>dplyr Functions with Python Equivalents</h1>
+    <p>Practical data-wrangling examples mapped to pandas and NumPy</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">dplyr</span><span class="badge">pandas</span><span class="badge">NumPy</span><span class="badge">Data Wrangling</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#what-this-guide-teaches">What this guide teaches</a></li>
+<li class="toc-level-1"><a href="#installation-and-example-data">Installation and example data</a></li>
+<li class="toc-level-2"><a href="#r">R</a></li>
+<li class="toc-level-2"><a href="#python">Python</a></li>
+<li class="toc-level-1"><a href="#four-core-differences-to-understand-first">Four core differences to understand first</a></li>
+<li class="toc-level-1"><a href="#inspecting-data-glimpse-head-and-dimensions">Inspecting data: glimpse(), head(), and dimensions</a></li>
+<li class="toc-level-1"><a href="#selecting-columns-select-and-pull">Selecting columns: select() and pull()</a></li>
+<li class="toc-level-2"><a href="#basic-selection">Basic selection</a></li>
+<li class="toc-level-2"><a href="#tidyselect-helpers">tidyselect helpers</a></li>
+<li class="toc-level-2"><a href="#pull-returns-a-vector">pull() returns a vector</a></li>
+<li class="toc-level-1"><a href="#renaming-and-reordering-rename-rename_with-relocate">Renaming and reordering: rename(), rename_with(), relocate()</a></li>
+<li class="toc-level-1"><a href="#filtering-rows-filter">Filtering rows: filter()</a></li>
+<li class="toc-level-2"><a href="#comparisons-logic-and-membership">Comparisons, logic, and membership</a></li>
+<li class="toc-level-2"><a href="#query-syntax">query() syntax</a></li>
+<li class="toc-level-2"><a href="#missing-value-filters">Missing-value filters</a></li>
+<li class="toc-level-2"><a href="#temporary-grouping-with-by">Temporary grouping with .by</a></li>
+<li class="toc-level-1"><a href="#sorting-arrange-and-desc">Sorting: arrange() and desc()</a></li>
+<li class="toc-level-1"><a href="#removing-duplicates-distinct">Removing duplicates: distinct()</a></li>
+<li class="toc-level-1"><a href="#creating-and-changing-columns-mutate">Creating and changing columns: mutate()</a></li>
+<li class="toc-level-2"><a href="#dropping-columns-and-transmute">Dropping columns and transmute()</a></li>
+<li class="toc-level-1"><a href="#conditional-transformations-if_else-case_when-case_match">Conditional transformations: if_else(), case_when(), case_match()</a></li>
+<li class="toc-level-2"><a href="#two-branches-if_else">Two branches: if_else()</a></li>
+<li class="toc-level-2"><a href="#multiple-conditions-case_when">Multiple conditions: case_when()</a></li>
+<li class="toc-level-2"><a href="#exact-mapping-case_match">Exact mapping: case_match()</a></li>
+<li class="toc-level-1"><a href="#missing-value-helpers-coalesce-and-na_if">Missing-value helpers: coalesce() and na_if()</a></li>
+<li class="toc-level-1"><a href="#grouping-group_by-ungroup-and-by">Grouping: group_by(), ungroup(), and .by</a></li>
+<li class="toc-level-1"><a href="#summaries-summarise-summarize">Summaries: summarise() / summarize()</a></li>
+<li class="toc-level-2"><a href="#grouped-summary">Grouped summary</a></li>
+<li class="toc-level-2"><a href="#controlling-result-grouping-with-groups">Controlling result grouping with .groups</a></li>
+<li class="toc-level-1"><a href="#arbitrary-row-counts-reframe">Arbitrary row counts: reframe()</a></li>
+<li class="toc-level-1"><a href="#multiple-columns-across-pick-and-c_across">Multiple columns: across(), pick(), and c_across()</a></li>
+<li class="toc-level-2"><a href="#across">across()</a></li>
+<li class="toc-level-2"><a href="#pick-and-row-reductions">pick() and row reductions</a></li>
+<li class="toc-level-2"><a href="#if_any-and-if_all">if_any() and if_all()</a></li>
+<li class="toc-level-1"><a href="#counting-count-tally-and-add_count">Counting: count(), tally(), and add_count()</a></li>
+<li class="toc-level-1"><a href="#selecting-rows-the-slice-family">Selecting rows: the slice() family</a></li>
+<li class="toc-level-1"><a href="#window-functions-lags-ranks-and-cumulative-operations">Window functions: lags, ranks, and cumulative operations</a></li>
+<li class="toc-level-2"><a href="#previous-and-next-values">Previous and next values</a></li>
+<li class="toc-level-2"><a href="#ranking">Ranking</a></li>
+<li class="toc-level-2"><a href="#cumulative-and-rolling-operations">Cumulative and rolling operations</a></li>
+<li class="toc-level-1"><a href="#scalar-helpers-first-last-and-nth">Scalar helpers: first(), last(), and nth()</a></li>
+<li class="toc-level-1"><a href="#combining-rows-and-columns-bind_rows-and-bind_cols">Combining rows and columns: bind_rows() and bind_cols()</a></li>
+<li class="toc-level-1"><a href="#mutating-joins">Mutating joins</a></li>
+<li class="toc-level-2"><a href="#inner-left-right-and-full-joins">Inner, left, right, and full joins</a></li>
+<li class="toc-level-2"><a href="#different-names-and-non-equi-joins">Different names and non-equi joins</a></li>
+<li class="toc-level-2"><a href="#relationship-validation">Relationship validation</a></li>
+<li class="toc-level-1"><a href="#filtering-joins-semi_join-and-anti_join">Filtering joins: semi_join() and anti_join()</a></li>
+<li class="toc-level-1"><a href="#set-operations-union-intersect-and-setdiff">Set operations: union(), intersect(), and setdiff()</a></li>
+<li class="toc-level-1"><a href="#row-modification-the-rows_-family">Row modification: the rows_() family</a></li>
+<li class="toc-level-1"><a href="#programming-with-column-names-tidy-evaluation-and-python-functions">Programming with column names: tidy evaluation and Python functions</a></li>
+<li class="toc-level-2"><a href="#dplyr-and-data">dplyr {{ }} and .data</a></li>
+<li class="toc-level-2"><a href="#python-2">Python</a></li>
+<li class="toc-level-1"><a href="#a-complete-workflow-side-by-side">A complete workflow side by side</a></li>
+<li class="toc-level-1"><a href="#databases-and-lazy-execution">Databases and lazy execution</a></li>
+<li class="toc-level-1"><a href="#important-semantic-traps">Important semantic traps</a></li>
+<li class="toc-level-2"><a href="#missing-values">Missing values</a></li>
+<li class="toc-level-2"><a href="#index-alignment">Index alignment</a></li>
+<li class="toc-level-2"><a href="#group-keys-and-output-shape">Group keys and output shape</a></li>
+<li class="toc-level-2"><a href="#side-effects-and-copies">Side effects and copies</a></li>
+<li class="toc-level-1"><a href="#performance-and-maintainability">Performance and maintainability</a></li>
+<li class="toc-level-1"><a href="#quick-reference">Quick reference</a></li>
+<li class="toc-level-1"><a href="#exercises">Exercises</a></li>
+<li class="toc-level-1"><a href="#official-references">Official references</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render dplyr_guide_en.Rmd</code> for fully executable output.</div><h1 id="what-this-guide-teaches">What this guide teaches</h1>
+<p><code>dplyr</code> is the core tidyverse package for data manipulation. A small, stable vocabulary of verbs covers selecting columns, filtering rows, creating variables, grouped summaries, and table joins. The closest Python tool is usually <code>pandas</code>, with <code>NumPy</code> supplying vectorized conditional operations.</p>
+<p>This guide does more than translate function names. For every family of operations, it explains:</p>
+<ul><li>what the dplyr function accepts and returns;</li><li>how the operation composes in a pipeline;</li><li>the corresponding pandas or NumPy pattern;</li><li>where the two interfaces have different semantics;</li><li>common grouping, missing-value, index, and join mistakes.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>dplyr task</th><th>Common Python equivalent</th></tr></thead><tbody><tr><td><code>select()</code> / <code>rename()</code></td><td><code>df.loc[...]</code> / <code>df.rename()</code></td></tr><tr><td><code>filter()</code></td><td>Boolean indexing / <code>df.query()</code></td></tr><tr><td><code>arrange()</code></td><td><code>df.sort_values()</code></td></tr><tr><td><code>mutate()</code></td><td><code>df.assign()</code> / column assignment</td></tr><tr><td><code>summarise()</code> + <code>group_by()</code></td><td><code>df.groupby().agg()</code></td></tr><tr><td><code>left_join()</code> and related joins</td><td><code>df.merge()</code></td></tr><tr><td><code>bind_rows()</code></td><td><code>pd.concat(..., axis=0)</code></td></tr><tr><td><code>case_when()</code></td><td><code>np.select()</code></td></tr><tr><td><code>lag()</code>, ranks, cumulative functions</td><td><code>shift()</code>, <code>rank()</code>, <code>cumsum()</code></td></tr></tbody></table></div>
+<h1 id="installation-and-example-data">Installation and example data</h1>
+<h2 id="r">R</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">install.packages(&quot;dplyr&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">#| label: setup-r
+#| include: false
+
+library(dplyr)
+
+employees &lt;- tibble(
+  id = 1:8,
+  name = c(&quot;Ada&quot;, &quot;Ben&quot;, &quot;Chen&quot;, &quot;Dina&quot;, &quot;Eli&quot;, &quot;Faye&quot;, &quot;Gus&quot;, &quot;Hana&quot;),
+  dept = c(&quot;Data&quot;, &quot;Sales&quot;, &quot;Data&quot;, &quot;HR&quot;, &quot;Sales&quot;, &quot;Data&quot;, &quot;HR&quot;, &quot;Sales&quot;),
+  city = c(&quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;),
+  salary = c(92000, 68000, 105000, 72000, NA, 88000, 75000, 81000),
+  bonus = c(9000, 12000, 15000, 5000, 8000, 11000, NA, 10000),
+  joined = as.Date(c(&quot;2021-02-10&quot;, &quot;2022-06-01&quot;, &quot;2020-09-15&quot;, &quot;2023-01-05&quot;,
+                     &quot;2021-11-20&quot;, &quot;2022-03-12&quot;, &quot;2020-05-18&quot;, &quot;2024-02-01&quot;)),
+  active = c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
+)
+
+departments &lt;- tibble(
+  dept = c(&quot;Data&quot;, &quot;Sales&quot;, &quot;HR&quot;, &quot;Finance&quot;),
+  manager = c(&quot;Mira&quot;, &quot;Noah&quot;, &quot;Omar&quot;, &quot;Pia&quot;),
+  budget = c(600000, 450000, 300000, 500000)
+)
+
+reviews &lt;- tibble(
+  id = c(1, 1, 2, 3, 3, 3, 6, 8),
+  year = c(2024, 2025, 2025, 2023, 2024, 2025, 2025, 2025),
+  score = c(4.4, 4.7, 3.9, 4.5, 4.6, 4.8, 4.2, 4.1)
+)</code></pre></div>
+<h2 id="python">Python</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install pandas numpy</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+import numpy as np
+import pandas as pd
+
+employees = pd.DataFrame({
+    &quot;id&quot;: range(1, 9),
+    &quot;name&quot;: [&quot;Ada&quot;, &quot;Ben&quot;, &quot;Chen&quot;, &quot;Dina&quot;, &quot;Eli&quot;, &quot;Faye&quot;, &quot;Gus&quot;, &quot;Hana&quot;],
+    &quot;dept&quot;: [&quot;Data&quot;, &quot;Sales&quot;, &quot;Data&quot;, &quot;HR&quot;, &quot;Sales&quot;, &quot;Data&quot;, &quot;HR&quot;, &quot;Sales&quot;],
+    &quot;city&quot;: [&quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;, &quot;Calgary&quot;, &quot;Edmonton&quot;],
+    &quot;salary&quot;: [92000, 68000, 105000, 72000, np.nan, 88000, 75000, 81000],
+    &quot;bonus&quot;: [9000, 12000, 15000, 5000, 8000, 11000, np.nan, 10000],
+    &quot;joined&quot;: pd.to_datetime([&quot;2021-02-10&quot;, &quot;2022-06-01&quot;, &quot;2020-09-15&quot;, &quot;2023-01-05&quot;,
+                                &quot;2021-11-20&quot;, &quot;2022-03-12&quot;, &quot;2020-05-18&quot;, &quot;2024-02-01&quot;]),
+    &quot;active&quot;: [True, True, True, False, True, True, True, True],
+})
+
+departments = pd.DataFrame({
+    &quot;dept&quot;: [&quot;Data&quot;, &quot;Sales&quot;, &quot;HR&quot;, &quot;Finance&quot;],
+    &quot;manager&quot;: [&quot;Mira&quot;, &quot;Noah&quot;, &quot;Omar&quot;, &quot;Pia&quot;],
+    &quot;budget&quot;: [600000, 450000, 300000, 500000],
+})
+
+reviews = pd.DataFrame({
+    &quot;id&quot;: [1, 1, 2, 3, 3, 3, 6, 8],
+    &quot;year&quot;: [2024, 2025, 2025, 2023, 2024, 2025, 2025, 2025],
+    &quot;score&quot;: [4.4, 4.7, 3.9, 4.5, 4.6, 4.8, 4.2, 4.1],
+})</code></pre></div>
+<p>All later examples use these three tables.</p>
+<h1 id="four-core-differences-to-understand-first">Four core differences to understand first</h1>
+<ol><li>R positions start at 1; pandas <code>.iloc</code> positions start at 0.</li><li>dplyr verbs normally return a new tibble without modifying the input. Most pandas methods also return a new object, but <code>df[&quot;x&quot;] = ...</code> mutates <code>df</code>.</li><li><code>group_by()</code> attaches persistent grouping metadata. pandas <code>groupby()</code> returns a GroupBy object that is normally consumed by aggregation or transformation.</li><li>dplyr uses data masking, so a verb can refer to <code>salary</code> directly. pandas normally uses <code>df[&quot;salary&quot;]</code>, or column names inside a <code>query()</code> string.</li></ol>
+<p>Pipelines are also expressed differently:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  filter(active) |&gt;
+  select(name, dept, salary)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+(employees
+ .loc[lambda d: d[&quot;active&quot;], [&quot;name&quot;, &quot;dept&quot;, &quot;salary&quot;]])</code></pre></div>
+<p>R's <code>|&gt;</code> sends the left side into a function. pandas generally uses method chaining, with <code>lambda d:</code> referring to the current object in a chain.</p>
+<h1 id="inspecting-data-glimpse-head-and-dimensions">Inspecting data: <code>glimpse()</code>, <code>head()</code>, and dimensions</h1>
+<p><code>glimpse()</code> displays names, types, and sample values horizontally and is particularly useful for wide data.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">glimpse(employees)
+head(employees, 3)
+dim(employees)
+summary(employees)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.info()
+employees.head(3)
+employees.shape
+employees.describe(include=&quot;all&quot;)</code></pre></div>
+<p><code>summary()</code> / <code>describe()</code> provides statistical summaries. It is not the same as the structural overview from <code>glimpse()</code> / <code>info()</code>.</p>
+<h1 id="selecting-columns-select-and-pull">Selecting columns: <code>select()</code> and <code>pull()</code></h1>
+<h2 id="basic-selection">Basic selection</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; select(name, dept, salary)
+employees |&gt; select(id:city)
+employees |&gt; select(-bonus)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees[[&quot;name&quot;, &quot;dept&quot;, &quot;salary&quot;]]
+employees.loc[:, &quot;id&quot;:&quot;city&quot;]       # Label slices include both endpoints
+employees.drop(columns=&quot;bonus&quot;)</code></pre></div>
+<h2 id="tidyselect-helpers">tidyselect helpers</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; select(starts_with(&quot;s&quot;))
+employees |&gt; select(ends_with(&quot;y&quot;))
+employees |&gt; select(contains(&quot;a&quot;))
+employees |&gt; select(where(is.numeric))
+employees |&gt; select(any_of(c(&quot;name&quot;, &quot;missing_col&quot;)))</code></pre></div>
+<p>Python uses string operations on column labels and dtype selection:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.loc[:, employees.columns.str.startswith(&quot;s&quot;)]
+employees.loc[:, employees.columns.str.endswith(&quot;y&quot;)]
+employees.filter(like=&quot;a&quot;)
+employees.select_dtypes(include=&quot;number&quot;)
+
+wanted = [c for c in [&quot;name&quot;, &quot;missing_col&quot;] if c in employees.columns]
+employees[wanted]</code></pre></div>
+<p><code>any_of()</code> ignores absent columns. pandas <code>reindex(columns=...)</code> instead creates missing columns filled with NA, so a filtered list is a closer match.</p>
+<h2 id="pull-returns-a-vector"><code>pull()</code> returns a vector</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; pull(name)
+employees |&gt; pull(-1)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees[&quot;name&quot;]
+employees.iloc[:, -1]</code></pre></div>
+<p>The result is an R vector versus a pandas Series, which still carries an index.</p>
+<h1 id="renaming-and-reordering-rename-rename_with-relocate">Renaming and reordering: <code>rename()</code>, <code>rename_with()</code>, <code>relocate()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; rename(employee_name = name)
+employees |&gt; rename_with(toupper, where(is.numeric))
+employees |&gt; relocate(salary, bonus, .after = dept)
+employees |&gt; relocate(where(is.logical), .before = id)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.rename(columns={&quot;name&quot;: &quot;employee_name&quot;})
+employees.rename(columns={c: c.upper() for c in employees.select_dtypes(&quot;number&quot;)})
+
+cols = employees.columns.tolist()
+for c in [&quot;salary&quot;, &quot;bonus&quot;]:
+    cols.remove(c)
+insert_at = cols.index(&quot;dept&quot;) + 1
+cols[insert_at:insert_at] = [&quot;salary&quot;, &quot;bonus&quot;]
+employees[cols]</code></pre></div>
+<p>pandas has no single core method that exactly matches <code>relocate()</code>; explicitly constructing the desired column order is common.</p>
+<h1 id="filtering-rows-filter">Filtering rows: <code>filter()</code></h1>
+<h2 id="comparisons-logic-and-membership">Comparisons, logic, and membership</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; filter(active, salary &gt;= 80000)
+employees |&gt; filter(dept %in% c(&quot;Data&quot;, &quot;HR&quot;))
+employees |&gt; filter(between(salary, 75000, 95000))
+employees |&gt; filter(name != &quot;Ada&quot; | city == &quot;Calgary&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.loc[employees[&quot;active&quot;] &amp; employees[&quot;salary&quot;].ge(80000)]
+employees.loc[employees[&quot;dept&quot;].isin([&quot;Data&quot;, &quot;HR&quot;])]
+employees.loc[employees[&quot;salary&quot;].between(75000, 95000)]
+employees.loc[employees[&quot;name&quot;].ne(&quot;Ada&quot;) | employees[&quot;city&quot;].eq(&quot;Calgary&quot;)]</code></pre></div>
+<p>Python uses <code>&amp;</code>, <code>|</code>, and <code>~</code> for element-wise logic. Parenthesize each expression. Scalar operators <code>and</code>, <code>or</code>, and <code>not</code> cannot combine Series.</p>
+<h2 id="query-syntax"><code>query()</code> syntax</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+minimum = 80000
+employees.query(&quot;active and salary &gt;= @minimum&quot;)
+employees.query(&quot;dept in [&#x27;Data&#x27;, &#x27;HR&#x27;]&quot;)</code></pre></div>
+<p><code>query()</code> is compact, but a string expression is more sensitive to unusual column names, IDE refactoring, and external-variable scope. Ordinary Boolean indexing is more explicit.</p>
+<h2 id="missing-value-filters">Missing-value filters</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; filter(is.na(salary))
+employees |&gt; filter(!is.na(salary))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.loc[employees[&quot;salary&quot;].isna()]
+employees.loc[employees[&quot;salary&quot;].notna()]</code></pre></div>
+<p>Do not compare with <code>salary == NA</code> or <code>series == np.nan</code>; missing values require dedicated predicates.</p>
+<h2 id="temporary-grouping-with-by">Temporary grouping with <code>.by</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  filter(salary == max(salary, na.rm = TRUE), .by = dept)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+max_in_dept = employees.groupby(&quot;dept&quot;)[&quot;salary&quot;].transform(&quot;max&quot;)
+employees.loc[employees[&quot;salary&quot;].eq(max_in_dept)]</code></pre></div>
+<p><code>.by</code> affects only the current verb and does not carry grouped state downstream.</p>
+<h1 id="sorting-arrange-and-desc">Sorting: <code>arrange()</code> and <code>desc()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; arrange(dept, desc(salary), name)
+employees |&gt; arrange(is.na(salary), salary)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.sort_values(
+    [&quot;dept&quot;, &quot;salary&quot;, &quot;name&quot;],
+    ascending=[True, False, True],
+    na_position=&quot;last&quot;,
+)</code></pre></div>
+<p><code>arrange()</code> places missing values last by default, even with <code>desc()</code>. pandas controls this with <code>na_position</code>. Order is critical before lags, cumulative calculations, and “first row per group” logic.</p>
+<h1 id="removing-duplicates-distinct">Removing duplicates: <code>distinct()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; distinct(dept)
+employees |&gt; distinct(dept, city, .keep_all = TRUE)
+employees |&gt; distinct(dept, high_paid = salary &gt;= 85000)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees[[&quot;dept&quot;]].drop_duplicates()
+employees.drop_duplicates(subset=[&quot;dept&quot;, &quot;city&quot;], keep=&quot;first&quot;)
+(employees
+ .assign(high_paid=employees[&quot;salary&quot;].ge(85000))
+ .drop_duplicates(subset=[&quot;dept&quot;, &quot;high_paid&quot;])
+ [[&quot;dept&quot;, &quot;high_paid&quot;]])</code></pre></div>
+<p>Sort first when “which duplicate survives” matters.</p>
+<h1 id="creating-and-changing-columns-mutate">Creating and changing columns: <code>mutate()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(
+    total_pay = salary + coalesce(bonus, 0),
+    tenure_days = as.integer(Sys.Date() - joined),
+    high_paid = salary &gt;= 85000,
+    .after = salary
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+result = employees.assign(
+    total_pay=lambda d: d[&quot;salary&quot;] + d[&quot;bonus&quot;].fillna(0),
+    tenure_days=lambda d: (pd.Timestamp.today().normalize() - d[&quot;joined&quot;]).dt.days,
+    high_paid=lambda d: d[&quot;salary&quot;].ge(85000),
+)</code></pre></div>
+<p>Later expressions in one dplyr <code>mutate()</code> can use columns just created. In pandas <code>assign()</code>, use <code>lambda d:</code> when a new expression depends on the current chained result.</p>
+<h2 id="dropping-columns-and-transmute">Dropping columns and <code>transmute()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; mutate(bonus = NULL)
+employees |&gt; transmute(id, total_pay = salary + coalesce(bonus, 0))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.drop(columns=&quot;bonus&quot;)
+employees.assign(total_pay=employees[&quot;salary&quot;] + employees[&quot;bonus&quot;].fillna(0))[[&quot;id&quot;, &quot;total_pay&quot;]]</code></pre></div>
+<p>Think of <code>transmute()</code> as computing expressions and retaining only grouping variables and explicitly requested output columns.</p>
+<h1 id="conditional-transformations-if_else-case_when-case_match">Conditional transformations: <code>if_else()</code>, <code>case_when()</code>, <code>case_match()</code></h1>
+<h2 id="two-branches-if_else">Two branches: <code>if_else()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(status = if_else(active, &quot;Active&quot;, &quot;Inactive&quot;, missing = &quot;Unknown&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.assign(status=np.where(employees[&quot;active&quot;], &quot;Active&quot;, &quot;Inactive&quot;))</code></pre></div>
+<p><code>if_else()</code> enforces compatible output types and can explicitly handle a missing condition. NumPy <code>where()</code> may promote dtype.</p>
+<h2 id="multiple-conditions-case_when">Multiple conditions: <code>case_when()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(pay_band = case_when(
+    is.na(salary) ~ &quot;Unknown&quot;,
+    salary &gt;= 95000 ~ &quot;A&quot;,
+    salary &gt;= 80000 ~ &quot;B&quot;,
+    TRUE ~ &quot;C&quot;
+  ))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+conditions = [
+    employees[&quot;salary&quot;].isna(),
+    employees[&quot;salary&quot;].ge(95000),
+    employees[&quot;salary&quot;].ge(80000),
+]
+employees.assign(pay_band=np.select(conditions, [&quot;Unknown&quot;, &quot;A&quot;, &quot;B&quot;], default=&quot;C&quot;))</code></pre></div>
+<p>Conditions are matched in order, so write the most specific case or highest threshold first.</p>
+<h2 id="exact-mapping-case_match">Exact mapping: <code>case_match()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(dept_code = case_match(
+    dept,
+    &quot;Data&quot; ~ &quot;D&quot;,
+    &quot;Sales&quot; ~ &quot;S&quot;,
+    &quot;HR&quot; ~ &quot;H&quot;,
+    .default = &quot;Other&quot;
+  ))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+mapping = {&quot;Data&quot;: &quot;D&quot;, &quot;Sales&quot;: &quot;S&quot;, &quot;HR&quot;: &quot;H&quot;}
+employees.assign(dept_code=employees[&quot;dept&quot;].map(mapping).fillna(&quot;Other&quot;))</code></pre></div>
+<p><code>case_match()</code> is the clear modern choice for exact-value mappings. Older code often uses <code>recode()</code>.</p>
+<h1 id="missing-value-helpers-coalesce-and-na_if">Missing-value helpers: <code>coalesce()</code> and <code>na_if()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(
+    bonus_filled = coalesce(bonus, 0),
+    salary_or_bonus = coalesce(salary, bonus),
+    dept_clean = na_if(dept, &quot;Unknown&quot;)
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.assign(
+    bonus_filled=employees[&quot;bonus&quot;].fillna(0),
+    salary_or_bonus=employees[&quot;salary&quot;].combine_first(employees[&quot;bonus&quot;]),
+    dept_clean=employees[&quot;dept&quot;].replace(&quot;Unknown&quot;, pd.NA),
+)</code></pre></div>
+<p><code>coalesce(x, y, z)</code> selects the first non-missing value at each position. In pandas, chain <code>combine_first()</code> when more than two inputs are involved.</p>
+<h1 id="grouping-group_by-ungroup-and-by">Grouping: <code>group_by()</code>, <code>ungroup()</code>, and <code>.by</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">grouped &lt;- employees |&gt; group_by(dept)
+group_vars(grouped)
+group_keys(grouped)
+
+grouped |&gt;
+  mutate(dept_mean = mean(salary, na.rm = TRUE)) |&gt;
+  ungroup()</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+grouped = employees.groupby(&quot;dept&quot;, dropna=False)
+employees.assign(
+    dept_mean=grouped[&quot;salary&quot;].transform(&quot;mean&quot;)
+)</code></pre></div>
+<p><code>transform()</code> returns an object aligned to the original rows and is the closest pandas equivalent to grouped <code>mutate()</code>. <code>agg()</code> usually reduces rows and is closer to <code>summarise()</code>.</p>
+<p>When grouping is needed once, prefer <code>.by</code>:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(dept_mean = mean(salary, na.rm = TRUE), .by = dept)</code></pre></div>
+<p>This avoids an accidental persistent group when <code>ungroup()</code> is forgotten.</p>
+<h1 id="summaries-summarise-summarize">Summaries: <code>summarise()</code> / <code>summarize()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  summarise(
+    rows = n(),
+    known_salary = sum(!is.na(salary)),
+    mean_salary = mean(salary, na.rm = TRUE),
+    median_salary = median(salary, na.rm = TRUE),
+    distinct_cities = n_distinct(city)
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Series({
+    &quot;rows&quot;: len(employees),
+    &quot;known_salary&quot;: employees[&quot;salary&quot;].notna().sum(),
+    &quot;mean_salary&quot;: employees[&quot;salary&quot;].mean(),
+    &quot;median_salary&quot;: employees[&quot;salary&quot;].median(),
+    &quot;distinct_cities&quot;: employees[&quot;city&quot;].nunique(),
+}).to_frame().T</code></pre></div>
+<h2 id="grouped-summary">Grouped summary</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  summarise(
+    employees = n(),
+    avg_salary = mean(salary, na.rm = TRUE),
+    max_salary = max(salary, na.rm = TRUE),
+    .by = dept
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+(employees.groupby(&quot;dept&quot;, as_index=False, dropna=False)
+ .agg(
+     employees=(&quot;id&quot;, &quot;size&quot;),
+     avg_salary=(&quot;salary&quot;, &quot;mean&quot;),
+     max_salary=(&quot;salary&quot;, &quot;max&quot;),
+ ))</code></pre></div>
+<p>pandas named aggregation uses <code>(input_column, aggregation)</code> and maps cleanly to named dplyr summaries. <code>size</code> counts rows; <code>count</code> excludes missing values.</p>
+<h2 id="controlling-result-grouping-with-groups">Controlling result grouping with <code>.groups</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  group_by(city, dept) |&gt;
+  summarise(avg_salary = mean(salary, na.rm = TRUE), .groups = &quot;drop&quot;)</code></pre></div>
+<p>Common values are <code>&quot;drop_last&quot;</code>, <code>&quot;drop&quot;</code>, <code>&quot;keep&quot;</code>, and <code>&quot;rowwise&quot;</code>. An explicit choice makes downstream behavior more predictable.</p>
+<h1 id="arbitrary-row-counts-reframe">Arbitrary row counts: <code>reframe()</code></h1>
+<p><code>summarise()</code> requires one value per expression and group. <code>reframe()</code> allows each group to return any number of rows and always returns an ungrouped result.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  reframe(
+    quantile = c(0.25, 0.5, 0.75),
+    salary = quantile(salary, c(0.25, 0.5, 0.75), na.rm = TRUE),
+    .by = dept
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+q = [0.25, 0.5, 0.75]
+result = (employees.groupby(&quot;dept&quot;)[&quot;salary&quot;]
+          .quantile(q)
+          .rename(&quot;salary&quot;)
+          .rename_axis(index=[&quot;dept&quot;, &quot;quantile&quot;])
+          .reset_index())</code></pre></div>
+<p>pandas has no single identically scoped method. Depending on the task, use <code>quantile()</code>, <code>apply()</code>, or an aggregation followed by index reshaping.</p>
+<h1 id="multiple-columns-across-pick-and-c_across">Multiple columns: <code>across()</code>, <code>pick()</code>, and <code>c_across()</code></h1>
+<h2 id="across"><code>across()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  summarise(
+    across(c(salary, bonus),
+           list(mean = ~ mean(.x, na.rm = TRUE), sd = ~ sd(.x, na.rm = TRUE)),
+           .names = &quot;{.col}_{.fn}&quot;)
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+summary = employees[[&quot;salary&quot;, &quot;bonus&quot;]].agg([&quot;mean&quot;, &quot;std&quot;]).T
+summary.columns = [&quot;mean&quot;, &quot;sd&quot;]
+summary = summary.rename_axis(&quot;column&quot;).reset_index()</code></pre></div>
+<p>Within <code>mutate()</code>:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(across(c(salary, bonus), ~ .x / 1000, .names = &quot;{.col}_k&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.assign(**{
+    f&quot;{col}_k&quot;: employees[col] / 1000
+    for col in [&quot;salary&quot;, &quot;bonus&quot;]
+})</code></pre></div>
+<h2 id="pick-and-row-reductions"><code>pick()</code> and row reductions</h2>
+<p><code>pick()</code> returns a data frame of selected columns inside a data-masking verb:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(pay_total = rowSums(pick(salary, bonus), na.rm = TRUE))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.assign(pay_total=employees[[&quot;salary&quot;, &quot;bonus&quot;]].sum(axis=1, skipna=True))</code></pre></div>
+<p>For custom row-wise work:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  rowwise() |&gt;
+  mutate(max_component = max(c_across(c(salary, bonus)), na.rm = TRUE)) |&gt;
+  ungroup()</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.assign(max_component=employees[[&quot;salary&quot;, &quot;bonus&quot;]].max(axis=1, skipna=True))</code></pre></div>
+<p>Prefer vectorized reductions such as <code>rowSums()</code>, <code>pmax()</code>, or pandas built-ins over R <code>rowwise()</code> and pandas <code>apply(axis=1)</code> when possible.</p>
+<h2 id="if_any-and-if_all"><code>if_any()</code> and <code>if_all()</code></h2>
+<p>Build one row-level condition across several columns:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; filter(if_any(c(salary, bonus), is.na))
+employees |&gt; filter(if_all(c(salary, bonus), ~ .x &gt;= 70000))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pay = employees[[&quot;salary&quot;, &quot;bonus&quot;]]
+employees.loc[pay.isna().any(axis=1)]
+employees.loc[pay.ge(70000).all(axis=1)]</code></pre></div>
+<p><code>if_any()</code> needs at least one selected column to pass; <code>if_all()</code> requires every selected column. Decide whether missing values should propagate, be treated as false, or be filled first.</p>
+<h1 id="counting-count-tally-and-add_count">Counting: <code>count()</code>, <code>tally()</code>, and <code>add_count()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; count(dept, sort = TRUE)
+employees |&gt; count(dept, wt = salary, name = &quot;salary_total&quot;)
+employees |&gt; group_by(city) |&gt; tally()
+employees |&gt; add_count(dept, name = &quot;dept_size&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.value_counts(&quot;dept&quot;).rename(&quot;n&quot;).reset_index()
+employees.groupby(&quot;dept&quot;, as_index=False).agg(salary_total=(&quot;salary&quot;, &quot;sum&quot;))
+employees.groupby(&quot;city&quot;, dropna=False).size().rename(&quot;n&quot;).reset_index()
+employees.assign(dept_size=employees.groupby(&quot;dept&quot;)[&quot;id&quot;].transform(&quot;size&quot;))</code></pre></div>
+<p><code>count(x)</code> is approximately <code>group_by(x) |&gt; summarise(n = n())</code>. <code>add_count()</code> retains the original number of rows.</p>
+<h1 id="selecting-rows-the-slice-family">Selecting rows: the <code>slice()</code> family</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; slice(1:3)
+employees |&gt; slice_head(n = 2)
+employees |&gt; slice_tail(n = 2)
+employees |&gt; slice_min(salary, n = 2, with_ties = FALSE)
+employees |&gt; slice_max(salary, n = 2, by = dept, with_ties = FALSE)
+employees |&gt; slice_sample(n = 3, replace = FALSE)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.iloc[:3]
+employees.head(2)
+employees.tail(2)
+employees.nsmallest(2, &quot;salary&quot;, keep=&quot;first&quot;)
+(employees.sort_values(&quot;salary&quot;, ascending=False)
+ .groupby(&quot;dept&quot;, group_keys=False)
+ .head(2))
+employees.sample(n=3, replace=False, random_state=42)</code></pre></div>
+<p><code>slice()</code> is positional: R starts at 1 and <code>.iloc</code> at 0. Fix a random seed for sampling. Database tables have no inherent row order, so define ordering before taking positional rows.</p>
+<h1 id="window-functions-lags-ranks-and-cumulative-operations">Window functions: lags, ranks, and cumulative operations</h1>
+<h2 id="previous-and-next-values">Previous and next values</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">reviews |&gt;
+  arrange(id, year) |&gt;
+  mutate(
+    previous = lag(score),
+    change = score - previous,
+    next_score = lead(score),
+    .by = id
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+reviews_sorted = reviews.sort_values([&quot;id&quot;, &quot;year&quot;])
+reviews_sorted = reviews_sorted.assign(
+    previous=lambda d: d.groupby(&quot;id&quot;)[&quot;score&quot;].shift(1),
+    change=lambda d: d[&quot;score&quot;] - d[&quot;previous&quot;],
+    next_score=lambda d: d.groupby(&quot;id&quot;)[&quot;score&quot;].shift(-1),
+)</code></pre></div>
+<p>Window results depend on ordering. Unless you use <code>order_by</code>, sort before applying <code>lag()</code> or <code>shift()</code>.</p>
+<h2 id="ranking">Ranking</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  mutate(
+    row_rank = row_number(desc(salary)),
+    min_rank = min_rank(desc(salary)),
+    dense_rank = dense_rank(desc(salary)),
+    quartile = ntile(salary, 4),
+    .by = dept
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+g = employees.groupby(&quot;dept&quot;)[&quot;salary&quot;]
+employees.assign(
+    row_rank=g.rank(method=&quot;first&quot;, ascending=False),
+    min_rank=g.rank(method=&quot;min&quot;, ascending=False),
+    dense_rank=g.rank(method=&quot;dense&quot;, ascending=False),
+    quartile=g.transform(lambda s: pd.qcut(s, 4, labels=False, duplicates=&quot;drop&quot;) + 1),
+)</code></pre></div>
+<p>Tie handling must be deliberate. <code>ntile()</code> attempts to divide rows evenly and can split equal values; <code>qcut()</code> has its own boundary and duplicate-edge semantics.</p>
+<h2 id="cumulative-and-rolling-operations">Cumulative and rolling operations</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">reviews |&gt;
+  arrange(id, year) |&gt;
+  mutate(
+    running_total = cumsum(score),
+    running_mean = cummean(score),
+    best_so_far = cummax(score),
+    .by = id
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+ordered = reviews.sort_values([&quot;id&quot;, &quot;year&quot;])
+g = ordered.groupby(&quot;id&quot;)[&quot;score&quot;]
+result = ordered.assign(
+    running_total=g.cumsum(),
+    running_mean=g.expanding().mean().reset_index(level=0, drop=True),
+    best_so_far=g.cummax(),
+)</code></pre></div>
+<p>dplyr itself does not provide fixed-width rolling means. R users commonly use slider, zoo, or RcppRoll; pandas provides <code>rolling()</code>.</p>
+<h1 id="scalar-helpers-first-last-and-nth">Scalar helpers: <code>first()</code>, <code>last()</code>, and <code>nth()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">reviews |&gt;
+  arrange(year) |&gt;
+  summarise(
+    first_score = first(score),
+    last_score = last(score),
+    second_score = nth(score, 2),
+    .by = id
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+ordered = reviews.sort_values([&quot;id&quot;, &quot;year&quot;])
+ordered.groupby(&quot;id&quot;)[&quot;score&quot;].agg(
+    first_score=&quot;first&quot;,
+    last_score=&quot;last&quot;,
+    second_score=lambda s: s.iloc[1] if len(s) &gt; 1 else np.nan,
+).reset_index()</code></pre></div>
+<p>Always define order before taking first or last values.</p>
+<h1 id="combining-rows-and-columns-bind_rows-and-bind_cols">Combining rows and columns: <code>bind_rows()</code> and <code>bind_cols()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">new_hires &lt;- tibble(id = 9:10, name = c(&quot;Ivan&quot;, &quot;Jia&quot;), dept = c(&quot;Data&quot;, &quot;HR&quot;))
+bind_rows(employees = employees, new_hires = new_hires, .id = &quot;source&quot;)
+
+bind_cols(
+  employees |&gt; select(id, name),
+  employees |&gt; transmute(pay = salary + coalesce(bonus, 0))
+)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+new_hires = pd.DataFrame({&quot;id&quot;: [9, 10], &quot;name&quot;: [&quot;Ivan&quot;, &quot;Jia&quot;], &quot;dept&quot;: [&quot;Data&quot;, &quot;HR&quot;]})
+pd.concat({&quot;employees&quot;: employees, &quot;new_hires&quot;: new_hires}, names=[&quot;source&quot;]).reset_index(level=0)
+
+pd.concat([
+    employees[[&quot;id&quot;, &quot;name&quot;]].reset_index(drop=True),
+    employees.assign(pay=employees[&quot;salary&quot;] + employees[&quot;bonus&quot;].fillna(0))[[&quot;pay&quot;]].reset_index(drop=True),
+], axis=1)</code></pre></div>
+<p>Column binding depends on row alignment. <code>bind_cols()</code> is primarily positional; pandas <code>concat(axis=1)</code> aligns by index. Reset or validate indexes when positional alignment is intended.</p>
+<h1 id="mutating-joins">Mutating joins</h1>
+<h2 id="inner-left-right-and-full-joins">Inner, left, right, and full joins</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; inner_join(departments, by = join_by(dept))
+employees |&gt; left_join(departments, by = join_by(dept))
+employees |&gt; right_join(departments, by = join_by(dept))
+employees |&gt; full_join(departments, by = join_by(dept))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.merge(departments, on=&quot;dept&quot;, how=&quot;inner&quot;)
+employees.merge(departments, on=&quot;dept&quot;, how=&quot;left&quot;)
+employees.merge(departments, on=&quot;dept&quot;, how=&quot;right&quot;)
+employees.merge(departments, on=&quot;dept&quot;, how=&quot;outer&quot;)</code></pre></div>
+<p>Always state join keys explicitly. A natural join can silently change meaning when a second same-named column is added later.</p>
+<h2 id="different-names-and-non-equi-joins">Different names and non-equi joins</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">bands &lt;- tibble(low = c(0, 75000, 90000), high = c(74999, 89999, Inf), band = c(&quot;C&quot;, &quot;B&quot;, &quot;A&quot;))
+
+employees |&gt;
+  inner_join(bands, by = join_by(salary &gt;= low, salary &lt;= high))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+bands = pd.DataFrame({
+    &quot;low&quot;: [0, 75000, 90000],
+    &quot;high&quot;: [74999, 89999, np.inf],
+    &quot;band&quot;: [&quot;C&quot;, &quot;B&quot;, &quot;A&quot;],
+})
+
+(employees.assign(_key=1)
+ .merge(bands.assign(_key=1), on=&quot;_key&quot;)
+ .query(&quot;low &lt;= salary &lt;= high&quot;)
+ .drop(columns=&quot;_key&quot;))</code></pre></div>
+<p>In pandas, range joins may require a cross join plus filter, <code>merge_asof()</code>, an IntervalIndex, or a specialized library. Avoid Cartesian expansion on large data.</p>
+<h2 id="relationship-validation">Relationship validation</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt;
+  left_join(departments, by = join_by(dept), relationship = &quot;many-to-one&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+employees.merge(departments, on=&quot;dept&quot;, how=&quot;left&quot;, validate=&quot;many_to_one&quot;)</code></pre></div>
+<p>Encoding an expected one-to-one, one-to-many, many-to-one, or many-to-many relationship makes duplicate-key errors fail early.</p>
+<h1 id="filtering-joins-semi_join-and-anti_join">Filtering joins: <code>semi_join()</code> and <code>anti_join()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">employees |&gt; semi_join(reviews, by = join_by(id))
+employees |&gt; anti_join(reviews, by = join_by(id))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+reviewed_ids = reviews[&quot;id&quot;].drop_duplicates()
+employees.loc[employees[&quot;id&quot;].isin(reviewed_ids)]
+employees.loc[~employees[&quot;id&quot;].isin(reviewed_ids)]</code></pre></div>
+<p>An indicator merge is useful for composite keys:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+probe = employees.merge(reviews[[&quot;id&quot;]].drop_duplicates(), on=&quot;id&quot;, how=&quot;left&quot;, indicator=True)
+semi = probe.loc[probe[&quot;_merge&quot;].eq(&quot;both&quot;)].drop(columns=&quot;_merge&quot;)
+anti = probe.loc[probe[&quot;_merge&quot;].eq(&quot;left_only&quot;)].drop(columns=&quot;_merge&quot;)</code></pre></div>
+<p>Filtering joins determine which left rows survive; they do not add right-side columns.</p>
+<h1 id="set-operations-union-intersect-and-setdiff">Set operations: <code>union()</code>, <code>intersect()</code>, and <code>setdiff()</code></h1>
+<p>The two inputs must have compatible columns.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">a &lt;- employees |&gt; filter(city == &quot;Calgary&quot;) |&gt; select(id, name)
+b &lt;- employees |&gt; filter(dept == &quot;Data&quot;) |&gt; select(id, name)
+
+union(a, b)
+intersect(a, b)
+setdiff(a, b)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+a = employees.loc[employees[&quot;city&quot;].eq(&quot;Calgary&quot;), [&quot;id&quot;, &quot;name&quot;]]
+b = employees.loc[employees[&quot;dept&quot;].eq(&quot;Data&quot;), [&quot;id&quot;, &quot;name&quot;]]
+
+union = pd.concat([a, b]).drop_duplicates()
+intersection = a.merge(b, how=&quot;inner&quot;).drop_duplicates()
+difference = (a.merge(b, how=&quot;left&quot;, indicator=True)
+              .query(&quot;_merge == &#x27;left_only&#x27;&quot;)
+              .drop(columns=&quot;_merge&quot;))</code></pre></div>
+<p>Set operations remove duplicates. Use concatenation or joins with an explicit duplicate policy when multiplicity matters.</p>
+<h1 id="row-modification-the-rows_-family">Row modification: the <code>rows_*()</code> family</h1>
+<p>These functions treat another table as a change set:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">changes &lt;- tibble(id = c(2, 8), salary = c(70000, 84000))
+patches &lt;- tibble(
+  id = c(5, 7),
+  salary = c(70000, NA_real_),
+  bonus = c(NA_real_, 6000)
+)
+
+employees |&gt; rows_update(changes, by = &quot;id&quot;)
+employees |&gt; rows_patch(patches, by = &quot;id&quot;)
+# rows_insert(), rows_upsert(), and rows_delete() use the same key concept</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+changes = pd.DataFrame({&quot;id&quot;: [2, 8], &quot;salary&quot;: [70000, 84000]})
+updated = employees.set_index(&quot;id&quot;).copy()
+updated.update(changes.set_index(&quot;id&quot;))
+updated = updated.reset_index()
+
+patches = pd.DataFrame({
+    &quot;id&quot;: [5, 7],
+    &quot;salary&quot;: [70000, np.nan],
+    &quot;bonus&quot;: [np.nan, 6000],
+}).set_index(&quot;id&quot;)
+patched = employees.set_index(&quot;id&quot;).combine_first(patches)</code></pre></div>
+<p>pandas <code>DataFrame.update()</code> does not reproduce every <code>rows_*()</code> function's overwrite and missing-value policy. Validate key uniqueness and choose insert, overwrite, patch, upsert, or delete semantics explicitly.</p>
+<h1 id="programming-with-column-names-tidy-evaluation-and-python-functions">Programming with column names: tidy evaluation and Python functions</h1>
+<h2 id="dplyr-and-data">dplyr <code>{{ }}</code> and <code>.data</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">mean_by &lt;- function(data, group, value) {
+  data |&gt;
+    summarise(mean = mean({{ value }}, na.rm = TRUE), .by = {{ group }})
+}
+
+mean_by(employees, dept, salary)
+
+mean_by_name &lt;- function(data, group_name, value_name) {
+  data |&gt;
+    summarise(mean = mean(.data[[value_name]], na.rm = TRUE),
+              .by = all_of(group_name))
+}</code></pre></div>
+<p>Use <code>{{ }}</code> when a caller supplies bare column names. Use <code>.data[[name]]</code> and <code>all_of()</code> when names arrive as strings.</p>
+<h2 id="python-2">Python</h2>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def mean_by(data, group, value):
+    return (data.groupby(group, as_index=False, dropna=False)
+            .agg(mean=(value, &quot;mean&quot;)))
+
+mean_by(employees, &quot;dept&quot;, &quot;salary&quot;)</code></pre></div>
+<p>Python normally passes column names as strings and has no data-mask injection. The tradeoff is that misspelled names are generally discovered at runtime.</p>
+<h1 id="a-complete-workflow-side-by-side">A complete workflow side by side</h1>
+<p>Goal: keep active employees, replace missing bonuses with zero, compute total pay, summarize by department, and attach budget data.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">department_report &lt;- employees |&gt;
+  filter(active) |&gt;
+  mutate(total_pay = salary + coalesce(bonus, 0)) |&gt;
+  summarise(
+    employees = n(),
+    payroll = sum(total_pay, na.rm = TRUE),
+    avg_pay = mean(total_pay, na.rm = TRUE),
+    .by = dept
+  ) |&gt;
+  left_join(departments, by = join_by(dept), relationship = &quot;many-to-one&quot;) |&gt;
+  mutate(budget_remaining = budget - payroll) |&gt;
+  arrange(budget_remaining)
+
+department_report</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+department_report = (
+    employees
+    .loc[lambda d: d[&quot;active&quot;]]
+    .assign(total_pay=lambda d: d[&quot;salary&quot;] + d[&quot;bonus&quot;].fillna(0))
+    .groupby(&quot;dept&quot;, as_index=False, dropna=False)
+    .agg(
+        employees=(&quot;id&quot;, &quot;size&quot;),
+        payroll=(&quot;total_pay&quot;, &quot;sum&quot;),
+        avg_pay=(&quot;total_pay&quot;, &quot;mean&quot;),
+    )
+    .merge(departments, on=&quot;dept&quot;, how=&quot;left&quot;, validate=&quot;many_to_one&quot;)
+    .assign(budget_remaining=lambda d: d[&quot;budget&quot;] - d[&quot;payroll&quot;])
+    .sort_values(&quot;budget_remaining&quot;)
+)</code></pre></div>
+<p>The two programs express the same split–apply–combine pipeline without being character-for-character translations.</p>
+<h1 id="databases-and-lazy-execution">Databases and lazy execution</h1>
+<p>Through <code>dbplyr</code>, dplyr translates supported verbs to SQL:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">library(DBI)
+library(dbplyr)
+
+con &lt;- dbConnect(RSQLite::SQLite(), &quot;:memory:&quot;)
+copy_to(con, employees, &quot;employees&quot;, temporary = FALSE)
+
+remote &lt;- tbl(con, &quot;employees&quot;)
+query &lt;- remote |&gt;
+  filter(active) |&gt;
+  summarise(avg_salary = mean(salary, na.rm = TRUE), .by = dept)
+
+show_query(query)
+collect(query)</code></pre></div>
+<p>Python commonly uses SQLAlchemy with <code>pd.read_sql_query()</code>, or lazy expression systems such as Polars, DuckDB, or Ibis. pandas itself is primarily an in-memory DataFrame library and does not automatically translate arbitrary method chains to SQL.</p>
+<h1 id="important-semantic-traps">Important semantic traps</h1>
+<h2 id="missing-values">Missing values</h2>
+<ul><li>dplyr aggregations often need <code>na.rm = TRUE</code>; many pandas aggregations skip missing values by default.</li><li>dplyr <code>filter()</code> keeps only rows where the condition is <code>TRUE</code>; both <code>FALSE</code> and <code>NA</code> are removed.</li><li>A nullable pandas Boolean mask generally treats <code>pd.NA</code> as false during indexing.</li><li>pandas merge matches null keys to each other, unlike ordinary SQL joins. dplyr can use <code>na_matches = &quot;never&quot;</code> to disable missing-key matches.</li></ul>
+<h2 id="index-alignment">Index alignment</h2>
+<p>A dplyr tibble has no pandas-style row index that participates in alignment. pandas assignment, arithmetic, and <code>concat(axis=1)</code> can align by labels and create unexpected missing values. Use <code>reset_index(drop=True)</code> or NumPy arrays only when positional behavior is truly intended.</p>
+<h2 id="group-keys-and-output-shape">Group keys and output shape</h2>
+<ul><li>pandas <code>groupby(..., as_index=True)</code> puts keys in the index by default; this guide frequently uses <code>as_index=False</code> to keep regular columns.</li><li>dplyr <code>summarise()</code> returns one row per group; use <code>reframe()</code> for arbitrary row counts.</li><li>pandas <code>agg()</code>, <code>transform()</code>, <code>filter()</code>, and <code>apply()</code> have different output-shape contracts and are not interchangeable.</li></ul>
+<h2 id="side-effects-and-copies">Side effects and copies</h2>
+<p>dplyr pipelines normally leave the source object unchanged. Assignment after chained pandas indexing can be ambiguous. Prefer <code>.loc[...] = ...</code> or <code>assign()</code>, and do not assume <code>inplace=True</code> provides a performance benefit.</p>
+<h1 id="performance-and-maintainability">Performance and maintainability</h1>
+<ol><li>Select required rows and columns before expensive computation or joins.</li><li>Check join-key uniqueness, missingness, and expected relationship before merging.</li><li>In R, prefer vectorized functions and <code>across()</code>; in Python, prefer Series/NumPy operations over row-wise <code>apply()</code>.</li><li>Do not repeatedly <code>bind_rows()</code> or <code>pd.concat()</code> inside a loop. Accumulate pieces and concatenate once.</li><li>On large pandas frames, inspect dtypes; strings, categoricals, nullable integers, and Arrow-backed dtypes affect memory and semantics.</li><li>On databases, use translatable operations and inspect SQL with <code>show_query()</code> or an execution plan.</li><li>Write clear, testable code first, then benchmark bottlenecks on representative data.</li></ol>
+<h1 id="quick-reference">Quick reference</h1>
+<div class="table-wrap"><table><thead><tr><th>Goal</th><th>dplyr</th><th>pandas / NumPy</th></tr></thead><tbody><tr><td>Select columns</td><td><code>select(df, a, b)</code></td><td><code>df[[&quot;a&quot;, &quot;b&quot;]]</code></td></tr><tr><td>Drop a column</td><td><code>select(df, -a)</code></td><td><code>df.drop(columns=&quot;a&quot;)</code></td></tr><tr><td>Extract a vector</td><td><code>pull(df, a)</code></td><td><code>df[&quot;a&quot;]</code></td></tr><tr><td>Rename</td><td><code>rename(df, new = old)</code></td><td><code>df.rename(columns={&quot;old&quot;:&quot;new&quot;})</code></td></tr><tr><td>Filter rows</td><td><code>filter(df, a &gt; 0)</code></td><td><code>df.loc[df[&quot;a&quot;] &gt; 0]</code></td></tr><tr><td>Sort</td><td><code>arrange(df, desc(a))</code></td><td><code>df.sort_values(&quot;a&quot;, ascending=False)</code></td></tr><tr><td>Deduplicate</td><td><code>distinct(df, a)</code></td><td><code>df[[&quot;a&quot;]].drop_duplicates()</code></td></tr><tr><td>Create a column</td><td><code>mutate(df, c = a + b)</code></td><td><code>df.assign(c=df[&quot;a&quot;] + df[&quot;b&quot;])</code></td></tr><tr><td>Conditional column</td><td><code>case_when(...)</code></td><td><code>np.select(...)</code></td></tr><tr><td>Group</td><td><code>group_by(df, g)</code></td><td><code>df.groupby(&quot;g&quot;)</code></td></tr><tr><td>Summarize</td><td><code>summarise(df, m=mean(a))</code></td><td><code>df.agg(m=(&quot;a&quot;, &quot;mean&quot;))</code></td></tr><tr><td>Group-sized output</td><td>Grouped <code>mutate()</code></td><td><code>groupby().transform()</code></td></tr><tr><td>Count</td><td><code>count(df, g)</code></td><td><code>df.value_counts(&quot;g&quot;)</code></td></tr><tr><td>Previous value</td><td><code>lag(x)</code></td><td><code>s.shift(1)</code></td></tr><tr><td>Stack rows</td><td><code>bind_rows(x, y)</code></td><td><code>pd.concat([x, y])</code></td></tr><tr><td>Left join</td><td><code>left_join(x, y, by=...)</code></td><td><code>x.merge(y, how=&quot;left&quot;, on=...)</code></td></tr><tr><td>Semi join</td><td><code>semi_join(x, y)</code></td><td><code>x[x[key].isin(y[key])]</code></td></tr><tr><td>Anti join</td><td><code>anti_join(x, y)</code></td><td><code>x[~x[key].isin(y[key])]</code></td></tr></tbody></table></div>
+<h1 id="exercises">Exercises</h1>
+<ol><li>Find the two highest-paid active employees in each city and decide how ties should behave.</li><li>Calculate each employee's review-score change from the previous year and retain the first declining year.</li><li>Verify that <code>employees</code> to <code>departments</code> is genuinely a many-to-one relationship.</li><li>Build a department payroll report, then identify departments with no employees.</li><li>Write one R function accepting bare column names and another accepting strings, then implement the corresponding Python function.</li></ol>
+<h1 id="official-references">Official references</h1>
+<ul><li><a href="https://dplyr.tidyverse.org/reference/index.html" target="_blank" rel="noopener">dplyr function index</a></li><li><a href="https://dplyr.tidyverse.org/articles/dplyr.html" target="_blank" rel="noopener">Introduction to dplyr</a></li><li><a href="https://dplyr.tidyverse.org/articles/grouping.html" target="_blank" rel="noopener">Grouped data</a></li><li><a href="https://dplyr.tidyverse.org/articles/two-table.html" target="_blank" rel="noopener">Two-table verbs</a></li><li><a href="https://dplyr.tidyverse.org/articles/window-functions.html" target="_blank" rel="noopener">Window functions</a></li><li><a href="https://dplyr.tidyverse.org/articles/programming.html" target="_blank" rel="noopener">Programming with dplyr</a></li><li><a href="https://pandas.pydata.org/docs/getting_started/comparison/comparison_with_r.html" target="_blank" rel="noopener">pandas comparison with R</a></li><li><a href="https://pandas.pydata.org/docs/reference/groupby.html" target="_blank" rel="noopener">pandas GroupBy</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.merge.html" target="_blank" rel="noopener">pandas merge</a></li></ul>
+<p>The best way to master these operations is to run both languages against the same small data and compare row count, column names, dtypes, order, and missing values after every step. Similar-looking output does not automatically imply identical semantics.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
