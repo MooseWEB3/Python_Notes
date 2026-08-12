@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Portable Quarto guide preview">
+  <title>stringr Functions with Python Equivalents</title>
+  <style>
+:root {
+  --bg: #f7f9fc; --surface: #ffffff; --surface-2: #eef4fb;
+  --text: #172033; --muted: #61708a; --line: #dbe3ee;
+  --accent: #1769aa; --accent-2: #0e8f83; --code: #111827;
+  --code-text: #e5edf7; --shadow: 0 12px 34px rgba(25, 45, 75, .09);
+}
+html[data-theme="dark"] {
+  --bg: #0c1220; --surface: #111a2b; --surface-2: #17243a;
+  --text: #e7eef8; --muted: #9babc2; --line: #283750;
+  --accent: #69b6f2; --accent-2: #58d1c1; --code: #080d17;
+  --code-text: #dce8f5; --shadow: 0 12px 34px rgba(0, 0, 0, .28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.72; }
+a { color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+.progress { position: fixed; inset: 0 0 auto 0; width: 0; height: 3px; z-index: 20; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.topbar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 4vw; background: color-mix(in srgb, var(--surface) 91%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+.brand { font-weight: 750; letter-spacing: -.02em; }
+.actions { display: flex; align-items: center; gap: .6rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .75rem; color: var(--text); background: var(--surface); font: inherit; font-size: .86rem; text-decoration: none; cursor: pointer; }
+.button:hover { border-color: var(--accent); }
+.hero { padding: 5.2rem max(5vw, calc((100vw - 1240px)/2)) 4rem; color: white; background: radial-gradient(circle at 85% 15%, rgba(94, 234, 212, .24), transparent 28%), linear-gradient(125deg, #0b3e72, #1769aa 52%, #087e76); }
+.eyebrow { display: inline-block; margin-bottom: .8rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.hero h1 { max-width: 920px; margin: 0; font-size: clamp(2.4rem, 5.5vw, 4.8rem); line-height: 1.04; letter-spacing: -.045em; }
+.hero p { max-width: 780px; margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.3rem); opacity: .9; }
+.badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.5rem; }
+.badge { border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: .3rem .7rem; background: rgba(255,255,255,.1); font-size: .82rem; }
+.shell { display: grid; grid-template-columns: 260px minmax(0, 820px); gap: clamp(2rem, 5vw, 5rem); max-width: 1240px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; padding-right: 1rem; }
+.toc h2 { margin: 0 0 .8rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.toc ul { margin: 0; padding: 0; list-style: none; }
+.toc li { margin: .22rem 0; }
+.toc .toc-level-2 { padding-left: .85rem; font-size: .88rem; }
+.toc a { display: block; padding: .22rem .5rem; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.content { min-width: 0; }
+.notice { margin: 0 0 2rem; padding: 1rem 1.1rem; border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface-2); color: var(--muted); font-size: .92rem; }
+.content h1, .content h2, .content h3 { scroll-margin-top: 78px; line-height: 1.24; letter-spacing: -.025em; }
+.content h1 { margin: 3.5rem 0 1rem; padding-top: .4rem; font-size: clamp(1.9rem, 4vw, 2.6rem); border-top: 1px solid var(--line); }
+.content h1:first-of-type { margin-top: 1rem; border-top: 0; }
+.content h2 { margin: 2.3rem 0 .7rem; font-size: 1.55rem; }
+.content h3 { margin: 1.8rem 0 .55rem; font-size: 1.2rem; }
+.content p, .content li { color: var(--text); }
+.content ul, .content ol { padding-left: 1.4rem; }
+.content li { margin: .3rem 0; }
+blockquote { margin: 1.5rem 0; padding: .25rem 1.15rem; border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--surface-2); }
+blockquote p { color: var(--muted) !important; }
+.table-wrap { max-width: 100%; margin: 1.4rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+th, td { padding: .72rem .85rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+code { padding: .12em .34em; border-radius: 5px; background: var(--surface-2); color: var(--accent); font: .9em/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.code-block { margin: 1.3rem 0; overflow: hidden; border: 1px solid #263247; border-radius: 12px; background: var(--code); box-shadow: var(--shadow); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: .45rem .72rem; border-bottom: 1px solid #29354a; color: #9fb0c8; background: #151e2d; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.copy-button { border: 1px solid #39475e; border-radius: 6px; padding: .25rem .52rem; color: #c8d5e6; background: transparent; cursor: pointer; }
+pre { margin: 0; padding: 1rem 1.1rem; overflow: auto; tab-size: 2; }
+pre code { padding: 0; color: var(--code-text); background: transparent; font-size: .88rem; white-space: pre; }
+.math-inline { white-space: nowrap; font-family: Cambria, "Times New Roman", serif; font-style: italic; }
+.math-display { margin: 1.4rem 0; padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-align: center; font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.footer { padding: 2rem; border-top: 1px solid var(--line); color: var(--muted); background: var(--surface); text-align: center; font-size: .88rem; }
+@media (max-width: 880px) {
+  .shell { grid-template-columns: 1fr; padding: 2rem 1.2rem 4rem; }
+  .toc { position: static; max-height: 320px; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hero { padding: 4rem 1.2rem 3rem; }
+}
+@media print {
+  .topbar, .toc, .progress, .copy-button { display: none !important; }
+  .hero { padding: 2rem; background: white; color: black; }
+  .shell { display: block; max-width: none; padding: 1rem; }
+  .code-block, .table-wrap { box-shadow: none; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">MooseWeb3 · stringr Guide</div>
+    <div class="actions">
+      <a class="button" href="stringr_guide_zh.html"></a>
+      <button class="button" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <section class="hero">
+    <span class="eyebrow">R · Python · HTML</span>
+    <h1>stringr Functions with Python Equivalents</h1>
+    <p>From text cleaning to regular expressions with Python str, re, and pandas Series.str</p>
+    <div class="badges"><span class="badge">MooseWeb3</span><span class="badge">stringr 1.6</span><span class="badge">Python re</span><span class="badge">pandas</span><span class="badge">Unicode</span></div>
+  </section>
+  <div class="shell">
+    <nav class="toc" aria-label="On this page"><h2>On this page</h2><ul><li class="toc-level-1"><a href="#what-this-guide-teaches">What this guide teaches</a></li>
+<li class="toc-level-1"><a href="#installation-and-example-data">Installation and example data</a></li>
+<li class="toc-level-2"><a href="#r">R</a></li>
+<li class="toc-level-2"><a href="#python">Python</a></li>
+<li class="toc-level-1"><a href="#five-core-differences">Five core differences</a></li>
+<li class="toc-level-1"><a href="#length-and-display-width-str_length-and-str_width">Length and display width: str_length() and str_width()</a></li>
+<li class="toc-level-1"><a href="#concatenation-str_c">Concatenation: str_c()</a></li>
+<li class="toc-level-2"><a href="#element-wise-concatenation">Element-wise concatenation</a></li>
+<li class="toc-level-2"><a href="#missing-value-behavior">Missing-value behavior</a></li>
+<li class="toc-level-1"><a href="#flattening-str_flatten-and-str_flatten_comma">Flattening: str_flatten() and str_flatten_comma()</a></li>
+<li class="toc-level-1"><a href="#interpolation-str_glue-and-str_glue_data">Interpolation: str_glue() and str_glue_data()</a></li>
+<li class="toc-level-1"><a href="#substrings-str_sub-and-str_sub">Substrings: str_sub() and str_sub&lt;-</a></li>
+<li class="toc-level-2"><a href="#extracting">Extracting</a></li>
+<li class="toc-level-2"><a href="#replacing-a-positional-range">Replacing a positional range</a></li>
+<li class="toc-level-2"><a href="#multiple-locations-with-str_sub_all">Multiple locations with str_sub_all()</a></li>
+<li class="toc-level-1"><a href="#duplication-padding-truncation-and-wrapping">Duplication, padding, truncation, and wrapping</a></li>
+<li class="toc-level-2"><a href="#str_dup">str_dup()</a></li>
+<li class="toc-level-2"><a href="#str_pad">str_pad()</a></li>
+<li class="toc-level-2"><a href="#str_trunc">str_trunc()</a></li>
+<li class="toc-level-2"><a href="#str_wrap">str_wrap()</a></li>
+<li class="toc-level-1"><a href="#whitespace-str_trim-and-str_squish">Whitespace: str_trim() and str_squish()</a></li>
+<li class="toc-level-1"><a href="#case-conversion-and-locale">Case conversion and locale</a></li>
+<li class="toc-level-1"><a href="#programming-name-styles-camel-snake-and-kebab">Programming name styles: camel, snake, and kebab</a></li>
+<li class="toc-level-1"><a href="#sorting-ordering-ranking-and-uniqueness">Sorting, ordering, ranking, and uniqueness</a></li>
+<li class="toc-level-1"><a href="#equivalence-str_equal">Equivalence: str_equal()</a></li>
+<li class="toc-level-1"><a href="#a-regular-expression-mental-model">A regular-expression mental model</a></li>
+<li class="toc-level-1"><a href="#literals-and-escaping-fixed-str_escape-re-escape">Literals and escaping: fixed(), str_escape(), re.escape()</a></li>
+<li class="toc-level-1"><a href="#detection-str_detect-str_starts-str_ends">Detection: str_detect(), str_starts(), str_ends()</a></li>
+<li class="toc-level-1"><a href="#sql-wildcards-str_like-and-str_ilike">SQL wildcards: str_like() and str_ilike()</a></li>
+<li class="toc-level-1"><a href="#counts-and-positions-str_count-and-str_locate">Counts and positions: str_count() and str_locate()</a></li>
+<li class="toc-level-1"><a href="#subsetting-and-indexes-str_subset-and-str_which">Subsetting and indexes: str_subset() and str_which()</a></li>
+<li class="toc-level-1"><a href="#complete-matches-str_extract-and-str_extract_all">Complete matches: str_extract() and str_extract_all()</a></li>
+<li class="toc-level-1"><a href="#capture-groups-str_match-and-str_match_all">Capture groups: str_match() and str_match_all()</a></li>
+<li class="toc-level-1"><a href="#named-capture-groups">Named capture groups</a></li>
+<li class="toc-level-1"><a href="#replacement-str_replace-and-str_replace_all">Replacement: str_replace() and str_replace_all()</a></li>
+<li class="toc-level-2"><a href="#callable-replacement">Callable replacement</a></li>
+<li class="toc-level-2"><a href="#capture-group-reordering">Capture-group reordering</a></li>
+<li class="toc-level-1"><a href="#removal-str_remove-and-str_remove_all">Removal: str_remove() and str_remove_all()</a></li>
+<li class="toc-level-1"><a href="#splitting-the-str_split-family">Splitting: the str_split() family</a></li>
+<li class="toc-level-2"><a href="#str_split-and-str_split_1">str_split() and str_split_1()</a></li>
+<li class="toc-level-2"><a href="#fixed-shape-str_split_fixed">Fixed shape: str_split_fixed()</a></li>
+<li class="toc-level-2"><a href="#one-piece-str_split_i">One piece: str_split_i()</a></li>
+<li class="toc-level-1"><a href="#words-word-and-boundaries">Words: word() and boundaries</a></li>
+<li class="toc-level-1"><a href="#character-classes-quantifiers-and-anchors">Character classes, quantifiers, and anchors</a></li>
+<li class="toc-level-1"><a href="#greedy-lazy-and-grouped-matching">Greedy, lazy, and grouped matching</a></li>
+<li class="toc-level-1"><a href="#lookarounds-and-backreferences">Lookarounds and backreferences</a></li>
+<li class="toc-level-1"><a href="#regex-options-regex-and-python-flags">Regex options: regex() and Python flags</a></li>
+<li class="toc-level-1"><a href="#four-pattern-engines">Four pattern engines</a></li>
+<li class="toc-level-1"><a href="#unicode-normalization-and-encodings">Unicode normalization and encodings</a></li>
+<li class="toc-level-2"><a href="#str_conv">str_conv()</a></li>
+<li class="toc-level-1"><a href="#missing-empty-and-whitespace-only-values">Missing, empty, and whitespace-only values</a></li>
+<li class="toc-level-1"><a href="#using-stringr-inside-dplyr-and-pandas">Using stringr inside dplyr and pandas</a></li>
+<li class="toc-level-2"><a href="#cleaning-a-contacts-table">Cleaning a contacts table</a></li>
+<li class="toc-level-1"><a href="#capture-groups-as-structured-columns">Capture groups as structured columns</a></li>
+<li class="toc-level-1"><a href="#building-a-safe-dynamic-regex">Building a safe dynamic regex</a></li>
+<li class="toc-level-1"><a href="#debugging-with-str_view-and-python-spans">Debugging with str_view() and Python spans</a></li>
+<li class="toc-level-1"><a href="#performance-security-and-maintainability">Performance, security, and maintainability</a></li>
+<li class="toc-level-1"><a href="#troubleshooting">Troubleshooting</a></li>
+<li class="toc-level-2"><a href="#the-number-of-backslashes-is-wrong">The number of backslashes is wrong</a></li>
+<li class="toc-level-2"><a href="#literal-input-is-accidentally-treated-as-regex">Literal input is accidentally treated as regex</a></li>
+<li class="toc-level-2"><a href="#positions-are-off-by-one">Positions are off by one</a></li>
+<li class="toc-level-2"><a href="#a-pandas-mask-contains-missing-values">A pandas mask contains missing values</a></li>
+<li class="toc-level-2"><a href="#str-extract-says-there-are-no-capture-groups">str.extract() says there are no capture groups</a></li>
+<li class="toc-level-2"><a href="#a-regex-works-in-r-but-not-python">A regex works in R but not Python</a></li>
+<li class="toc-level-1"><a href="#quick-reference">Quick reference</a></li>
+<li class="toc-level-1"><a href="#exercises">Exercises</a></li>
+<li class="toc-level-1"><a href="#official-references">Official references</a></li></ul></nav>
+    <main class="content"><div class="notice">This HTML is a portable preview built in an environment without Quarto or R, so example cells were not executed. The Rmd source is canonical; after installing Quarto, run <code>quarto render stringr_guide_en.Rmd</code> for fully executable output.</div><h1 id="what-this-guide-teaches">What this guide teaches</h1>
+<p><code>stringr</code> is the core tidyverse package for string manipulation. Built on <code>stringi</code> and the ICU Unicode library, it provides a consistent, composable, and vectorized interface. Python has no single exact counterpart:</p>
+<ul><li>use built-in <code>str</code> methods for one string;</li><li>use the standard-library <code>re</code> module for regular expressions;</li><li>use pandas <code>Series.str</code> for a column of strings;</li><li>use an ICU binding such as PyICU when language-specific collation is essential.</li></ul>
+<p>This guide targets the stringr 1.6 family. It explains output shape, missing values, indexes, Unicode, regex engines, and semantic differences rather than merely listing function names.</p>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>stringr</th><th>Python / pandas</th></tr></thead><tbody><tr><td>Length</td><td><code>str_length()</code></td><td><code>len()</code> / <code>s.str.len()</code></td></tr><tr><td>Concatenate</td><td><code>str_c()</code> / <code>str_flatten()</code></td><td>f-string / <code>join()</code> / <code>s.str.cat()</code></td></tr><tr><td>Substring</td><td><code>str_sub()</code></td><td>slicing / <code>s.str.slice()</code></td></tr><tr><td>Whitespace</td><td><code>str_trim()</code> / <code>str_squish()</code></td><td><code>strip()</code> / regex replacement</td></tr><tr><td>Detect</td><td><code>str_detect()</code></td><td><code>re.search()</code> / <code>s.str.contains()</code></td></tr><tr><td>Extract</td><td><code>str_extract()</code> / <code>str_match()</code></td><td><code>re.search()</code> / <code>s.str.extract()</code></td></tr><tr><td>Replace</td><td><code>str_replace_all()</code></td><td><code>re.sub()</code> / <code>s.str.replace()</code></td></tr><tr><td>Split</td><td><code>str_split()</code></td><td><code>str.split()</code> / <code>s.str.split()</code></td></tr><tr><td>Case</td><td><code>str_to_*()</code></td><td><code>str.lower()</code> and related methods</td></tr><tr><td>Sort and compare</td><td><code>str_sort()</code> / <code>str_equal()</code></td><td><code>sorted()</code> / <code>casefold()</code>; locale needs extra tooling</td></tr></tbody></table></div>
+<h1 id="installation-and-example-data">Installation and example data</h1>
+<h2 id="r">R</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">install.packages(c(&quot;stringr&quot;, &quot;dplyr&quot;, &quot;tibble&quot;, &quot;tidyr&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">#| label: setup-r
+#| include: false
+
+library(stringr)
+library(dplyr)
+library(tibble)
+
+texts &lt;- c(
+  &quot;  MooseWeb3 builds with R  &quot;,
+  &quot;Email: ada@example.com&quot;,
+  &quot;Order ETH-2026-0042: CAD 3,250.50&quot;,
+  &quot;café CAFÉ&quot;,
+  &quot;&quot;,
+  NA_character_
+)
+
+contacts &lt;- tibble(
+  id = 1:5,
+  name = c(&quot; Ada Lovelace &quot;, &quot;BEN  LEE&quot;, &quot;陈 小明&quot;, &quot;Zoë Hart&quot;, NA_character_),
+  email = c(&quot;ADA@EXAMPLE.COM&quot;, &quot;ben@example.org&quot;, &quot;xiaoming@example.cn&quot;,
+            &quot;invalid-email&quot;, NA_character_),
+  phone = c(&quot;403-555-0101&quot;, &quot;780 555 0122&quot;, &quot;+86 10 5555 7788&quot;, NA_character_, &quot;555.0199&quot;),
+  tag = c(&quot;data-science&quot;, &quot;Web3_R&quot;, &quot;机器学习&quot;, &quot;r-and-python&quot;, &quot;&quot;)
+)</code></pre></div>
+<h2 id="python">Python</h2>
+<div class="code-block"><div class="code-head"><span>Terminal</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-bash">python -m pip install pandas</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+import re
+import textwrap
+import unicodedata
+import pandas as pd
+
+texts = pd.Series([
+    &quot;  MooseWeb3 builds with R  &quot;,
+    &quot;Email: ada@example.com&quot;,
+    &quot;Order ETH-2026-0042: CAD 3,250.50&quot;,
+    &quot;café CAFÉ&quot;,
+    &quot;&quot;,
+    pd.NA,
+], dtype=&quot;string&quot;)
+
+contacts = pd.DataFrame({
+    &quot;id&quot;: range(1, 6),
+    &quot;name&quot;: [&quot; Ada Lovelace &quot;, &quot;BEN  LEE&quot;, &quot;陈 小明&quot;, &quot;Zoë Hart&quot;, pd.NA],
+    &quot;email&quot;: [&quot;ADA@EXAMPLE.COM&quot;, &quot;ben@example.org&quot;, &quot;xiaoming@example.cn&quot;,
+              &quot;invalid-email&quot;, pd.NA],
+    &quot;phone&quot;: [&quot;403-555-0101&quot;, &quot;780 555 0122&quot;, &quot;+86 10 5555 7788&quot;, pd.NA, &quot;555.0199&quot;],
+    &quot;tag&quot;: [&quot;data-science&quot;, &quot;Web3_R&quot;, &quot;机器学习&quot;, &quot;r-and-python&quot;, &quot;&quot;],
+}).convert_dtypes()</code></pre></div>
+<p>All later examples reuse <code>texts</code> and <code>contacts</code>.</p>
+<h1 id="five-core-differences">Five core differences</h1>
+<ol><li>Most stringr functions operate on character vectors. A Python <code>str</code> method handles one string; a column needs <code>Series.str</code>.</li><li><code>str_sub()</code> uses one-based positions with an inclusive end. Python slicing is zero-based with an exclusive stop.</li><li>stringr regular expressions use stringi/ICU. Python <code>re</code> is similar, but Unicode properties, named groups, and some advanced constructs differ.</li><li>stringr generally preserves input length and propagates <code>NA</code>. pandas may use <code>pd.NA</code>, <code>NaN</code>, or <code>None</code> depending on dtype.</li><li>stringr exposes locale explicitly. Python's built-in methods do not reproduce ICU language-specific comparison and sorting.</li></ol>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_to_upper(c(&quot;r&quot;, &quot;python&quot;, NA_character_))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Series([&quot;r&quot;, &quot;python&quot;, pd.NA], dtype=&quot;string&quot;).str.upper()</code></pre></div>
+<h1 id="length-and-display-width-str_length-and-str_width">Length and display width: <code>str_length()</code> and <code>str_width()</code></h1>
+<p><code>str_length()</code> returns character count and preserves missingness.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_length(c(&quot;abc&quot;, &quot;中文&quot;, &quot;🙂&quot;, NA_character_))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+samples = pd.Series([&quot;abc&quot;, &quot;中文&quot;, &quot;🙂&quot;, pd.NA], dtype=&quot;string&quot;)
+samples.str.len()
+[len(x) if x is not pd.NA else None for x in samples]</code></pre></div>
+<p><code>str_width()</code> estimates width in a monospaced display, where an East Asian wide character may occupy two cells.</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_width(c(&quot;abc&quot;, &quot;中文&quot;, &quot;🙂&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def display_width(value):
+    return sum(2 if unicodedata.east_asian_width(ch) in {&quot;W&quot;, &quot;F&quot;} else 1 for ch in value)
+
+[display_width(x) for x in [&quot;abc&quot;, &quot;中文&quot;, &quot;🙂&quot;]]</code></pre></div>
+<p>Character count, byte count, user-perceived graphemes, and screen width are different measurements. Test emoji sequences and combining marks explicitly.</p>
+<h1 id="concatenation-str_c">Concatenation: <code>str_c()</code></h1>
+<h2 id="element-wise-concatenation">Element-wise concatenation</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">first &lt;- c(&quot;Ada&quot;, &quot;Ben&quot;, &quot;Chen&quot;)
+role &lt;- c(&quot;Analyst&quot;, &quot;Engineer&quot;, &quot;Manager&quot;)
+
+str_c(first, role, sep = &quot; — &quot;)
+str_c(&quot;User: &quot;, first)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+first = pd.Series([&quot;Ada&quot;, &quot;Ben&quot;, &quot;Chen&quot;], dtype=&quot;string&quot;)
+role = pd.Series([&quot;Analyst&quot;, &quot;Engineer&quot;, &quot;Manager&quot;], dtype=&quot;string&quot;)
+
+first.str.cat(role, sep=&quot; — &quot;)
+&quot;User: &quot; + first</code></pre></div>
+<p><code>str_c()</code> uses tidyverse recycling: a length-one input is recycled, while other incompatible lengths fail. pandas aligns Series by index, not merely position.</p>
+<h2 id="missing-value-behavior">Missing-value behavior</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_c(c(&quot;A&quot;, NA_character_), &quot;-team&quot;)
+str_c(str_replace_na(c(&quot;A&quot;, NA_character_), &quot;Unknown&quot;), &quot;-team&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+s = pd.Series([&quot;A&quot;, pd.NA], dtype=&quot;string&quot;)
+s + &quot;-team&quot;
+s.fillna(&quot;Unknown&quot;) + &quot;-team&quot;</code></pre></div>
+<p>A missing input is infectious in stringr concatenation. Convert it explicitly with <code>str_replace_na()</code> when literal text is desired.</p>
+<h1 id="flattening-str_flatten-and-str_flatten_comma">Flattening: <code>str_flatten()</code> and <code>str_flatten_comma()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">tools &lt;- c(&quot;R&quot;, &quot;Python&quot;, &quot;SQL&quot;)
+
+str_flatten(tools, collapse = &quot; | &quot;)
+str_flatten_comma(tools)
+str_flatten_comma(tools, last = &quot; and &quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+tools = [&quot;R&quot;, &quot;Python&quot;, &quot;SQL&quot;]
+&quot; | &quot;.join(tools)
+&quot;, &quot;.join(tools)
+&quot;, &quot;.join(tools[:-1]) + &quot; and &quot; + tools[-1]</code></pre></div>
+<p><code>str_c(..., collapse=)</code> can also flatten, but <code>str_flatten()</code> expresses the intent directly. Python <code>join()</code> requires string elements and cannot silently accept <code>None</code>.</p>
+<h1 id="interpolation-str_glue-and-str_glue_data">Interpolation: <code>str_glue()</code> and <code>str_glue_data()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">name &lt;- &quot;Ada&quot;
+score &lt;- 4.75
+
+str_glue(&quot;{name} scored {round(score, 1)}&quot;)
+str_glue_data(contacts, &quot;ID {id}: {name}&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+name = &quot;Ada&quot;
+score = 4.75
+f&quot;{name} scored {score:.1f}&quot;
+
+contacts.apply(lambda row: f&quot;ID {row[&#x27;id&#x27;]}: {row[&#x27;name&#x27;]}&quot;, axis=1)</code></pre></div>
+<p>Python f-strings are ideal for scalars. Row-wise <code>apply()</code> can be slow on a large DataFrame; use vectorized concatenation for simple cases. Never evaluate arbitrary expressions from an untrusted template.</p>
+<h1 id="substrings-str_sub-and-str_sub">Substrings: <code>str_sub()</code> and <code>str_sub&lt;-</code></h1>
+<h2 id="extracting">Extracting</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- c(&quot;MooseWeb3&quot;, &quot;stringr&quot;)
+
+str_sub(x, 1, 5)
+str_sub(x, -3, -1)
+str_sub(x, 2)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Series([&quot;MooseWeb3&quot;, &quot;stringr&quot;], dtype=&quot;string&quot;)
+x.str.slice(0, 5)
+x.str.slice(-3)
+x.str.slice(1)</code></pre></div>
+<p>R <code>1:5</code> corresponds to Python <code>[0:5]</code>. The R end is inclusive; the Python stop is exclusive.</p>
+<h2 id="replacing-a-positional-range">Replacing a positional range</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x2 &lt;- &quot;MooseWeb3&quot;
+str_sub(x2, 6, 8) &lt;- &quot;WEB&quot;
+x2</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x2 = &quot;MooseWeb3&quot;
+x2 = x2[:5] + &quot;WEB&quot; + x2[8:]
+x2</code></pre></div>
+<p>Python strings are immutable, so replacement constructs a new value.</p>
+<h2 id="multiple-locations-with-str_sub_all">Multiple locations with <code>str_sub_all()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">locations &lt;- list(matrix(c(1, 5, 6, 9), ncol = 2, byrow = TRUE))
+str_sub_all(&quot;MooseWeb3&quot;, locations)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+value = &quot;MooseWeb3&quot;
+spans = [(0, 5), (5, 9)]
+[value[start:end] for start, end in spans]</code></pre></div>
+<h1 id="duplication-padding-truncation-and-wrapping">Duplication, padding, truncation, and wrapping</h1>
+<h2 id="str_dup"><code>str_dup()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_dup(c(&quot;ab&quot;, &quot;🙂&quot;), c(3, 2))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+values = pd.Series([&quot;ab&quot;, &quot;🙂&quot;], dtype=&quot;string&quot;)
+values * pd.Series([3, 2])</code></pre></div>
+<p>pandas <code>Series.repeat()</code> repeats rows rather than string content. Multiplication of a string Series by an integer Series is the closer equivalent.</p>
+<h2 id="str_pad"><code>str_pad()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_pad(c(&quot;7&quot;, &quot;42&quot;), width = 4, side = &quot;left&quot;, pad = &quot;0&quot;)
+str_pad(&quot;R&quot;, width = 5, side = &quot;both&quot;, pad = &quot;-&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Series([&quot;7&quot;, &quot;42&quot;], dtype=&quot;string&quot;).str.pad(4, side=&quot;left&quot;, fillchar=&quot;0&quot;)
+&quot;R&quot;.center(5, &quot;-&quot;)</code></pre></div>
+<h2 id="str_trunc"><code>str_trunc()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_trunc(&quot;A very long report title&quot;, width = 12)
+str_trunc(&quot;A very long report title&quot;, width = 12, side = &quot;middle&quot;, ellipsis = &quot;…&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def truncate_right(value, width, ellipsis=&quot;...&quot;):
+    return value if len(value) &lt;= width else value[:width - len(ellipsis)] + ellipsis
+
+truncate_right(&quot;A very long report title&quot;, 12)</code></pre></div>
+<h2 id="str_wrap"><code>str_wrap()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">paragraph &lt;- &quot;stringr provides a cohesive set of functions for common string operations.&quot;
+cat(str_wrap(paragraph, width = 28))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+paragraph = &quot;stringr provides a cohesive set of functions for common string operations.&quot;
+textwrap.fill(paragraph, width=28)</code></pre></div>
+<h1 id="whitespace-str_trim-and-str_squish">Whitespace: <code>str_trim()</code> and <code>str_squish()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">messy &lt;- c(&quot;  Ada  &quot;, &quot;Ben\tLee&quot;, &quot;Chen\n\nMing&quot;)
+
+str_trim(messy)
+str_trim(messy, side = &quot;left&quot;)
+str_squish(messy)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+messy = pd.Series([&quot;  Ada  &quot;, &quot;Ben\tLee&quot;, &quot;Chen\n\nMing&quot;], dtype=&quot;string&quot;)
+messy.str.strip()
+messy.str.lstrip()
+messy.str.replace(r&quot;\s+&quot;, &quot; &quot;, regex=True).str.strip()</code></pre></div>
+<p><code>str_trim()</code> removes edge whitespace only. <code>str_squish()</code> also collapses internal whitespace runs to one ordinary space.</p>
+<h1 id="case-conversion-and-locale">Case conversion and locale</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- c(&quot;hello WORLD&quot;, &quot;ijsselmeer&quot;, &quot;I&quot;)
+
+str_to_lower(x)
+str_to_upper(x)
+str_to_title(x)
+str_to_sentence(x)
+str_to_lower(&quot;I&quot;, locale = &quot;tr&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Series([&quot;hello WORLD&quot;, &quot;ijsselmeer&quot;, &quot;I&quot;], dtype=&quot;string&quot;)
+x.str.lower()
+x.str.upper()
+x.str.title()
+x.str.capitalize()
+&quot;Straße&quot;.casefold() == &quot;STRASSE&quot;.casefold()</code></pre></div>
+<p>Python <code>casefold()</code> is stronger than <code>lower()</code> for generic case-insensitive comparison, but it is not a complete replacement for locale-aware ICU comparison.</p>
+<h1 id="programming-name-styles-camel-snake-and-kebab">Programming name styles: camel, snake, and kebab</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_to_camel(&quot;my-variable&quot;)
+str_to_camel(&quot;my-variable&quot;, first_upper = TRUE)
+str_to_snake(&quot;MyVariable&quot;)
+str_to_kebab(&quot;MyVariable&quot;)</code></pre></div>
+<p>The Python standard library has no one-function equivalent:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def words_in_name(value):
+    value = re.sub(r&quot;([a-z0-9])([A-Z])&quot;, r&quot;\1 \2&quot;, value)
+    return [part.lower() for part in re.split(r&quot;[-_\s]+&quot;, value) if part]
+
+def to_snake(value):
+    return &quot;_&quot;.join(words_in_name(value))
+
+def to_kebab(value):
+    return &quot;-&quot;.join(words_in_name(value))
+
+def to_camel(value):
+    parts = words_in_name(value)
+    return parts[0] + &quot;&quot;.join(part.title() for part in parts[1:])
+
+to_snake(&quot;MyVariable&quot;), to_kebab(&quot;MyVariable&quot;), to_camel(&quot;my-variable&quot;)</code></pre></div>
+<p>Real names contain acronyms, digits, and Unicode. Establish a team rule and lock examples into tests.</p>
+<h1 id="sorting-ordering-ranking-and-uniqueness">Sorting, ordering, ranking, and uniqueness</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">words &lt;- c(&quot;éclair&quot;, &quot;apple&quot;, &quot;Éclair&quot;, &quot;banana&quot;, &quot;apple&quot;, NA_character_)
+
+str_sort(words, locale = &quot;en&quot;)
+str_order(words, locale = &quot;en&quot;)
+str_rank(words, locale = &quot;en&quot;)
+str_unique(words)
+str_unique(words, ignore_case = TRUE, locale = &quot;en&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+words = pd.Series([&quot;éclair&quot;, &quot;apple&quot;, &quot;Éclair&quot;, &quot;banana&quot;, &quot;apple&quot;, pd.NA], dtype=&quot;string&quot;)
+words.sort_values(na_position=&quot;last&quot;)
+words.drop_duplicates()
+words.str.casefold().drop_duplicates()</code></pre></div>
+<p>Python's default is code-point ordering rather than linguistic collation. ICU behavior needs an additional package:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">from icu import Collator, Locale
+collator = Collator.createInstance(Locale(&quot;en&quot;))
+sorted(values, key=collator.getSortKey)</code></pre></div>
+<h1 id="equivalence-str_equal">Equivalence: <code>str_equal()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_equal(&quot;café&quot;, &quot;CAFÉ&quot;, ignore_case = TRUE, locale = &quot;fr&quot;)
+str_equal(&quot;I&quot;, &quot;ı&quot;, ignore_case = TRUE, locale = &quot;tr&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+&quot;café&quot;.casefold() == &quot;CAFÉ&quot;.casefold()
+&quot;I&quot;.casefold() == &quot;ı&quot;.casefold()</code></pre></div>
+<p>The second result demonstrates why generic casefolding and language-specific comparison are different tasks.</p>
+<h1 id="a-regular-expression-mental-model">A regular-expression mental model</h1>
+<p>stringr interprets a bare <code>pattern</code> as an ICU regular expression. Python uses its own <code>re</code> engine. Their common core includes:</p>
+<div class="table-wrap"><table><thead><tr><th>Goal</th><th>Regex</th></tr></thead><tbody><tr><td>Any non-newline character</td><td><code>.</code></td></tr><tr><td>Digit / non-digit</td><td><code>\d</code> / <code>\D</code></td></tr><tr><td>Whitespace / non-whitespace</td><td><code>\s</code> / <code>\S</code></td></tr><tr><td>Word character</td><td><code>\w</code></td></tr><tr><td>Start / end</td><td><code>^</code> / <code>$</code></td></tr><tr><td>Zero or one</td><td><code>?</code></td></tr><tr><td>Zero or more</td><td><code>*</code></td></tr><tr><td>One or more</td><td><code>+</code></td></tr><tr><td>Exact/ranged count</td><td><code>{n}</code> / <code>{n,m}</code></td></tr><tr><td>Capturing/non-capturing group</td><td><code>(...)</code> / <code>(?:...)</code></td></tr><tr><td>Alternation</td><td>`A</td><td>B`</td></tr></tbody></table></div>
+<p>R strings and regex both use backslashes, so a digit pattern is written <code>&quot;\\d+&quot;</code>. Python raw strings make the same regex <code>r&quot;\d+&quot;</code>.</p>
+<h1 id="literals-and-escaping-fixed-str_escape-re-escape">Literals and escaping: <code>fixed()</code>, <code>str_escape()</code>, <code>re.escape()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">values &lt;- c(&quot;file.csv&quot;, &quot;fileXcsv&quot;, &quot;a+b&quot;)
+
+str_detect(values, &quot;file.csv&quot;)
+str_detect(values, fixed(&quot;file.csv&quot;))
+str_escape(&quot;a+b&quot;)
+str_detect(values, str_escape(&quot;a+b&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+values = pd.Series([&quot;file.csv&quot;, &quot;fileXcsv&quot;, &quot;a+b&quot;], dtype=&quot;string&quot;)
+values.str.contains(r&quot;file.csv&quot;, regex=True)
+values.str.contains(&quot;file.csv&quot;, regex=False)
+re.escape(&quot;a+b&quot;)
+values.str.contains(re.escape(&quot;a+b&quot;), regex=True)</code></pre></div>
+<p>When the task is a literal search, choose a literal/fixed mode instead of hand-writing fragile escaping.</p>
+<h1 id="detection-str_detect-str_starts-str_ends">Detection: <code>str_detect()</code>, <code>str_starts()</code>, <code>str_ends()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_detect(texts, &quot;email&quot;)
+str_detect(texts, regex(&quot;email&quot;, ignore_case = TRUE))
+str_starts(c(&quot;MooseWeb3&quot;, &quot;Web3&quot;), &quot;Moose&quot;)
+str_ends(c(&quot;report.csv&quot;, &quot;report.xlsx&quot;), fixed(&quot;.csv&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+texts.str.contains(&quot;email&quot;, case=True, na=False, regex=True)
+texts.str.contains(&quot;email&quot;, case=False, na=False, regex=True)
+pd.Series([&quot;MooseWeb3&quot;, &quot;Web3&quot;], dtype=&quot;string&quot;).str.startswith(&quot;Moose&quot;)
+pd.Series([&quot;report.csv&quot;, &quot;report.xlsx&quot;], dtype=&quot;string&quot;).str.endswith(&quot;.csv&quot;)
+bool(re.search(r&quot;email&quot;, &quot;Email: ada@example.com&quot;, flags=re.IGNORECASE))</code></pre></div>
+<p>The default <code>na</code> behavior of pandas <code>str.contains()</code> depends on dtype. Write <code>na=False</code> explicitly before filtering.</p>
+<h1 id="sql-wildcards-str_like-and-str_ilike">SQL wildcards: <code>str_like()</code> and <code>str_ilike()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">fruit &lt;- c(&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pineapple&quot;)
+
+str_like(fruit, &quot;app%&quot;)
+str_like(fruit, &quot;ba_ana&quot;)
+str_ilike(fruit, &quot;APP%&quot;)</code></pre></div>
+<p>In SQL-style patterns, <code>%</code> means any length, <code>_</code> means one character, and the entire string must match. A simple Python translator is:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def sql_like_to_regex(pattern):
+    parts = []
+    for char in pattern:
+        parts.append(&quot;.*&quot; if char == &quot;%&quot; else &quot;.&quot; if char == &quot;_&quot; else re.escape(char))
+    return &quot;^&quot; + &quot;&quot;.join(parts) + &quot;$&quot;
+
+fruit = pd.Series([&quot;apple&quot;, &quot;banana&quot;, &quot;pear&quot;, &quot;pineapple&quot;], dtype=&quot;string&quot;)
+fruit.str.match(sql_like_to_regex(&quot;app%&quot;), na=False)
+fruit.str.match(sql_like_to_regex(&quot;ba_ana&quot;), na=False)</code></pre></div>
+<p>A production translator must also honor escape characters. If the data already lives in a database, let that database execute LIKE.</p>
+<h1 id="counts-and-positions-str_count-and-str_locate">Counts and positions: <code>str_count()</code> and <code>str_locate()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_count(contacts$phone, &quot;[0-9]&quot;)
+str_locate(contacts$email, &quot;@&quot;)
+str_locate_all(&quot;aba abba&quot;, &quot;a&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+contacts[&quot;phone&quot;].str.count(r&quot;[0-9]&quot;)
+contacts[&quot;email&quot;].str.find(&quot;@&quot;)
+[(m.start(), m.end()) for m in re.finditer(&quot;a&quot;, &quot;aba abba&quot;)]</code></pre></div>
+<p>stringr positions are one-based with an inclusive end. Python spans are zero-based with an exclusive end. pandas <code>str.find()</code> returns <code>-1</code> when absent.</p>
+<h1 id="subsetting-and-indexes-str_subset-and-str_which">Subsetting and indexes: <code>str_subset()</code> and <code>str_which()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">values &lt;- c(&quot;R&quot;, &quot;Python&quot;, &quot;Rust&quot;, &quot;SQL&quot;, NA_character_)
+
+str_subset(values, regex(&quot;^r&quot;, ignore_case = TRUE))
+str_which(values, regex(&quot;^r&quot;, ignore_case = TRUE))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+values = pd.Series([&quot;R&quot;, &quot;Python&quot;, &quot;Rust&quot;, &quot;SQL&quot;, pd.NA], dtype=&quot;string&quot;)
+mask = values.str.contains(r&quot;^r&quot;, case=False, na=False)
+values.loc[mask]
+values.index[mask].tolist()
+mask.to_numpy().nonzero()[0].tolist()</code></pre></div>
+<p><code>str_which()</code> returns one-based positions. pandas index labels do not necessarily equal zero-based positions.</p>
+<h1 id="complete-matches-str_extract-and-str_extract_all">Complete matches: <code>str_extract()</code> and <code>str_extract_all()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">emails &lt;- c(&quot;ada@example.com&quot;, &quot;Contact bob@test.org and cy@x.io&quot;, &quot;none&quot;)
+email_pattern &lt;- &quot;[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}&quot;
+
+str_extract(emails, email_pattern)
+str_extract_all(emails, email_pattern)
+str_extract_all(emails, email_pattern, simplify = TRUE)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+emails = pd.Series([&quot;ada@example.com&quot;, &quot;Contact bob@test.org and cy@x.io&quot;, &quot;none&quot;], dtype=&quot;string&quot;)
+email_pattern = r&quot;[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}&quot;
+
+emails.str.extract(f&quot;({email_pattern})&quot;, expand=False)
+emails.str.findall(email_pattern)</code></pre></div>
+<p>pandas <code>str.extract()</code> requires at least one capture group. <code>str.findall()</code> returns a list for every row.</p>
+<h1 id="capture-groups-str_match-and-str_match_all">Capture groups: <code>str_match()</code> and <code>str_match_all()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">orders &lt;- c(&quot;ETH-2026-0042&quot;, &quot;BTC-2025-0199&quot;, &quot;invalid&quot;)
+order_pattern &lt;- &quot;^([A-Z]{3})-([0-9]{4})-([0-9]{4})$&quot;
+
+str_match(orders, order_pattern)
+str_match_all(&quot;ETH-2026-0042 BTC-2025-0199&quot;,
+              &quot;([A-Z]{3})-([0-9]{4})-([0-9]{4})&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+orders = pd.Series([&quot;ETH-2026-0042&quot;, &quot;BTC-2025-0199&quot;, &quot;invalid&quot;], dtype=&quot;string&quot;)
+order_pattern = r&quot;^([A-Z]{3})-([0-9]{4})-([0-9]{4})$&quot;
+
+orders.str.extract(order_pattern)
+[m.groups() for m in re.finditer(
+    r&quot;([A-Z]{3})-([0-9]{4})-([0-9]{4})&quot;,
+    &quot;ETH-2026-0042 BTC-2025-0199&quot;,
+)]</code></pre></div>
+<p>The first <code>str_match()</code> column is the complete match, followed by capture groups. pandas <code>str.extract()</code> normally returns only the groups.</p>
+<h1 id="named-capture-groups">Named capture groups</h1>
+<p>ICU/stringr uses <code>(?&lt;name&gt;...)</code>:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">named_order &lt;- &quot;^(?&lt;asset&gt;[A-Z]{3})-(?&lt;year&gt;[0-9]{4})-(?&lt;number&gt;[0-9]{4})$&quot;
+str_match(orders, named_order)</code></pre></div>
+<p>Python uses <code>(?P&lt;name&gt;...)</code>:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+named_order = r&quot;^(?P&lt;asset&gt;[A-Z]{3})-(?P&lt;year&gt;[0-9]{4})-(?P&lt;number&gt;[0-9]{4})$&quot;
+orders.str.extract(named_order)
+re.fullmatch(named_order, &quot;ETH-2026-0042&quot;).groupdict()</code></pre></div>
+<p>Do not copy named-group syntax unchanged between the two engines.</p>
+<h1 id="replacement-str_replace-and-str_replace_all">Replacement: <code>str_replace()</code> and <code>str_replace_all()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- c(&quot;red red blue&quot;, &quot;blue green&quot;)
+
+str_replace(x, &quot;red&quot;, &quot;R&quot;)
+str_replace_all(x, &quot;red&quot;, &quot;R&quot;)
+str_replace_all(x, c(&quot;red&quot; = &quot;#FF0000&quot;, &quot;blue&quot; = &quot;#0000FF&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Series([&quot;red red blue&quot;, &quot;blue green&quot;], dtype=&quot;string&quot;)
+x.str.replace(&quot;red&quot;, &quot;R&quot;, n=1, regex=False)
+x.str.replace(&quot;red&quot;, &quot;R&quot;, regex=False)
+x.str.replace({&quot;red&quot;: &quot;#FF0000&quot;, &quot;blue&quot;: &quot;#0000FF&quot;}, regex=False)</code></pre></div>
+<p>In pandas 3, <code>str.replace()</code> defaults to <code>regex=False</code>. State <code>regex=True</code> when the pattern is a regular expression.</p>
+<h2 id="callable-replacement">Callable replacement</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_replace_all(c(&quot;r&quot;, &quot;python&quot;, &quot;sql&quot;), &quot;[a-z]+&quot;, str_to_upper)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Series([&quot;r&quot;, &quot;python&quot;, &quot;sql&quot;], dtype=&quot;string&quot;).str.replace(
+    r&quot;[a-z]+&quot;, lambda match: match.group(0).upper(), regex=True
+)</code></pre></div>
+<p>The stringr function receives matched text as a vector. A Python callable receives a <code>re.Match</code> object.</p>
+<h2 id="capture-group-reordering">Capture-group reordering</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_replace(&quot;Lovelace, Ada&quot;, &quot;([^,]+), (.+)&quot;, &quot;\\2 \\1&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+re.sub(r&quot;([^,]+), (.+)&quot;, r&quot;\2 \1&quot;, &quot;Lovelace, Ada&quot;)</code></pre></div>
+<h1 id="removal-str_remove-and-str_remove_all">Removal: <code>str_remove()</code> and <code>str_remove_all()</code></h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_remove(&quot;ID: 123-456&quot;, &quot;[0-9]&quot;)
+str_remove_all(&quot;ID: 123-456&quot;, &quot;[^0-9]&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+re.sub(r&quot;[0-9]&quot;, &quot;&quot;, &quot;ID: 123-456&quot;, count=1)
+re.sub(r&quot;[^0-9]&quot;, &quot;&quot;, &quot;ID: 123-456&quot;)</code></pre></div>
+<p>Removal is replacement with an empty string, but a dedicated verb communicates the intent better.</p>
+<h1 id="splitting-the-str_split-family">Splitting: the <code>str_split()</code> family</h1>
+<h2 id="str_split-and-str_split_1"><code>str_split()</code> and <code>str_split_1()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">paths &lt;- c(&quot;data/raw/file.csv&quot;, &quot;reports/2026/summary.html&quot;)
+
+str_split(paths, fixed(&quot;/&quot;))
+str_split_1(paths[[1]], fixed(&quot;/&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+paths = pd.Series([&quot;data/raw/file.csv&quot;, &quot;reports/2026/summary.html&quot;], dtype=&quot;string&quot;)
+paths.str.split(&quot;/&quot;, regex=False)
+&quot;data/raw/file.csv&quot;.split(&quot;/&quot;)</code></pre></div>
+<h2 id="fixed-shape-str_split_fixed">Fixed shape: <code>str_split_fixed()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_split_fixed(c(&quot;a-b-c&quot;, &quot;d-e&quot;), fixed(&quot;-&quot;), n = 3)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+pd.Series([&quot;a-b-c&quot;, &quot;d-e&quot;], dtype=&quot;string&quot;).str.split(
+    &quot;-&quot;, n=2, expand=True, regex=False
+)</code></pre></div>
+<p>stringr <code>n</code> is the number of output pieces. pandas <code>n</code> is the maximum number of splits, so three output columns require <code>n=2</code>.</p>
+<h2 id="one-piece-str_split_i">One piece: <code>str_split_i()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_split_i(paths, fixed(&quot;/&quot;), 1)
+str_split_i(paths, fixed(&quot;/&quot;), -1)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+paths.str.split(&quot;/&quot;, regex=False).str[0]
+paths.str.split(&quot;/&quot;, regex=False).str[-1]</code></pre></div>
+<h1 id="words-word-and-boundaries">Words: <code>word()</code> and boundaries</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">sentences &lt;- c(&quot;Ada wrote code&quot;, &quot;Ben reviewed tests&quot;)
+
+word(sentences, 1)
+word(sentences, -1)
+word(sentences, 2, -1)
+str_split_1(&quot;Hello, 世界! MooseWeb3.&quot;, boundary(&quot;word&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+sentences = pd.Series([&quot;Ada wrote code&quot;, &quot;Ben reviewed tests&quot;], dtype=&quot;string&quot;)
+sentences.str.split().str[0]
+sentences.str.split().str[-1]
+sentences.str.split().str[1:].str.join(&quot; &quot;)
+re.findall(r&quot;\w+&quot;, &quot;Hello, 世界! MooseWeb3.&quot;, flags=re.UNICODE)</code></pre></div>
+<p>ICU <code>boundary(&quot;word&quot;)</code> uses Unicode text-boundary rules and handles multilingual text more deliberately than whitespace splitting or a simple <code>\w+</code>.</p>
+<h1 id="character-classes-quantifiers-and-anchors">Character classes, quantifiers, and anchors</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">samples &lt;- c(&quot;A1&quot;, &quot;abc&quot;, &quot;2026-08-11&quot;, &quot;line\nbreak&quot;)
+
+str_detect(samples, &quot;^[A-Z][0-9]$&quot;)
+str_detect(samples, &quot;^[[:alpha:]]+$&quot;)
+str_extract(samples, &quot;[0-9]{4}&quot;)
+str_detect(samples, regex(&quot;^break$&quot;, multiline = TRUE))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+samples = pd.Series([&quot;A1&quot;, &quot;abc&quot;, &quot;2026-08-11&quot;, &quot;line\nbreak&quot;], dtype=&quot;string&quot;)
+samples.str.contains(r&quot;^[A-Z][0-9]$&quot;, na=False, regex=True)
+samples.str.contains(r&quot;^[^\W\d_]+$&quot;, na=False, regex=True)
+samples.str.extract(r&quot;([0-9]{4})&quot;, expand=False)
+samples.str.contains(r&quot;^break$&quot;, flags=re.MULTILINE, na=False, regex=True)</code></pre></div>
+<p>POSIX classes such as <code>[[:alpha:]]</code> are common ICU syntax. Python <code>re</code> does not support them directly, so rewrite the expression or use the third-party <code>regex</code> package.</p>
+<h1 id="greedy-lazy-and-grouped-matching">Greedy, lazy, and grouped matching</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">html &lt;- &quot;&lt;b&gt;first&lt;/b&gt;&lt;i&gt;second&lt;/i&gt;&quot;
+
+str_extract(html, &quot;&lt;.*&gt;&quot;)
+str_extract(html, &quot;&lt;.*?&gt;&quot;)
+str_extract_all(&quot;color colour&quot;, &quot;colou?r&quot;)
+str_extract_all(&quot;abab ab&quot;, &quot;(?:ab)+&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+html_text = &quot;&lt;b&gt;first&lt;/b&gt;&lt;i&gt;second&lt;/i&gt;&quot;
+re.search(r&quot;&lt;.*&gt;&quot;, html_text).group(0)
+re.search(r&quot;&lt;.*?&gt;&quot;, html_text).group(0)
+re.findall(r&quot;colou?r&quot;, &quot;color colour&quot;)
+re.findall(r&quot;(?:ab)+&quot;, &quot;abab ab&quot;)</code></pre></div>
+<p>Regex is useful for local text structure, not for fully parsing HTML, JSON, or programming languages. Use a format-aware parser.</p>
+<h1 id="lookarounds-and-backreferences">Lookarounds and backreferences</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">prices &lt;- c(&quot;CAD 25.00&quot;, &quot;USD 19&quot;, &quot;25 EUR&quot;)
+
+str_extract(prices, &quot;(?&lt;=CAD )[0-9.]+&quot;)
+str_detect(c(&quot;book&quot;, &quot;moon&quot;, &quot;cat&quot;), &quot;([a-z])\\1&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+prices = pd.Series([&quot;CAD 25.00&quot;, &quot;USD 19&quot;, &quot;25 EUR&quot;], dtype=&quot;string&quot;)
+prices.str.extract(r&quot;(?&lt;=CAD )([0-9.]+)&quot;, expand=False)
+pd.Series([&quot;book&quot;, &quot;moon&quot;, &quot;cat&quot;], dtype=&quot;string&quot;).map(
+    lambda value: bool(re.search(r&quot;([a-z])\1&quot;, value))
+)</code></pre></div>
+<p>Python <code>re</code> normally requires fixed-length lookbehind. ICU and third-party engines impose different limits. Test advanced patterns when porting them.</p>
+<h1 id="regex-options-regex-and-python-flags">Regex options: <code>regex()</code> and Python flags</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">multi &lt;- &quot;Start\nMIDDLE\nend&quot;
+
+str_detect(multi, regex(&quot;middle&quot;, ignore_case = TRUE))
+str_extract_all(multi, regex(&quot;^[a-z]+$&quot;, ignore_case = TRUE, multiline = TRUE))
+str_detect(&quot;a\nb&quot;, regex(&quot;a.b&quot;, dotall = TRUE))
+str_detect(&quot;A  # label&quot;,
+           regex(&quot;a \\s* # comment&quot;, ignore_case = TRUE, comments = TRUE))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+multi = &quot;Start\nMIDDLE\nend&quot;
+bool(re.search(&quot;middle&quot;, multi, flags=re.IGNORECASE))
+re.findall(r&quot;^[a-z]+$&quot;, multi, flags=re.IGNORECASE | re.MULTILINE)
+bool(re.search(r&quot;a.b&quot;, &quot;a\nb&quot;, flags=re.DOTALL))
+bool(re.search(r&quot;a \s* \# label&quot;, &quot;A  # label&quot;, flags=re.IGNORECASE | re.VERBOSE))</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>stringr</th><th>Python <code>re</code></th></tr></thead><tbody><tr><td><code>ignore_case=TRUE</code></td><td><code>re.IGNORECASE</code></td></tr><tr><td><code>multiline=TRUE</code></td><td><code>re.MULTILINE</code></td></tr><tr><td><code>dotall=TRUE</code></td><td><code>re.DOTALL</code></td></tr><tr><td><code>comments=TRUE</code></td><td><code>re.VERBOSE</code></td></tr></tbody></table></div>
+<h1 id="four-pattern-engines">Four pattern engines</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- c(&quot;a.b&quot;, &quot;axb&quot;)
+
+str_detect(x, regex(&quot;a.b&quot;))
+str_detect(x, fixed(&quot;a.b&quot;))
+str_detect(c(&quot;I&quot;, &quot;İ&quot;, &quot;i&quot;, &quot;ı&quot;),
+           coll(&quot;i&quot;, ignore_case = TRUE, locale = &quot;tr&quot;))
+str_split_1(&quot;Hello 世界. Next sentence!&quot;, boundary(&quot;sentence&quot;))</code></pre></div>
+<p>Choose by intent:</p>
+<ul><li>pattern language: <code>regex()</code>;</li><li>exact byte sequence: <code>fixed()</code>;</li><li>human-language comparison: <code>coll()</code>;</li><li>character, word, line, or sentence boundaries: <code>boundary()</code>.</li></ul>
+<p>Python <code>re</code> covers regex, and <code>in</code> / <code>str.find()</code> covers literal search. The standard library has no complete equivalent to the last two.</p>
+<h1 id="unicode-normalization-and-encodings">Unicode normalization and encodings</h1>
+<p>Visually identical text can use different code-point sequences:</p>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">composed &lt;- &quot;\u00e1&quot;
+decomposed &lt;- &quot;a\u0301&quot;
+
+composed == decomposed
+str_equal(composed, decomposed, locale = &quot;en&quot;)
+str_detect(composed, fixed(decomposed))
+str_detect(composed, coll(decomposed, locale = &quot;en&quot;))</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+composed = &quot;\u00e1&quot;
+decomposed = &quot;a\u0301&quot;
+composed == decomposed
+unicodedata.normalize(&quot;NFC&quot;, composed) == unicodedata.normalize(&quot;NFC&quot;, decomposed)</code></pre></div>
+<h2 id="str_conv"><code>str_conv()</code></h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">latin1_bytes &lt;- charToRaw(iconv(&quot;café&quot;, to = &quot;latin1&quot;))
+str_conv(latin1_bytes, from = &quot;latin1&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+latin1_bytes = &quot;café&quot;.encode(&quot;latin-1&quot;)
+latin1_bytes.decode(&quot;latin-1&quot;)</code></pre></div>
+<p>Convert encodings at the input boundary and keep internal text as Unicode. Repeated trial-and-error decoding hides data-provenance problems.</p>
+<h1 id="missing-empty-and-whitespace-only-values">Missing, empty, and whitespace-only values</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">x &lt;- c(NA_character_, &quot;&quot;, &quot;   &quot;, &quot;text&quot;)
+
+is.na(x)
+str_length(x) == 0
+str_detect(x, &quot;^\\s*$&quot;)
+str_replace_na(x, &quot;Missing&quot;)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+x = pd.Series([pd.NA, &quot;&quot;, &quot;   &quot;, &quot;text&quot;], dtype=&quot;string&quot;)
+x.isna()
+x.str.len().eq(0)
+x.str.fullmatch(r&quot;\s*&quot;, na=False)
+x.fillna(&quot;Missing&quot;)</code></pre></div>
+<ul><li><code>NA</code> / <code>pd.NA</code>: unknown;</li><li><code>&quot;&quot;</code>: known and empty;</li><li><code>&quot;   &quot;</code>: contains whitespace;</li><li>whether these are equivalent is a business rule, not a string-library decision.</li></ul>
+<h1 id="using-stringr-inside-dplyr-and-pandas">Using stringr inside dplyr and pandas</h1>
+<h2 id="cleaning-a-contacts-table">Cleaning a contacts table</h2>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">clean_contacts &lt;- contacts |&gt;
+  mutate(
+    name = name |&gt; str_squish() |&gt; str_to_title(),
+    email = str_to_lower(email),
+    phone_digits = str_remove_all(phone, &quot;[^0-9+]&quot;),
+    tag = str_to_snake(tag),
+    email_valid = str_detect(email, &quot;^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$&quot;)
+  ) |&gt;
+  filter(coalesce(email_valid, FALSE))
+
+clean_contacts</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+email_pattern = r&quot;^[^@\s]+@[^@\s]+\.[^@\s]+$&quot;
+
+clean_contacts = (
+    contacts
+    .assign(
+        name=lambda d: d[&quot;name&quot;].str.replace(r&quot;\s+&quot;, &quot; &quot;, regex=True).str.strip().str.title(),
+        email=lambda d: d[&quot;email&quot;].str.lower(),
+        phone_digits=lambda d: d[&quot;phone&quot;].str.replace(r&quot;[^0-9+]&quot;, &quot;&quot;, regex=True),
+        tag=lambda d: d[&quot;tag&quot;].map(lambda item: to_snake(item) if pd.notna(item) else item),
+        email_valid=lambda d: d[&quot;email&quot;].str.fullmatch(email_pattern, na=False),
+    )
+    .loc[lambda d: d[&quot;email_valid&quot;]]
+)</code></pre></div>
+<p>stringr transforms character vectors while dplyr manages columns and rows. In Python, <code>Series.str</code> fits inside the pandas method chain.</p>
+<h1 id="capture-groups-as-structured-columns">Capture groups as structured columns</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">orders_df &lt;- tibble(raw = c(&quot;ETH-2026-0042&quot;, &quot;BTC-2025-0199&quot;, &quot;bad&quot;))
+
+parsed &lt;- orders_df |&gt;
+  tidyr::extract(
+    raw,
+    into = c(&quot;asset&quot;, &quot;year&quot;, &quot;number&quot;),
+    regex = &quot;^([A-Z]{3})-([0-9]{4})-([0-9]{4})$&quot;,
+    remove = FALSE,
+    convert = TRUE
+  )</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+orders_df = pd.DataFrame({&quot;raw&quot;: [&quot;ETH-2026-0042&quot;, &quot;BTC-2025-0199&quot;, &quot;bad&quot;]})
+parts = orders_df[&quot;raw&quot;].str.extract(
+    r&quot;^(?P&lt;asset&gt;[A-Z]{3})-(?P&lt;year&gt;[0-9]{4})-(?P&lt;number&gt;[0-9]{4})$&quot;
+)
+parsed = orders_df.join(parts)
+parsed[[&quot;year&quot;, &quot;number&quot;]] = parsed[[&quot;year&quot;, &quot;number&quot;]].apply(
+    pd.to_numeric, errors=&quot;coerce&quot;
+)</code></pre></div>
+<p><code>tidyr::extract()</code> is not a stringr function, but it demonstrates how capture groups become data columns.</p>
+<h1 id="building-a-safe-dynamic-regex">Building a safe dynamic regex</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">terms &lt;- c(&quot;R&quot;, &quot;C++&quot;, &quot;data.science&quot;)
+safe_pattern &lt;- str_c(str_escape(terms), collapse = &quot;|&quot;)
+
+str_detect(c(&quot;I use C++&quot;, &quot;dataXscience&quot;, &quot;R&quot;), safe_pattern)</code></pre></div>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+terms = [&quot;R&quot;, &quot;C++&quot;, &quot;data.science&quot;]
+safe_pattern = &quot;|&quot;.join(re.escape(term) for term in terms)
+
+[bool(re.search(safe_pattern, value))
+ for value in [&quot;I use C++&quot;, &quot;dataXscience&quot;, &quot;R&quot;]]</code></pre></div>
+<p>Also limit pattern length and count. An accidentally or maliciously complex regex can trigger catastrophic backtracking.</p>
+<h1 id="debugging-with-str_view-and-python-spans">Debugging with <code>str_view()</code> and Python spans</h1>
+<div class="code-block"><div class="code-head"><span>R</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-r">str_view(c(&quot;banana&quot;, &quot;ananas&quot;), &quot;ana&quot;)</code></pre></div>
+<p><code>str_view()</code> highlights matches in HTML. Python can expose exact spans:</p>
+<div class="code-block"><div class="code-head"><span>Python</span><button class="copy-button" type="button">Copy</button></div><pre><code class="language-python">#| eval: false
+
+def show_matches(value, pattern):
+    return [(m.group(0), m.start(), m.end()) for m in re.finditer(pattern, value)]
+
+show_matches(&quot;banana&quot;, &quot;ana&quot;)</code></pre></div>
+<p>Matches are non-overlapping by default, so <code>ana</code> is normally returned only once from <code>banana</code>. Overlapping matches require a lookahead or specialized engine behavior.</p>
+<h1 id="performance-security-and-maintainability">Performance, security, and maintainability</h1>
+<ol><li>Prefer <code>fixed()</code> or <code>regex=False</code> for literal text. The intent is clearer and it is often faster.</li><li>Compile reused Python patterns with <code>re.compile()</code>; avoid rebuilding complex patterns inside loops.</li><li>Prefer vectorized work. Avoid ordinary Python functions over each row of a large Series when a <code>Series.str</code> operation exists.</li><li>Do not parse HTML, XML, JSON, CSV, or a programming language with regex.</li><li>Escape dynamic input with <code>str_escape()</code> / <code>re.escape()</code> and constrain complexity.</li><li>Define what missing, empty, whitespace-only, and invalidly encoded values mean before cleaning.</li><li>Specify locale for names, sorting, casing, and search, and test the actual target languages.</li><li>Give each regex positive, negative, boundary, and missing-value test cases.</li></ol>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="the-number-of-backslashes-is-wrong">The number of backslashes is wrong</h2>
+<p>An R digit pattern is <code>&quot;\\d+&quot;</code>. Python should normally use <code>r&quot;\d+&quot;</code>. Inspect what the engine receives with <code>writeLines(pattern)</code> or <code>print(repr(pattern))</code>.</p>
+<h2 id="literal-input-is-accidentally-treated-as-regex">Literal input is accidentally treated as regex</h2>
+<p>Dots, plus signs, parentheses, and brackets are metacharacters. Use <code>fixed()</code>, <code>regex=False</code>, or escaping.</p>
+<h2 id="positions-are-off-by-one">Positions are off by one</h2>
+<p>stringr <code>str_locate()</code> / <code>str_sub()</code> is one-based and end-inclusive. Python spans and slices are zero-based and end-exclusive.</p>
+<h2 id="a-pandas-mask-contains-missing-values">A pandas mask contains missing values</h2>
+<p>Use <code>s.str.contains(pattern, na=False)</code> before filtering. Otherwise the mask's dtype and missing-value behavior may be surprising.</p>
+<h2 id="str-extract-says-there-are-no-capture-groups"><code>str.extract()</code> says there are no capture groups</h2>
+<p>pandas <code>Series.str.extract()</code> requires parentheses in the pattern. Wrap the complete match in a capture group, or use <code>findall()</code>.</p>
+<h2 id="a-regex-works-in-r-but-not-python">A regex works in R but not Python</h2>
+<p>Check ICU versus <code>re</code> syntax for named groups, Unicode properties, POSIX classes, lookbehind, and replacement backreferences.</p>
+<h1 id="quick-reference">Quick reference</h1>
+<div class="table-wrap"><table><thead><tr><th>Goal</th><th>stringr</th><th>Python scalar</th><th>pandas Series</th></tr></thead><tbody><tr><td>Length</td><td><code>str_length(x)</code></td><td><code>len(x)</code></td><td><code>s.str.len()</code></td></tr><tr><td>Concatenate</td><td><code>str_c(a,b)</code></td><td><code>a + b</code> / f-string</td><td><code>a.str.cat(b)</code></td></tr><tr><td>Flatten</td><td><code>str_flatten(x,&quot;,&quot;)</code></td><td><code>&quot;,&quot;.join(x)</code></td><td><code>s.str.cat(sep=&quot;,&quot;)</code></td></tr><tr><td>Substring</td><td><code>str_sub(x,1,3)</code></td><td><code>x[0:3]</code></td><td><code>s.str.slice(0,3)</code></td></tr><tr><td>Trim</td><td><code>str_trim(x)</code></td><td><code>x.strip()</code></td><td><code>s.str.strip()</code></td></tr><tr><td>Squish</td><td><code>str_squish(x)</code></td><td><code>re.sub(r&quot;\s+&quot;,&quot; &quot;,x).strip()</code></td><td><code>s.str.replace(...).str.strip()</code></td></tr><tr><td>Uppercase</td><td><code>str_to_upper(x)</code></td><td><code>x.upper()</code></td><td><code>s.str.upper()</code></td></tr><tr><td>Detect</td><td><code>str_detect(x,p)</code></td><td><code>bool(re.search(p,x))</code></td><td><code>s.str.contains(p)</code></td></tr><tr><td>Starts with</td><td><code>str_starts(x,p)</code></td><td><code>x.startswith(p)</code></td><td><code>s.str.startswith(p)</code></td></tr><tr><td>Count</td><td><code>str_count(x,p)</code></td><td><code>len(re.findall(p,x))</code></td><td><code>s.str.count(p)</code></td></tr><tr><td>Whole match</td><td><code>str_extract(x,p)</code></td><td><code>re.search(p,x).group()</code></td><td><code>s.str.extract(f&quot;({p})&quot;)</code></td></tr><tr><td>Capture groups</td><td><code>str_match(x,p)</code></td><td><code>re.search(p,x).groups()</code></td><td><code>s.str.extract(p)</code></td></tr><tr><td>All matches</td><td><code>str_extract_all(x,p)</code></td><td><code>re.findall(p,x)</code></td><td><code>s.str.findall(p)</code></td></tr><tr><td>First replace</td><td><code>str_replace(x,p,r)</code></td><td><code>re.sub(p,r,x,count=1)</code></td><td><code>s.str.replace(p,r,n=1)</code></td></tr><tr><td>Replace all</td><td><code>str_replace_all(x,p,r)</code></td><td><code>re.sub(p,r,x)</code></td><td><code>s.str.replace(p,r)</code></td></tr><tr><td>Split</td><td><code>str_split(x,p)</code></td><td><code>re.split(p,x)</code></td><td><code>s.str.split(p)</code></td></tr><tr><td>Piece i</td><td><code>str_split_i(x,p,i)</code></td><td><code>re.split(p,x)[i]</code></td><td><code>s.str.split(p).str[i]</code></td></tr><tr><td>Escape literal</td><td><code>str_escape(x)</code></td><td><code>re.escape(x)</code></td><td>Same as Python</td></tr><tr><td>Missing to text</td><td><code>str_replace_na(x)</code></td><td>Explicit condition</td><td><code>s.fillna(&quot;NA&quot;)</code></td></tr></tbody></table></div>
+<h1 id="exercises">Exercises</h1>
+<ol><li>Extract currency codes and amounts from mixed text while correctly handling thousands separators.</li><li>Normalize phone numbers to country code plus digits and flag implausible lengths.</li><li>Extract date, level, and message from log lines in both stringr and pandas.</li><li>Build user search terms containing <code>C++</code>, <code>a.b</code>, and <code>[test]</code> and prove why escaping matters.</li><li>Compare <code>str_sort(locale=)</code>, Python <code>sorted()</code>, and ICU collation.</li><li>Test one regex against accepted, rejected, boundary, Unicode, empty, and missing inputs.</li></ol>
+<h1 id="official-references">Official references</h1>
+<ul><li><a href="https://stringr.tidyverse.org/reference/index.html" target="_blank" rel="noopener">stringr 1.6.0 function index</a></li><li><a href="https://stringr.tidyverse.org/articles/stringr.html" target="_blank" rel="noopener">Introduction to stringr</a></li><li><a href="https://stringr.tidyverse.org/articles/regular-expressions.html" target="_blank" rel="noopener">Regular expressions in stringr</a></li><li><a href="https://stringr.tidyverse.org/articles/locale-sensitive.html" target="_blank" rel="noopener">Locale-sensitive functions</a></li><li><a href="https://stringr.tidyverse.org/articles/from-base.html" target="_blank" rel="noopener">Migrating from base R</a></li><li><a href="https://docs.python.org/3/library/re.html" target="_blank" rel="noopener">Python re library</a></li><li><a href="https://pandas.pydata.org/docs/user_guide/text.html" target="_blank" rel="noopener">pandas working with text data</a></li><li><a href="https://pandas.pydata.org/docs/reference/series.html#string-handling" target="_blank" rel="noopener">pandas Series.str API</a></li></ul>
+<p>The key to stringr is not memorizing every function. First decide whether the task is literal text, a regex pattern, human-language comparison, or a text boundary; then verify output shape, position convention, and missing-value behavior. In Python, choose scalar <code>str</code>, <code>re</code>, or vectorized <code>Series.str</code> by the same principle.</p></main>
+  </div>
+  <footer class="footer">Offline tutorial · Source can be rendered again with Quarto · MooseWeb3</footer>
+  <script>
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('guide-theme');
+if (savedTheme) root.dataset.theme = savedTheme;
+document.querySelector('#theme-toggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('guide-theme', root.dataset.theme);
+});
+document.querySelectorAll('.copy-button').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const text = button.closest('.code-block').querySelector('code').innerText;
+    await navigator.clipboard.writeText(text);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => button.textContent = old, 1200);
+  });
+});
+const progress = document.querySelector('.progress');
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+}, {passive: true});
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (!visible) return;
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+}, {rootMargin: '-15% 0px -75% 0px'});
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
